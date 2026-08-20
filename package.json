@@ -1,0 +1,15 @@
+{
+  "name": "ruankao-chapter-practice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "系统架构设计师章节练习、判卷与错题回顾微服务",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node --watch server.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22.5"
+  }
+}

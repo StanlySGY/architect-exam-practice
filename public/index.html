@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="软考高级系统架构设计师章节练习、自动判卷与错题回顾"
+    />
+    <title>架构师练习室</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#" data-view="home"
+        ><span class="brand-mark">架</span
+        ><span>架构师练习室<small>系统架构设计师 · 第 2 版教程</small></span></a
+      >
+      <nav aria-label="主导航">
+        <button class="nav-button active" data-view="home">章节练习</button>
+        <button class="nav-button" data-view="wrong">
+          错题本 <span id="due-badge" class="badge">0</span>
+        </button>
+        <button class="nav-button" data-view="history">练习记录</button>
+        <button class="nav-button" data-view="bank">题库管理</button>
+        <button class="nav-button" data-view="stats">学习统计</button>
+        <button class="nav-button" data-view="data">数据管理</button>
+      </nav>
+    </header>
+
+    <main>
+      <section id="home-view" class="view active">
+        <div class="hero">
+          <p class="eyebrow">RUANKAO AGENT POWERED</p>
+          <h1>今天，攻克哪一章？</h1>
+          <p>按章节与难度精准练习。提交后立即判卷，错题自动进入间隔回顾。</p>
+        </div>
+        <section id="resume-panel" class="panel resume-panel" hidden>
+          <div>
+            <p class="eyebrow">未完成练习</p>
+            <h2 id="resume-title">继续上次练习</h2>
+            <p id="resume-meta"></p>
+          </div>
+          <div class="resume-actions">
+            <button id="abandon-session" class="ghost" type="button">
+              放弃
+            </button>
+            <button id="resume-session" class="primary" type="button">
+              继续练习
+            </button>
+          </div>
+        </section>
+        <div class="setup-grid">
+          <form id="practice-form" class="panel setup-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="step">01</span>
+                <h2>创建章节练习</h2>
+              </div>
+              <span id="availability" class="availability">载入题库…</span>
+            </div>
+            <label
+              >选择章节<select id="chapter" name="chapter" required></select
+            ></label>
+            <label>选择小节<select id="section" name="section"></select></label>
+            <div class="two-columns">
+              <label
+                >难度<select id="difficulty" name="difficulty">
+                  <option value="mixed">混合难度</option>
+                  <option value="easy">简单</option>
+                  <option value="medium">中等</option>
+                  <option value="hard">困难</option>
+                </select></label
+              >
+              <label
+                >题目数量<select id="count" name="count">
+                  <option>5</option>
+                  <option selected>10</option>
+                  <option>15</option>
+                  <option>20</option>
+                  <option>30</option>
+                </select></label
+              >
+            </div>
+            <button
+              id="start-practice-button"
+              class="primary wide"
+              type="submit"
+            >
+              开始练习 <span>→</span>
+            </button>
+          </form>
+
+          <aside class="panel review-panel">
+            <div class="panel-heading">
+              <div>
+                <span class="step warm">02</span>
+                <h2>今日错题回顾</h2>
+              </div>
+            </div>
+            <div class="review-count">
+              <strong id="due-count">0</strong><span>道待回顾</span>
+            </div>
+            <p>连续两次回顾答对后，题目将自动标记为已掌握。</p>
+            <button id="start-review" class="secondary wide" type="button">
+              开始回顾
+            </button>
+          </aside>
+        </div>
+        <section class="panel agent-panel">
+          <div>
+            <p class="eyebrow">题库扩展</p>
+            <h2>让 Agent 根据当前章节思维导图生成题目</h2>
+            <p>
+              调用上游 <code>mcq-agent</code>，只读取
+              <code>ruankao.mm</code> 中对应章节，答案与题目分离保存。
+            </p>
+          </div>
+          <button id="generate-button" class="ghost" type="button">
+            为当前选择生成题目
+          </button>
+          <span id="model-status" class="availability">模型配置检查中…</span>
+        </section>
+        <section id="coverage" class="coverage"></section>
+      </section>
+
+      <section id="practice-view" class="view">
+        <div class="practice-header">
+          <button class="back-button" data-view="home">← 退出练习</button>
+          <div>
+            <p id="practice-meta" class="eyebrow"></p>
+            <h1 id="practice-title">章节练习</h1>
+          </div>
+          <div class="progress-ring">
+            <strong id="answer-progress">0/0</strong><span>已作答</span>
+          </div>
+        </div>
+        <form id="questions-form">
+          <div class="practice-layout">
+            <aside class="answer-sheet panel" aria-label="答题卡">
+              <div class="sheet-heading">
+                <strong>答题卡</strong><span id="sheet-summary">0/0</span>
+              </div>
+              <div id="answer-sheet-items" class="answer-sheet-items"></div>
+              <div class="sheet-legend">
+                <span><i class="legend-dot current"></i>当前</span
+                ><span><i class="legend-dot answered"></i>已答</span
+                ><span><i class="legend-dot correct"></i>正确</span
+                ><span><i class="legend-dot incorrect"></i>错误</span>
+              </div>
+            </aside>
+            <section class="question-stage">
+              <div id="current-question"></div>
+              <div class="question-navigation">
+                <button id="previous-question" class="secondary" type="button">
+                  ← 上一题
+                </button>
+                <span id="question-position">1 / 1</span>
+                <button id="next-question" class="primary" type="button">
+                  下一题 →
+                </button>
+              </div>
+            </section>
+          </div>
+          <div class="submit-bar">
+            <span id="submit-hint">答完后提交即可查看解析</span
+            ><button class="primary" type="submit">提交并判卷</button>
+          </div>
+        </form>
+      </section>
+
+      <section id="result-view" class="view">
+        <button class="back-button" data-view="home">← 返回首页</button>
+        <div id="score-hero" class="score-hero"></div>
+        <div id="result-details"></div>
+      </section>
+
+      <section id="wrong-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">MISTAKE NOTEBOOK</p>
+            <h1>错题本</h1>
+            <p>错误不是终点，是下一轮复习的起点。</p>
+          </div>
+          <button id="review-all" class="primary">回顾未掌握错题</button>
+        </div>
+        <div id="wrong-summary" class="summary-grid"></div>
+        <div id="wrong-list"></div>
+      </section>
+
+      <section id="history-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">PRACTICE LOG</p>
+            <h1>练习记录</h1>
+            <p>查看最近 100 次练习的正确率变化。</p>
+          </div>
+        </div>
+        <div id="history-list" class="history-list panel"></div>
+      </section>
+
+      <section id="bank-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">QUESTION BANK</p>
+            <h1>题库管理</h1>
+            <p>搜索、筛选和维护 Agent 已生成的题目。</p>
+          </div>
+        </div>
+        <form id="bank-filters" class="panel bank-filters">
+          <label
+            >搜索题干、知识点或选项<input
+              id="bank-query"
+              type="search"
+              placeholder="输入关键词"
+          /></label>
+          <label
+            >章节<select id="bank-chapter">
+              <option value="all">全部章节</option>
+            </select></label
+          >
+          <label
+            >小节<select id="bank-section">
+              <option value="all">全部小节</option>
+            </select></label
+          >
+          <label
+            >难度<select id="bank-difficulty">
+              <option value="all">全部难度</option>
+              <option value="easy">简单</option>
+              <option value="medium">中等</option>
+              <option value="hard">困难</option>
+            </select></label
+          >
+          <label
+            >状态<select id="bank-status">
+              <option value="all">全部状态</option>
+              <option value="active">正常</option>
+              <option value="disabled">问题题</option>
+            </select></label
+          >
+          <button class="primary" type="submit">筛选</button>
+        </form>
+        <div class="bank-toolbar">
+          <strong id="bank-total">0 道题</strong>
+          <span class="muted">每页最多显示 50 道</span>
+        </div>
+        <div id="bank-list"></div>
+        <div class="bank-pagination">
+          <button id="bank-previous" class="secondary" type="button">
+            上一页
+          </button>
+          <span id="bank-page">第 1 页</span>
+          <button id="bank-next" class="secondary" type="button">下一页</button>
+        </div>
+      </section>
+
+      <section id="stats-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">LEARNING INSIGHTS</p>
+            <h1>学习统计</h1>
+            <p>根据已提交练习和错题记录，定位薄弱章节与知识点。</p>
+          </div>
+        </div>
+        <div id="stats-summary" class="summary-grid"></div>
+        <div class="stats-layout">
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>章节正确率</h2></div>
+            <div id="chapter-stats"></div>
+          </section>
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>最近练习趋势</h2></div>
+            <div id="practice-trend" class="trend-chart"></div>
+          </section>
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>高频错误知识点</h2></div>
+            <div id="weak-points"></div>
+          </section>
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>错题掌握情况</h2></div>
+            <div id="review-stats"></div>
+          </section>
+        </div>
+      </section>
+
+      <section id="data-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">LOCAL DATA</p>
+            <h1>数据管理</h1>
+            <p>管理本机 SQLite 中的题库、练习记录和错题数据。</p>
+          </div>
+        </div>
+        <div id="data-summary" class="summary-grid"></div>
+        <section class="panel data-panel">
+          <div class="data-row">
+            <div>
+              <h2>备份与恢复</h2>
+              <p>导出完整 JSON 备份，或从本应用生成的备份恢复。</p>
+            </div>
+            <div class="data-actions">
+              <button id="export-data" class="primary" type="button">
+                导出备份
+              </button>
+              <button id="import-data" class="ghost" type="button">
+                导入备份
+              </button>
+              <input
+                id="import-file"
+                type="file"
+                accept="application/json,.json"
+                hidden
+              />
+            </div>
+          </div>
+          <div class="data-row danger-zone">
+            <div>
+              <h2>清理数据</h2>
+              <p>清空操作立即写入 SQLite，执行前会要求确认。</p>
+            </div>
+            <div class="data-actions clear-actions">
+              <button
+                class="danger-button"
+                type="button"
+                data-clear="wrongBook"
+              >
+                清空错题本
+              </button>
+              <button class="danger-button" type="button" data-clear="attempts">
+                清空练习记录
+              </button>
+              <button
+                class="danger-button"
+                type="button"
+                data-clear="questions"
+              >
+                清空题库
+              </button>
+              <button
+                class="danger-button solid"
+                type="button"
+                data-clear="all"
+              >
+                清空全部数据
+              </button>
+            </div>
+          </div>
+        </section>
+        <section class="panel issues-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>已标记的问题题目</h2>
+            </div>
+            <span class="availability">后续普通练习不会选入</span>
+          </div>
+          <div id="question-issues-list"></div>
+        </section>
+      </section>
+    </main>
+    <div id="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="/app.js"></script>
+  </body>
+</html>

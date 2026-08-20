@@ -1,0 +1,16 @@
+# dependency artifacts
+node_modules/
+
+# local secrets
+.env
+
+# local learning state
+data/state.json
+data/state.json.tmp
+data/state.json.migrated-backup
+data/*.sqlite
+data/*.sqlite-shm
+data/*.sqlite-wal
+
+# local source reference materials
+*.pdf
