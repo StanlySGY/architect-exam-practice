@@ -1,0 +1,12 @@
+{
+  "id": "project-capability-assessment",
+  "title": "读取并分析项目能力与个人使用成熟度",
+  "status": "completed",
+  "complexity": "M",
+  "risk": "low",
+  "domain": "review",
+  "currentPhase": "completed",
+  "nextAction": "归档审阅记录",
+  "createdAt": "2026-09-16T00:00:00Z",
+  "branch": "main"
+}
