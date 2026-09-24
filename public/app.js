@@ -162,20 +162,23 @@ function renderChapters() {
     }),
   );
   $("#chapter").replaceChildren(...options);
-  const cards = state.chapters.map((chapter) =>
-    element(
+  const cards = state.chapters.map((chapter) => {
+    const available = chapter.source === "mindmap";
+    return element(
       "div",
       {
-        className: `chapter-card ${chapter.source === "mindmap" ? "available" : ""}`,
+        className: `chapter-card ${available ? "available" : "empty"}`,
       },
       [
         element("strong", { text: `第 ${chapter.id} 章` }),
         element("span", {
-          text: `${chapter.title} · ${chapter.source === "mindmap" ? `${chapter.counts.all} 道可用` : "尚未整理导图"}`,
+          text: available
+            ? `${chapter.title} · ${chapter.counts.all} 道可用`
+            : `${chapter.title} · 尚未整理`,
         }),
       ],
-    ),
-  );
+    );
+  });
   $("#coverage").replaceChildren(...cards);
   updateAvailability();
 }
@@ -2180,16 +2183,8 @@ function paperGradeNode(grade) {
 }
 
 function renderPapers(papers) {
-  $("#paper-list").replaceChildren(
-    ...(papers.length
-      ? papers.map(paperNode)
-      : [
-          emptyMessage(
-            "还没有论文题目",
-            "选择章节生成论文，或先到数据管理导入真题库。",
-          ),
-        ]),
-  );
+  $("#paper-empty").hidden = papers.length > 0;
+  $("#paper-list").replaceChildren(...papers.map(paperNode));
 }
 
 async function generatePapers() {
@@ -2570,6 +2565,17 @@ async function jumpToWikiEntry(entryId) {
 }
 
 // 知识图谱：基于条目 related 关系，用简单力导向布局渲染 SVG。
+const GRAPH_CHAPTER_COLORS = [
+  "#1f6b4f",
+  "#2f6f8f",
+  "#8a5a2b",
+  "#7a3e55",
+  "#3f6b3a",
+  "#5b4b8a",
+  "#8a6d1a",
+  "#3d6b66",
+];
+
 function renderWikiGraph(entries) {
   const canvas = $("#wiki-graph-canvas");
   if (entries.length < 2) {
@@ -2578,13 +2584,17 @@ function renderWikiGraph(entries) {
     );
     return;
   }
-  const width = 900;
-  const height = 520;
-  const nodes = entries.map((entry, index) => ({
+  const width = 1100;
+  const height = 680;
+  // 节点被限制在画布内侧，给标签留出空间，避免被裁掉。
+  const marginX = 96;
+  const marginY = 64;
+  const nodes = entries.map((entry) => ({
     id: entry.id,
     title: entry.title,
-    x: 100 + Math.random() * (width - 200),
-    y: 100 + Math.random() * (height - 200),
+    chapter: entry.chapter,
+    x: marginX + Math.random() * (width - marginX * 2),
+    y: marginY + Math.random() * (height - marginY * 2),
     vx: 0,
     vy: 0,
   }));
@@ -2599,10 +2609,10 @@ function renderWikiGraph(entries) {
     }
   }
   // 力导向迭代。
-  const iterations = 200;
-  const repulsion = 1800;
-  const attraction = 0.02;
-  const centerForce = 0.01;
+  const iterations = 300;
+  const repulsion = 2600;
+  const attraction = 0.015;
+  const centerForce = 0.008;
   for (let iter = 0; iter < iterations; iter += 1) {
     for (const node of nodes) {
       node.vx += (width / 2 - node.x) * centerForce;
@@ -2624,18 +2634,29 @@ function renderWikiGraph(entries) {
       const dx = b.x - a.x;
       const dy = b.y - a.y;
       const dist = Math.max(1, Math.hypot(dx, dy));
-      const force = attraction * (dist - 120);
+      const force = attraction * (dist - 150);
       a.vx += (dx / dist) * force;
       a.vy += (dy / dist) * force;
       b.vx -= (dx / dist) * force;
       b.vy -= (dy / dist) * force;
     }
     for (const node of nodes) {
-      node.x = Math.max(30, Math.min(width - 30, node.x + node.vx));
-      node.y = Math.max(30, Math.min(height - 30, node.y + node.vy));
+      node.x = Math.max(marginX, Math.min(width - marginX, node.x + node.vx));
+      node.y = Math.max(marginY, Math.min(height - marginY, node.y + node.vy));
       node.vx *= 0.85;
       node.vy *= 0.85;
     }
+  }
+  // 标签避让：重叠的标签交替放到节点上方，避免文字压在一起。
+  const placed = [];
+  for (const node of [...nodes].sort((a, b) => a.y - b.y || a.x - b.x)) {
+    node.labelAbove = placed.some(
+      (other) =>
+        !other.labelAbove &&
+        Math.abs(other.x - node.x) < 84 &&
+        Math.abs(other.y - node.y) < 46,
+    );
+    placed.push(node);
   }
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
@@ -2658,13 +2679,17 @@ function renderWikiGraph(entries) {
     group.setAttribute("class", "wiki-graph-node");
     group.setAttribute("transform", `translate(${node.x},${node.y})`);
     const circle = document.createElementNS(svgNS, "circle");
-    circle.setAttribute("r", "18");
+    circle.setAttribute("r", "11");
+    const color =
+      GRAPH_CHAPTER_COLORS[
+        (Number(node.chapter) - 1) % GRAPH_CHAPTER_COLORS.length
+      ] ?? GRAPH_CHAPTER_COLORS[0];
+    circle.setAttribute("fill", color);
     const label = document.createElementNS(svgNS, "text");
     label.setAttribute("text-anchor", "middle");
-    label.setAttribute("dy", "34");
-    label.textContent = node.title.length > 10
-      ? `${node.title.slice(0, 10)}…`
-      : node.title;
+    label.setAttribute("dy", node.labelAbove ? "-18" : "26");
+    label.textContent =
+      node.title.length > 12 ? `${node.title.slice(0, 12)}…` : node.title;
     group.append(circle, label);
     group.addEventListener("click", () => jumpToWikiEntry(node.id));
     svg.append(group);
