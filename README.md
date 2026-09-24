@@ -348,7 +348,7 @@ node --check public/app.js
 ├── test/
 │   ├── practice.test.mjs      # 服务层和生成器测试
 │   └── import-bank.test.mjs   # 真题库映射与套卷导入测试
-├── vendor/ruankao-agent/      # 题目 Agent 提示词来源
+├── vendor/architect-agent/      # 题目 Agent 提示词来源
 ├── .env.example               # 环境变量模板
 └── package.json               # npm 命令及 Node.js 版本要求
 ```

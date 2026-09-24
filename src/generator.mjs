@@ -250,7 +250,7 @@ export class QuestionGenerator {
     try {
       const material = await this.extractMaterial(selected, section);
       const agentPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/mcq-agent.md"),
+        resolve(this.root, "vendor/architect-agent/agents/mcq-agent.md"),
         "utf8",
       );
       const schema = JSON.stringify({
@@ -429,7 +429,7 @@ export class QuestionGenerator {
     try {
       const material = await this.extractMaterial(selected, section);
       const agentPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/case-agent.md"),
+        resolve(this.root, "vendor/architect-agent/agents/case-agent.md"),
         "utf8",
       );
       const schema = JSON.stringify({
@@ -598,7 +598,7 @@ export class QuestionGenerator {
     try {
       const material = await this.extractMaterial(selected, section);
       const agentPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/paper-agent-local.md"),
+        resolve(this.root, "vendor/architect-agent/agents/paper-agent-local.md"),
         "utf8",
       );
       const schema = JSON.stringify({
@@ -701,7 +701,7 @@ export class QuestionGenerator {
     this.running = true;
     try {
       const graderPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/paper-grader.md"),
+        resolve(this.root, "vendor/architect-agent/agents/paper-grader.md"),
         "utf8",
       );
       const schema = JSON.stringify({
@@ -792,7 +792,7 @@ export class QuestionGenerator {
   // 拼装案例评分提示词：案例背景 + 小问 + 参考答案 + 考生作答 + 每问满分。
   async _gradeCasePrompt({ title, scenario, questions, answers }) {
     const graderPrompt = await readFile(
-      resolve(this.root, "vendor/ruankao-agent/agents/case-grader.md"),
+      resolve(this.root, "vendor/architect-agent/agents/case-grader.md"),
       "utf8",
     );
     const schema = JSON.stringify({
@@ -993,7 +993,7 @@ export class QuestionGenerator {
     this.running = true;
     try {
       const qaPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/wiki-qa.md"),
+        resolve(this.root, "vendor/architect-agent/agents/wiki-qa.md"),
         "utf8",
       );
       const timeoutMs =
@@ -1153,7 +1153,7 @@ export class QuestionGenerator {
     try {
       const material = await this.extractMaterial(selected, section);
       const agentPrompt = await readFile(
-        resolve(this.root, "vendor/ruankao-agent/agents/wiki-agent.md"),
+        resolve(this.root, "vendor/architect-agent/agents/wiki-agent.md"),
         "utf8",
       );
       const schema = JSON.stringify({
