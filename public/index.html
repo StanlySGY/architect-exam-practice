@@ -18,10 +18,15 @@
       >
       <nav aria-label="主导航">
         <button class="nav-button active" data-view="home">章节练习</button>
+        <button class="nav-button" data-view="mock">模拟考试</button>
         <button class="nav-button" data-view="wrong">
           错题本 <span id="due-badge" class="badge">0</span>
         </button>
         <button class="nav-button" data-view="history">练习记录</button>
+        <button class="nav-button" data-view="case">案例分析</button>
+        <button class="nav-button" data-view="paper">论文写作</button>
+        <button class="nav-button" data-view="wiki">知识库</button>
+        <button class="nav-button" data-view="materials">资料</button>
         <button class="nav-button" data-view="bank">题库管理</button>
         <button class="nav-button" data-view="stats">学习统计</button>
         <button class="nav-button" data-view="data">数据管理</button>
@@ -31,10 +36,33 @@
     <main>
       <section id="home-view" class="view active">
         <div class="hero">
-          <p class="eyebrow">RUANKAO AGENT POWERED</p>
           <h1>今天，攻克哪一章？</h1>
           <p>按章节与难度精准练习。提交后立即判卷，错题自动进入间隔回顾。</p>
         </div>
+        <section id="study-plan" class="panel study-plan" hidden>
+          <div class="study-plan-main">
+            <p class="eyebrow">今日学习计划</p>
+            <div class="study-plan-progress">
+              <strong id="plan-today">0</strong><span>/ <span id="plan-goal">0</span> 题</span>
+            </div>
+            <div id="plan-bar" class="stat-track"><span></span></div>
+            <p id="plan-meta" class="muted"></p>
+          </div>
+          <div class="study-plan-side">
+            <div class="streak">
+              <strong id="plan-streak">0</strong><span>天连续达标</span>
+            </div>
+            <label class="goal-input"
+              >每日目标<select id="plan-goal-select">
+                <option value="0">不设目标</option>
+                <option value="10">10 题</option>
+                <option value="20">20 题</option>
+                <option value="30">30 题</option>
+                <option value="50">50 题</option>
+              </select></label
+            >
+          </div>
+        </section>
         <section id="resume-panel" class="panel resume-panel" hidden>
           <div>
             <p class="eyebrow">未完成练习</p>
@@ -54,7 +82,6 @@
           <form id="practice-form" class="panel setup-panel">
             <div class="panel-heading">
               <div>
-                <span class="step">01</span>
                 <h2>创建章节练习</h2>
               </div>
               <span id="availability" class="availability">载入题库…</span>
@@ -94,7 +121,6 @@
           <aside class="panel review-panel">
             <div class="panel-heading">
               <div>
-                <span class="step warm">02</span>
                 <h2>今日错题回顾</h2>
               </div>
             </div>
@@ -109,7 +135,6 @@
         </div>
         <section class="panel agent-panel">
           <div>
-            <p class="eyebrow">题库扩展</p>
             <h2>让 Agent 根据当前章节思维导图生成题目</h2>
             <p>
               调用上游 <code>mcq-agent</code>，只读取
@@ -119,9 +144,115 @@
           <button id="generate-button" class="ghost" type="button">
             为当前选择生成题目
           </button>
+          <label class="model-select"
+            >模型<select id="model-select">
+              <option value="">默认模型</option>
+            </select></label
+          >
           <span id="model-status" class="availability">模型配置检查中…</span>
+          <div id="generate-progress" class="generate-progress" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="generate-progress-text">正在生成题目…</span>
+          </div>
         </section>
         <section id="coverage" class="coverage"></section>
+      </section>
+
+      <section id="mock-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <h1>模拟考试</h1>
+            <p>跨章限时组卷，或按考期开真题套卷；45 分及格线（60%）自动判定。</p>
+          </div>
+        </div>
+        <section id="mock-exam-resume" class="panel resume-panel" hidden>
+          <div>
+            <p class="eyebrow">进行中的模拟卷</p>
+            <h2 id="mock-exam-resume-title">案例模拟卷</h2>
+            <p id="mock-exam-resume-meta"></p>
+          </div>
+          <div class="resume-actions">
+            <button id="mock-exam-abandon" class="ghost" type="button">
+              放弃
+            </button>
+            <button id="mock-exam-resume-button" class="primary" type="button">
+              继续作答
+            </button>
+          </div>
+        </section>
+        <div class="setup-grid mock-grid">
+          <form id="mock-exam-form" class="panel setup-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>综合知识模拟卷</h2>
+              </div>
+              <span id="mock-availability" class="availability">载入题库…</span>
+            </div>
+            <div class="two-columns">
+              <label
+                >题目数量<select id="mock-count">
+                  <option value="25">25 题（45 分钟规格）</option>
+                  <option value="50">50 题</option>
+                  <option value="75" selected>75 题（正式规格）</option>
+                </select></label
+              >
+              <label
+                >考试时长<select id="mock-duration">
+                  <option value="60">60 分钟</option>
+                  <option value="90">90 分钟</option>
+                  <option value="150" selected>150 分钟</option>
+                </select></label
+              >
+            </div>
+            <p class="muted" style="margin: 0 0 18px">
+              交卷前可随时修改答案，过程不显示对错；答错的题自动进入错题本。
+            </p>
+            <button class="primary wide" type="submit">
+              开始综合知识模拟 <span>→</span>
+            </button>
+          </form>
+          <form id="real-exam-form" class="panel setup-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>真题套卷</h2>
+              </div>
+              <span id="real-exam-availability" class="availability">未导入真题</span>
+            </div>
+            <label
+              >考期<select id="real-exam-term">
+                <option value="">请先导入真题库</option>
+              </select></label
+            >
+            <p class="muted" style="margin: 0 0 18px">
+              按题号顺序组卷，题量以该考期实际题目为准；交卷规则与综合知识模拟卷相同。
+            </p>
+            <button id="start-real-exam" class="primary wide" type="submit">
+              开始真题套卷 <span>→</span>
+            </button>
+          </form>
+          <aside class="panel review-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>案例模拟卷</h2>
+              </div>
+            </div>
+            <div class="review-count">
+              <strong>3</strong><span>道案例连做</span>
+            </div>
+            <p>
+              从案例库随机抽 3 道，限时 90 分钟；交卷后一次性 AI 判分，每题
+              25 分。
+            </p>
+            <button id="start-case-exam" class="secondary wide" type="button">
+              开始案例模拟
+            </button>
+          </aside>
+        </div>
+        <div id="case-exam-stage"></div>
+        <section class="panel stats-panel mock-history">
+          <div class="panel-heading"><h2>最近模拟结果</h2></div>
+          <div id="mock-history-list" class="history-list"></div>
+        </section>
       </section>
 
       <section id="practice-view" class="view">
@@ -133,6 +264,8 @@
           </div>
           <div class="progress-ring">
             <strong id="answer-progress">0/0</strong><span>已作答</span>
+            <strong id="exam-countdown" class="countdown" hidden>--:--</strong>
+            <span id="exam-countdown-label" hidden>剩余时间</span>
           </div>
         </div>
         <form id="questions-form">
@@ -178,11 +311,13 @@
       <section id="wrong-view" class="view page-view">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">MISTAKE NOTEBOOK</p>
             <h1>错题本</h1>
             <p>错误不是终点，是下一轮复习的起点。</p>
           </div>
-          <button id="review-all" class="primary">回顾未掌握错题</button>
+          <div class="page-actions">
+            <button id="export-wrong" class="ghost">导出错题</button>
+            <button id="review-all" class="primary">回顾未掌握错题</button>
+          </div>
         </div>
         <div id="wrong-summary" class="summary-grid"></div>
         <div id="wrong-list"></div>
@@ -191,7 +326,6 @@
       <section id="history-view" class="view page-view">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">PRACTICE LOG</p>
             <h1>练习记录</h1>
             <p>查看最近 100 次练习的正确率变化。</p>
           </div>
@@ -199,12 +333,207 @@
         <div id="history-list" class="history-list panel"></div>
       </section>
 
+      <section id="case-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <h1>案例分析</h1>
+            <p>练习导图生成题，或导入后的历年真题 / 模拟案例。</p>
+          </div>
+        </div>
+        <section class="panel setup-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>生成案例分析题</h2>
+            </div>
+          </div>
+          <div class="two-columns">
+            <label
+              >选择章节<select id="case-chapter"></select></label
+            >
+            <label
+              >案例数量<select id="case-count">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select></label
+            >
+          </div>
+          <label
+            >来源<select id="case-source">
+              <option value="all">全部来源</option>
+              <option value="generated">生成题</option>
+              <option value="real">历年真题</option>
+              <option value="mock">模拟题</option>
+            </select></label
+          >
+          <button id="case-generate" class="primary wide" type="button">
+            生成案例分析题
+          </button>
+          <div id="case-progress" class="generate-progress" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="case-progress-text">正在生成案例…</span>
+          </div>
+        </section>
+        <div id="case-list"></div>
+      </section>
+
+      <section id="materials-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <h1>学习资料</h1>
+            <p id="materials-note">只读浏览本机资料，不会改动原文。</p>
+          </div>
+        </div>
+        <div class="materials-layout">
+          <aside class="panel materials-nav">
+            <input
+              id="materials-search"
+              type="search"
+              placeholder="搜索资料标题"
+              aria-label="搜索资料标题"
+            />
+            <div id="materials-groups"></div>
+          </aside>
+          <article id="materials-content" class="panel materials-body"></article>
+        </div>
+      </section>
+
+      <section id="paper-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <h1>论文写作</h1>
+            <p>摘要独占一行开头，正文另起标题。摘要 300–400 字，正文 2000–3000 字，并用第一人称写清项目职责。评分前会先检查结构。</p>
+          </div>
+        </div>
+        <section class="panel setup-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>生成论文题目</h2>
+            </div>
+          </div>
+          <div class="two-columns">
+            <label
+              >选择章节<select id="paper-chapter"></select></label
+            >
+            <label
+              >题目数量<select id="paper-count">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+              </select></label
+            >
+          </div>
+          <label
+            >来源<select id="paper-source">
+              <option value="all">全部来源</option>
+              <option value="generated">生成题</option>
+              <option value="real">历年真题</option>
+              <option value="mock">模拟题</option>
+            </select></label
+          >
+          <button id="paper-generate" class="primary wide" type="button">
+            生成论文题目
+          </button>
+          <div id="paper-progress" class="generate-progress" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="paper-progress-text">正在生成论文题目…</span>
+          </div>
+        </section>
+        <div id="paper-list"></div>
+      </section>
+
+      <section id="wiki-view" class="view page-view">
+        <div class="page-heading">
+          <div>
+            <h1>知识库</h1>
+            <p>基于思维导图生成可追溯、可校对的知识点条目。</p>
+          </div>
+        </div>
+        <section class="panel setup-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>生成知识点条目</h2>
+            </div>
+          </div>
+          <div class="two-columns">
+            <label
+              >选择章节<select id="wiki-chapter"></select></label
+            >
+            <label
+              >条目数量<select id="wiki-count">
+                <option>5</option>
+                <option>10</option>
+                <option>15</option>
+                <option>20</option>
+              </select></label
+            >
+          </div>
+          <button id="wiki-generate" class="primary wide" type="button">
+            生成知识点条目
+          </button>
+          <div id="wiki-progress" class="generate-progress" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            <span id="wiki-progress-text">正在生成知识点…</span>
+          </div>
+        </section>
+        <section class="panel setup-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>问知识库</h2>
+            </div>
+            <span class="availability">AI 只基于知识库条目作答，答案附引用</span>
+          </div>
+          <div class="wiki-ask-bar">
+            <input
+              id="wiki-question"
+              type="search"
+              placeholder="例如：缓存穿透和缓存击穿有什么区别？"
+            />
+            <button id="wiki-ask" class="primary" type="button">提问</button>
+          </div>
+          <div id="wiki-ask-result" class="wiki-ask-result" hidden></div>
+        </section>
+        <div id="wiki-filters" class="wiki-filters">
+          <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" />
+          <select id="wiki-status-filter">
+            <option value="all">全部状态</option>
+            <option value="draft">待校对</option>
+            <option value="reviewed">已校对</option>
+            <option value="flagged">有疑问</option>
+          </select>
+          <button id="wiki-graph-toggle" class="secondary" type="button">
+            知识图谱
+          </button>
+          <button id="wiki-lint" class="secondary" type="button">
+            知识库自检
+          </button>
+        </div>
+        <section id="wiki-lint-result" class="panel wiki-lint" hidden>
+          <div class="panel-heading">
+            <div>
+              <h2>自检结果</h2>
+            </div>
+            <span id="wiki-lint-summary" class="availability"></span>
+          </div>
+          <div id="wiki-lint-issues"></div>
+        </section>
+        <section id="wiki-graph" class="panel wiki-graph" hidden>
+          <div class="panel-heading">
+            <div>
+              <h2>知识图谱</h2>
+            </div>
+            <span class="availability">点击节点跳转到对应条目</span>
+          </div>
+          <div id="wiki-graph-canvas"></div>
+        </section>
+        <div id="wiki-list"></div>
+      </section>
+
       <section id="bank-view" class="view page-view">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">QUESTION BANK</p>
             <h1>题库管理</h1>
-            <p>搜索、筛选和维护 Agent 已生成的题目。</p>
+            <p>搜索、筛选和维护生成题、历年真题与模拟题。</p>
           </div>
         </div>
         <form id="bank-filters" class="panel bank-filters">
@@ -239,6 +568,20 @@
               <option value="disabled">问题题</option>
             </select></label
           >
+          <label
+            >收藏<select id="bank-starred">
+              <option value="all">全部</option>
+              <option value="starred">已收藏</option>
+            </select></label
+          >
+          <label
+            >来源<select id="bank-source">
+              <option value="all">全部来源</option>
+              <option value="generated">生成题</option>
+              <option value="real">历年真题</option>
+              <option value="mock">模拟题</option>
+            </select></label
+          >
           <button class="primary" type="submit">筛选</button>
         </form>
         <div class="bank-toolbar">
@@ -258,7 +601,6 @@
       <section id="stats-view" class="view page-view">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">LEARNING INSIGHTS</p>
             <h1>学习统计</h1>
             <p>根据已提交练习和错题记录，定位薄弱章节与知识点。</p>
           </div>
@@ -278,6 +620,10 @@
             <div id="weak-points"></div>
           </section>
           <section class="panel stats-panel">
+            <div class="panel-heading"><h2>知识点掌握度</h2></div>
+            <div id="knowledge-mastery"></div>
+          </section>
+          <section class="panel stats-panel">
             <div class="panel-heading"><h2>错题掌握情况</h2></div>
             <div id="review-stats"></div>
           </section>
@@ -287,13 +633,69 @@
       <section id="data-view" class="view page-view">
         <div class="page-heading">
           <div>
-            <p class="eyebrow">LOCAL DATA</p>
             <h1>数据管理</h1>
-            <p>管理本机 SQLite 中的题库、练习记录和错题数据。</p>
+            <p>管理本机 SQLite 中的题库、真题导入、练习记录和错题数据。</p>
           </div>
         </div>
         <div id="data-summary" class="summary-grid"></div>
+        <section class="panel data-panel model-config-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>模型配置</h2>
+            </div>
+            <span class="availability">保存后立即生效，无需重启</span>
+          </div>
+          <div class="model-config-form">
+            <label
+              >Base URL<input
+                id="mc-base-url"
+                type="text"
+                placeholder="https://api.deepseek.com/v1"
+            /></label>
+            <label
+              >API Key<input
+                id="mc-api-key"
+                type="password"
+                placeholder="留空表示无需鉴权（如 Ollama）"
+            /></label>
+            <label
+              >默认模型<input
+                id="mc-model"
+                type="text"
+                placeholder="deepseek-chat"
+            /></label>
+            <label
+              >可用模型（逗号分隔，可选）<input
+                id="mc-models"
+                type="text"
+                placeholder="model-a,model-b"
+            /></label>
+            <div class="model-config-actions">
+              <button id="mc-fetch" class="secondary" type="button">
+                获取模型列表
+              </button>
+              <button id="mc-save" class="primary" type="button">
+                保存配置
+              </button>
+            </div>
+            <div id="mc-fetch-result" class="mc-fetch-result" hidden></div>
+          </div>
+        </section>
         <section class="panel data-panel">
+          <div class="data-row">
+            <div>
+              <h2>导入真题库</h2>
+              <p>
+                从相邻仓库 <code>ruankao-architect-practice/data/bank.json</code>
+                只读导入历年真题和模拟卷。导入按题号幂等更新，不会覆盖生成题或练习进度。题库版权仍归原权利人，仅供本机练习。
+              </p>
+            </div>
+            <div class="data-actions">
+              <button id="import-bank" class="primary" type="button">
+                导入真题库
+              </button>
+            </div>
+          </div>
           <div class="data-row">
             <div>
               <h2>备份与恢复</h2>
@@ -302,6 +704,9 @@
             <div class="data-actions">
               <button id="export-data" class="primary" type="button">
                 导出备份
+              </button>
+              <button id="export-diagnosis" class="ghost" type="button">
+                导出学习诊断
               </button>
               <button id="import-data" class="ghost" type="button">
                 导入备份
@@ -317,7 +722,9 @@
           <div class="data-row danger-zone">
             <div>
               <h2>清理数据</h2>
-              <p>清空操作立即写入 SQLite，执行前会要求确认。</p>
+              <p>
+                清空操作立即写入 SQLite，执行前会要求确认。清空题库或全部数据会保留已导入的真题和模拟卷。
+              </p>
             </div>
             <div class="data-actions clear-actions">
               <button
