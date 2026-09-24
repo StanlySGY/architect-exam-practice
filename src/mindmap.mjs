@@ -55,10 +55,12 @@ export function parseFreeplane(xml) {
     }
     if (
       /^<richcontent\b/i.test(token) &&
-      attribute(token, "TYPE") === "DETAILS" &&
+      ["DETAILS", "NOTE"].includes(attribute(token, "TYPE")) &&
       stack.length > 1
     ) {
-      stack.at(-1).details = richText(token);
+      const text = richText(token);
+      const current = stack.at(-1);
+      current.details = current.details ? `${current.details}\n${text}` : text;
     }
   }
   return documentRoot.children[0] ?? documentRoot;
@@ -117,6 +119,32 @@ export function chapterIds(root) {
     if (match) ids.add(match);
   });
   return ids;
+}
+
+// 返回从根到目标节点的标题路径，例如 ["第1章 绪论", "1.1 系统架构的概念", "架构风格"]。
+// 找不到时返回 null。用于给题目标注来源节点，便于回溯核对导图内容。
+export function nodePath(root, targetText) {
+  const normalized = normalizeNodeText(targetText);
+  if (!normalized) return null;
+  let found = null;
+  const walk = (node, path) => {
+    if (found) return;
+    const next = [...path, node.text];
+    if (normalizeNodeText(node.text) === normalized) {
+      found = next;
+      return;
+    }
+    for (const child of node.children) walk(child, next);
+  };
+  walk(root, []);
+  return found;
+}
+
+function normalizeNodeText(value = "") {
+  return String(value)
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[\s\p{P}\p{S}]+/gu, "");
 }
 
 function outline(node, depth, lines) {

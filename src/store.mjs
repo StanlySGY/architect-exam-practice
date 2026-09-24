@@ -10,6 +10,11 @@ const EMPTY_STATE = {
   attempts: [],
   wrongBook: {},
   questionIssues: {},
+  settings: {},
+  caseQuestions: [],
+  paperQuestions: [],
+  wikiEntries: [],
+  caseExams: [],
 };
 
 const STATE_KEYS = Object.keys(EMPTY_STATE);
@@ -34,6 +39,20 @@ function normalizeState(value) {
       saved.questionIssues && typeof saved.questionIssues === "object"
         ? saved.questionIssues
         : {},
+    settings:
+      saved.settings && typeof saved.settings === "object"
+        ? saved.settings
+        : {},
+    caseQuestions: Array.isArray(saved.caseQuestions)
+      ? saved.caseQuestions
+      : [],
+    paperQuestions: Array.isArray(saved.paperQuestions)
+      ? saved.paperQuestions
+      : [],
+    wikiEntries: Array.isArray(saved.wikiEntries)
+      ? saved.wikiEntries
+      : [],
+    caseExams: Array.isArray(saved.caseExams) ? saved.caseExams : [],
   };
 }
 

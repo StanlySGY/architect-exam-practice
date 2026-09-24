@@ -4,10 +4,35 @@ import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
 import { QuestionGenerator } from "../src/generator.mjs";
+import { parseFreeplane } from "../src/mindmap.mjs";
 import { PracticeService } from "../src/questions.mjs";
 import { JsonStore, SQLiteStore } from "../src/store.mjs";
 
 const root = resolve(import.meta.dirname, "..");
+
+function emptySummary(overrides = {}) {
+  return {
+    questions: 0,
+    generatedQuestions: 0,
+    realQuestions: 0,
+    mockQuestions: 0,
+    wrongQuestions: 0,
+    attempts: 0,
+    activeSessions: 0,
+    questionIssues: 0,
+    cases: 0,
+    generatedCases: 0,
+    realCases: 0,
+    mockCases: 0,
+    papers: 0,
+    generatedPapers: 0,
+    realPapers: 0,
+    mockPapers: 0,
+    wikiEntries: 0,
+    caseExams: 0,
+    ...overrides,
+  };
+}
 
 async function fixture(t, now = () => "2026-04-01T08:00:00.000Z") {
   const directory = await mkdtemp(join(tmpdir(), "ruankao-test-"));
@@ -230,13 +255,7 @@ test("完整备份可在清空后恢复", async (t) => {
   assert.equal(service.dataSummary().questions, 1);
   assert.equal(service.dataSummary().attempts, 1);
   await service.clearData({ scope: "all", confirm: "CLEAR" });
-  assert.deepEqual(service.dataSummary(), {
-    questions: 0,
-    wrongQuestions: 0,
-    attempts: 0,
-    activeSessions: 0,
-    questionIssues: 0,
-  });
+  assert.deepEqual(service.dataSummary(), emptySummary());
   await service.importData({ backup, confirm: "IMPORT" });
   assert.equal(service.dataSummary().questions, 1);
   assert.equal(service.dataSummary().wrongQuestions, 1);
@@ -856,3 +875,723 @@ test("重复提交同一练习会被拒绝", async (t) => {
     /已经提交过/,
   );
 });
+
+// ---- AI 评分 × 知识库集成 ----
+
+function modelResponse(payload) {
+  return {
+    ok: true,
+    json: async () => ({
+      choices: [{ message: { content: JSON.stringify(payload) } }],
+    }),
+  };
+}
+
+test("案例 AI 评分按命中知识点关联 Wiki 条目", async (t) => {
+  // generatorWithFetch 自建全新 fixture，播种必须走 generator.service。
+  // fetch 回调在评分时才执行，闭包引用稍后定义的 payload 是安全的。
+  const generator = await generatorWithFetch(t, async () =>
+    modelResponse(payload),
+  );
+  const service = generator.service;
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "微服务架构",
+        summary: "将单体应用拆分为一组可独立部署的小服务。",
+        key_points: ["服务自治"],
+        common_mistakes: ["误认为微服务一定优于单体"],
+        related: [],
+        source_node: "微服务",
+      },
+      {
+        title: "服务注册中心",
+        summary: "记录服务实例地址供消费者发现服务。",
+        key_points: [],
+        common_mistakes: [],
+        related: ["微服务架构"],
+        source_node: "服务治理",
+      },
+    ],
+  });
+  const micro = service
+    .wikiList()
+    .find((entry) => entry.title === "微服务架构");
+  const registry = service
+    .wikiList()
+    .find((entry) => entry.title === "服务注册中心");
+  const payload = {
+    results: [
+      {
+        id: "1",
+        score: 8,
+        max: 10,
+        comment: "命中主要得分点",
+        knowledge_points: ["微服务架构", "资料里没有的知识点"],
+      },
+      {
+        id: "2",
+        score: 5,
+        max: 15,
+        comment: "遗漏服务发现论述",
+        knowledge_points: ["服务注册中心"],
+      },
+    ],
+    total_score: 13,
+    max_score: 25,
+    overall_comment: "整体结构合理",
+  };
+  await service.addCases({
+    chapter: 1,
+    cases: [
+      {
+        title: "支付系统改造",
+        scenario: "某公司计划将单体支付系统改造为微服务架构。",
+        knowledge_point: "微服务",
+        questions: [
+          {
+            text: "请说明微服务拆分的原则。",
+            points: 10,
+            reference_answer: "高内聚低耦合，按业务能力拆分。",
+          },
+          {
+            text: "请说明服务注册中心的作用。",
+            points: 15,
+            reference_answer: "服务发现与容错。",
+          },
+        ],
+      },
+    ],
+  });
+  const caseItem = service.caseList()[0];
+  const grade = await generator.gradeCaseWithAI({
+    caseItem,
+    answers: { 1: "按业务能力拆分", 2: "服务发现与容错" },
+  });
+  assert.equal(grade.caseId, caseItem.id);
+  assert.equal(grade.total_score, 13);
+  assert.equal(grade.max_score, 25);
+  // 精确命中的知识点去重后按库内顺序返回，未命中的标题被忽略。
+  assert.deepEqual(grade.wikiEntries, [
+    { id: micro.id, title: "微服务架构" },
+    { id: registry.id, title: "服务注册中心" },
+  ]);
+  assert.deepEqual(grade.results[0].knowledgePoints, [
+    "微服务架构",
+    "资料里没有的知识点",
+  ]);
+  // 单案例评分与模拟卷对齐：持久化到案例记录，刷新后可回看。
+  const stored = service.caseList().find((item) => item.id === caseItem.id);
+  assert.equal(stored.grade.total_score, 13);
+  assert.deepEqual(stored.grade.wikiEntries, grade.wikiEntries);
+  assert.ok(stored.gradedAt);
+});
+
+test("案例模拟卷交卷 AI 判分逐卷挂接 Wiki 条目并持久化", async (t) => {
+  // generatorWithFetch 自建全新 fixture，播种必须走 generator.service。
+  let call = 0;
+  const generator = await generatorWithFetch(t, async () =>
+    modelResponse(payloads[call++]),
+  );
+  const service = generator.service;
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "微服务架构",
+        summary: "架构风格。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "微服务",
+      },
+    ],
+  });
+  const micro = service
+    .wikiList()
+    .find((entry) => entry.title === "微服务架构");
+  await service.addCases({
+    chapter: 1,
+    cases: [
+      {
+        title: "支付系统改造",
+        scenario: "单体改微服务。",
+        knowledge_point: "微服务",
+        questions: [
+          { text: "拆分原则", points: 10, reference_answer: "高内聚低耦合" },
+        ],
+      },
+      {
+        title: "日志系统设计",
+        scenario: "设计统一日志。",
+        knowledge_point: "可观测性",
+        questions: [
+          { text: "日志分级", points: 5, reference_answer: "分级存储" },
+        ],
+      },
+    ],
+  });
+  await service.createCaseExam({ count: 2 });
+  const active = service.activeCaseExam();
+  assert.ok(active);
+  for (const caseItem of active.cases) {
+    await service.saveCaseExamDraft({
+      examId: active.id,
+      caseId: caseItem.id,
+      questionId: caseItem.questions[0].id,
+      text: "考生作答",
+    });
+  }
+  const storedCases = active.cases.map((pub) =>
+    service.caseList().find((item) => item.id === pub.id),
+  );
+  const microCase = storedCases.find((item) => item.title === "支付系统改造");
+  const payloads = storedCases.map((caseItem) => ({
+    results: [
+      {
+        id: "1",
+        score: caseItem.id === microCase.id ? 8 : 3,
+        max: caseItem.questions[0].points,
+        comment: "说明",
+        knowledge_points: [caseItem.id === microCase.id ? "微服务架构" : "消息队列"],
+      },
+    ],
+    total_score: caseItem.id === microCase.id ? 8 : 3,
+    max_score: caseItem.questions[0].points,
+    overall_comment: "评语",
+  }));
+  const grade = await generator.gradeCaseExam({
+    exam: { id: active.id, drafts: active.drafts },
+    cases: storedCases,
+  });
+  assert.equal(grade.total_score, 11);
+  assert.equal(grade.max_score, 15);
+  assert.deepEqual(grade.cases.find((c) => c.caseId === microCase.id).wikiEntries, [
+    { id: micro.id, title: "微服务架构" },
+  ]);
+  assert.deepEqual(
+    grade.cases.find((c) => c.caseId !== microCase.id).wikiEntries,
+    [],
+  );
+  assert.equal(service.activeCaseExam(), null);
+  const listed = service.caseExamList()[0];
+  assert.equal(listed.totalScore, 11);
+  assert.equal(listed.maxScore, 15);
+});
+
+test("Wiki 自检能发现同名、断链、孤立与缺溯源条目", async (t) => {
+  const { service } = await fixture(t);
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "负载均衡",
+        summary: "把流量分摊到多个节点。",
+        key_points: [],
+        common_mistakes: [],
+        related: ["不存在的知识点"],
+        source_node: "负载均衡",
+      },
+      {
+        title: "负载均衡",
+        summary: "重复条目。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "负载均衡",
+      },
+      {
+        title: "缓存",
+        summary: "加速读取。",
+        key_points: [],
+        common_mistakes: [],
+        related: ["消息队列"],
+        source_node: "缓存",
+      },
+      {
+        title: "消息队列",
+        summary: "异步解耦。",
+        key_points: [],
+        common_mistakes: [],
+        related: ["缓存"],
+        source_node: "消息队列",
+      },
+      {
+        title: "孤儿知识点",
+        summary: "孤立条目。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "",
+      },
+    ],
+  });
+  const lint = service.wikiLint();
+  assert.equal(lint.total, 5);
+  assert.equal(lint.problems, 3);
+  const issuesByTitle = lint.issues.reduce((map, item) => {
+    if (!map.has(item.title)) map.set(item.title, []);
+    map.get(item.title).push(item.issues);
+    return map;
+  }, new Map());
+  // 同名两条都报 duplicate_title：一条断链后成了孤立条目，另一条本来就孤立。
+  assert.deepEqual(issuesByTitle.get("负载均衡"), [
+    ["duplicate_title", "broken_related", "orphan"],
+    ["duplicate_title", "orphan"],
+  ]);
+  assert.deepEqual(issuesByTitle.get("孤儿知识点"), [["missing_source", "orphan"]]);
+  assert.ok(!issuesByTitle.has("缓存"));
+  assert.ok(!issuesByTitle.has("消息队列"));
+});
+
+test("模型未标注知识点时案例评分仍向后兼容", async (t) => {
+  // generatorWithFetch 自建全新 fixture，播种必须走 generator.service。
+  const generator = await generatorWithFetch(t, async () =>
+    modelResponse(payload),
+  );
+  const service = generator.service;
+  await service.addCases({
+    chapter: 1,
+    cases: [
+      {
+        title: "缓存设计",
+        scenario: "某电商系统缓存频繁失效。",
+        knowledge_point: "缓存",
+        questions: [
+          { text: "请说明缓存穿透的应对。", points: 10, reference_answer: "布隆过滤器" },
+        ],
+      },
+    ],
+  });
+  // 旧版模型输出没有 knowledge_points 字段，评分流程不应报错。
+  const payload = {
+    results: [{ id: "1", score: 6, max: 10, comment: "基本正确" }],
+    total_score: 6,
+    max_score: 10,
+    overall_comment: "可以",
+  };
+  const grade = await generator.gradeCaseWithAI({
+    caseItem: service.caseList()[0],
+    answers: { 1: "布隆过滤器" },
+  });
+  assert.deepEqual(grade.wikiEntries, []);
+  assert.deepEqual(grade.results[0].knowledgePoints, []);
+  // 兼容路径同样持久化。
+  assert.equal(service.caseList()[0].grade.total_score, 6);
+});
+
+test("知识点匹配精确优先、短词不模糊、相似度兜底", async (t) => {
+  const { service } = await fixture(t);
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "缓存穿透",
+        summary: "查询不存在的数据穿过缓存直达数据库。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "缓存",
+      },
+      {
+        title: "布隆过滤器",
+        summary: "判断元素是否存在的概率型数据结构。",
+        key_points: [],
+        common_mistakes: [],
+        related: ["缓存穿透"],
+        source_node: "缓存",
+      },
+      {
+        title: "负载均衡算法",
+        summary: "轮询、加权、最少连接等分发策略。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "负载均衡",
+      },
+    ],
+  });
+  const list = service.wikiList();
+  const bloom = list.find((entry) => entry.title === "布隆过滤器");
+  const cachePenetration = list.find((entry) => entry.title === "缓存穿透");
+  const balance = list.find((entry) => entry.title === "负载均衡算法");
+  // 精确命中优先。
+  assert.deepEqual(service.matchWikiEntries(["布隆过滤器"]), [
+    { id: bloom.id, title: "布隆过滤器" },
+  ]);
+  // 少于 4 字的知识点不做模糊匹配：避免「缓存」被吸到「缓存穿透」。
+  assert.deepEqual(service.matchWikiEntries(["缓存"]), []);
+  // 互相包含（双方 ≥4 字）可命中。
+  assert.deepEqual(service.matchWikiEntries(["缓存穿透机制"]), [
+    { id: cachePenetration.id, title: "缓存穿透" },
+  ]);
+  // bigram 相似度兜底：「负载均衡策略」与「负载均衡算法」。
+  assert.deepEqual(service.matchWikiEntries(["负载均衡策略"]), [
+    { id: balance.id, title: "负载均衡算法" },
+  ]);
+});
+
+test("generateWiki 提示词注入已有条目标题并解析双链", async (t) => {
+  let captured = null;
+  const generator = await generatorWithFetch(t, async (url, options) => {
+    captured = JSON.parse(options.body);
+    return modelResponse({
+      entries: [
+        {
+          title: "限流算法",
+          summary: "令牌桶与漏桶。",
+          key_points: ["令牌桶"],
+          common_mistakes: [],
+          related: ["微服务架构"],
+          source_node: "限流",
+        },
+      ],
+    });
+  });
+  const service = generator.service;
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "微服务架构",
+        summary: "架构风格。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "微服务",
+      },
+    ],
+  });
+  const micro = service.wikiList().find((entry) => entry.title === "微服务架构");
+  const result = await generator.generateWiki({ chapter: 1, count: 1 });
+  assert.equal(result.added, 1);
+  // 已有条目标题注入用户消息，模型才能用标题原文建双链。
+  const userMessage =
+    captured.messages?.find((message) => message.role === "user")?.content ??
+    "";
+  assert.ok(userMessage.includes("已有知识点条目标题"));
+  assert.ok(userMessage.includes("微服务架构"));
+  // 新条目的 related 能解析为可点击的双链。
+  const entry = service.wikiList().find((item) => item.title === "限流算法");
+  assert.deepEqual(entry.links, [micro.id]);
+});
+
+test("同名条目可合并、断链引用可一键修复", async (t) => {
+  const { service } = await fixture(t);
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "负载均衡",
+        summary: "把流量分摊到多个节点。",
+        key_points: ["轮询"],
+        common_mistakes: [],
+        related: ["不存在的引用"],
+        source_node: "负载均衡",
+      },
+      {
+        title: "负载均衡",
+        summary: "重复条目。",
+        key_points: ["加权轮询"],
+        common_mistakes: ["误配置健康检查"],
+        related: [],
+        source_node: "",
+      },
+      {
+        title: "缓存",
+        summary: "加速读取。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "缓存",
+      },
+    ],
+  });
+  const list = service.wikiList();
+  const first = list.find(
+    (entry) => entry.title === "负载均衡" && entry.summary.includes("分摊"),
+  );
+  const dup = list.find(
+    (entry) => entry.title === "负载均衡" && entry.summary === "重复条目。",
+  );
+  const cache = list.find((entry) => entry.title === "缓存");
+  // 合并：内容并入最早条目，重复条目删除，缺溯源由来源补齐。
+  await service.mergeWikiEntry({ entryId: dup.id, intoId: first.id });
+  const after = service.wikiList();
+  assert.equal(after.filter((entry) => entry.title === "负载均衡").length, 1);
+  const target = after.find((entry) => entry.id === first.id);
+  assert.deepEqual(target.keyPoints, ["轮询", "加权轮询"]);
+  assert.deepEqual(target.commonMistakes, ["误配置健康检查"]);
+  assert.equal(target.sourceNode, "负载均衡");
+  // 合并后同名告警消除。
+  const lint = service.wikiLint();
+  const firstIssue = lint.issues.find((item) => item.id === first.id);
+  assert.ok(!firstIssue.issues.includes("duplicate_title"));
+  // 断链一键修复：把解析不到的引用替换为现有条目标题。
+  await service.fixWikiRelated({
+    entryId: first.id,
+    name: "不存在的引用",
+    candidate: "缓存",
+  });
+  const fixed = service.wikiList().find((entry) => entry.id === first.id);
+  assert.deepEqual(fixed.related, ["缓存"]);
+  assert.deepEqual(fixed.links, [cache.id]);
+});
+
+test("知识库问答基于条目作答并返回引用", async (t) => {
+  let call = 0;
+  const calls = [];
+  const generator = await generatorWithFetch(t, async (url, options) => {
+    calls.push(JSON.parse(options.body));
+    return modelResponse(
+      call++ === 0
+        ? { titles: ["微服务架构"] }
+        : {
+            answer: "微服务架构将单体拆分为一组小服务（引用：微服务架构）。",
+            used_titles: ["微服务架构"],
+          },
+    );
+  });
+  const service = generator.service;
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "微服务架构",
+        summary: "将单体应用拆分为一组可独立部署的小服务。",
+        key_points: ["服务自治"],
+        common_mistakes: [],
+        related: [],
+        source_node: "微服务",
+      },
+    ],
+  });
+  const result = await generator.answerFromWiki({
+    question: "什么是微服务架构？",
+  });
+  // 第一阶段：把问题与标题清单都送进模型选题。
+  assert.ok(calls[0].messages[1].content.includes("什么是微服务架构"));
+  assert.ok(calls[0].messages[1].content.includes("微服务架构"));
+  // 第二阶段：把选中条目的全文作为上下文。
+  assert.ok(calls[1].messages[1].content.includes("将单体应用拆分"));
+  assert.ok(result.answer.includes("微服务架构"));
+  assert.deepEqual(result.references, [
+    { id: service.wikiList()[0].id, title: "微服务架构" },
+  ]);
+});
+
+test("知识库无相关条目时问答明确提示", async (t) => {
+  const generator = await generatorWithFetch(t, async () =>
+    modelResponse({ titles: ["不存在的条目"] }),
+  );
+  const service = generator.service;
+  // 空知识库直接拒绝提问。
+  await assert.rejects(
+    () => generator.answerFromWiki({ question: "什么是 Kubernetes？" }),
+    /知识库还是空的/,
+  );
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [
+      {
+        title: "微服务架构",
+        summary: "架构风格。",
+        key_points: [],
+        common_mistakes: [],
+        related: [],
+        source_node: "微服务",
+      },
+    ],
+  });
+  const result = await generator.answerFromWiki({
+    question: "什么是 Kubernetes？",
+  });
+  assert.equal(result.references.length, 0);
+  assert.ok(result.answer.includes("暂无"));
+});
+
+function sampleBank() {
+  const choice = (id, term, sourceType, questionNo, stem) => ({
+    id,
+    sourceType,
+    module: "architecture",
+    knowledge: "分层架构",
+    stem,
+    options: { A: "控制依赖", B: "取消边界", C: "共享状态", D: "绕过接口" },
+    answer: "A",
+    analysis: "控制依赖方向。",
+    term,
+    paper: "综合知识",
+    questionNo,
+  });
+  return {
+    choices: [
+      choice("real-2025-2", "2025年下半年", "real", 2, "真题第二题？"),
+      choice("real-2025-1", "2025年下半年", "real", 1, "真题第一题？"),
+      choice("mock-2026-1", "2026年5月 模拟卷1", "mock", 1, "模拟卷第一题？"),
+    ],
+    cases: [
+      {
+        id: "case-2025-1",
+        sourceType: "real",
+        module: "software_engineering",
+        title: "某电商系统改造",
+        description: "",
+        subQuestions: [
+          {
+            question_label: "问题1",
+            prompt: "指出问题",
+            reference_answer: "参考答案",
+          },
+        ],
+        term: "2025年下半年",
+      },
+    ],
+    essays: [
+      {
+        id: "essay-2025-1",
+        sourceType: "real",
+        module: "architecture",
+        title: "论微服务架构",
+        prompt: "结合实践论述。",
+        writingPoints: "1. 拆分原则",
+        term: "2025年下半年",
+      },
+    ],
+  };
+}
+
+async function importSampleBank(service, t) {
+  const directory = await mkdtemp(join(tmpdir(), "ruankao-bank-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const file = join(directory, "bank.json");
+  await writeFile(file, JSON.stringify(sampleBank()), "utf8");
+  return service.importArchitectBank({ file });
+}
+
+test("导图解析会合并 NOTE 与 DETAILS", () => {
+  const xml = `<?xml version="1.0"?>
+<map>
+  <node TEXT="根">
+    <node TEXT="第12章 信息系统架构设计理论与实践">
+      <richcontent TYPE="DETAILS"><html><body><p>DETAILS 正文</p></body></html></richcontent>
+      <richcontent TYPE="NOTE"><html><body><p>NOTE 笔记</p></body></html></richcontent>
+      <node TEXT="12.1 概述">
+        <richcontent TYPE="NOTE"><html><body><p>小节笔记</p></body></html></richcontent>
+      </node>
+    </node>
+  </node>
+</map>`;
+  const rootNode = parseFreeplane(xml);
+  const chapter = rootNode.children[0];
+  assert.equal(chapter.text, "第12章 信息系统架构设计理论与实践");
+  assert.ok(chapter.details.includes("DETAILS 正文"));
+  assert.ok(chapter.details.includes("NOTE 笔记"));
+  assert.equal(chapter.children[0].details, "小节笔记");
+});
+
+test("导入真题库按 id 幂等更新并保留生成题", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const first = await importSampleBank(service, t);
+  assert.equal(first.questions.added, 3);
+  assert.equal(first.questions.updated, 0);
+  assert.equal(first.cases.added, 1);
+  assert.equal(first.papers.added, 1);
+  assert.deepEqual(
+    first.catalog.map((item) => `${item.sourceType}:${item.term}`),
+    ["real:2025年下半年", "mock:2026年5月 模拟卷1"],
+  );
+  assert.equal(service.dataSummary().generatedQuestions, 1);
+  assert.equal(service.dataSummary().realQuestions, 2);
+  assert.equal(service.dataSummary().mockQuestions, 1);
+  const generatedId = service.allQuestions().find((item) => item.sourceType === "generated").id;
+  const second = await importSampleBank(service, t);
+  assert.equal(second.questions.added, 0);
+  assert.equal(second.questions.updated, 3);
+  assert.ok(service.allQuestions().some((item) => item.id === generatedId));
+  assert.deepEqual(
+    service.realExamCatalog().map((item) => item.term),
+    ["2025年下半年", "2026年5月 模拟卷1"],
+  );
+});
+
+test("章节练习和随机模拟卷只抽生成题", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  await importSampleBank(service, t);
+  const chapter = service.chapterList().find((item) => item.id === 7);
+  assert.equal(chapter.counts.all, 1);
+  const session = await service.createSession({
+    chapter: 7,
+    difficulty: "easy",
+    count: 1,
+  });
+  assert.equal(session.questions.length, 1);
+  assert.equal(session.questions[0].sourceType, "generated");
+  const mock = await service.createMockExamSession({ count: 10 });
+  assert.equal(mock.sourceType, "generated");
+  assert.equal(mock.questions.length, 1);
+  assert.equal(mock.questions[0].sourceType, "generated");
+});
+
+test("按考期套卷依题号顺序组卷", async (t) => {
+  const { service } = await fixture(t);
+  await importSampleBank(service, t);
+  const session = await service.createMockExamSession({
+    term: "2025年下半年",
+    sourceType: "real",
+  });
+  assert.equal(session.mode, "exam-mcq");
+  assert.equal(session.term, "2025年下半年");
+  assert.equal(session.sourceType, "real");
+  assert.deepEqual(
+    session.questions.map((item) => item.id),
+    ["real-2025-1", "real-2025-2"],
+  );
+  await assert.rejects(
+    () => service.createMockExamSession({ term: "2099年上半年", sourceType: "real" }),
+    (error) => error.code === "EXAM_PAPER_EMPTY" && error.status === 409,
+  );
+});
+
+test("导入题不参与生成去重且不能永久删除", async (t) => {
+  const { service } = await fixture(t);
+  await importSampleBank(service, t);
+  const unique = service.filterUniqueGeneratedQuestions(7, [
+    {
+      question: "真题第一题？",
+      options: { A: "控制依赖", B: "取消边界", C: "共享状态", D: "绕过接口" },
+    },
+  ]);
+  assert.equal(unique.length, 1);
+  await assert.rejects(
+    () => service.deleteQuestion({ questionId: "real-2025-1", confirm: "DELETE" }),
+    (error) => error.code === "IMPORTED_QUESTION_READONLY" && error.status === 409,
+  );
+});
+
+test("清空题库和全部数据会保留导入的真题模拟题", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  await importSampleBank(service, t);
+  await service.clearData({ scope: "questions", confirm: "CLEAR" });
+  assert.equal(service.dataSummary().generatedQuestions, 0);
+  assert.equal(service.dataSummary().realQuestions, 2);
+  assert.equal(service.dataSummary().mockQuestions, 1);
+  await service.clearData({ scope: "all", confirm: "CLEAR" });
+  assert.deepEqual(
+    service.dataSummary(),
+    emptySummary({
+      questions: 3,
+      realQuestions: 2,
+      mockQuestions: 1,
+      cases: 1,
+      realCases: 1,
+      papers: 1,
+      realPapers: 1,
+    }),
+  );
+});
+
