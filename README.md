@@ -2,7 +2,7 @@
 
 一个面向《系统架构设计师教程（第 2 版）》的本地单用户练习应用。
 
-应用以 Freeplane 思维导图 [`architect.mm`](./architect.mm) 为**生成题的唯一资料来源**，调用 OpenAI 兼容模型或 Claude CLI 生成章节选择题，并提供即时判题、错题间隔复习、题库管理、学习统计和数据备份。相邻仓库 [`architect-architect-practice`](../architect-architect-practice) 中的历年真题/模拟卷可作为只读题库导入，用于按考期开套卷，不参与模型出题。
+应用以 Freeplane 思维导图 [`architect.mm`](./architect.mm) 为**生成题的唯一资料来源**，调用 OpenAI 兼容模型或 Claude CLI 生成章节选择题，并提供即时判题、错题间隔复习、题库管理、学习统计和数据备份。相邻仓库 [`architect-exam-bank`](../architect-exam-bank) 中的历年真题/模拟卷可作为只读题库导入，用于按考期开套卷，不参与模型出题。
 
 > 本项目不会从 PDF 提取内容。仓库中即使存在 PDF，题目生成也只读取 `architect.mm` 中所选章节或小节的节点内容。导入的真题库版权仍归原权利人，仅供本机练习，不要公开发布。
 
@@ -125,7 +125,7 @@ curl http://127.0.0.1:3210/api/health
 
 ### 真题套卷
 
-1. 打开数据管理，点击“导入真题库”。默认读取相邻仓库 `architect-architect-practice/data/bank.json`，也可用 `ARCHITECT_BANK_FILE` 指定路径。
+1. 打开数据管理，点击“导入真题库”。默认读取相邻仓库 `architect-exam-bank/data/bank.json`，也可用 `ARCHITECT_BANK_FILE` 指定路径。
 2. 打开“模拟考试”，在“真题套卷”中选择考期。
 3. 按该考期题号顺序组卷，限时 150 分钟；交卷前可改答案，过程不显示对错。
 4. 案例和论文页可按来源筛选历年真题或模拟题，交卷后仍走现有 AI 评分。
@@ -298,7 +298,7 @@ claude --version
 | `ARCHITECT_LLM_PROVIDER` | 未配置 | 设置为 `claude-cli` 可启用 Claude CLI |
 | `ARCHITECT_CLAUDE_COMMAND` | `claude` | Claude CLI 命令或可执行文件路径 |
 | `ARCHITECT_AGENT_TIMEOUT_MS` | `600000` | 单次模型请求超时，单位为毫秒 |
-| `ARCHITECT_BANK_FILE` | `../architect-architect-practice/data/bank.json` | 真题库 JSON 路径，相对于项目根目录 |
+| `ARCHITECT_BANK_FILE` | `../architect-exam-bank/data/bank.json` | 真题库 JSON 路径，相对于项目根目录 |
 
 项目根目录的 `.env` 会在生成器初始化时读取。操作系统中已经存在的同名环境变量优先级更高，不会被 `.env` 覆盖。修改 `.env` 后需要重启服务。
 

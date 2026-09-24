@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-export const DEFAULT_BANK_RELATIVE = "../architect-architect-practice/data/bank.json";
+export const DEFAULT_BANK_RELATIVE = "../architect-exam-bank/data/bank.json";
 
 const MODULE_CHAPTER = {
   architecture: 7,
