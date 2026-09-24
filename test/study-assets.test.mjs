@@ -13,7 +13,7 @@ import { JsonStore } from "../src/store.mjs";
 const root = resolve(import.meta.dirname, "..");
 
 async function fixture(t) {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-assets-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-assets-"));
   const store = new JsonStore(join(directory, "state.json"));
   await store.init();
   const service = new PracticeService({
@@ -66,7 +66,7 @@ test("引用图但没有图数据时，练习题只标缺失且不泄露答案",
 });
 
 test("资料路径会解码中文文件名，并拒绝逃出资料目录", async (t) => {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-material-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-material-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const dataDir = join(directory, "data");
   await mkdir(join(dataDir, "study-materials", "outline"), { recursive: true });

@@ -28,7 +28,7 @@ function keepImported(items = []) {
 
 const DIFFICULTIES = new Set(["easy", "medium", "hard", "mixed"]);
 const REVIEW_INTERVALS = [1, 3, 7, 14, 30];
-const BACKUP_FORMAT = "ruankao-practice-backup";
+const BACKUP_FORMAT = "architect-practice-backup";
 const BACKUP_VERSION = 1;
 
 function isRecord(value) {
@@ -243,14 +243,14 @@ export class PracticeService {
 
   async mindMapChapterNode(chapterId) {
     const mindMap = await readMindMap(
-      resolve(this.root, process.env.RUANKAO_MINDMAP || "ruankao.mm"),
+      resolve(this.root, process.env.ARCHITECT_MINDMAP || "architect.mm"),
     );
     return mindMap ? findChapter(mindMap, Number(chapterId)) : null;
   }
 
   async mindMapChapterIds() {
     const mindMap = await readMindMap(
-      resolve(this.root, process.env.RUANKAO_MINDMAP || "ruankao.mm"),
+      resolve(this.root, process.env.ARCHITECT_MINDMAP || "architect.mm"),
     );
     return mindMap ? chapterIds(mindMap) : new Set();
   }
@@ -265,7 +265,7 @@ export class PracticeService {
 
   async sections(chapterId) {
     const mindMap = await readMindMap(
-      resolve(this.root, process.env.RUANKAO_MINDMAP || "ruankao.mm"),
+      resolve(this.root, process.env.ARCHITECT_MINDMAP || "architect.mm"),
     );
     const chapterNode = mindMap
       ? findChapter(mindMap, Number(chapterId))
@@ -635,7 +635,7 @@ export class PracticeService {
       return {
         id: makeId(`agent-c${chapterId}`),
         sourceType: "generated",
-        source: `ruankao-agent/${source}`,
+        source: `architect-agent/${source}`,
         chapter: chapterId,
         section,
         difficulty,
@@ -1173,7 +1173,7 @@ export class PracticeService {
       schemaVersion: 1,
       generatedAt: this.now(),
       subject: "系统架构设计师",
-      app: "ruankao-chapter-practice",
+      app: "architect-chapter-practice",
       statistics: this.statistics(),
       studyPlan: this.getStudyPlan(),
       learner: {
@@ -1393,7 +1393,7 @@ export class PracticeService {
       return {
         id: makeId(`case-c${chapterId}`),
         sourceType: "generated",
-        source: "ruankao-agent/mindmap",
+        source: "architect-agent/mindmap",
         chapter: chapterId,
         section,
         title: item.title.trim(),
@@ -1658,7 +1658,7 @@ export class PracticeService {
       return {
         id: makeId(`paper-c${chapterId}`),
         sourceType: "generated",
-        source: "ruankao-agent/mindmap",
+        source: "architect-agent/mindmap",
         chapter: chapterId,
         section,
         title: item.title.trim(),

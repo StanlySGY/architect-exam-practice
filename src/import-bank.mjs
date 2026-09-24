@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-export const DEFAULT_BANK_RELATIVE = "../ruankao-architect-practice/data/bank.json";
+export const DEFAULT_BANK_RELATIVE = "../architect-architect-practice/data/bank.json";
 
 const MODULE_CHAPTER = {
   architecture: 7,
@@ -19,8 +19,8 @@ const MODULE_CHAPTER = {
 };
 
 export function defaultBankFile(root = process.cwd()) {
-  return process.env.RUANKAO_BANK_FILE
-    ? resolve(root, process.env.RUANKAO_BANK_FILE)
+  return process.env.ARCHITECT_BANK_FILE
+    ? resolve(root, process.env.ARCHITECT_BANK_FILE)
     : resolve(root, DEFAULT_BANK_RELATIVE);
 }
 

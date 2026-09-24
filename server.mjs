@@ -11,7 +11,7 @@ import { ModelConfig } from "./src/model-config.mjs";
 const root = fileURLToPath(new URL(".", import.meta.url));
 const publicRoot = resolve(root, "public");
 const store = new SQLiteStore(
-  resolve(root, process.env.RUANKAO_DATA_FILE || "data/state.sqlite"),
+  resolve(root, process.env.ARCHITECT_DATA_FILE || "data/state.sqlite"),
 );
 await store.init();
 const practice = new PracticeService({ store, root });
@@ -115,7 +115,7 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/health") {
     return sendJson(response, 200, {
       ok: true,
-      service: "ruankao-chapter-practice",
+      service: "architect-chapter-practice",
     });
   }
   if (request.method === "GET" && pathname === "/api/chapters") {

@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const mapFile = new URL('./ruankao.mm', import.meta.url);
+const mapFile = new URL('./architect.mm', import.meta.url);
 const source = fs.readFileSync(new URL('./create_freeplane_chapter4.mjs', import.meta.url), 'utf8');
 const start = source.indexOf('const branches = ');
 const end = source.indexOf('\n\nconst selectionResult', start);
@@ -32,7 +32,7 @@ if (xml.includes('第4章 信息安全技术基础知识')) throw new Error('Cha
 const close = '\n</node>\n</map>';
 const insertion = xml.lastIndexOf(close);
 if (insertion < 0) throw new Error('Cannot locate root closing tag');
-fs.copyFileSync(mapFile, '/tmp/ruankao.mm.before-chapter4');
+fs.copyFileSync(mapFile, '/tmp/architect.mm.before-chapter4');
 xml = xml.slice(0, insertion) + '\n' + chapterXml + xml.slice(insertion);
 fs.writeFileSync(mapFile, xml);
 console.log(JSON.stringify({ mapFile: mapFile.pathname, addedNodes: count, bytes: Buffer.byteLength(xml) }));

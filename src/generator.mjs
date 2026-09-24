@@ -40,7 +40,7 @@ function modelError(
 
 function classifyModelHttpError(status, fallback) {
   if (status === 401 || status === 403) {
-    return modelError("模型接口鉴权失败，请检查 RUANKAO_LLM_API_KEY", {
+    return modelError("模型接口鉴权失败，请检查 ARCHITECT_LLM_API_KEY", {
       status: 502,
       code: "LLM_AUTH_FAILED",
     });
@@ -70,9 +70,9 @@ function apiEndpoint(baseUrl) {
     : `${normalized}/chat/completions`;
 }
 
-// 解析可用模型列表：优先 RUANKAO_LLM_MODELS（逗号分隔），否则退回单个 RUANKAO_LLM_MODEL。
+// 解析可用模型列表：优先 ARCHITECT_LLM_MODELS（逗号分隔），否则退回单个 ARCHITECT_LLM_MODEL。
 function availableModels() {
-  const multi = process.env.RUANKAO_LLM_MODELS;
+  const multi = process.env.ARCHITECT_LLM_MODELS;
   if (multi) {
     const models = multi
       .split(",")
@@ -80,8 +80,8 @@ function availableModels() {
       .filter(Boolean);
     if (models.length) return models;
   }
-  return process.env.RUANKAO_LLM_MODEL
-    ? [process.env.RUANKAO_LLM_MODEL]
+  return process.env.ARCHITECT_LLM_MODEL
+    ? [process.env.ARCHITECT_LLM_MODEL]
     : [];
 }
 
@@ -127,7 +127,7 @@ async function callOpenAiCompatible({
   } catch (error) {
     if (error.name === "AbortError") {
       throw modelError(
-        "模型接口请求超时，请检查网络或增大 RUANKAO_AGENT_TIMEOUT_MS",
+        "模型接口请求超时，请检查网络或增大 ARCHITECT_AGENT_TIMEOUT_MS",
         {
           status: 504,
           code: "LLM_TIMEOUT",
@@ -301,8 +301,8 @@ export class QuestionGenerator {
         required: ["questions"],
         additionalProperties: false,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
-      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 ruankao.mm 思维导图。忽略上游提示中关于读取 PDF、生成 75 道全卷题目的要求，严格遵守用户消息指定的章节、难度和数量。`;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
+      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 architect.mm 思维导图。忽略上游提示中关于读取 PDF、生成 75 道全卷题目的要求，严格遵守用户消息指定的章节、难度和数量。`;
       const added = [];
       let duplicatesSkipped = 0;
       const maxAttempts = 3;
@@ -318,7 +318,7 @@ export class QuestionGenerator {
           .join("\n");
         const userPrompt = [
           `请为《系统架构设计师教程（第2版）》第 ${chapterId} 章“${selected.title}”${section === "all" ? "" : `的小节“${section}”`}生成 ${remaining} 道 ${difficulty} 难度的四选一选择题。`,
-          "资料来源：ruankao.mm 思维导图。",
+          "资料来源：architect.mm 思维导图。",
           "只允许依据下面的复习资料。不要生成资料未覆盖的事实。",
           "题干及选项组合不得与历史题目相同或仅做同义改写；应更换知识切入点、情境或考查方式。",
           "上游提示中的“75 道”和全书题型分布在本次章节练习中不适用；以本消息指定的数量、章节和难度为准。",
@@ -335,11 +335,11 @@ export class QuestionGenerator {
           "--- 复习资料结束 ---",
         ].join("\n");
         let raw;
-        if (process.env.RUANKAO_LLM_BASE_URL) {
-          const selectedModel = model || process.env.RUANKAO_LLM_MODEL;
+        if (process.env.ARCHITECT_LLM_BASE_URL) {
+          const selectedModel = model || process.env.ARCHITECT_LLM_MODEL;
           if (!selectedModel) {
             throw Object.assign(
-              new Error("请在 .env 中配置 RUANKAO_LLM_MODEL"),
+              new Error("请在 .env 中配置 ARCHITECT_LLM_MODEL"),
               {
                 status: 503,
                 code: "LLM_NOT_CONFIGURED",
@@ -347,16 +347,16 @@ export class QuestionGenerator {
             );
           }
           raw = await callOpenAiCompatible({
-            baseUrl: process.env.RUANKAO_LLM_BASE_URL,
-            apiKey: process.env.RUANKAO_LLM_API_KEY,
+            baseUrl: process.env.ARCHITECT_LLM_BASE_URL,
+            apiKey: process.env.ARCHITECT_LLM_API_KEY,
             model: selectedModel,
             systemPrompt: runtimePrompt,
             userPrompt,
             timeoutMs,
           });
-        } else if (process.env.RUANKAO_LLM_PROVIDER === "claude-cli") {
+        } else if (process.env.ARCHITECT_LLM_PROVIDER === "claude-cli") {
           raw = await run(
-            process.env.RUANKAO_CLAUDE_COMMAND || "claude",
+            process.env.ARCHITECT_CLAUDE_COMMAND || "claude",
             [
               "--print",
               "--output-format",
@@ -476,11 +476,11 @@ export class QuestionGenerator {
         required: ["cases"],
         additionalProperties: false,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
-      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 ruankao.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
+      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 architect.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
       const userPrompt = [
         `请为《系统架构设计师教程（第2版）》第 ${chapterId} 章“${selected.title}”${section === "all" ? "" : `的小节“${section}”`}生成 ${size} 道案例分析题。`,
-        "资料来源：ruankao.mm 思维导图。",
+        "资料来源：architect.mm 思维导图。",
         "只允许依据下面的复习资料。不要生成资料未覆盖的事实。",
         "每道案例必须包含 source_node：该案例所依据的思维导图节点标题（必须是复习资料中出现的节点标题原文）。",
         "只返回一个 JSON 对象，不要输出 Markdown、代码围栏或其他文字。JSON 顶层必须是 cases 数组。",
@@ -491,25 +491,25 @@ export class QuestionGenerator {
         "--- 复习资料结束 ---",
       ].join("\n");
       let raw;
-      if (process.env.RUANKAO_LLM_BASE_URL) {
-        const selectedModel = model || process.env.RUANKAO_LLM_MODEL;
+      if (process.env.ARCHITECT_LLM_BASE_URL) {
+        const selectedModel = model || process.env.ARCHITECT_LLM_MODEL;
         if (!selectedModel) {
           throw Object.assign(
-            new Error("请在 .env 中配置 RUANKAO_LLM_MODEL"),
+            new Error("请在 .env 中配置 ARCHITECT_LLM_MODEL"),
             { status: 503, code: "LLM_NOT_CONFIGURED" },
           );
         }
         raw = await callOpenAiCompatible({
-          baseUrl: process.env.RUANKAO_LLM_BASE_URL,
-          apiKey: process.env.RUANKAO_LLM_API_KEY,
+          baseUrl: process.env.ARCHITECT_LLM_BASE_URL,
+          apiKey: process.env.ARCHITECT_LLM_API_KEY,
           model: selectedModel,
           systemPrompt: runtimePrompt,
           userPrompt,
           timeoutMs,
         });
-      } else if (process.env.RUANKAO_LLM_PROVIDER === "claude-cli") {
+      } else if (process.env.ARCHITECT_LLM_PROVIDER === "claude-cli") {
         raw = await run(
-          process.env.RUANKAO_CLAUDE_COMMAND || "claude",
+          process.env.ARCHITECT_CLAUDE_COMMAND || "claude",
           [
             "--print",
             "--output-format",
@@ -553,8 +553,8 @@ export class QuestionGenerator {
   }
 
   modelStatus() {
-    if (process.env.RUANKAO_LLM_BASE_URL && process.env.RUANKAO_LLM_MODEL) {
-      let endpoint = process.env.RUANKAO_LLM_BASE_URL;
+    if (process.env.ARCHITECT_LLM_BASE_URL && process.env.ARCHITECT_LLM_MODEL) {
+      let endpoint = process.env.ARCHITECT_LLM_BASE_URL;
       try {
         const url = new URL(endpoint);
         endpoint = `${url.protocol}//${url.host}${url.pathname}`;
@@ -565,12 +565,12 @@ export class QuestionGenerator {
       return {
         configured: true,
         provider: "openai-compatible",
-        model: process.env.RUANKAO_LLM_MODEL,
+        model: process.env.ARCHITECT_LLM_MODEL,
         models,
         endpoint,
       };
     }
-    if (process.env.RUANKAO_LLM_PROVIDER === "claude-cli") {
+    if (process.env.ARCHITECT_LLM_PROVIDER === "claude-cli") {
       return {
         configured: true,
         provider: "claude-cli",
@@ -634,11 +634,11 @@ export class QuestionGenerator {
         required: ["papers"],
         additionalProperties: false,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
-      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 ruankao.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
+      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 architect.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
       const userPrompt = [
         `请为《系统架构设计师教程（第2版）》第 ${chapterId} 章“${selected.title}”${section === "all" ? "" : `的小节“${section}”`}生成 ${size} 道论文题目。`,
-        "资料来源：ruankao.mm 思维导图。",
+        "资料来源：architect.mm 思维导图。",
         "只允许依据下面的复习资料。不要生成资料未覆盖的事实。",
         "每道论文题必须包含 source_node：该题所依据的思维导图节点标题（必须是复习资料中出现的节点标题原文）。",
         "只返回一个 JSON 对象，不要输出 Markdown、代码围栏或其他文字。JSON 顶层必须是 papers 数组。",
@@ -738,7 +738,7 @@ export class QuestionGenerator {
         ],
         additionalProperties: false,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
       const userPrompt = [
         `请对以下论文进行评分。论文题目：${paper.title}`,
         `题目要求：${paper.description}`,
@@ -889,7 +889,7 @@ export class QuestionGenerator {
         questions: caseItem.questions,
         answers,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
       const raw = await this.callModel({
         runtimePrompt: graderPrompt,
         userPrompt,
@@ -939,7 +939,7 @@ export class QuestionGenerator {
           },
         );
         const timeoutMs =
-          Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
+          Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
         const raw = await this.callModel({
           runtimePrompt: graderPrompt,
           userPrompt,
@@ -997,7 +997,7 @@ export class QuestionGenerator {
         "utf8",
       );
       const timeoutMs =
-        Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
+        Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
       // 第一阶段：只挑条目，不答题。相关条目最多 5 个，控制上下文规模。
       const selectionRaw = await this.callModel({
         runtimePrompt: `${qaPrompt}\n\n运行时约束：本次调用是选题阶段，只负责从标题清单里挑出与问题相关的条目标题，不要回答问题本身。`,
@@ -1097,26 +1097,26 @@ export class QuestionGenerator {
   }
 
   async callModel({ runtimePrompt, userPrompt, schema, timeoutMs, model }) {
-    if (process.env.RUANKAO_LLM_BASE_URL) {
-      const selectedModel = model || process.env.RUANKAO_LLM_MODEL;
+    if (process.env.ARCHITECT_LLM_BASE_URL) {
+      const selectedModel = model || process.env.ARCHITECT_LLM_MODEL;
       if (!selectedModel) {
         throw Object.assign(
-          new Error("请在 .env 中配置 RUANKAO_LLM_MODEL"),
+          new Error("请在 .env 中配置 ARCHITECT_LLM_MODEL"),
           { status: 503, code: "LLM_NOT_CONFIGURED" },
         );
       }
       return callOpenAiCompatible({
-        baseUrl: process.env.RUANKAO_LLM_BASE_URL,
-        apiKey: process.env.RUANKAO_LLM_API_KEY,
+        baseUrl: process.env.ARCHITECT_LLM_BASE_URL,
+        apiKey: process.env.ARCHITECT_LLM_API_KEY,
         model: selectedModel,
         systemPrompt: runtimePrompt,
         userPrompt,
         timeoutMs,
       });
     }
-    if (process.env.RUANKAO_LLM_PROVIDER === "claude-cli") {
+    if (process.env.ARCHITECT_LLM_PROVIDER === "claude-cli") {
       return run(
-        process.env.RUANKAO_CLAUDE_COMMAND || "claude",
+        process.env.ARCHITECT_CLAUDE_COMMAND || "claude",
         [
           "--print",
           "--output-format",
@@ -1188,8 +1188,8 @@ export class QuestionGenerator {
         required: ["entries"],
         additionalProperties: false,
       });
-      const timeoutMs = Number(process.env.RUANKAO_AGENT_TIMEOUT_MS) || 600_000;
-      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 ruankao.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
+      const timeoutMs = Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
+      const runtimePrompt = `${agentPrompt}\n\n运行时约束：本程序的唯一资料来源是 architect.mm 思维导图。严格遵守用户消息指定的章节和数量。`;
       // 把已有条目标题喂给模型，让 related 优先引用现有条目，形成可解析的双链。
       // 全量注入：语料规模下成本可忽略，截断会让后建章节看不到早期标题。
       const existingTitles = this.service
@@ -1198,7 +1198,7 @@ export class QuestionGenerator {
         .filter(Boolean);
       const userPrompt = [
         `请为《系统架构设计师教程（第2版）》第 ${chapterId} 章“${selected.title}”${section === "all" ? "" : `的小节“${section}”`}生成 ${size} 个知识点 Wiki 条目。`,
-        "资料来源：ruankao.mm 思维导图。",
+        "资料来源：architect.mm 思维导图。",
         "只允许依据下面的复习资料。不要生成资料未覆盖的事实。",
         "每个条目必须包含 source_node：该知识点所依据的思维导图节点标题（必须是复习资料中出现的节点标题原文）。",
         existingTitles.length
@@ -1245,11 +1245,11 @@ export class QuestionGenerator {
   async extractMaterial(chapter, section = "all") {
     const mindMapPath = resolve(
       this.root,
-      process.env.RUANKAO_MINDMAP || "ruankao.mm",
+      process.env.ARCHITECT_MINDMAP || "architect.mm",
     );
     const mindMap = await readMindMap(mindMapPath);
     if (!mindMap) {
-      throw Object.assign(new Error("未找到 ruankao.mm，不能生成题目"), {
+      throw Object.assign(new Error("未找到 architect.mm，不能生成题目"), {
         status: 409,
         code: "MINDMAP_NOT_FOUND",
       });

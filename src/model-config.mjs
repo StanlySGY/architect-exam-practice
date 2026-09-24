@@ -5,12 +5,12 @@ import { resolve } from "node:path";
 // 界面保存的配置优先于启动时已有的同名环境变量。
 
 const MODEL_KEYS = [
-  "RUANKAO_LLM_BASE_URL",
-  "RUANKAO_LLM_API_KEY",
-  "RUANKAO_LLM_MODEL",
-  "RUANKAO_LLM_MODELS",
-  "RUANKAO_LLM_PROVIDER",
-  "RUANKAO_CLAUDE_COMMAND",
+  "ARCHITECT_LLM_BASE_URL",
+  "ARCHITECT_LLM_API_KEY",
+  "ARCHITECT_LLM_MODEL",
+  "ARCHITECT_LLM_MODELS",
+  "ARCHITECT_LLM_PROVIDER",
+  "ARCHITECT_CLAUDE_COMMAND",
 ];
 
 export class ModelConfig {

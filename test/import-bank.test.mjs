@@ -166,7 +166,7 @@ test("缺失真题库文件返回 BANK_FILE_MISSING", async () => {
 });
 
 test("损坏的真题库返回 INVALID_BANK", async (t) => {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-bank-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-bank-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const file = join(directory, "bank.json");
   await writeFile(file, "{not json", "utf8");

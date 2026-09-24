@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const mapFile = new URL('./ruankao.mm', import.meta.url);
+const mapFile = new URL('./architect.mm', import.meta.url);
 const source = fs.readFileSync(new URL('./create_freeplane_chapter16.mjs', import.meta.url), 'utf8');
 const start = source.indexOf('const branches = ');
 const end = source.indexOf('\n\nconst selectionResult', start);
@@ -32,7 +32,7 @@ if (xml.includes('第16章 嵌入式系统架构设计理论与实践')) throw n
 const close = '\n</node>\n</map>';
 const insertion = xml.lastIndexOf(close);
 if (insertion < 0) throw new Error('Cannot locate root closing tag');
-fs.copyFileSync(mapFile, '/tmp/ruankao.mm.before-chapter16');
+fs.copyFileSync(mapFile, '/tmp/architect.mm.before-chapter16');
 xml = xml.slice(0, insertion) + '\n' + chapterXml + xml.slice(insertion);
 fs.writeFileSync(mapFile, xml);
 console.log(JSON.stringify({ mapFile: mapFile.pathname, addedNodes: count, bytes: Buffer.byteLength(xml) }));

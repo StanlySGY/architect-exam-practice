@@ -35,7 +35,7 @@ function emptySummary(overrides = {}) {
 }
 
 async function fixture(t, now = () => "2026-04-01T08:00:00.000Z") {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-test-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-test-"));
   t.after(() => {
     store.close();
     return rm(directory, { recursive: true, force: true });
@@ -112,17 +112,17 @@ async function addQuestions(
 async function generatorWithFetch(t, fetchImplementation) {
   const { service } = await fixture(t);
   const originalFetch = globalThis.fetch;
-  const originalBaseUrl = process.env.RUANKAO_LLM_BASE_URL;
-  const originalModel = process.env.RUANKAO_LLM_MODEL;
+  const originalBaseUrl = process.env.ARCHITECT_LLM_BASE_URL;
+  const originalModel = process.env.ARCHITECT_LLM_MODEL;
   t.after(() => {
     globalThis.fetch = originalFetch;
-    if (originalBaseUrl === undefined) delete process.env.RUANKAO_LLM_BASE_URL;
-    else process.env.RUANKAO_LLM_BASE_URL = originalBaseUrl;
-    if (originalModel === undefined) delete process.env.RUANKAO_LLM_MODEL;
-    else process.env.RUANKAO_LLM_MODEL = originalModel;
+    if (originalBaseUrl === undefined) delete process.env.ARCHITECT_LLM_BASE_URL;
+    else process.env.ARCHITECT_LLM_BASE_URL = originalBaseUrl;
+    if (originalModel === undefined) delete process.env.ARCHITECT_LLM_MODEL;
+    else process.env.ARCHITECT_LLM_MODEL = originalModel;
   });
-  process.env.RUANKAO_LLM_BASE_URL = "http://model.test/v1";
-  process.env.RUANKAO_LLM_MODEL = "test-model";
+  process.env.ARCHITECT_LLM_BASE_URL = "http://model.test/v1";
+  process.env.ARCHITECT_LLM_MODEL = "test-model";
   globalThis.fetch = fetchImplementation;
   return new QuestionGenerator({ root, service });
 }
@@ -183,7 +183,7 @@ test("模型返回非法 JSON 会被识别为格式错误", async (t) => {
 });
 
 test("SQLite 存储在重新打开后保留学习状态", async (t) => {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-sqlite-test-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-sqlite-test-"));
   const file = join(directory, "state.sqlite");
   t.after(() => rm(directory, { recursive: true, force: true }));
   const first = new SQLiteStore(file);
@@ -207,7 +207,7 @@ test("SQLite 存储在重新打开后保留学习状态", async (t) => {
 });
 
 test("旧 JSON 学习数据会自动迁移到 SQLite", async (t) => {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-migration-test-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-migration-test-"));
   const legacyFile = join(directory, "state.json");
   t.after(() => rm(directory, { recursive: true, force: true }));
   await writeFile(
@@ -251,7 +251,7 @@ test("完整备份可在清空后恢复", async (t) => {
   });
   await service.grade({ sessionId: session.id, answers: {} });
   const backup = service.exportData();
-  assert.equal(backup.format, "ruankao-practice-backup");
+  assert.equal(backup.format, "architect-practice-backup");
   assert.equal(service.dataSummary().questions, 1);
   assert.equal(service.dataSummary().attempts, 1);
   await service.clearData({ scope: "all", confirm: "CLEAR" });
@@ -769,17 +769,17 @@ test("生成器过滤重复后会再次请求补足题数", async (t) => {
   await addQuestions(service, { chapter: 1, difficulty: "easy", count: 1 });
   const existing = service.allQuestions()[0];
   const originalFetch = globalThis.fetch;
-  const originalBaseUrl = process.env.RUANKAO_LLM_BASE_URL;
-  const originalModel = process.env.RUANKAO_LLM_MODEL;
+  const originalBaseUrl = process.env.ARCHITECT_LLM_BASE_URL;
+  const originalModel = process.env.ARCHITECT_LLM_MODEL;
   t.after(() => {
     globalThis.fetch = originalFetch;
-    if (originalBaseUrl === undefined) delete process.env.RUANKAO_LLM_BASE_URL;
-    else process.env.RUANKAO_LLM_BASE_URL = originalBaseUrl;
-    if (originalModel === undefined) delete process.env.RUANKAO_LLM_MODEL;
-    else process.env.RUANKAO_LLM_MODEL = originalModel;
+    if (originalBaseUrl === undefined) delete process.env.ARCHITECT_LLM_BASE_URL;
+    else process.env.ARCHITECT_LLM_BASE_URL = originalBaseUrl;
+    if (originalModel === undefined) delete process.env.ARCHITECT_LLM_MODEL;
+    else process.env.ARCHITECT_LLM_MODEL = originalModel;
   });
-  process.env.RUANKAO_LLM_BASE_URL = "http://model.test/v1";
-  process.env.RUANKAO_LLM_MODEL = "test-model";
+  process.env.ARCHITECT_LLM_BASE_URL = "http://model.test/v1";
+  process.env.ARCHITECT_LLM_MODEL = "test-model";
   const responses = [
     [
       {
@@ -1463,7 +1463,7 @@ function sampleBank() {
 }
 
 async function importSampleBank(service, t) {
-  const directory = await mkdtemp(join(tmpdir(), "ruankao-bank-"));
+  const directory = await mkdtemp(join(tmpdir(), "architect-bank-"));
   t.after(() => rm(directory, { recursive: true, force: true }));
   const file = join(directory, "bank.json");
   await writeFile(file, JSON.stringify(sampleBank()), "utf8");

@@ -74,8 +74,8 @@ if (proposals.length) {
     )
     .join("\n");
   const envBackup = {
-    baseUrl: process.env.RUANKAO_LLM_BASE_URL,
-    provider: process.env.RUANKAO_LLM_PROVIDER,
+    baseUrl: process.env.ARCHITECT_LLM_BASE_URL,
+    provider: process.env.ARCHITECT_LLM_PROVIDER,
   };
   try {
     try {
@@ -87,8 +87,8 @@ if (proposals.length) {
       });
     } catch (error) {
       // 模型接口不可达：切换到本机 claude CLI 通道重试。
-      delete process.env.RUANKAO_LLM_BASE_URL;
-      process.env.RUANKAO_LLM_PROVIDER = "claude-cli";
+      delete process.env.ARCHITECT_LLM_BASE_URL;
+      process.env.ARCHITECT_LLM_PROVIDER = "claude-cli";
       await generator.callModel({
         runtimePrompt: "回复 OK",
         userPrompt: "回复 OK",
@@ -111,10 +111,10 @@ if (proposals.length) {
   } catch (error) {
     console.log(`LLM 不可用（${error.message}），退回保守包含规则`);
   } finally {
-    if (envBackup.baseUrl === undefined) delete process.env.RUANKAO_LLM_BASE_URL;
-    else process.env.RUANKAO_LLM_BASE_URL = envBackup.baseUrl;
-    if (envBackup.provider === undefined) delete process.env.RUANKAO_LLM_PROVIDER;
-    else process.env.RUANKAO_LLM_PROVIDER = envBackup.provider;
+    if (envBackup.baseUrl === undefined) delete process.env.ARCHITECT_LLM_BASE_URL;
+    else process.env.ARCHITECT_LLM_BASE_URL = envBackup.baseUrl;
+    if (envBackup.provider === undefined) delete process.env.ARCHITECT_LLM_PROVIDER;
+    else process.env.ARCHITECT_LLM_PROVIDER = envBackup.provider;
   }
 }
 

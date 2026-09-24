@@ -2,9 +2,9 @@
 
 一个面向《系统架构设计师教程（第 2 版）》的本地单用户练习应用。
 
-应用以 Freeplane 思维导图 [`ruankao.mm`](./ruankao.mm) 为**生成题的唯一资料来源**，调用 OpenAI 兼容模型或 Claude CLI 生成章节选择题，并提供即时判题、错题间隔复习、题库管理、学习统计和数据备份。相邻仓库 [`ruankao-architect-practice`](../ruankao-architect-practice) 中的历年真题/模拟卷可作为只读题库导入，用于按考期开套卷，不参与模型出题。
+应用以 Freeplane 思维导图 [`architect.mm`](./architect.mm) 为**生成题的唯一资料来源**，调用 OpenAI 兼容模型或 Claude CLI 生成章节选择题，并提供即时判题、错题间隔复习、题库管理、学习统计和数据备份。相邻仓库 [`architect-architect-practice`](../architect-architect-practice) 中的历年真题/模拟卷可作为只读题库导入，用于按考期开套卷，不参与模型出题。
 
-> 本项目不会从 PDF 提取内容。仓库中即使存在 PDF，题目生成也只读取 `ruankao.mm` 中所选章节或小节的节点内容。导入的真题库版权仍归原权利人，仅供本机练习，不要公开发布。
+> 本项目不会从 PDF 提取内容。仓库中即使存在 PDF，题目生成也只读取 `architect.mm` 中所选章节或小节的节点内容。导入的真题库版权仍归原权利人，仅供本机练习，不要公开发布。
 
 ## 功能概览
 
@@ -28,7 +28,7 @@
 - Node.js `>= 22.5`
 - npm
 - 一个 OpenAI 兼容模型接口；或者已安装并登录的 Claude CLI
-- 用于生成题目的 Freeplane 思维导图 `ruankao.mm`
+- 用于生成题目的 Freeplane 思维导图 `architect.mm`
 
 检查 Node.js 版本：
 
@@ -44,7 +44,7 @@ node --version
 
 ```bash
 git clone <repository-url>
-cd ruankao
+cd architect
 npm ci
 ```
 
@@ -65,9 +65,9 @@ cp .env.example .env
 编辑 `.env`：
 
 ```env
-RUANKAO_LLM_BASE_URL=https://api.deepseek.com/v1
-RUANKAO_LLM_API_KEY=你的密钥
-RUANKAO_LLM_MODEL=deepseek-chat
+ARCHITECT_LLM_BASE_URL=https://api.deepseek.com/v1
+ARCHITECT_LLM_API_KEY=你的密钥
+ARCHITECT_LLM_MODEL=deepseek-chat
 ```
 
 `.env` 已被 Git 忽略，模型密钥只由服务端读取，不会发送给浏览器。
@@ -107,7 +107,7 @@ curl http://127.0.0.1:3210/api/health
 正常响应：
 
 ```json
-{"ok":true,"service":"ruankao-chapter-practice"}
+{"ok":true,"service":"architect-chapter-practice"}
 ```
 
 ## 使用指南
@@ -125,7 +125,7 @@ curl http://127.0.0.1:3210/api/health
 
 ### 真题套卷
 
-1. 打开数据管理，点击“导入真题库”。默认读取相邻仓库 `ruankao-architect-practice/data/bank.json`，也可用 `RUANKAO_BANK_FILE` 指定路径。
+1. 打开数据管理，点击“导入真题库”。默认读取相邻仓库 `architect-architect-practice/data/bank.json`，也可用 `ARCHITECT_BANK_FILE` 指定路径。
 2. 打开“模拟考试”，在“真题套卷”中选择考期。
 3. 按该考期题号顺序组卷，限时 150 分钟；交卷前可改答案，过程不显示对错。
 4. 案例和论文页可按来源筛选历年真题或模拟题，交卷后仍走现有 AI 评分。
@@ -218,7 +218,7 @@ curl http://127.0.0.1:3210/api/health
 
 ### 唯一资料来源
 
-模型只接收当前选中章节或小节在 `ruankao.mm` 中的内容，包括节点标题以及 `DETAILS` 和 `NOTE`（二者会合并进同一段资料）。不会回退读取 PDF，也不会在导图内容不足时自行使用 PDF 补充。第 12–20 章等主要写在 `NOTE` 里的章节，必须解析笔记后才能生成题目。
+模型只接收当前选中章节或小节在 `architect.mm` 中的内容，包括节点标题以及 `DETAILS` 和 `NOTE`（二者会合并进同一段资料）。不会回退读取 PDF，也不会在导图内容不足时自行使用 PDF 补充。第 12–20 章等主要写在 `NOTE` 里的章节，必须解析笔记后才能生成题目。
 
 ### 章节命名
 
@@ -245,13 +245,13 @@ curl http://127.0.0.1:3210/api/health
 
 ### 章节目录元数据
 
-[`data/chapters.json`](./data/chapters.json) 保存教材章节标题等基础元数据；它不作为模型生成题目的正文来源。要让某章可练习和可生成题目，该章仍必须存在于 `ruankao.mm` 中。
+[`data/chapters.json`](./data/chapters.json) 保存教材章节标题等基础元数据；它不作为模型生成题目的正文来源。要让某章可练习和可生成题目，该章仍必须存在于 `architect.mm` 中。
 
 ## 模型配置
 
 ### OpenAI 兼容 API（推荐）
 
-程序会把 `RUANKAO_LLM_BASE_URL` 规范化为 Chat Completions 地址：
+程序会把 `ARCHITECT_LLM_BASE_URL` 规范化为 Chat Completions 地址：
 
 - 如果地址已经以 `/chat/completions` 结尾，则直接使用。
 - 否则自动追加 `/chat/completions`。
@@ -265,15 +265,15 @@ curl http://127.0.0.1:3210/api/health
 | Ollama | `http://127.0.0.1:11434/v1` | 本地已安装模型名 |
 | OpenAI | `https://api.openai.com/v1` | `gpt-4o-mini` |
 
-Ollama 等无需鉴权的本地服务可以将 `RUANKAO_LLM_API_KEY` 留空，但 `RUANKAO_LLM_BASE_URL` 和 `RUANKAO_LLM_MODEL` 必须配置。
+Ollama 等无需鉴权的本地服务可以将 `ARCHITECT_LLM_API_KEY` 留空，但 `ARCHITECT_LLM_BASE_URL` 和 `ARCHITECT_LLM_MODEL` 必须配置。
 
 ### Claude CLI（可选后备）
 
 只有明确配置以下变量时才使用 Claude CLI：
 
 ```env
-RUANKAO_LLM_PROVIDER=claude-cli
-RUANKAO_CLAUDE_COMMAND=claude
+ARCHITECT_LLM_PROVIDER=claude-cli
+ARCHITECT_CLAUDE_COMMAND=claude
 ```
 
 同时确保命令可用且已经完成登录：
@@ -282,7 +282,7 @@ RUANKAO_CLAUDE_COMMAND=claude
 claude --version
 ```
 
-如果同时配置了 `RUANKAO_LLM_BASE_URL`，程序优先使用 OpenAI 兼容 HTTP API。
+如果同时配置了 `ARCHITECT_LLM_BASE_URL`，程序优先使用 OpenAI 兼容 HTTP API。
 
 ### 环境变量
 
@@ -290,15 +290,15 @@ claude --version
 | --- | --- | --- |
 | `HOST` | `127.0.0.1` | HTTP 监听地址；局域网访问可设为 `0.0.0.0` |
 | `PORT` | `3210` | HTTP 端口 |
-| `RUANKAO_MINDMAP` | `ruankao.mm` | 思维导图路径，相对于项目根目录 |
-| `RUANKAO_DATA_FILE` | `data/state.sqlite` | SQLite 数据库路径，相对于项目根目录 |
-| `RUANKAO_LLM_BASE_URL` | 未配置 | OpenAI 兼容 API Base URL |
-| `RUANKAO_LLM_API_KEY` | 未配置 | 模型 API 密钥 |
-| `RUANKAO_LLM_MODEL` | 未配置 | 模型名称；使用 HTTP API 时必填 |
-| `RUANKAO_LLM_PROVIDER` | 未配置 | 设置为 `claude-cli` 可启用 Claude CLI |
-| `RUANKAO_CLAUDE_COMMAND` | `claude` | Claude CLI 命令或可执行文件路径 |
-| `RUANKAO_AGENT_TIMEOUT_MS` | `600000` | 单次模型请求超时，单位为毫秒 |
-| `RUANKAO_BANK_FILE` | `../ruankao-architect-practice/data/bank.json` | 真题库 JSON 路径，相对于项目根目录 |
+| `ARCHITECT_MINDMAP` | `architect.mm` | 思维导图路径，相对于项目根目录 |
+| `ARCHITECT_DATA_FILE` | `data/state.sqlite` | SQLite 数据库路径，相对于项目根目录 |
+| `ARCHITECT_LLM_BASE_URL` | 未配置 | OpenAI 兼容 API Base URL |
+| `ARCHITECT_LLM_API_KEY` | 未配置 | 模型 API 密钥 |
+| `ARCHITECT_LLM_MODEL` | 未配置 | 模型名称；使用 HTTP API 时必填 |
+| `ARCHITECT_LLM_PROVIDER` | 未配置 | 设置为 `claude-cli` 可启用 Claude CLI |
+| `ARCHITECT_CLAUDE_COMMAND` | `claude` | Claude CLI 命令或可执行文件路径 |
+| `ARCHITECT_AGENT_TIMEOUT_MS` | `600000` | 单次模型请求超时，单位为毫秒 |
+| `ARCHITECT_BANK_FILE` | `../architect-architect-practice/data/bank.json` | 真题库 JSON 路径，相对于项目根目录 |
 
 项目根目录的 `.env` 会在生成器初始化时读取。操作系统中已经存在的同名环境变量优先级更高，不会被 `.env` 覆盖。修改 `.env` 后需要重启服务。
 
@@ -330,7 +330,7 @@ node --check public/app.js
 ```text
 .
 ├── server.mjs                 # HTTP 服务、静态资源和 API 路由
-├── ruankao.mm                 # Freeplane 思维导图，生成题目的唯一资料源
+├── architect.mm                 # Freeplane 思维导图，生成题目的唯一资料源
 ├── data/
 │   ├── chapters.json          # 教材章节基础元数据
 │   └── state.sqlite           # 本地学习数据，运行后创建
@@ -353,7 +353,7 @@ node --check public/app.js
 └── package.json               # npm 命令及 Node.js 版本要求
 ```
 
-仓库根目录的 `create_freeplane_*.mjs`、`append_*.mjs` 和 `reorder_*.mjs` 是思维导图整理辅助脚本，不参与 Web 服务的日常运行。修改或执行这些脚本前建议备份 `ruankao.mm`。
+仓库根目录的 `create_freeplane_*.mjs`、`append_*.mjs` 和 `reorder_*.mjs` 是思维导图整理辅助脚本，不参与 Web 服务的日常运行。修改或执行这些脚本前建议备份 `architect.mm`。
 
 ### 主要模块职责
 
@@ -366,7 +366,7 @@ node --check public/app.js
 ### 数据流
 
 ```text
-ruankao.mm
+architect.mm
     ↓ 解析选中章节/小节
 QuestionGenerator
     ↓ OpenAI 兼容 API 或 Claude CLI
@@ -549,8 +549,8 @@ data/state.json.migrated-backup
 ### 模型显示“未配置”
 
 - 确认 `.env` 位于项目根目录。
-- 确认同时填写 `RUANKAO_LLM_BASE_URL` 和 `RUANKAO_LLM_MODEL`。
-- Claude CLI 模式必须设置 `RUANKAO_LLM_PROVIDER=claude-cli`。
+- 确认同时填写 `ARCHITECT_LLM_BASE_URL` 和 `ARCHITECT_LLM_MODEL`。
+- Claude CLI 模式必须设置 `ARCHITECT_LLM_PROVIDER=claude-cli`。
 - 修改 `.env` 后重启服务。
 - 用 `/api/model-status` 检查服务端识别结果。
 
@@ -560,7 +560,7 @@ data/state.json.migrated-backup
 - 检查供应商服务状态、API 额度、代理和 DNS。
 - OpenAI 兼容地址通常填写到 `/v1`，程序会自动追加 `/chat/completions`。
 - 本地 Ollama 要确认模型已经下载且服务正在运行。
-- 慢模型可增大 `RUANKAO_AGENT_TIMEOUT_MS`。
+- 慢模型可增大 `ARCHITECT_AGENT_TIMEOUT_MS`。
 
 ### 鉴权失败或限流
 
@@ -570,9 +570,9 @@ data/state.json.migrated-backup
 
 ### 某章或小节无法选择
 
-- 确认 `ruankao.mm` 中存在符合命名规则的章节节点。
+- 确认 `architect.mm` 中存在符合命名规则的章节节点。
 - 小节应是章节的直接子节点，并使用 `N.x` 开头。
-- 确认 `RUANKAO_MINDMAP` 指向正确文件。
+- 确认 `ARCHITECT_MINDMAP` 指向正确文件。
 - 保存思维导图后刷新页面。
 - 应用不会使用 PDF 填补缺失章节。
 
@@ -580,20 +580,20 @@ data/state.json.migrated-backup
 
 - 确认 Node.js 版本不低于 22.5。
 - 确认数据库目录可写。
-- 确认没有把目录路径误填为 `RUANKAO_DATA_FILE`。
+- 确认没有把目录路径误填为 `ARCHITECT_DATA_FILE`。
 - 如果数据库疑似损坏，先完整备份现有数据库及 WAL/SHM 文件，再尝试从页面导出的 JSON 备份恢复。
 
 ### 后台运行与日志
 
 ```bash
 HOST=0.0.0.0 PORT=3210 nohup npm start \
-  >/tmp/ruankao-practice.log 2>&1 &
+  >/tmp/architect-practice.log 2>&1 &
 ```
 
 查看日志：
 
 ```bash
-tail -f /tmp/ruankao-practice.log
+tail -f /tmp/architect-practice.log
 ```
 
 停止服务前建议先查找准确 PID，避免误杀其他 Node.js 进程：

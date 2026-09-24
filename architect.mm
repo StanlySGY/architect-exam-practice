@@ -1,7 +1,7 @@
 <map version="freeplane 1.12.15">
 <!--To view this file, download free mind mapping software Freeplane from https://www.freeplane.org -->
 <bookmarks/>
-<node TEXT="ruankao" FOLDED="false" ID="ID_696401721" CREATED="1610381621824" MODIFIED="1786959518953" STYLE="oval">
+<node TEXT="architect" FOLDED="false" ID="ID_696401721" CREATED="1610381621824" MODIFIED="1786959518953" STYLE="oval">
 <font SIZE="18"/>
 <hook NAME="MapStyle">
     <properties edgeColorConfiguration="#808080ff,#ff0000ff,#0000ffff,#00ff00ff,#ff00ffff,#00ffffff,#7c0000ff,#00007cff,#007c00ff,#7c007cff,#007c7cff,#7c7c00ff" auto_compact_layout="true" fit_to_viewport="false" show_icons="BESIDE_NODES" associatedTemplateLocation="template:/standard-1.6.mm" show_tags="UNDER_NODES" show_icon_for_attributes="true" show_note_icons="true" showTagCategories="false"/>

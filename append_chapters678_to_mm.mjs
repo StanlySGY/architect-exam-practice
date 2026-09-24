@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 
-const mapFile = new URL('./ruankao.mm', import.meta.url);
+const mapFile = new URL('./architect.mm', import.meta.url);
 const dataFile = new URL('./create_freeplane_chapters678.mjs', import.meta.url);
 const source = fs.readFileSync(dataFile, 'utf8');
 const start = source.indexOf('const chapter6=');
@@ -39,7 +39,7 @@ const chapter16Start = xml.indexOf('<node TEXT="第16章 嵌入式系统架构�
 const rootClose = xml.lastIndexOf('\n</node>\n</map>');
 const insertion = chapter16Start >= 0 ? chapter16Start : rootClose;
 if (insertion < 0) throw new Error('Cannot locate insertion point');
-fs.copyFileSync(mapFile, '/tmp/ruankao.mm.before-chapters678');
+fs.copyFileSync(mapFile, '/tmp/architect.mm.before-chapters678');
 xml = xml.slice(0, insertion) + chapterXml + '\n' + xml.slice(insertion);
 fs.writeFileSync(mapFile, xml);
 console.log(JSON.stringify({

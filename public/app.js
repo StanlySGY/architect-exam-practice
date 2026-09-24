@@ -912,7 +912,7 @@ function exportWrong() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = `ruankao-wrong-${new Date().toISOString().slice(0, 10)}.txt`;
+  link.download = `architect-wrong-${new Date().toISOString().slice(0, 10)}.txt`;
   document.body.append(link);
   link.click();
   link.remove();
@@ -1357,10 +1357,10 @@ async function loadDataStatus() {
 async function loadModelConfig() {
   try {
     const config = await api("/api/model-config");
-    $("#mc-base-url").value = config.RUANKAO_LLM_BASE_URL || "";
-    $("#mc-api-key").value = config.RUANKAO_LLM_API_KEY || "";
-    $("#mc-model").value = config.RUANKAO_LLM_MODEL || "";
-    $("#mc-models").value = config.RUANKAO_LLM_MODELS || "";
+    $("#mc-base-url").value = config.ARCHITECT_LLM_BASE_URL || "";
+    $("#mc-api-key").value = config.ARCHITECT_LLM_API_KEY || "";
+    $("#mc-model").value = config.ARCHITECT_LLM_MODEL || "";
+    $("#mc-models").value = config.ARCHITECT_LLM_MODELS || "";
   } catch (error) {
     showToast(error.message, true);
   }
@@ -1374,10 +1374,10 @@ async function saveModelConfig() {
     await api("/api/model-config", {
       method: "POST",
       body: JSON.stringify({
-        RUANKAO_LLM_BASE_URL: $("#mc-base-url").value.trim(),
-        RUANKAO_LLM_API_KEY: $("#mc-api-key").value.trim(),
-        RUANKAO_LLM_MODEL: $("#mc-model").value.trim(),
-        RUANKAO_LLM_MODELS: $("#mc-models").value.trim(),
+        ARCHITECT_LLM_BASE_URL: $("#mc-base-url").value.trim(),
+        ARCHITECT_LLM_API_KEY: $("#mc-api-key").value.trim(),
+        ARCHITECT_LLM_MODEL: $("#mc-model").value.trim(),
+        ARCHITECT_LLM_MODELS: $("#mc-models").value.trim(),
       }),
     });
     showToast("模型配置已保存并生效");
@@ -1445,7 +1445,7 @@ async function exportData() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = `ruankao-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    link.download = `architect-backup-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.append(link);
     link.click();
     link.remove();
