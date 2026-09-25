@@ -1,0 +1,12 @@
+{
+  "id": "improve-personal-practice-bank",
+  "title": "完善单人备考体验并生成题库",
+  "status": "in_progress",
+  "complexity": "L+",
+  "risk": "high",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "归档任务；保留用户数据备份和模型题人工核查提示",
+  "createdAt": "2026-09-24T23:44:29+08:00",
+  "branch": "main"
+}

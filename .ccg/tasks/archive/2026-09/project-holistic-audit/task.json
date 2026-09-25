@@ -1,0 +1,12 @@
+{
+  "id": "project-holistic-audit",
+  "title": "全面评估项目设计、功能完成度、功能逻辑、UI/UX 与个人用户体验",
+  "status": "in_progress",
+  "complexity": "L+",
+  "risk": "low",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "审计已归档；按优先级修复确认的问题",
+  "createdAt": "2026-09-24T23:01:45+08:00",
+  "branch": "main"
+}
