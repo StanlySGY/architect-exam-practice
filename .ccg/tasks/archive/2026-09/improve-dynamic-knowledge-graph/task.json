@@ -1,0 +1,12 @@
+{
+  "id": "improve-dynamic-knowledge-graph",
+  "title": "重做知识图谱动态交互与视觉层级",
+  "status": "completed",
+  "complexity": "M",
+  "risk": "low",
+  "domain": "frontend",
+  "currentPhase": "completed",
+  "nextAction": "归档任务资料",
+  "createdAt": "2026-09-25T00:00:00+08:00",
+  "branch": "main"
+}

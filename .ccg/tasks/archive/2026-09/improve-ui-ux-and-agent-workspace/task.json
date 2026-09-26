@@ -1,0 +1,12 @@
+{
+  "id": "improve-ui-ux-and-agent-workspace",
+  "title": "重构备考工作区 UI/UX 与多模型 Agent 配置",
+  "status": "completed",
+  "complexity": "L+",
+  "risk": "high",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "已完成，待归档",
+  "createdAt": "2026-09-25T00:00:00+08:00",
+  "branch": "main"
+}

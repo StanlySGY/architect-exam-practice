@@ -1,0 +1,12 @@
+{
+  "id": "polish-ai-workflows-and-reading-density",
+  "title": "完善 Agent 取消与长内容阅读工作流",
+  "status": "completed",
+  "complexity": "M",
+  "risk": "medium",
+  "domain": "frontend/backend",
+  "currentPhase": "completed",
+  "nextAction": "归档任务",
+  "createdAt": "2026-09-25T00:00:00+08:00",
+  "branch": "main"
+}
