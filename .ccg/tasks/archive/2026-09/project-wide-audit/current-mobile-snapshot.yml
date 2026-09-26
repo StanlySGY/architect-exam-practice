@@ -1,0 +1,22 @@
+- generic [active] [ref=e1] [box=0,0,390,3358]:
+  - generic [ref=e2] [box=0,0,390,3358]:
+    - complementary [ref=e3] [box=0,0,390,349]:
+      - link "架 架构师练习室" [ref=e4] [cursor=pointer] [box=8,12,374,52]:
+        - /url: "#"
+        - generic [ref=e5] [box=16,18,32,32]: 架
+        - generic [ref=e6] [box=58,22,90,25]: 架构师练习室
+      - navigation "主导航" [ref=e7] [box=8,72,374,172]:
+        - generic [ref=e8] [box=0,0,0,0]
+        - generic [ref=e31] [box=0,0,0,0]
+        - generic [ref=e54] [box=0,0,0,0]
+      - generic [ref=e71] [box=8,252,374,84]:
+        - generic [ref=e73] [box=16,267,358,20]
+        - button "模型状态 kimi-k3" [ref=e166] [cursor=pointer] [box=16,312,358,18]
+    - main [ref=e82] [box=0,349,390,3009]:
+      - generic [ref=e83] [box=18,349,354,2929]:
+        - generic [ref=e84] [box=18,349,354,165]
+        - generic [ref=e167] [box=18,514,354,189]
+        - generic [ref=e87] [box=18,723,354,704]
+        - generic [ref=e113] [box=18,1447,354,519]
+        - generic [ref=e123] [box=18,2005,354,1273]
+  - status [ref=e164] [box=330,868,36,26]
