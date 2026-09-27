@@ -171,8 +171,11 @@ main{width:100%;max-width:none;margin:0;padding-left:clamp(24px,4vw,64px);paddin
 .wiki-graph{min-width:0;display:flex;flex-direction:column;max-width:100%;overflow:hidden;padding:20px 24px 14px}
 .wiki-graph .panel-heading{margin-bottom:14px}
 .wiki-graph-tools{display:flex;gap:6px}
-.graph-tool-button{width:34px;height:34px;font-size:0}
-.graph-tool-button svg{width:16px;height:16px}
+/* 图标 + 文字的工具按钮：避免纯图标按钮之间难以区分。 */
+.graph-tool-button{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);font:inherit;font-size:12px;font-weight:500;cursor:pointer}
+.graph-tool-button svg{width:14px;height:14px;flex:0 0 auto;color:var(--muted)}
+.graph-tool-button:hover{border-color:var(--green);color:var(--green-dark)}
+.graph-tool-button:hover svg{color:var(--green-dark)}
 .wiki-graph-canvas{position:relative;width:100%;flex:1;min-height:340px;min-width:0;max-width:100%;overflow:hidden;border:1px solid var(--line);background:#fbfcfb;touch-action:none}
 .wiki-graph-svg{display:block;width:100%;height:100%;background:#fbfcfb;cursor:grab;touch-action:none}
 .wiki-graph-svg.is-panning{cursor:grabbing}
@@ -194,7 +197,7 @@ main{width:100%;max-width:none;margin:0;padding-left:clamp(24px,4vw,64px);paddin
 .wiki-graph-tooltip p{margin:6px 0 0;color:#3f4b44;font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .wiki-graph-tooltip-points{margin:6px 0 0;padding-left:16px;color:#3f4b44;font-size:12px;line-height:1.5}
 .wiki-graph-tooltip-points li{margin:2px 0}
-.wiki-graph-heading-tools{display:flex;align-items:center;gap:12px}
+.wiki-graph-heading-tools{display:flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:flex-end}
 .wiki-graph-colorby{display:flex;align-items:center;gap:6px;margin:0;color:var(--muted);font-size:12px;font-weight:500}
 .wiki-graph-colorby select{width:auto;margin:0;padding-top:6px;padding-bottom:6px;font-size:12px}
 .wiki-graph-popover{position:absolute;z-index:7;width:308px;max-width:calc(100% - 16px);padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:var(--paper);box-shadow:0 8px 24px rgb(0 0 0 / .14)}

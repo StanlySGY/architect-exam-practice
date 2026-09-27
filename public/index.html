@@ -648,22 +648,28 @@
                       </select>
                     </label>
                     <div class="wiki-graph-tools">
-                      <button id="wiki-graph-fit" class="icon-button graph-tool-button" type="button" aria-label="适配画布" title="适配画布">
+                      <button id="wiki-graph-fit" class="graph-tool-button" type="button" title="缩放至显示全部节点">
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+                          <polyline points="4 14 10 14 10 20" />
+                          <polyline points="20 10 14 10 14 4" />
+                          <line x1="14" x2="21" y1="10" y2="3" />
+                          <line x1="3" x2="10" y1="21" y2="14" />
                         </svg>
+                        <span>适配</span>
                       </button>
-                      <button id="wiki-graph-fullscreen" class="icon-button graph-tool-button" type="button" aria-label="浏览器全屏" title="浏览器全屏">
+                      <button id="wiki-graph-fullscreen" class="graph-tool-button" type="button" title="浏览器全屏">
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3" />
                         </svg>
+                        <span>全屏</span>
                       </button>
-                      <button id="wiki-graph-reset" class="icon-button graph-tool-button" type="button" aria-label="重新布局" title="重新布局">
+                      <button id="wiki-graph-reset" class="graph-tool-button" type="button" title="重新随机排布节点">
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M20 11a8 8 0 0 0-14.7-4L3 10" />
                           <path d="M3 5v5h5M4 13a8 8 0 0 0 14.7 4L21 14" />
                           <path d="M21 19v-5h-5" />
                         </svg>
+                        <span>重排</span>
                       </button>
                     </div>
                   </div>
