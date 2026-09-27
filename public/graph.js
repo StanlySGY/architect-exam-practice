@@ -1,5 +1,5 @@
 // 知识图谱：受限力导向布局 + 平移缩放交互，从 app.js 拆分出的独立模块。
-// 渲染入口由 app.js 调用；openWikiDetail 属于应用层，通过 initWikiGraphDeps 注入。
+// 渲染入口由 app.js 调用；openEntry 属于应用层（跳转阅读视图），通过 initWikiGraphDeps 注入。
 import { $, element, emptyMessage } from "./ui.js";
 
 let graphDeps = {};
@@ -44,26 +44,6 @@ function graphWorldForCanvas(canvas) {
   return { width: Math.max(1, height * aspect), height };
 }
 
-function populateWikiGraphChapters(entries) {
-  const select = $("#wiki-graph-chapter");
-  if (!select) return "all";
-  const current = select.value || "all";
-  const chapters = [...new Set(entries.map((entry) => Number(entry.chapter) || 0))].sort(
-    (a, b) => a - b,
-  );
-  select.replaceChildren(
-    element("option", { text: "全部章节", attrs: { value: "all" } }),
-    ...chapters.map((chapter) =>
-      element("option", {
-        text: `第 ${chapter} 章`,
-        attrs: { value: chapter },
-      }),
-    ),
-  );
-  select.value = chapters.includes(Number(current)) ? current : "all";
-  return select.value;
-}
-
 function graphPointFromEvent(svg, event, world) {
   const rect = svg.getBoundingClientRect();
   return {
@@ -98,41 +78,51 @@ function wikiGraphLabelRequired(graph, node) {
   );
 }
 
+// sigma.js 的 labelRenderedSizeThreshold 约定：节点渲染尺寸（像素）达到阈值才显示标签，
+// 悬停/选中/邻居/搜索命中始终显示。
+const LABEL_RENDERED_THRESHOLD = 4;
+
 function wikiGraphLabelBox(node) {
-  const label = node.element.querySelector(".wiki-graph-node-label");
-  const rect = label?.getBoundingClientRect();
-  if (rect && rect.width > 0 && rect.height > 0) {
-    return {
-      left: rect.left - 4,
-      right: rect.right + 4,
-      top: rect.top - 3,
-      bottom: rect.bottom + 3,
-    };
-  }
-  const width = Math.max(24, label?.getComputedTextLength?.() || [...node.title].length * 11);
-  const top = node.y + node.radius + 7;
+  const half = node.labelWidth / 2 + 4;
+  const top = node.labelPos.y - 4;
   return {
-    left: node.x - width / 2 - 4,
-    right: node.x + width / 2 + 4,
+    left: node.labelPos.x - half,
+    right: node.labelPos.x + half,
     top,
-    bottom: top + 17,
+    bottom: top + 15,
   };
 }
 
 function updateWikiGraphLabels(graph) {
-  const candidates = graph.nodes
-    .filter((node) => node.prominent || wikiGraphLabelRequired(graph, node))
-    .sort((a, b) => {
-      const aRequired = wikiGraphLabelRequired(graph, a);
-      const bRequired = wikiGraphLabelRequired(graph, b);
-      if (aRequired !== bRequired) return Number(bRequired) - Number(aRequired);
-      return b.degree - a.degree || a.title.localeCompare(b.title, "zh-CN");
-    });
-  const occupied = [];
+  const view = graph.view;
+  const candidates = [];
   for (const node of graph.nodes) {
-    node.element.classList.remove("is-label-hidden");
+    // 标签在缩放变换之外的屏幕空间层：位置跟随节点，字号恒定不随缩放膨胀。
+    const x = node.x * graph.scale + graph.tx;
+    const y = node.y * graph.scale + graph.ty + node.radius * graph.scale + 13;
+    node.labelPos = { x, y };
+    const required = wikiGraphLabelRequired(graph, node);
+    node.labelVisible =
+      x > -60 &&
+      x < view.width + 60 &&
+      y > -20 &&
+      y < view.height + 20 &&
+      (required || node.radius * graph.scale >= LABEL_RENDERED_THRESHOLD);
+    if (node.labelVisible) candidates.push(node);
   }
+  candidates.sort((a, b) => {
+    const aRequired = wikiGraphLabelRequired(graph, a);
+    const bRequired = wikiGraphLabelRequired(graph, b);
+    if (aRequired !== bRequired) return Number(bRequired) - Number(aRequired);
+    return b.degree - a.degree || a.title.localeCompare(b.title, "zh-CN");
+  });
+  const occupied = [];
   for (const node of candidates) {
+    if (!node.labelWidth) {
+      node.labelWidth =
+        node.labelElement?.getComputedTextLength?.() ||
+        [...node.title].length * 11;
+    }
     const required = wikiGraphLabelRequired(graph, node);
     const box = wikiGraphLabelBox(node);
     const overlaps = occupied.some(
@@ -143,11 +133,51 @@ function updateWikiGraphLabels(graph) {
         box.bottom > other.top,
     );
     if (overlaps && !required) {
-      node.element.classList.add("is-label-hidden");
+      node.labelVisible = false;
       continue;
     }
     occupied.push(box);
   }
+  for (const node of graph.nodes) {
+    const label = node.labelElement;
+    if (!label) continue;
+    if (!node.labelVisible) {
+      label.classList.add("is-hidden");
+      continue;
+    }
+    label.classList.remove("is-hidden");
+    label.setAttribute("x", node.labelPos.x);
+    label.setAttribute("y", node.labelPos.y);
+  }
+}
+
+// 悬停预览卡（Obsidian 式）：标题 + 章节 + 关联数 + 摘要摘录，跟随节点定位。
+function showWikiGraphTooltip(graph, node) {
+  const tooltip = graph.tooltip;
+  if (!tooltip) return;
+  tooltip.replaceChildren(
+    element("strong", { text: node.title }),
+    element("span", {
+      className: "wiki-graph-tooltip-meta",
+      text: `第 ${node.chapter} 章 · ${node.degree} 条关联`,
+    }),
+    node.summary ? element("p", { text: node.summary }) : null,
+  );
+  const k = graph.view.width / graph.world.width;
+  const x = (node.x * graph.scale + graph.tx) * k;
+  const y = (node.y * graph.scale + graph.ty) * k;
+  const flip = x + 300 > graph.view.width;
+  tooltip.style.left = `${graphClamp(
+    flip ? x - 292 : x + 18,
+    8,
+    Math.max(8, graph.view.width - 284),
+  )}px`;
+  tooltip.style.top = `${graphClamp(y - 24, 8, Math.max(8, graph.view.height - 150))}px`;
+  tooltip.hidden = false;
+}
+
+function hideWikiGraphTooltip(graph) {
+  if (graph.tooltip) graph.tooltip.hidden = true;
 }
 
 function updateWikiGraphFocus(graph) {
@@ -215,6 +245,19 @@ export function fitWikiGraph(graph) {
   graph.tx = (graph.world.width - width * graph.scale) / 2 - minX * graph.scale;
   graph.ty = (graph.world.height - height * graph.scale) / 2 - minY * graph.scale;
   updateWikiGraphTransform(graph);
+}
+
+// 目录定位：把指定条目的节点居中并高亮，用于目录与图谱联动。
+export function focusWikiGraphNode(id) {
+  const graph = wikiGraphState;
+  if (!graph) return;
+  const node = graph.nodesById.get(id);
+  if (!node) return;
+  graph.selectedId = id;
+  graph.tx = graph.world.width / 2 - node.x * graph.scale;
+  graph.ty = graph.world.height / 2 - node.y * graph.scale;
+  updateWikiGraphTransform(graph);
+  updateWikiGraphFocus(graph);
 }
 
 function updateWikiGraphPositions(graph) {
@@ -379,7 +422,7 @@ function installWikiGraphPointerEvents(graph) {
         graph.suppressClick = true;
         graph.selectedId = drag.id;
         updateWikiGraphFocus(graph);
-        graphDeps.openWikiDetail?.(drag.id);
+        graphDeps.openEntry?.(drag.id);
         setTimeout(() => {
           graph.suppressClick = false;
         }, 0);
@@ -404,7 +447,7 @@ function installWikiGraphPointerEvents(graph) {
     const nextScale = graphClamp(
       graph.scale * (event.deltaY > 0 ? 0.9 : 1.1),
       0.42,
-      2.4,
+      3.5,
     );
     graph.scale = nextScale;
     graph.tx = point.x - before.x * nextScale;
@@ -413,17 +456,15 @@ function installWikiGraphPointerEvents(graph) {
   }, { passive: false });
 }
 
-export function renderWikiGraph(entries) {
+export function renderWikiGraph(entries, { focusId = null } = {}) {
   const canvas = $("#wiki-graph-canvas");
   destroyWikiGraph();
   const world = graphWorldForCanvas(canvas);
-  const selectedChapter = populateWikiGraphChapters(entries);
-  const visibleEntries = selectedChapter === "all"
-    ? entries
-    : entries.filter((entry) => String(Number(entry.chapter) || 0) === selectedChapter);
+  // 条目已由应用层按搜索/章节/状态筛过后传入，图谱与目录始终展示同一批数据。
+  const visibleEntries = entries;
   if (!visibleEntries.length) {
     $("#wiki-graph-summary").textContent = "暂无条目";
-    canvas.replaceChildren(emptyMessage("没有匹配条目", "切换章节或清除筛选后再试。"));
+    canvas.replaceChildren(emptyMessage("没有匹配条目", "调整搜索或筛选条件后再试。"));
     return;
   }
   const chapterIds = [...new Set(visibleEntries.map((entry) => Number(entry.chapter) || 0))].sort(
@@ -447,6 +488,7 @@ export function renderWikiGraph(entries) {
     visibleEntries.map((entry) => [entry.id, {
       id: entry.id,
       title: entry.title,
+      summary: entry.summary,
       chapter: Number(entry.chapter) || 0,
       x: 0,
       y: 0,
@@ -456,6 +498,10 @@ export function renderWikiGraph(entries) {
       fy: null,
       radius: 7,
       degree: 0,
+      labelElement: null,
+      labelWidth: 0,
+      labelPos: { x: 0, y: 0 },
+      labelVisible: false,
       color: GRAPH_CHAPTER_COLORS[chapterIds.indexOf(Number(entry.chapter) || 0) % GRAPH_CHAPTER_COLORS.length],
     }]),
   );
@@ -479,13 +525,6 @@ export function renderWikiGraph(entries) {
     adjacency.get(edge.source.id)?.add(edge.target.id);
     adjacency.get(edge.target.id)?.add(edge.source.id);
   }
-  const prominentIds = new Set(
-    [...nodeById.values()]
-      .filter((node) => node.degree > 0)
-      .sort((a, b) => b.degree - a.degree)
-      .slice(0, Math.min(12, nodeById.size))
-      .map((node) => node.id),
-  );
   for (const [index, node] of [...nodeById.values()].entries()) {
     const center = chapterCenters.get(node.chapter) ?? {
       x: world.width / 2,
@@ -497,7 +536,6 @@ export function renderWikiGraph(entries) {
     node.x = center.x + Math.cos(angle) * distance;
     node.y = center.y + Math.sin(angle) * distance;
     node.radius = graphClamp(6 + Math.sqrt(node.degree) * 1.7, 6, 14);
-    node.prominent = prominentIds.has(node.id) || node.degree >= 5;
   }
   const svgNS = "http://www.w3.org/2000/svg";
   const svg = document.createElementNS(svgNS, "svg");
@@ -516,11 +554,22 @@ export function renderWikiGraph(entries) {
   const nodeLayer = document.createElementNS(svgNS, "g");
   nodeLayer.setAttribute("class", "wiki-graph-nodes");
   content.append(edgeLayer, nodeLayer);
-  svg.append(background, content);
+  // 标签层位于缩放变换之外：字号固定（屏幕空间），位置逐帧跟随节点。
+  const labelLayer = document.createElementNS(svgNS, "g");
+  labelLayer.setAttribute("class", "wiki-graph-labels");
+  svg.append(background, content, labelLayer);
+  // 悬停预览卡挂在画布上，按屏幕空间定位。
+  const tooltip = element("div", { className: "wiki-graph-tooltip" });
+  tooltip.hidden = true;
   const graph = {
     svg,
     content,
     world,
+    // 视口（画布像素）：标签与提示卡按屏幕空间定位。
+    view: {
+      width: canvas.clientWidth,
+      height: canvas.clientHeight,
+    },
     nodes: [...nodeById.values()],
     nodesById: nodeById,
     edges,
@@ -533,7 +582,9 @@ export function renderWikiGraph(entries) {
     ty: 0,
     raf: 0,
     suppressClick: false,
-    searchTerm: $("#wiki-graph-search")?.value || "",
+    tooltip,
+    // 与目录共用应用层的搜索框，重渲染时同步当前关键词。
+    searchTerm: $("#wiki-search")?.value.trim().toLowerCase() || "",
     searchMatches: new Set(),
     summaryText: `${nodeById.size} 个知识点 · ${edges.length} 条关联`,
   };
@@ -562,16 +613,17 @@ export function renderWikiGraph(entries) {
     circle.setAttribute("class", "wiki-graph-node-dot");
     circle.setAttribute("r", node.radius);
     circle.setAttribute("fill", node.color);
+    group.append(title, hit, halo, circle);
     const label = document.createElementNS(svgNS, "text");
-    label.setAttribute("class", "wiki-graph-node-label");
-    label.setAttribute("text-anchor", "middle");
-    label.setAttribute("dy", node.radius + 19);
+    label.setAttribute("class", "wiki-graph-label");
     label.textContent = node.title;
-    group.append(title, hit, halo, circle, label);
+    labelLayer.append(label);
+    node.labelElement = label;
     node.element = group;
     nodeLayer.append(group);
     group.addEventListener("pointerdown", (event) => {
       event.stopPropagation();
+      hideWikiGraphTooltip(graph);
       const point = graphWorldPoint(graph, event);
       graph.drag = {
         id: node.id,
@@ -590,34 +642,41 @@ export function renderWikiGraph(entries) {
     group.addEventListener("pointerenter", () => {
       graph.hoveredId = node.id;
       updateWikiGraphFocus(graph);
+      showWikiGraphTooltip(graph, node);
     });
     group.addEventListener("pointerleave", () => {
       if (graph.drag?.id === node.id) return;
       graph.hoveredId = null;
       updateWikiGraphFocus(graph);
+      hideWikiGraphTooltip(graph);
     });
     group.addEventListener("click", () => {
       if (graph.suppressClick) return;
       graph.selectedId = node.id;
       updateWikiGraphFocus(graph);
-      graphDeps.openWikiDetail?.(node.id);
+      graphDeps.openEntry?.(node.id);
     });
     group.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         graph.selectedId = node.id;
         updateWikiGraphFocus(graph);
-        graphDeps.openWikiDetail?.(node.id);
+        graphDeps.openEntry?.(node.id);
       }
     });
   }
   wikiGraphState = graph;
   $("#wiki-graph-summary").textContent = graph.summaryText;
-  canvas.replaceChildren(svg);
+  canvas.replaceChildren(svg, tooltip);
   updateWikiGraphPositions(graph);
   updateWikiGraphFocus(graph);
   updateWikiGraphSearch(graph, graph.searchTerm);
   fitWikiGraph(graph);
+  // 回到图谱时高亮当前阅读的条目，保持两个视图的上下文连续。
+  if (focusId && nodeById.has(focusId)) {
+    graph.selectedId = focusId;
+    updateWikiGraphFocus(graph);
+  }
   installWikiGraphPointerEvents(graph);
   startWikiGraphSimulation(graph);
 }

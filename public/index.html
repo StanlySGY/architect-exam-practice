@@ -570,41 +570,43 @@
           </div>
           <div id="wiki-ask-result" class="wiki-ask-result" hidden></div>
         </section>
-        <div class="wiki-tabs" role="tablist" aria-label="知识库视图">
-          <button
-            id="wiki-reader-tab"
-            class="wiki-tab active"
-            type="button"
-            role="tab"
-            aria-selected="true"
-            aria-controls="wiki-reader-pane"
-          >
-            知识点
+        <div id="wiki-filters" class="wiki-filters">
+          <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" />
+          <select id="wiki-chapter-filter" aria-label="按章节筛选">
+            <option value="all">全部章节</option>
+          </select>
+          <select id="wiki-status-filter">
+            <option value="all">全部状态</option>
+            <option value="draft">待校对</option>
+            <option value="reviewed">已校对</option>
+            <option value="flagged">有疑问</option>
+          </select>
+          <button id="wiki-lint" class="secondary" type="button">
+            知识库自检
           </button>
-          <button
-            id="wiki-graph-toggle"
-            class="wiki-tab"
-            type="button"
-            role="tab"
-            aria-selected="false"
-            aria-controls="wiki-graph"
-          >
-            知识图谱
-          </button>
-        </div>
-        <section id="wiki-reader-pane" class="wiki-pane" role="tabpanel" aria-labelledby="wiki-reader-tab">
-          <div id="wiki-filters" class="wiki-filters">
-            <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" />
-            <select id="wiki-status-filter">
-              <option value="all">全部状态</option>
-              <option value="draft">待校对</option>
-              <option value="reviewed">已校对</option>
-              <option value="flagged">有疑问</option>
-            </select>
-            <button id="wiki-lint" class="secondary" type="button">
-              知识库自检
+          <div class="wiki-view-switch" role="tablist" aria-label="知识库视图">
+            <button
+              id="wiki-reader-tab"
+              class="wiki-tab active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              aria-controls="wiki-reader"
+            >
+              阅读视图
+            </button>
+            <button
+              id="wiki-graph-toggle"
+              class="wiki-tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              aria-controls="wiki-graph"
+            >
+              知识图谱
             </button>
           </div>
+        </div>
           <section id="wiki-lint-result" class="panel wiki-lint" hidden>
             <div class="panel-heading">
               <div>
@@ -622,72 +624,50 @@
               </div>
               <div id="wiki-directory" aria-busy="false" aria-live="polite"></div>
             </aside>
-            <article id="wiki-reader" class="panel wiki-reader-content" tabindex="0" aria-busy="false" aria-live="polite"></article>
-          </div>
-        </section>
-        <section
-          id="wiki-graph"
-          class="panel wiki-graph"
-          role="tabpanel"
-          aria-labelledby="wiki-graph-toggle"
-          hidden
-        >
-          <div class="panel-heading">
-            <div>
-              <h2>知识图谱</h2>
-            </div>
-            <span id="wiki-graph-summary" class="availability"></span>
-          </div>
-          <div class="wiki-graph-toolbar">
-            <label class="wiki-graph-search">
-              <span>查找</span>
-              <input id="wiki-graph-search" type="search" placeholder="定位知识点" />
-            </label>
-            <label class="wiki-graph-filter">
-              <span>章节</span>
-              <select id="wiki-graph-chapter">
-                <option value="all">全部章节</option>
-              </select>
-            </label>
-            <div class="wiki-graph-tools">
-              <button
-                id="wiki-graph-fit"
-                class="icon-button graph-tool-button"
-                type="button"
-                aria-label="适配画布"
-                title="适配画布"
+            <div class="wiki-content">
+              <article id="wiki-reader" class="panel wiki-reader-content" tabindex="0" aria-busy="false" aria-live="polite"></article>
+              <section
+                id="wiki-graph"
+                class="panel wiki-graph"
+                role="tabpanel"
+                aria-labelledby="wiki-graph-toggle"
+                hidden
               >
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
-                </svg>
-              </button>
-              <button
-                id="wiki-graph-reset"
-                class="icon-button graph-tool-button"
-                type="button"
-                aria-label="重新布局"
-                title="重新布局"
-              >
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20 11a8 8 0 0 0-14.7-4L3 10" />
-                  <path d="M3 5v5h5M4 13a8 8 0 0 0 14.7 4L21 14" />
-                  <path d="M21 19v-5h-5" />
-                </svg>
-              </button>
+                <div class="panel-heading">
+                  <div>
+                    <h2>知识图谱</h2>
+                    <span id="wiki-graph-summary" class="availability"></span>
+                  </div>
+                  <div class="wiki-graph-tools">
+                    <button id="wiki-graph-fit" class="icon-button graph-tool-button" type="button" aria-label="适配画布" title="适配画布">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+                      </svg>
+                    </button>
+                    <button id="wiki-graph-reset" class="icon-button graph-tool-button" type="button" aria-label="重新布局" title="重新布局">
+                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 11a8 8 0 0 0-14.7-4L3 10" />
+                        <path d="M3 5v5h5M4 13a8 8 0 0 0 14.7 4L21 14" />
+                        <path d="M21 19v-5h-5" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div
+                  id="wiki-graph-canvas"
+                  class="wiki-graph-canvas"
+                  role="application"
+                  aria-label="可交互知识图谱"
+                  tabindex="0"
+                ></div>
+                <div class="wiki-graph-legend" aria-hidden="true">
+                  <span><i class="wiki-graph-legend-dot core"></i>连接越多，节点越大</span>
+                  <span><i class="wiki-graph-legend-line"></i>关联关系</span>
+                  <span>点击节点在阅读视图查看详情</span>
+                </div>
+              </section>
             </div>
           </div>
-          <div
-            id="wiki-graph-canvas"
-            class="wiki-graph-canvas"
-            role="application"
-            aria-label="可交互知识图谱"
-            tabindex="0"
-          ></div>
-          <div class="wiki-graph-legend" aria-hidden="true">
-            <span><i class="wiki-graph-legend-dot core"></i>连接越多，节点越大</span>
-            <span><i class="wiki-graph-legend-line"></i>关联关系</span>
-          </div>
-        </section>
       </section>
 
       <section id="bank-view" class="view page-view">
@@ -958,17 +938,6 @@
     </main>
       </div>
     </div>
-    <dialog id="wiki-detail-dialog" class="wiki-detail-dialog" aria-labelledby="wiki-detail-title">
-      <div class="wiki-detail-shell">
-        <div class="wiki-detail-header">
-          <div>
-            <h2 id="wiki-detail-title">知识点详情</h2>
-          </div>
-          <button id="wiki-detail-close" class="icon-button" type="button" aria-label="关闭详情">×</button>
-        </div>
-        <div id="wiki-detail-content" class="wiki-detail-content"></div>
-      </div>
-    </dialog>
     <dialog id="app-dialog" class="app-dialog" aria-labelledby="app-dialog-title">
       <div class="app-dialog-shell">
         <h2 id="app-dialog-title"></h2>

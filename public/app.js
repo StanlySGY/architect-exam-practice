@@ -6,6 +6,7 @@ import {
   currentWikiGraph,
   destroyWikiGraph,
   fitWikiGraph,
+  focusWikiGraphNode,
   initWikiGraphDeps,
   renderWikiGraph,
   updateWikiGraphSearch,
@@ -3422,8 +3423,10 @@ async function loadWiki() {
     const data = await api("/api/wiki");
     if (!load.isCurrent()) return;
     state.wikiEntries = data.entries;
-    renderWiki(data.entries);
-    if (!$("#wiki-graph").hidden) renderWikiGraph(data.entries);
+    renderWiki();
+    if (!$("#wiki-graph").hidden) {
+      renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+    }
     load.finish();
   } catch (error) {
     load.fail(error, loadWiki);
@@ -3722,26 +3725,57 @@ function wikiDirectoryNode(entry, active) {
   ]);
   button.addEventListener("click", () => {
     state.wikiSelectedId = entry.id;
-    renderWiki(state.wikiEntries);
+    renderWiki();
+    // 图谱模式下点目录 = 在图谱中定位该知识点。
+    if (!$("#wiki-graph").hidden) focusWikiGraphNode(entry.id);
   });
   return button;
 }
 
-function renderWiki(entries) {
+function populateWikiChapterFilter() {
+  const select = $("#wiki-chapter-filter");
+  if (!select) return;
+  const current = select.value || "all";
+  const chapters = [
+    ...new Set(state.wikiEntries.map((entry) => Number(entry.chapter) || 0)),
+  ].sort((a, b) => a - b);
+  select.replaceChildren(
+    element("option", { text: "全部章节", attrs: { value: "all" } }),
+    ...chapters.map((chapter) =>
+      element("option", { text: `第 ${chapter} 章`, attrs: { value: String(chapter) } }),
+    ),
+  );
+  select.value = chapters.includes(Number(current)) ? current : "all";
+}
+
+// 目录与图谱共用的同一套筛选：搜索关键词 + 章节 + 校对状态。
+function wikiFilteredEntries() {
   const search = $("#wiki-search").value.trim().toLowerCase();
   const statusFilter = $("#wiki-status-filter").value;
-  const filtered = entries.filter((entry) => {
+  const chapterFilter = $("#wiki-chapter-filter").value;
+  return state.wikiEntries.filter((entry) => {
     if (statusFilter !== "all" && entry.status !== statusFilter) return false;
+    if (
+      chapterFilter !== "all" &&
+      String(Number(entry.chapter) || 0) !== chapterFilter
+    ) {
+      return false;
+    }
     if (search) {
       const text = `${entry.title} ${entry.summary} ${(entry.keyPoints ?? []).join(" ")}`.toLowerCase();
       if (!text.includes(search)) return false;
     }
     return true;
   });
+}
+
+function renderWiki() {
+  populateWikiChapterFilter();
+  const filtered = wikiFilteredEntries();
   if (!filtered.some((entry) => entry.id === state.wikiSelectedId)) {
     state.wikiSelectedId = filtered[0]?.id || "";
   }
-  const selected = entries.find((entry) => entry.id === state.wikiSelectedId);
+  const selected = state.wikiEntries.find((entry) => entry.id === state.wikiSelectedId);
   $("#wiki-directory-count").textContent = filtered.length ? `${filtered.length} 个条目` : "0 个条目";
   $("#wiki-directory").replaceChildren(
     ...(filtered.length
@@ -3759,15 +3793,15 @@ function setWikiWorkspaceTab(tab) {
   const graphActive = tab === "graph";
   const readerTab = $("#wiki-reader-tab");
   const graphTab = $("#wiki-graph-toggle");
-  const readerPane = $("#wiki-reader-pane");
-  const graph = $("#wiki-graph");
+  const readerPane = $("#wiki-reader");
+  const graphPane = $("#wiki-graph");
   readerTab.classList.toggle("active", !graphActive);
   graphTab.classList.toggle("active", graphActive);
   readerTab.setAttribute("aria-selected", String(!graphActive));
   graphTab.setAttribute("aria-selected", String(graphActive));
   readerPane.hidden = graphActive;
-  graph.hidden = !graphActive;
-  if (graphActive) renderWikiGraph(state.wikiEntries);
+  graphPane.hidden = !graphActive;
+  if (graphActive) renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
   else destroyWikiGraph();
 }
 
@@ -3785,9 +3819,10 @@ async function jumpToWikiEntry(entryId) {
   }
   $("#wiki-search").value = "";
   $("#wiki-status-filter").value = "all";
+  $("#wiki-chapter-filter").value = "all";
   state.wikiSelectedId = entryId;
   setWikiWorkspaceTab("reader");
-  renderWiki(state.wikiEntries);
+  renderWiki();
   const entry = state.wikiEntries.find((item) => item.id === entryId);
   if (!entry || state.wikiSelectedId !== entryId) {
     showToast("该条目不存在或已被过滤");
@@ -3795,49 +3830,6 @@ async function jumpToWikiEntry(entryId) {
   }
   $("#wiki-reader").scrollTo({ top: 0, behavior: "smooth" });
   $("#wiki-reader").focus({ preventScroll: true });
-}
-
-let wikiDetailScrollY = 0;
-
-function closeWikiDetail() {
-  const dialog = $("#wiki-detail-dialog");
-  if (!dialog) return;
-  if (dialog.open) dialog.close();
-  else dialog.removeAttribute("open");
-  window.scrollTo({ top: wikiDetailScrollY, behavior: "auto" });
-}
-
-function openWikiDetail(entryId) {
-  const entry = state.wikiEntries.find((item) => item.id === entryId);
-  const dialog = $("#wiki-detail-dialog");
-  if (!entry || !dialog) return;
-  wikiDetailScrollY = window.scrollY;
-  const chapter = state.chapters.find((item) => Number(item.id) === Number(entry.chapter));
-  const related = (entry.related || []).map((title, index) => {
-    const tag = element("button", { className: "wiki-related-tag", text: title, attrs: { type: "button" } });
-    const targetId = entry.links?.[index];
-    if (targetId) tag.addEventListener("click", () => {
-      closeWikiDetail();
-      jumpToWikiEntry(targetId);
-    });
-    else tag.disabled = true;
-    return tag;
-  });
-  $("#wiki-detail-title").textContent = entry.title;
-  $("#wiki-detail-content").replaceChildren(
-    element("div", { className: "bank-tags" }, [
-      element("span", { text: `第 ${entry.chapter} 章${chapter?.title ? ` · ${chapter.title}` : ""}` }),
-      element("span", { text: entry.section || "整章" }),
-      element("span", { className: `wiki-status ${entry.status}`, text: wikiStatusNames[entry.status] || entry.status }),
-    ]),
-    element("p", { className: "wiki-summary", text: entry.summary }),
-    sourceNodeNode(entry.sourceNode),
-    entry.keyPoints?.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "关键要点" }), element("ul", {}, entry.keyPoints.map((point) => element("li", { text: point })))]) : null,
-    entry.commonMistakes?.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "常见误区" }), element("ul", {}, entry.commonMistakes.map((point) => element("li", { text: point })))]) : null,
-    related.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "关联知识点" }), element("div", { className: "wiki-related" }, related)]) : null,
-  );
-  if (typeof dialog.showModal === "function") dialog.showModal();
-  else dialog.setAttribute("open", "");
 }
 
 async function generateWiki() {
@@ -4502,34 +4494,36 @@ $("#mc-save").addEventListener("click", saveModelConfig);
 $("#mc-add-provider").addEventListener("click", addProvider);
 $("#agent-add").addEventListener("click", addAgent);
 $("#agent-task-run").addEventListener("click", runAgentTask);
-$("#wiki-detail-close").addEventListener("click", closeWikiDetail);
-$("#wiki-detail-dialog").addEventListener("click", (event) => {
-  if (event.target === event.currentTarget) closeWikiDetail();
-});
-$("#wiki-detail-dialog").addEventListener("close", () => {
-  window.scrollTo({ top: wikiDetailScrollY, behavior: "auto" });
-});
 $("#app-dialog").addEventListener("click", (event) => {
   if (event.target === event.currentTarget) {
     finishAppDialog($("#app-dialog-input").hidden ? false : null);
   }
 });
 $("#wiki-generate").addEventListener("click", generateWiki);
-$("#wiki-search").addEventListener("input", () => renderWiki(state.wikiEntries));
-$("#wiki-status-filter").addEventListener("change", () =>
-  renderWiki(state.wikiEntries),
-);
+$("#wiki-search").addEventListener("input", () => {
+  renderWiki();
+  // 图谱激活时同步关键词高亮，目录与图谱共用同一套搜索。
+  const graph = currentWikiGraph();
+  if (graph && !$("#wiki-graph").hidden) {
+    updateWikiGraphSearch(graph, $("#wiki-search").value);
+  }
+});
+$("#wiki-chapter-filter").addEventListener("change", () => {
+  renderWiki();
+  if (!$("#wiki-graph").hidden) {
+    renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+  }
+});
+$("#wiki-status-filter").addEventListener("change", () => {
+  renderWiki();
+  if (!$("#wiki-graph").hidden) {
+    renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+  }
+});
 // 知识图谱模块需要的应用层回调在首次进入图谱前注入。
-initWikiGraphDeps({ openWikiDetail });
+initWikiGraphDeps({ openEntry: jumpToWikiEntry });
 $("#wiki-reader-tab").addEventListener("click", () => setWikiWorkspaceTab("reader"));
 $("#wiki-graph-toggle").addEventListener("click", () => setWikiWorkspaceTab("graph"));
-$("#wiki-graph-chapter").addEventListener("change", () => {
-  if (!$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
-});
-$("#wiki-graph-search").addEventListener("input", (event) => {
-  const graph = currentWikiGraph();
-  if (graph) updateWikiGraphSearch(graph, event.target.value);
-});
 $("#wiki-graph-fit").addEventListener("click", () => {
   const graph = currentWikiGraph();
   if (graph) fitWikiGraph(graph);
@@ -4542,7 +4536,9 @@ window.addEventListener("resize", () => {
   if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
   clearTimeout(wikiGraphResizeTimer);
   wikiGraphResizeTimer = setTimeout(() => {
-    if (currentWikiGraph() && !$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
+    if (currentWikiGraph() && !$("#wiki-graph").hidden) {
+      renderWikiGraph(state.wikiEntries, { focusId: state.wikiSelectedId });
+    }
   }, 120);
 });
 $("#wiki-lint").addEventListener("click", runWikiLint);
