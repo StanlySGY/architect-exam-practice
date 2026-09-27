@@ -194,10 +194,20 @@ function hideWikiGraphTooltip(graph) {
   if (graph.tooltip) graph.tooltip.hidden = true;
 }
 
-// 点击节点的详情气泡：原地展示完整摘要与要点，导航改为气泡里的主动选择。
+// 点击节点的详情气泡：原地展示，可展开到整个画布大小，导航改为气泡里的主动选择。
 function positionWikiGraphPopover(graph, node) {
   const popover = graph.popover;
   if (!popover || popover.hidden) return;
+  if (popover.classList.contains("is-expanded")) {
+    // 展开模式铺满画布，正文区自行滚动。
+    popover.style.left = "2%";
+    popover.style.top = "2%";
+    popover.style.width = "96%";
+    popover.style.maxHeight = "96%";
+    return;
+  }
+  popover.style.width = "";
+  popover.style.maxHeight = "";
   const k = graph.view.width / graph.world.width;
   const x = (node.x * graph.scale + graph.tx) * k;
   const y = (node.y * graph.scale + graph.ty) * k;
@@ -214,6 +224,59 @@ function showWikiGraphPopover(graph, node) {
   const popover = graph.popover;
   if (!popover) return;
   graph.popoverNodeId = node.id;
+  const expanded = Boolean(graph.popoverExpanded);
+  popover.classList.toggle("is-expanded", expanded);
+  const body = element("div", { className: "wiki-graph-popover-body" });
+  body.replaceChildren(
+    element("span", {
+      className: "wiki-graph-tooltip-meta",
+      text: `第 ${node.chapter} 章 · ${node.section || "整章"} · ${node.degree} 条关联`,
+    }),
+    node.summary
+      ? element("p", { className: "wiki-graph-popover-summary", text: node.summary })
+      : null,
+    (node.keyPoints ?? []).length
+      ? element("div", { className: "wiki-graph-popover-points" }, [
+          element("h5", { text: "关键要点" }),
+          element(
+            "ul",
+            {},
+            node.keyPoints
+              .slice(0, expanded ? undefined : 3)
+              .map((point) => element("li", { text: point })),
+          ),
+        ])
+      : null,
+    expanded && (node.commonMistakes ?? []).length
+      ? element("div", { className: "wiki-graph-popover-points mistakes" }, [
+          element("h5", { text: "常见误区" }),
+          element("ul", {}, node.commonMistakes.map((point) => element("li", { text: point }))),
+        ])
+      : null,
+    expanded && (node.related ?? []).length
+      ? element("div", { className: "wiki-graph-popover-related" }, [
+          element("h5", { text: "关联知识点" }),
+          element(
+            "div",
+            { className: "wiki-related" },
+            node.related.map((title, index) => {
+              const targetId = node.links?.[index];
+              const tag = element("span", {
+                className: `wiki-related-tag${targetId ? " linked" : ""}`,
+                text: title,
+              });
+              if (targetId) {
+                tag.addEventListener("click", () => {
+                  hideWikiGraphPopover(graph);
+                  graphDeps.openEntry?.(targetId);
+                });
+              }
+              return tag;
+            }),
+          ),
+        ])
+      : null,
+  );
   popover.replaceChildren(
     element("div", { className: "wiki-graph-popover-head" }, [
       element("strong", { text: node.title }),
@@ -222,26 +285,21 @@ function showWikiGraphPopover(graph, node) {
         text: WIKI_STATUS_NAMES[node.status] || node.status,
       }),
       element("button", {
+        className: "icon-button wiki-graph-popover-toggle",
+        text: expanded ? "⤡" : "⤢",
+        attrs: {
+          type: "button",
+          "aria-label": expanded ? "收起详情" : "展开到页面大小",
+          title: expanded ? "收起详情" : "展开到页面大小",
+        },
+      }),
+      element("button", {
         className: "icon-button wiki-graph-popover-close",
         text: "×",
         attrs: { type: "button", "aria-label": "关闭详情" },
       }),
     ]),
-    element("span", {
-      className: "wiki-graph-tooltip-meta",
-      text: `第 ${node.chapter} 章 · ${node.section || "整章"} · ${node.degree} 条关联`,
-    }),
-    node.summary ? element("p", { className: "wiki-graph-popover-summary", text: node.summary }) : null,
-    (node.keyPoints ?? []).length
-      ? element("div", { className: "wiki-graph-popover-points" }, [
-          element("h5", { text: "关键要点" }),
-          element(
-            "ul",
-            {},
-            node.keyPoints.slice(0, 3).map((point) => element("li", { text: point })),
-          ),
-        ])
-      : null,
+    body,
     element("div", { className: "wiki-graph-popover-actions" }, [
       element("button", {
         className: "secondary",
@@ -250,6 +308,12 @@ function showWikiGraphPopover(graph, node) {
       }),
     ]),
   );
+  popover
+    .querySelector(".wiki-graph-popover-toggle")
+    .addEventListener("click", () => {
+      graph.popoverExpanded = !graph.popoverExpanded;
+      showWikiGraphPopover(graph, node);
+    });
   popover
     .querySelector(".wiki-graph-popover-close")
     .addEventListener("click", () => hideWikiGraphPopover(graph));
@@ -591,7 +655,10 @@ export function renderWikiGraph(entries, { focusId = null, colorBy = "chapter" }
       summary: entry.summary,
       section: entry.section,
       status: entry.status,
-      keyPoints: (entry.keyPoints ?? []).slice(0, 3),
+      keyPoints: entry.keyPoints ?? [],
+      commonMistakes: entry.commonMistakes ?? [],
+      related: entry.related ?? [],
+      links: entry.links ?? [],
       chapter: Number(entry.chapter) || 0,
       x: 0,
       y: 0,

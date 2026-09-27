@@ -4551,6 +4551,34 @@ $("#wiki-graph-fit").addEventListener("click", () => {
   const graph = currentWikiGraph();
   if (graph) fitWikiGraph(graph);
 });
+// 浏览器全屏：整个图谱面板铺满屏幕，画布随视口重建，点节点更从容。
+$("#wiki-graph-fullscreen").addEventListener("click", async () => {
+  const panel = $("#wiki-graph");
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await panel.requestFullscreen();
+  } catch (error) {
+    showToast(`无法进入全屏：${error.message}`, true);
+  }
+});
+document.addEventListener("fullscreenchange", () => {
+  const fullscreen = Boolean(document.fullscreenElement);
+  const button = $("#wiki-graph-fullscreen");
+  if (button) {
+    button.title = fullscreen ? "退出全屏" : "浏览器全屏";
+    button.setAttribute("aria-label", button.title);
+  }
+  if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
+  // 全屏切换会改变画布尺寸，短暂等待布局生效后按新视口重建图谱。
+  setTimeout(() => {
+    if (currentWikiGraph() && !$("#wiki-graph").hidden) {
+      renderWikiGraph(wikiFilteredEntries(), {
+        focusId: state.wikiSelectedId,
+        colorBy: state.wikiGraphColorBy,
+      });
+    }
+  }, 80);
+});
 $("#wiki-graph-reset").addEventListener("click", () => {
   if (!$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
 });
