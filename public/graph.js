@@ -18,6 +18,10 @@ const GRAPH_CHAPTER_COLORS = [
   "#896f76",
   "#7d7b91",
 ];
+// 颜色分组（Obsidian color groups 约定）：按状态 / 按关联度着色。
+const WIKI_STATUS_NAMES = { draft: "待校对", reviewed: "已校对", flagged: "有疑问" };
+const WIKI_STATUS_COLORS = { draft: "#d8902f", reviewed: "#1f6b4f", flagged: "#b84d3d" };
+const WIKI_DEGREE_COLORS = ["#9aa79e", "#55786a", "#1f6b4f", "#143d2c"];
 let wikiGraphState = null;
 
 function graphHash(value) {
@@ -66,6 +70,9 @@ function updateWikiGraphTransform(graph) {
     `translate(${graph.tx} ${graph.ty}) scale(${graph.scale})`,
   );
   updateWikiGraphLabels(graph);
+  if (graph.popoverNodeId) {
+    positionWikiGraphPopover(graph, graph.nodesById.get(graph.popoverNodeId));
+  }
 }
 
 function wikiGraphLabelRequired(graph, node) {
@@ -151,7 +158,7 @@ function updateWikiGraphLabels(graph) {
   }
 }
 
-// 悬停预览卡（Obsidian 式）：标题 + 章节 + 关联数 + 摘要摘录，跟随节点定位。
+// 悬停预览卡（Obsidian 式）：标题 + 章节 + 关联数 + 摘要摘录 + 关键要点前两条。
 function showWikiGraphTooltip(graph, node) {
   const tooltip = graph.tooltip;
   if (!tooltip) return;
@@ -162,22 +169,103 @@ function showWikiGraphTooltip(graph, node) {
       text: `第 ${node.chapter} 章 · ${node.degree} 条关联`,
     }),
     node.summary ? element("p", { text: node.summary }) : null,
+    (node.keyPoints ?? []).length
+      ? element(
+          "ul",
+          { className: "wiki-graph-tooltip-points" },
+          node.keyPoints.slice(0, 2).map((point) => element("li", { text: point })),
+        )
+      : null,
   );
   const k = graph.view.width / graph.world.width;
   const x = (node.x * graph.scale + graph.tx) * k;
   const y = (node.y * graph.scale + graph.ty) * k;
-  const flip = x + 300 > graph.view.width;
+  const flip = x + 330 > graph.view.width;
   tooltip.style.left = `${graphClamp(
-    flip ? x - 292 : x + 18,
+    flip ? x - 322 : x + 18,
     8,
-    Math.max(8, graph.view.width - 284),
+    Math.max(8, graph.view.width - 314),
   )}px`;
-  tooltip.style.top = `${graphClamp(y - 24, 8, Math.max(8, graph.view.height - 150))}px`;
+  tooltip.style.top = `${graphClamp(y - 24, 8, Math.max(8, graph.view.height - 170))}px`;
   tooltip.hidden = false;
 }
 
 function hideWikiGraphTooltip(graph) {
   if (graph.tooltip) graph.tooltip.hidden = true;
+}
+
+// 点击节点的详情气泡：原地展示完整摘要与要点，导航改为气泡里的主动选择。
+function positionWikiGraphPopover(graph, node) {
+  const popover = graph.popover;
+  if (!popover || popover.hidden) return;
+  const k = graph.view.width / graph.world.width;
+  const x = (node.x * graph.scale + graph.tx) * k;
+  const y = (node.y * graph.scale + graph.ty) * k;
+  const flip = x + 340 > graph.view.width;
+  popover.style.left = `${graphClamp(
+    flip ? x - 326 : x + 20,
+    8,
+    Math.max(8, graph.view.width - 326),
+  )}px`;
+  popover.style.top = `${graphClamp(y - 30, 8, Math.max(8, graph.view.height - 230))}px`;
+}
+
+function showWikiGraphPopover(graph, node) {
+  const popover = graph.popover;
+  if (!popover) return;
+  graph.popoverNodeId = node.id;
+  popover.replaceChildren(
+    element("div", { className: "wiki-graph-popover-head" }, [
+      element("strong", { text: node.title }),
+      element("span", {
+        className: `wiki-status ${node.status}`,
+        text: WIKI_STATUS_NAMES[node.status] || node.status,
+      }),
+      element("button", {
+        className: "icon-button wiki-graph-popover-close",
+        text: "×",
+        attrs: { type: "button", "aria-label": "关闭详情" },
+      }),
+    ]),
+    element("span", {
+      className: "wiki-graph-tooltip-meta",
+      text: `第 ${node.chapter} 章 · ${node.section || "整章"} · ${node.degree} 条关联`,
+    }),
+    node.summary ? element("p", { className: "wiki-graph-popover-summary", text: node.summary }) : null,
+    (node.keyPoints ?? []).length
+      ? element("div", { className: "wiki-graph-popover-points" }, [
+          element("h5", { text: "关键要点" }),
+          element(
+            "ul",
+            {},
+            node.keyPoints.slice(0, 3).map((point) => element("li", { text: point })),
+          ),
+        ])
+      : null,
+    element("div", { className: "wiki-graph-popover-actions" }, [
+      element("button", {
+        className: "secondary",
+        text: "在阅读视图打开",
+        attrs: { type: "button" },
+      }),
+    ]),
+  );
+  popover
+    .querySelector(".wiki-graph-popover-close")
+    .addEventListener("click", () => hideWikiGraphPopover(graph));
+  popover
+    .querySelector(".wiki-graph-popover-actions button")
+    .addEventListener("click", () => {
+      hideWikiGraphPopover(graph);
+      graphDeps.openEntry?.(node.id);
+    });
+  popover.hidden = false;
+  positionWikiGraphPopover(graph, node);
+}
+
+function hideWikiGraphPopover(graph) {
+  graph.popoverNodeId = null;
+  if (graph.popover) graph.popover.hidden = true;
 }
 
 function updateWikiGraphFocus(graph) {
@@ -271,6 +359,9 @@ function updateWikiGraphPositions(graph) {
     edge.element.setAttribute("y2", edge.target.y);
   }
   updateWikiGraphLabels(graph);
+  if (graph.popoverNodeId) {
+    positionWikiGraphPopover(graph, graph.nodesById.get(graph.popoverNodeId));
+  }
 }
 
 function startWikiGraphSimulation(graph, alpha = 1) {
@@ -367,6 +458,7 @@ function installWikiGraphPointerEvents(graph) {
   const { svg } = graph;
   svg.addEventListener("pointerdown", (event) => {
     if (event.target.closest?.(".wiki-graph-node")) return;
+    hideWikiGraphPopover(graph);
     const point = graphPointFromEvent(svg, event, graph.world);
     graph.pan = {
       pointerId: event.pointerId,
@@ -422,7 +514,7 @@ function installWikiGraphPointerEvents(graph) {
         graph.suppressClick = true;
         graph.selectedId = drag.id;
         updateWikiGraphFocus(graph);
-        graphDeps.openEntry?.(drag.id);
+        showWikiGraphPopover(graph, node);
         setTimeout(() => {
           graph.suppressClick = false;
         }, 0);
@@ -456,7 +548,7 @@ function installWikiGraphPointerEvents(graph) {
   }, { passive: false });
 }
 
-export function renderWikiGraph(entries, { focusId = null } = {}) {
+export function renderWikiGraph(entries, { focusId = null, colorBy = "chapter" } = {}) {
   const canvas = $("#wiki-graph-canvas");
   destroyWikiGraph();
   const world = graphWorldForCanvas(canvas);
@@ -484,11 +576,22 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
       y: centerY + Math.sin(angle) * radiusY,
     });
   });
+  // 颜色分组：按章节（默认）/ 按状态 / 按关联度，与图例联动。
+  const colorFor = (entry) => {
+    if (colorBy === "status") {
+      return WIKI_STATUS_COLORS[entry.status] || WIKI_STATUS_COLORS.draft;
+    }
+    const chapterIndex = chapterIds.indexOf(Number(entry.chapter) || 0);
+    return GRAPH_CHAPTER_COLORS[(chapterIndex < 0 ? 0 : chapterIndex) % GRAPH_CHAPTER_COLORS.length];
+  };
   const nodeById = new Map(
     visibleEntries.map((entry) => [entry.id, {
       id: entry.id,
       title: entry.title,
       summary: entry.summary,
+      section: entry.section,
+      status: entry.status,
+      keyPoints: (entry.keyPoints ?? []).slice(0, 3),
       chapter: Number(entry.chapter) || 0,
       x: 0,
       y: 0,
@@ -502,7 +605,7 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
       labelWidth: 0,
       labelPos: { x: 0, y: 0 },
       labelVisible: false,
-      color: GRAPH_CHAPTER_COLORS[chapterIds.indexOf(Number(entry.chapter) || 0) % GRAPH_CHAPTER_COLORS.length],
+      color: colorFor(entry),
     }]),
   );
   const edgeMap = new Map();
@@ -524,6 +627,15 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
     edge.target.degree += 1;
     adjacency.get(edge.source.id)?.add(edge.target.id);
     adjacency.get(edge.target.id)?.add(edge.source.id);
+  }
+  if (colorBy === "degree") {
+    for (const node of nodeById.values()) {
+      node.color =
+        node.degree >= 6 ? WIKI_DEGREE_COLORS[3]
+        : node.degree >= 3 ? WIKI_DEGREE_COLORS[2]
+        : node.degree >= 1 ? WIKI_DEGREE_COLORS[1]
+        : WIKI_DEGREE_COLORS[0];
+    }
   }
   for (const [index, node] of [...nodeById.values()].entries()) {
     const center = chapterCenters.get(node.chapter) ?? {
@@ -558,9 +670,11 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
   const labelLayer = document.createElementNS(svgNS, "g");
   labelLayer.setAttribute("class", "wiki-graph-labels");
   svg.append(background, content, labelLayer);
-  // 悬停预览卡挂在画布上，按屏幕空间定位。
+  // 悬停预览卡与点击详情气泡挂在画布上，按屏幕空间定位。
   const tooltip = element("div", { className: "wiki-graph-tooltip" });
   tooltip.hidden = true;
+  const popover = element("div", { className: "wiki-graph-popover" });
+  popover.hidden = true;
   const graph = {
     svg,
     content,
@@ -583,6 +697,8 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
     raf: 0,
     suppressClick: false,
     tooltip,
+    popover,
+    popoverNodeId: null,
     // 与目录共用应用层的搜索框，重渲染时同步当前关键词。
     searchTerm: $("#wiki-search")?.value.trim().toLowerCase() || "",
     searchMatches: new Set(),
@@ -624,6 +740,7 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
     group.addEventListener("pointerdown", (event) => {
       event.stopPropagation();
       hideWikiGraphTooltip(graph);
+      hideWikiGraphPopover(graph);
       const point = graphWorldPoint(graph, event);
       graph.drag = {
         id: node.id,
@@ -642,7 +759,8 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
     group.addEventListener("pointerenter", () => {
       graph.hoveredId = node.id;
       updateWikiGraphFocus(graph);
-      showWikiGraphTooltip(graph, node);
+      // 详情气泡已在该节点上时不再叠加悬停预览。
+      if (graph.popoverNodeId !== node.id) showWikiGraphTooltip(graph, node);
     });
     group.addEventListener("pointerleave", () => {
       if (graph.drag?.id === node.id) return;
@@ -654,20 +772,28 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
       if (graph.suppressClick) return;
       graph.selectedId = node.id;
       updateWikiGraphFocus(graph);
-      graphDeps.openEntry?.(node.id);
+      showWikiGraphPopover(graph, node);
     });
     group.addEventListener("keydown", (event) => {
       if (event.key === "Enter" || event.key === " ") {
         event.preventDefault();
         graph.selectedId = node.id;
         updateWikiGraphFocus(graph);
-        graphDeps.openEntry?.(node.id);
+        showWikiGraphPopover(graph, node);
       }
     });
   }
   wikiGraphState = graph;
   $("#wiki-graph-summary").textContent = graph.summaryText;
-  canvas.replaceChildren(svg, tooltip);
+  canvas.replaceChildren(svg, tooltip, popover);
+  // Esc 关闭详情气泡（画布元素跨重渲染常驻，只绑定一次）。
+  if (!canvas.dataset.popoverEscBound) {
+    canvas.dataset.popoverEscBound = "1";
+    canvas.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && wikiGraphState) hideWikiGraphPopover(wikiGraphState);
+    });
+  }
+  renderWikiGraphLegend(colorBy);
   updateWikiGraphPositions(graph);
   updateWikiGraphFocus(graph);
   updateWikiGraphSearch(graph, graph.searchTerm);
@@ -681,6 +807,44 @@ export function renderWikiGraph(entries, { focusId = null } = {}) {
   startWikiGraphSimulation(graph);
 }
 
+
+// 图例随颜色分组模式联动（Obsidian color groups 的图例约定）。
+function renderWikiGraphLegend(colorBy) {
+  const legend = $("#wiki-graph-legend");
+  if (!legend) return;
+  const legendItem = (icon, text) => {
+    const span = element("span", {});
+    span.append(icon, document.createTextNode(text));
+    return span;
+  };
+  const dot = (color) => {
+    const i = element("i", { className: "wiki-graph-legend-dot" });
+    i.style.background = color;
+    return i;
+  };
+  const items = [
+    legendItem(element("i", { className: "wiki-graph-legend-dot core" }), "连接越多，节点越大"),
+  ];
+  if (colorBy === "status") {
+    for (const status of ["draft", "reviewed", "flagged"]) {
+      items.push(legendItem(dot(WIKI_STATUS_COLORS[status]), WIKI_STATUS_NAMES[status]));
+    }
+  } else if (colorBy === "degree") {
+    const ranges = [
+      ["无关联", 0],
+      ["1-2 条", 1],
+      ["3-5 条", 2],
+      ["6 条以上", 3],
+    ];
+    for (const [label, index] of ranges) {
+      items.push(legendItem(dot(WIKI_DEGREE_COLORS[index]), label));
+    }
+  } else {
+    items.push(legendItem(element("i", { className: "wiki-graph-legend-line" }), "颜色区分章节"));
+  }
+  items.push(element("span", { text: "点击节点查看详情气泡" }));
+  legend.replaceChildren(...items);
+}
 
 export function currentWikiGraph() {
   return wikiGraphState;

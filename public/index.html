@@ -638,19 +638,29 @@
                     <h2>知识图谱</h2>
                     <span id="wiki-graph-summary" class="availability"></span>
                   </div>
-                  <div class="wiki-graph-tools">
-                    <button id="wiki-graph-fit" class="icon-button graph-tool-button" type="button" aria-label="适配画布" title="适配画布">
-                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
-                      </svg>
-                    </button>
-                    <button id="wiki-graph-reset" class="icon-button graph-tool-button" type="button" aria-label="重新布局" title="重新布局">
-                      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M20 11a8 8 0 0 0-14.7-4L3 10" />
-                        <path d="M3 5v5h5M4 13a8 8 0 0 0 14.7 4L21 14" />
-                        <path d="M21 19v-5h-5" />
-                      </svg>
-                    </button>
+                  <div class="wiki-graph-heading-tools">
+                    <label class="wiki-graph-colorby">
+                      <span>着色</span>
+                      <select id="wiki-graph-colorby">
+                        <option value="chapter">按章节</option>
+                        <option value="status">按状态</option>
+                        <option value="degree">按关联度</option>
+                      </select>
+                    </label>
+                    <div class="wiki-graph-tools">
+                      <button id="wiki-graph-fit" class="icon-button graph-tool-button" type="button" aria-label="适配画布" title="适配画布">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+                        </svg>
+                      </button>
+                      <button id="wiki-graph-reset" class="icon-button graph-tool-button" type="button" aria-label="重新布局" title="重新布局">
+                        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M20 11a8 8 0 0 0-14.7-4L3 10" />
+                          <path d="M3 5v5h5M4 13a8 8 0 0 0 14.7 4L21 14" />
+                          <path d="M21 19v-5h-5" />
+                        </svg>
+                      </button>
+                    </div>
                   </div>
                 </div>
                 <div
@@ -660,10 +670,10 @@
                   aria-label="可交互知识图谱"
                   tabindex="0"
                 ></div>
-                <div class="wiki-graph-legend" aria-hidden="true">
+                <div class="wiki-graph-legend" id="wiki-graph-legend" aria-hidden="true">
                   <span><i class="wiki-graph-legend-dot core"></i>连接越多，节点越大</span>
-                  <span><i class="wiki-graph-legend-line"></i>关联关系</span>
-                  <span>点击节点在阅读视图查看详情</span>
+                  <span><i class="wiki-graph-legend-line"></i>颜色区分章节</span>
+                  <span>点击节点查看详情气泡</span>
                 </div>
               </section>
             </div>

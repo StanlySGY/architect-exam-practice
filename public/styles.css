@@ -188,10 +188,26 @@ main{width:100%;max-width:none;margin:0;padding-left:clamp(24px,4vw,64px);paddin
 /* 屏幕空间标签层：字号恒定，不随缩放膨胀；按渲染尺寸阈值渐进显示。 */
 .wiki-graph-label{fill:var(--ink);font-size:11px;font-weight:500;text-anchor:middle;pointer-events:none;paint-order:stroke;stroke:#fbfcfb;stroke-width:5px;stroke-linejoin:round}
 .wiki-graph-label.is-hidden{display:none}
-.wiki-graph-tooltip{position:absolute;z-index:6;max-width:272px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);box-shadow:0 4px 14px rgb(0 0 0 / .12);pointer-events:none}
+.wiki-graph-tooltip{position:absolute;z-index:6;max-width:300px;padding:10px 12px;border:1px solid var(--line);border-radius:6px;background:var(--paper);box-shadow:0 4px 14px rgb(0 0 0 / .12);pointer-events:none}
 .wiki-graph-tooltip strong{display:block;font-size:13px;line-height:1.4;margin-bottom:2px}
 .wiki-graph-tooltip .wiki-graph-tooltip-meta{display:block;color:var(--muted);font-size:11px}
 .wiki-graph-tooltip p{margin:6px 0 0;color:#3f4b44;font-size:12px;line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.wiki-graph-tooltip-points{margin:6px 0 0;padding-left:16px;color:#3f4b44;font-size:12px;line-height:1.5}
+.wiki-graph-tooltip-points li{margin:2px 0}
+.wiki-graph-heading-tools{display:flex;align-items:center;gap:12px}
+.wiki-graph-colorby{display:flex;align-items:center;gap:6px;margin:0;color:var(--muted);font-size:12px;font-weight:500}
+.wiki-graph-colorby select{width:auto;margin:0;padding-top:6px;padding-bottom:6px;font-size:12px}
+.wiki-graph-popover{position:absolute;z-index:7;width:308px;max-width:calc(100% - 16px);padding:14px 16px;border:1px solid var(--line);border-radius:8px;background:var(--paper);box-shadow:0 8px 24px rgb(0 0 0 / .14)}
+.wiki-graph-popover-head{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.wiki-graph-popover-head strong{flex:1;min-width:0;font-size:14px;line-height:1.45}
+.wiki-graph-popover-head .wiki-status{flex:0 0 auto}
+.wiki-graph-popover-close{width:26px;height:26px;font-size:18px;flex:0 0 auto}
+.wiki-graph-popover .wiki-graph-tooltip-meta{display:block;margin-bottom:4px;color:var(--muted);font-size:11px}
+.wiki-graph-popover-summary{margin:0;color:#3f4b44;font-size:12px;line-height:1.65;max-height:96px;overflow:auto}
+.wiki-graph-popover-points h5{margin:8px 0 2px;color:var(--green);font-size:12px}
+.wiki-graph-popover-points ul{margin:0;padding-left:18px;color:#3f4b44;font-size:12px;line-height:1.55}
+.wiki-graph-popover-actions{display:flex;justify-content:flex-end;margin-top:10px}
+.wiki-graph-popover-actions .secondary{padding:6px 12px;font-size:12px}
 .wiki-graph-node.is-selected .wiki-graph-node-dot{stroke:var(--ink);stroke-width:2.5;filter:drop-shadow(0 2px 3px rgb(0 0 0 / .16))}
 .wiki-graph-node.is-selected .wiki-graph-node-halo{opacity:1}
 .wiki-graph-node.is-neighbor .wiki-graph-node-dot{stroke:var(--green);stroke-width:2.5}

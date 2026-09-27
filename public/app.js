@@ -45,6 +45,7 @@ const state = {
   paperTotal: 0,
   paperLoadId: 0,
   caseExam: null,
+  wikiGraphColorBy: "chapter",
   caseExamTimer: null,
   examDeadline: null,
   examTimer: null,
@@ -3425,7 +3426,10 @@ async function loadWiki() {
     state.wikiEntries = data.entries;
     renderWiki();
     if (!$("#wiki-graph").hidden) {
-      renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+      renderWikiGraph(wikiFilteredEntries(), {
+        focusId: state.wikiSelectedId,
+        colorBy: state.wikiGraphColorBy,
+      });
     }
     load.finish();
   } catch (error) {
@@ -3801,8 +3805,12 @@ function setWikiWorkspaceTab(tab) {
   graphTab.setAttribute("aria-selected", String(graphActive));
   readerPane.hidden = graphActive;
   graphPane.hidden = !graphActive;
-  if (graphActive) renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
-  else destroyWikiGraph();
+  if (graphActive) {
+    renderWikiGraph(wikiFilteredEntries(), {
+      focusId: state.wikiSelectedId,
+      colorBy: state.wikiGraphColorBy,
+    });
+  } else destroyWikiGraph();
 }
 
 // 跳转到指定 Wiki 条目：切换右侧阅读器，不移动整页滚动位置。
@@ -4511,13 +4519,28 @@ $("#wiki-search").addEventListener("input", () => {
 $("#wiki-chapter-filter").addEventListener("change", () => {
   renderWiki();
   if (!$("#wiki-graph").hidden) {
-    renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+    renderWikiGraph(wikiFilteredEntries(), {
+      focusId: state.wikiSelectedId,
+      colorBy: state.wikiGraphColorBy,
+    });
   }
 });
 $("#wiki-status-filter").addEventListener("change", () => {
   renderWiki();
   if (!$("#wiki-graph").hidden) {
-    renderWikiGraph(wikiFilteredEntries(), { focusId: state.wikiSelectedId });
+    renderWikiGraph(wikiFilteredEntries(), {
+      focusId: state.wikiSelectedId,
+      colorBy: state.wikiGraphColorBy,
+    });
+  }
+});
+$("#wiki-graph-colorby").addEventListener("change", (event) => {
+  state.wikiGraphColorBy = event.target.value;
+  if (!$("#wiki-graph").hidden) {
+    renderWikiGraph(wikiFilteredEntries(), {
+      focusId: state.wikiSelectedId,
+      colorBy: state.wikiGraphColorBy,
+    });
   }
 });
 // 知识图谱模块需要的应用层回调在首次进入图谱前注入。
@@ -4537,7 +4560,10 @@ window.addEventListener("resize", () => {
   clearTimeout(wikiGraphResizeTimer);
   wikiGraphResizeTimer = setTimeout(() => {
     if (currentWikiGraph() && !$("#wiki-graph").hidden) {
-      renderWikiGraph(state.wikiEntries, { focusId: state.wikiSelectedId });
+      renderWikiGraph(state.wikiEntries, {
+        focusId: state.wikiSelectedId,
+        colorBy: state.wikiGraphColorBy,
+      });
     }
   }, 120);
 });
