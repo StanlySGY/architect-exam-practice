@@ -3867,6 +3867,7 @@ async function generateWiki() {
       `已生成 ${result.added} 个知识点条目${result.duplicatesSkipped ? `，过滤 ${result.duplicatesSkipped} 条重复` : ""}`,
     );
     await loadWiki();
+    $("#wiki-generate-dialog")?.close();
   } catch (error) {
     if (isGenerationCancelled(error, task.signal)) {
       showToast("已停止生成知识点");
@@ -4508,6 +4509,37 @@ $("#app-dialog").addEventListener("click", (event) => {
   }
 });
 $("#wiki-generate").addEventListener("click", generateWiki);
+// 生成知识点以模态弹窗承载（一次性动作）；进行中不允许意外关闭。
+$("#wiki-generate-open").addEventListener("click", () => {
+  $("#wiki-generate-dialog").showModal();
+});
+$("#wiki-generate-dialog-close").addEventListener("click", () => {
+  $("#wiki-generate-dialog").close();
+});
+$("#wiki-generate-dialog").addEventListener("cancel", (event) => {
+  if (state.generationControllers.has("wiki")) event.preventDefault();
+});
+// 问知识库以右侧抽屉承载（多轮问答）：浏览目录/图谱不中断。
+function openWikiAskDrawer() {
+  const drawer = $("#wiki-ask-drawer");
+  drawer.hidden = false;
+  requestAnimationFrame(() => drawer.classList.add("open"));
+  $("#wiki-question").focus();
+}
+function closeWikiAskDrawer() {
+  const drawer = $("#wiki-ask-drawer");
+  if (drawer.hidden) return;
+  drawer.classList.remove("open");
+  setTimeout(() => {
+    drawer.hidden = true;
+  }, 240);
+}
+$("#wiki-ask-open").addEventListener("click", openWikiAskDrawer);
+$("#wiki-ask-close").addEventListener("click", closeWikiAskDrawer);
+$("#wiki-ask-backdrop").addEventListener("click", closeWikiAskDrawer);
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && !$("#wiki-ask-drawer").hidden) closeWikiAskDrawer();
+});
 $("#wiki-search").addEventListener("input", () => {
   renderWiki();
   // 图谱激活时同步关键词高亮，目录与图谱共用同一套搜索。

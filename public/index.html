@@ -523,53 +523,6 @@
             <p>基于思维导图生成可追溯、可校对的知识点条目；条目正文、关联关系和问答引用分开呈现。</p>
           </div>
         </div>
-        <section class="panel setup-panel">
-          <div class="panel-heading">
-            <div>
-              <h2>生成知识点条目</h2>
-            </div>
-          </div>
-          <div class="two-columns">
-            <label
-              >选择章节<select id="wiki-chapter"></select></label
-            >
-            <label
-              >条目数量<select id="wiki-count">
-                <option>5</option>
-                <option>10</option>
-                <option>15</option>
-                <option>20</option>
-              </select></label
-            >
-          </div>
-          <button id="wiki-generate" class="primary wide" type="button">
-            生成知识点条目
-          </button>
-          <div id="wiki-progress" class="generate-progress" hidden>
-            <span class="spinner" aria-hidden="true"></span>
-            <span id="wiki-progress-text">正在生成知识点…</span>
-            <button id="wiki-cancel" class="ghost generation-cancel" type="button" hidden>
-              停止生成
-            </button>
-          </div>
-        </section>
-        <section class="panel setup-panel">
-          <div class="panel-heading">
-            <div>
-              <h2>问知识库</h2>
-            </div>
-            <span class="availability">AI 只基于知识库条目作答，答案附引用</span>
-          </div>
-          <div class="wiki-ask-bar">
-            <input
-              id="wiki-question"
-              type="search"
-              placeholder="例如：缓存穿透和缓存击穿有什么区别？"
-            />
-            <button id="wiki-ask" class="primary" type="button">提问</button>
-          </div>
-          <div id="wiki-ask-result" class="wiki-ask-result" hidden></div>
-        </section>
         <div id="wiki-filters" class="wiki-filters">
           <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" />
           <select id="wiki-chapter-filter" aria-label="按章节筛选">
@@ -582,9 +535,16 @@
             <option value="flagged">有疑问</option>
           </select>
           <button id="wiki-lint" class="secondary" type="button">
-            知识库自检
+            自检
           </button>
-          <div class="wiki-view-switch" role="tablist" aria-label="知识库视图">
+          <div class="wiki-filters-actions">
+            <button id="wiki-generate-open" class="secondary" type="button">
+              ＋ 生成知识点
+            </button>
+            <button id="wiki-ask-open" class="secondary" type="button">
+              问知识库
+            </button>
+            <div class="wiki-view-switch" role="tablist" aria-label="知识库视图">
             <button
               id="wiki-reader-tab"
               class="wiki-tab active"
@@ -605,6 +565,7 @@
             >
               知识图谱
             </button>
+          </div>
           </div>
         </div>
           <section id="wiki-lint-result" class="panel wiki-lint" hidden>
@@ -959,6 +920,51 @@
     </main>
       </div>
     </div>
+    <dialog id="wiki-generate-dialog" class="app-dialog" aria-labelledby="wiki-generate-title">
+      <div class="app-dialog-shell">
+        <h2 id="wiki-generate-title">生成知识点条目</h2>
+        <div class="app-dialog-message">
+          <p>根据思维导图对应章节生成可溯源的知识点，完成后自动刷新目录；生成期间请勿启动其他模型任务。</p>
+        </div>
+        <div class="wiki-generate-form">
+          <label>章节<select id="wiki-chapter"></select></label>
+          <label>条目数量<select id="wiki-count">
+            <option>5</option>
+            <option>10</option>
+            <option>15</option>
+            <option>20</option>
+          </select></label>
+        </div>
+        <div id="wiki-progress" class="generate-progress" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span id="wiki-progress-text">正在生成知识点…</span>
+          <button id="wiki-cancel" class="ghost generation-cancel" type="button" hidden>
+            停止生成
+          </button>
+        </div>
+        <div class="app-dialog-actions">
+          <button id="wiki-generate-dialog-close" class="ghost" type="button">关闭</button>
+          <button id="wiki-generate" class="primary" type="button">开始生成</button>
+        </div>
+      </div>
+    </dialog>
+    <div id="wiki-ask-backdrop" class="wiki-ask-backdrop" hidden></div>
+    <aside id="wiki-ask-drawer" class="wiki-ask-drawer" role="dialog" aria-label="问知识库" hidden>
+      <div class="wiki-ask-drawer-head">
+        <h2>问知识库</h2>
+        <span class="availability">只基于条目作答，答案附引用</span>
+        <button id="wiki-ask-close" class="icon-button" type="button" aria-label="关闭提问面板">×</button>
+      </div>
+      <div class="wiki-ask-bar">
+        <input
+          id="wiki-question"
+          type="search"
+          placeholder="例如：缓存穿透和缓存击穿有什么区别？"
+        />
+        <button id="wiki-ask" class="primary" type="button">提问</button>
+      </div>
+      <div id="wiki-ask-result" class="wiki-ask-result" hidden></div>
+    </aside>
     <dialog id="app-dialog" class="app-dialog" aria-labelledby="app-dialog-title">
       <div class="app-dialog-shell">
         <h2 id="app-dialog-title"></h2>
