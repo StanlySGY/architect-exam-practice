@@ -1,6 +1,15 @@
 import { renderQuestionFigure } from "/lib/figures.mjs";
 import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
+import { $, element, emptyMessage } from "/ui.js";
+import {
+  currentWikiGraph,
+  destroyWikiGraph,
+  fitWikiGraph,
+  initWikiGraphDeps,
+  renderWikiGraph,
+  updateWikiGraphSearch,
+} from "/graph.js";
 
 const state = {
   chapters: [],
@@ -18,11 +27,28 @@ const state = {
   bankLimit: 50,
   bankTotal: 0,
   wrongRecords: [],
+  wrongOffset: 0,
+  wrongLimit: 50,
+  wrongTotal: 0,
   wikiEntries: [],
+  wikiSelectedId: "",
+  generationControllers: new Map(),
+  loadVersions: new Map(),
+  modelWorkspace: { providers: [], agents: [], defaultAgentId: "" },
+  caseOffset: 0,
+  caseLimit: 4,
+  caseTotal: 0,
+  caseLoadId: 0,
+  paperOffset: 0,
+  paperLimit: 4,
+  paperTotal: 0,
+  paperLoadId: 0,
   caseExam: null,
   caseExamTimer: null,
   examDeadline: null,
   examTimer: null,
+  examSaveQueues: new Map(),
+  examAnswerRevisions: new Map(),
 };
 const difficultyNames = {
   easy: "简单",
@@ -30,23 +56,31 @@ const difficultyNames = {
   hard: "困难",
   mixed: "混合",
 };
-const $ = (selector) => document.querySelector(selector);
 
-function element(tag, { className, text, attrs = {} } = {}, children = []) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (text !== undefined) node.textContent = String(text);
-  for (const [key, value] of Object.entries(attrs))
-    node.setAttribute(key, String(value));
-  node.append(...children.filter(Boolean));
-  return node;
-}
-
-function emptyMessage(title, message) {
-  return element("div", { className: "empty" }, [
-    element("strong", { text: title }),
-    element("span", { text: message }),
-  ]);
+function bankOnboardingNode() {
+  const actions = [
+    ["配置模型", "data", ".model-config-panel"],
+    ["生成章节题目", "home", ".agent-panel"],
+    ["导入真题库", "data", "#import-bank"],
+  ].map(([label, view, target]) => {
+    const button = element("button", {
+      className: "secondary",
+      text: label,
+      attrs: { type: "button" },
+    });
+    button.addEventListener("click", () => {
+      switchView(view);
+      document.querySelector(target)?.scrollIntoView({ behavior: "smooth" });
+    });
+    return button;
+  });
+  return [
+    element("strong", { text: "还没有生成题目" }),
+    element("p", {
+      text: "先在数据管理配置模型，再按章节生成题目；也可以导入真题库开始练习。",
+    }),
+    element("div", { className: "bank-onboarding-actions" }, actions),
+  ];
 }
 
 // 展示题目来源导图节点，便于回溯核对导图内容。
@@ -85,6 +119,17 @@ function examSessionTitle(session) {
   return "综合知识模拟卷";
 }
 
+function setRealExamCatalogStatus(message) {
+  const status = $("#real-exam-catalog-status");
+  if (!status) return;
+  status.replaceChildren(
+    element("span", {
+      attrs: { id: "real-exam-availability" },
+      text: message,
+    }),
+  );
+}
+
 // 关联 Wiki 条目链接，点击跳转到知识库对应条目。
 function wikiLinkNode(wikiEntry) {
   const link = element("button", {
@@ -96,19 +141,190 @@ function wikiLinkNode(wikiEntry) {
   return link;
 }
 
-async function api(path, options = {}) {
-  const response = await fetch(path, {
-    headers: { "content-type": "application/json", ...(options.headers || {}) },
-    ...options,
-  });
-  const body = await response.json().catch(() => ({}));
-  if (!response.ok) {
-    const error = new Error(body.error || `请求失败（${response.status}）`);
-    error.code = body.code;
-    error.status = response.status;
+const ACCESS_TOKEN_KEY = "architect-access-token";
+const DEFAULT_API_TIMEOUT_MS = 30_000;
+const LONG_API_TIMEOUT_MS = 10 * 60_000;
+
+async function api(path, options = {}, authRetried = false) {
+  const {
+    headers: customHeaders = {},
+    signal: callerSignal,
+    timeoutMs = DEFAULT_API_TIMEOUT_MS,
+    ...requestOptions
+  } = options;
+  const headers = { "content-type": "application/json", ...customHeaders };
+  const controller = new AbortController();
+  let timedOut = false;
+  let timer = null;
+  let removeAbortListener = () => {};
+  const timeout = Number(timeoutMs);
+
+  if (!Number.isFinite(timeout) || timeout < 0) {
+    throw new TypeError("timeoutMs 必须是非负数");
+  }
+  const abortFromCaller = () => controller.abort(callerSignal.reason);
+  if (callerSignal) {
+    if (callerSignal.aborted) controller.abort(callerSignal.reason);
+    else {
+      callerSignal.addEventListener("abort", abortFromCaller, { once: true });
+      removeAbortListener = () => callerSignal.removeEventListener("abort", abortFromCaller);
+    }
+  }
+  if (timeout > 0) {
+    timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort(new DOMException("请求超时", "TimeoutError"));
+    }, timeout);
+  }
+  const cleanup = () => {
+    if (timer) clearTimeout(timer);
+    removeAbortListener();
+  };
+  try {
+    try {
+      const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+      if (token) headers.authorization = `Bearer ${token}`;
+    } catch {
+      // 隐私模式禁用 sessionStorage 时仍允许本机无认证模式工作。
+    }
+    const response = await fetch(path, {
+      ...requestOptions,
+      headers,
+      signal: controller.signal,
+    });
+    const body = await response.json().catch((error) => {
+      if (timedOut || callerSignal?.aborted) throw error;
+      return {};
+    });
+    if (timedOut) {
+      const timeoutError = new Error("请求超时，请稍后重试");
+      timeoutError.code = "REQUEST_TIMEOUT";
+      timeoutError.name = "TimeoutError";
+      timeoutError.status = 408;
+      throw timeoutError;
+    }
+    cleanup();
+    if (
+      !response.ok &&
+      response.status === 401 &&
+      body.code === "AUTH_REQUIRED" &&
+      !authRetried
+    ) {
+      const token = await promptDialog({
+        title: "需要访问令牌",
+        message: "服务端已开启访问控制，请输入访问令牌。",
+        placeholder: "访问令牌",
+        type: "password",
+      });
+      if (token?.trim()) {
+        try {
+          sessionStorage.setItem(ACCESS_TOKEN_KEY, token.trim());
+        } catch {
+          // 下一次请求仍可由当前页面重新输入。
+        }
+        return api(path, options, true);
+      }
+    }
+    if (!response.ok) {
+      const error = new Error(body.error || `请求失败（${response.status}）`);
+      error.code = body.code;
+      error.status = response.status;
+      throw error;
+    }
+    return body;
+  } catch (error) {
+    cleanup();
+    // 用户主动取消优先于超时，生成任务等调用方才能正确收尾。
+    if (callerSignal?.aborted) throw error;
+    if (timedOut) {
+      const timeoutError = new Error("请求超时，请稍后重试");
+      timeoutError.code = "REQUEST_TIMEOUT";
+      timeoutError.name = "TimeoutError";
+      timeoutError.status = 408;
+      throw timeoutError;
+    }
     throw error;
   }
-  return body;
+}
+
+function resolveElements(target) {
+  const targets = Array.isArray(target) ? target : [target];
+  return targets
+    .map((item) => (typeof item === "string" ? $(item) : item))
+    .filter(Boolean);
+}
+
+function resolveElement(target) {
+  return resolveElements(target)[0];
+}
+
+function setBusy(target, busy) {
+  for (const node of resolveElements(target)) {
+    node.setAttribute("aria-busy", String(Boolean(busy)));
+  }
+}
+
+function loadingNode(message = "正在加载…") {
+  return element("div", {
+    className: "loading-state",
+    attrs: { role: "status", "aria-live": "polite" },
+  }, [
+    element("span", { className: "spinner", attrs: { "aria-hidden": "true" } }),
+    element("span", { text: message }),
+  ]);
+}
+
+function renderLoading(target, message = "正在加载…") {
+  setBusy(target, true);
+  for (const node of resolveElements(target)) node.replaceChildren(loadingNode(message));
+}
+
+function renderLoadError(target, error, retry) {
+  setBusy(target, false);
+  for (const node of resolveElements(target)) {
+    const retryButton = element("button", {
+      className: "secondary retry-button",
+      text: "重新加载",
+      attrs: { type: "button" },
+    });
+    retryButton.addEventListener("click", () => {
+      retryButton.disabled = true;
+      retryButton.textContent = "加载中…";
+      retry();
+    });
+    node.replaceChildren(
+      element("div", { className: "load-error", attrs: { role: "alert" } }, [
+        element("strong", { text: "加载失败" }),
+        element("p", { text: error?.message || "暂时无法读取数据，请重试。" }),
+        retryButton,
+      ]),
+    );
+  }
+}
+
+function beginLoad(key, target, message = "正在加载…") {
+  const version = (state.loadVersions.get(key) || 0) + 1;
+  state.loadVersions.set(key, version);
+  renderLoading(target, message);
+  return {
+    isCurrent: () => state.loadVersions.get(key) === version,
+    finish() {
+      if (this.isCurrent()) setBusy(target, false);
+    },
+    fail(error, retry) {
+      if (this.isCurrent()) renderLoadError(target, error, retry);
+    },
+  };
+}
+
+function resetExamSaveState(session = null) {
+  state.examSaveQueues.clear();
+  state.examAnswerRevisions.clear();
+  for (const [questionId, revision] of Object.entries(session?.answerRevisions ?? {})) {
+    if (Number.isInteger(revision) && revision > 0) {
+      state.examAnswerRevisions.set(`${session.id}:${questionId}`, revision);
+    }
+  }
 }
 
 function showToast(message, isError = false) {
@@ -121,7 +337,138 @@ function showToast(message, isError = false) {
   }, 4200);
 }
 
+// 自定义确认/输入弹窗：替代原生 window.confirm / window.prompt，风格与站内一致。
+let appDialogResolve = null;
+
+function finishAppDialog(result) {
+  const dialog = $("#app-dialog");
+  if (appDialogResolve) {
+    const resolve = appDialogResolve;
+    appDialogResolve = null;
+    resolve(result);
+  }
+  if (dialog.open) dialog.close();
+}
+
+function appDialog({
+  title,
+  message = "",
+  confirmText = "确认",
+  cancelText = "取消",
+  danger = false,
+  input = null,
+} = {}) {
+  const dialog = $("#app-dialog");
+  if (dialog.open) return Promise.resolve(input === null ? false : null);
+  $("#app-dialog-title").textContent = title;
+  const messageBox = $("#app-dialog-message");
+  messageBox.replaceChildren();
+  if (message) messageBox.append(element("p", { text: message }));
+  messageBox.hidden = !message;
+  const inputNode = $("#app-dialog-input");
+  inputNode.hidden = input === null;
+  inputNode.value = input?.value ?? "";
+  inputNode.type = input?.type || "text";
+  inputNode.placeholder = input?.placeholder || "";
+  const confirmButton = $("#app-dialog-confirm");
+  confirmButton.textContent = confirmText;
+  confirmButton.className = danger ? "danger-button" : "primary";
+  $("#app-dialog-cancel").textContent = cancelText;
+  return new Promise((resolve) => {
+    appDialogResolve = resolve;
+    dialog.addEventListener(
+      "close",
+      () => finishAppDialog(input === null ? false : null),
+      { once: true },
+    );
+    $("#app-dialog-cancel").onclick = () =>
+      finishAppDialog(input === null ? false : null);
+    confirmButton.onclick = () => {
+      if (input !== null && input.required !== false && !inputNode.value.trim()) {
+        inputNode.classList.add("is-invalid");
+        inputNode.focus();
+        return;
+      }
+      finishAppDialog(input === null ? true : inputNode.value);
+    };
+    inputNode.onkeydown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        confirmButton.click();
+      }
+    };
+    inputNode.oninput = () => inputNode.classList.remove("is-invalid");
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    if (input !== null) inputNode.focus();
+    else confirmButton.focus();
+  });
+}
+
+const confirmDialog = (options) => appDialog({ ...options, input: null });
+
+function promptDialog({
+  title,
+  message = "",
+  placeholder = "",
+  type = "text",
+  confirmText = "确认",
+  required = true,
+} = {}) {
+  return appDialog({
+    title,
+    message,
+    confirmText,
+    input: { value: "", type, placeholder, required },
+  });
+}
+
+function beginGenerationTask({ key, button, progress, progressText, cancel, label }) {
+  const controller = new AbortController();
+  const startedAt = Date.now();
+  const originalText = button.textContent;
+  button.disabled = true;
+  button.textContent = `${label}中…`;
+  progress.hidden = false;
+  cancel.hidden = false;
+  cancel.disabled = false;
+  const timer = setInterval(() => {
+    const seconds = Math.round((Date.now() - startedAt) / 1000);
+    progressText.textContent = `正在${label}，已等待 ${seconds} 秒…`;
+  }, 1000);
+  cancel.onclick = () => {
+    if (controller.signal.aborted) return;
+    cancel.disabled = true;
+    progressText.textContent = `正在停止${label}…`;
+    controller.abort();
+  };
+  state.generationControllers.set(key, controller);
+  return {
+    signal: controller.signal,
+    finish() {
+      clearInterval(timer);
+      if (state.generationControllers.get(key) === controller) {
+        state.generationControllers.delete(key);
+      }
+      progress.hidden = true;
+      cancel.hidden = true;
+      cancel.disabled = false;
+      cancel.onclick = null;
+      button.disabled = false;
+      button.textContent = originalText;
+    },
+  };
+}
+
+function isGenerationCancelled(error, signal) {
+  return Boolean(signal?.aborted) || error?.name === "AbortError";
+}
+
 function switchView(view) {
+  if (view !== "materials" && materialState.focus) {
+    materialState.focus = false;
+    applyMaterialReaderState();
+  }
   document
     .querySelectorAll(".view")
     .forEach((item) =>
@@ -150,6 +497,7 @@ function switchView(view) {
   if (view === "data") {
     loadDataStatus();
     loadQuestionIssues();
+    loadAuditLog();
     loadModelConfig();
   }
 }
@@ -180,6 +528,9 @@ function renderChapters() {
     );
   });
   $("#coverage").replaceChildren(...cards);
+  const onboarding = $("#bank-onboarding");
+  onboarding.hidden = state.chapters.some((chapter) => (chapter.counts?.all ?? 0) > 0);
+  if (!onboarding.hidden) onboarding.replaceChildren(...bankOnboardingNode());
   updateAvailability();
 }
 
@@ -252,9 +603,13 @@ function reportButtonNode(questionId) {
 }
 
 async function reportQuestion(questionId, button) {
-  const note = window.prompt(
-    "请简要说明问题（例如：答案错误、解析不一致、题目重复）",
-  );
+  const note = await promptDialog({
+    title: "标记题目有误",
+    message: "请简要说明问题（例如：答案错误、解析不一致、题目重复）。",
+    placeholder: "问题描述",
+    required: false,
+    confirmText: "标记有误",
+  });
   if (note === null) return;
   try {
     await api(`/api/questions/${encodeURIComponent(questionId)}/report`, {
@@ -413,20 +768,41 @@ function renderCurrentQuestion() {
 async function saveExamAnswer(answer) {
   const question = currentQuestion();
   if (!question) return;
+  const previous = state.answers[question.id];
+  const queueKey = `${state.session.id}:${question.id}`;
+  const revision = (state.examAnswerRevisions.get(queueKey) || 0) + 1;
+  state.examAnswerRevisions.set(queueKey, revision);
   state.answers[question.id] = answer;
   $("#submit-hint").textContent = "答案已保存；模拟考试可随时修改答案";
   renderCurrentQuestion();
-  try {
-    await api("/api/exam-answers", {
+  const previousRequest = state.examSaveQueues.get(queueKey) || Promise.resolve();
+  const request = previousRequest.catch(() => {}).then(() => api("/api/exam-answers", {
       method: "POST",
       body: JSON.stringify({
         sessionId: state.session.id,
         questionId: question.id,
         answer,
+        revision,
       }),
-    });
+    }));
+  state.examSaveQueues.set(queueKey, request);
+  try {
+    const result = await request;
+    if (result.revision > revision) {
+      state.examAnswerRevisions.set(queueKey, result.revision);
+    }
   } catch (error) {
-    showToast(error.message, true);
+    // 保存失败时回滚本地选择，避免界面与判卷用的服务端答案不一致。
+    if (state.examAnswerRevisions.get(queueKey) === revision) {
+      if (previous === undefined) delete state.answers[question.id];
+      else state.answers[question.id] = previous;
+      showToast(error.message, true);
+      renderCurrentQuestion();
+    }
+  } finally {
+    if (state.examSaveQueues.get(queueKey) === request) {
+      state.examSaveQueues.delete(queueKey);
+    }
   }
 }
 
@@ -446,6 +822,9 @@ async function checkCurrentAnswer(answer) {
       }),
     });
     $("#submit-hint").textContent = "答案已锁定；请继续作答或提交整套练习";
+    $("#current-question")
+      .querySelector(".current-feedback")
+      ?.scrollIntoView({ block: "nearest", behavior: "smooth" });
   } catch (error) {
     delete state.answers[question.id];
     showToast(error.message, true);
@@ -520,7 +899,7 @@ function setupExamCountdown() {
       clearInterval(state.examTimer);
       state.examTimer = null;
       showToast("考试时间到，自动交卷");
-      submitPractice();
+      submitPractice(null, { auto: true });
     }
   };
   tick();
@@ -550,6 +929,7 @@ async function loadActiveSession() {
 function resumeActiveSession() {
   if (!state.activeSession) return;
   state.session = state.activeSession;
+  resetExamSaveState(state.session);
   state.answers = { ...(state.activeSession.answers ?? {}) };
   state.checks = { ...(state.activeSession.checks ?? {}) };
   state.pendingChecks.clear();
@@ -559,12 +939,20 @@ function resumeActiveSession() {
 
 async function abandonActiveSession() {
   if (!state.activeSession) return;
-  if (!window.confirm("确认放弃这次未完成练习？已作答进度不会计入成绩。"))
+  if (
+    !(await confirmDialog({
+      title: "放弃未完成练习",
+      message: "确认放弃这次未完成练习？已作答进度不会计入成绩。",
+      confirmText: "放弃",
+      danger: true,
+    }))
+  )
     return;
   try {
     await api(`/api/sessions/${encodeURIComponent(state.activeSession.id)}`, {
       method: "DELETE",
     });
+    resetExamSaveState(state.session);
     state.activeSession = null;
     $("#resume-panel").hidden = true;
     showToast("已放弃未完成练习");
@@ -585,6 +973,7 @@ async function startPractice(event) {
         count: $("#count").value,
       }),
     });
+    resetExamSaveState(state.session);
     state.activeSession = null;
     $("#resume-panel").hidden = true;
     renderQuestions();
@@ -598,14 +987,14 @@ async function generateQuestions() {
   const button = $("#generate-button");
   const progress = $("#generate-progress");
   const progressText = $("#generate-progress-text");
-  button.disabled = true;
-  button.textContent = "生成中…";
-  progress.hidden = false;
-  const startedAt = Date.now();
-  const timer = setInterval(() => {
-    const seconds = Math.round((Date.now() - startedAt) / 1000);
-    progressText.textContent = `正在生成题目，已等待 ${seconds} 秒…`;
-  }, 1000);
+  const task = beginGenerationTask({
+    key: "questions",
+    button,
+    progress,
+    progressText,
+    cancel: $("#generate-cancel"),
+    label: "生成题目",
+  });
   state.generationRetry = false;
   try {
     const chapterId = $("#chapter").value;
@@ -621,6 +1010,8 @@ async function generateQuestions() {
         count: $("#count").value,
         model: $("#model-select").value || undefined,
       }),
+      signal: task.signal,
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
     const duplicateSummary = result.duplicatesSkipped
       ? `，已过滤 ${result.duplicatesSkipped} 道重复题`
@@ -639,12 +1030,15 @@ async function generateQuestions() {
     $("#difficulty").value = difficulty;
     updateAvailability();
   } catch (error) {
+    if (isGenerationCancelled(error, task.signal)) {
+      state.generationRetry = false;
+      showToast("已停止生成题目");
+      return;
+    }
     state.generationRetry = true;
     showToast(error.message, true);
   } finally {
-    clearInterval(timer);
-    progress.hidden = true;
-    button.disabled = false;
+    task.finish();
     updateAvailability();
   }
 }
@@ -658,9 +1052,9 @@ function goToQuestion(index) {
   renderCurrentQuestion();
 }
 
-async function submitPractice(event) {
+async function submitPractice(event, { auto = false } = {}) {
   event?.preventDefault();
-  if (!state.session) return;
+  if (!state.session || state.submittingPractice) return;
   const examMode = state.session.mode === "exam-mcq";
   const unanswered = state.session.questions.length - Object.keys(state.answers).length;
   const message = examMode
@@ -668,18 +1062,37 @@ async function submitPractice(event) {
       ? `还有 ${unanswered} 题未作答，交卷后统一判分且不能重考。确认交卷？`
       : "交卷后统一判分，且本次模拟不能再次提交。确认交卷？"
     : "提交后将显示答案与解析，且本次练习不能再次提交。确认提交？";
-  if (!window.confirm(message)) return;
+  if (
+    !auto &&
+    !(await confirmDialog({
+      title: examMode ? "交卷确认" : "提交确认",
+      message,
+      confirmText: examMode ? "交卷" : "提交并判卷",
+    }))
+  )
+    return;
+  state.submittingPractice = true;
+  const submitButton = $("#questions-form button[type=submit]");
+  const originalSubmitText = submitButton?.textContent || "提交并判卷";
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = auto ? "时间到，判卷中…" : "判卷中…";
+  }
   if (examMode) {
     clearInterval(state.examTimer);
     state.examTimer = null;
   }
   try {
+    if (examMode && state.examSaveQueues.size) {
+      await Promise.allSettled([...state.examSaveQueues.values()]);
+    }
     state.result = await api("/api/grade", {
       method: "POST",
       body: JSON.stringify({
         sessionId: state.session.id,
         answers: state.answers,
       }),
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
     state.activeSession = null;
     renderResult();
@@ -687,6 +1100,12 @@ async function submitPractice(event) {
     refreshReviewBadge();
   } catch (error) {
     showToast(error.message, true);
+  } finally {
+    state.submittingPractice = false;
+    if (submitButton?.isConnected) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalSubmitText;
+    }
   }
 }
 
@@ -854,6 +1273,15 @@ function renderWrong(data) {
     return;
   }
   $("#wrong-list").replaceChildren(...data.records.map(wrongRecordNode));
+  const total = data.total ?? data.records.length;
+  const pageCount = Math.max(1, Math.ceil(total / state.wrongLimit));
+  const currentPage = Math.floor(state.wrongOffset / state.wrongLimit) + 1;
+  $("#wrong-page").textContent = total
+    ? `第 ${currentPage} / ${pageCount} 页 · 共 ${total} 道`
+    : "暂无错题";
+  $("#wrong-previous").disabled = state.wrongOffset === 0;
+  $("#wrong-next").disabled = state.wrongOffset + state.wrongLimit >= total;
+  $("#wrong-pagination").hidden = total <= state.wrongLimit;
   $("#wrong-list")
     .querySelectorAll("[data-question-id]")
     .forEach((button) =>
@@ -877,17 +1305,34 @@ function renderWrong(data) {
 }
 
 async function loadWrong() {
+  const load = beginLoad("wrong", "#wrong-list", "正在加载错题…");
   try {
-    const data = await api("/api/wrong-questions");
+    const data = await api(
+      `/api/wrong-questions?limit=${state.wrongLimit}&offset=${state.wrongOffset}`,
+    );
+    if (!load.isCurrent()) return;
+    if (state.wrongOffset > 0 && !data.records.length && data.total > 0) {
+      state.wrongOffset = Math.max(0, state.wrongOffset - state.wrongLimit);
+      return loadWrong();
+    }
+    state.wrongTotal = data.total;
     state.wrongRecords = data.records;
     renderWrong(data);
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadWrong);
   }
 }
 
-function exportWrong() {
-  const records = state.wrongRecords;
+async function exportWrong() {
+  // 导出始终取全量错题，与当前翻页位置无关。
+  let records;
+  try {
+    records = (await api("/api/wrong-questions")).records;
+  } catch (error) {
+    showToast(error.message, true);
+    return;
+  }
   if (!records.length) {
     showToast("错题本是空的，没有可导出的内容");
     return;
@@ -929,6 +1374,7 @@ async function startReview() {
       method: "POST",
       body: JSON.stringify({ limit: $("#count").value }),
     });
+    resetExamSaveState(state.session);
     state.activeSession = null;
     $("#resume-panel").hidden = true;
     renderQuestions();
@@ -954,15 +1400,18 @@ function historyNode(attempt) {
 }
 
 async function loadHistory() {
+  const load = beginLoad("history", "#history-list", "正在加载练习记录…");
   try {
     const { attempts } = await api("/api/attempts");
+    if (!load.isCurrent()) return;
     $("#history-list").replaceChildren(
       ...(attempts.length
         ? attempts.map(historyNode)
         : [emptyMessage("还没有练习记录", "从首页选择一章开始第一次练习。")]),
     );
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadHistory);
   }
 }
 
@@ -1099,7 +1548,15 @@ function bankQuestionNode(question) {
 }
 
 async function deleteBankQuestion(question) {
-  if (!window.confirm(`确认永久删除这道题？\n\n${question.question}`)) return;
+  if (
+    !(await confirmDialog({
+      title: "永久删除题目",
+      message: `确认永久删除这道题？\n\n${question.question}`,
+      confirmText: "永久删除",
+      danger: true,
+    }))
+  )
+    return;
   try {
     await api(`/api/questions/${encodeURIComponent(question.id)}`, {
       method: "DELETE",
@@ -1113,6 +1570,7 @@ async function deleteBankQuestion(question) {
 }
 
 async function loadQuestionBank() {
+  const load = beginLoad("question-bank", "#bank-list", "正在加载题库…");
   try {
     const params = new URLSearchParams({
       query: $("#bank-query").value.trim(),
@@ -1126,6 +1584,7 @@ async function loadQuestionBank() {
       offset: state.bankOffset,
     });
     const data = await api(`/api/questions?${params}`);
+    if (!load.isCurrent()) return;
     state.bankTotal = data.total;
     if (state.bankOffset > 0 && !data.records.length) {
       state.bankOffset = Math.max(0, state.bankOffset - state.bankLimit);
@@ -1139,10 +1598,15 @@ async function loadQuestionBank() {
     $("#bank-list").replaceChildren(
       ...(data.records.length
         ? data.records.map(bankQuestionNode)
-        : [emptyMessage("没有匹配的题目", "请调整关键词或筛选条件。")]),
+        : [data.total === 0 && state.chapters.every((chapter) => !(chapter.counts?.all)) &&
+            !$("#bank-query").value.trim() && $("#bank-chapter").value === "all" &&
+            $("#bank-source").value === "all"
+            ? element("div", { className: "empty" }, bankOnboardingNode())
+            : emptyMessage("没有匹配的题目", "请调整关键词或筛选条件。")]),
     );
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadQuestionBank);
   }
 }
 
@@ -1155,12 +1619,8 @@ async function refreshQuestionBank() {
 
 async function prepareQuestionBank() {
   populateBankChapters();
-  try {
-    await loadBankSections();
-    await loadQuestionBank();
-  } catch (error) {
-    showToast(error.message, true);
-  }
+  await loadBankSections().catch((error) => showToast(error.message, true));
+  await loadQuestionBank();
 }
 
 function percentBar(value, className = "") {
@@ -1282,10 +1742,18 @@ function renderStatistics(data) {
 }
 
 async function loadStatistics() {
+  const load = beginLoad(
+    "statistics",
+    ["#stats-summary", "#chapter-stats", "#practice-trend", "#weak-points", "#knowledge-mastery", "#review-stats"],
+    "正在加载学习统计…",
+  );
   try {
-    renderStatistics(await api("/api/statistics"));
+    const data = await api("/api/statistics");
+    if (!load.isCurrent()) return;
+    renderStatistics(data);
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadStatistics);
   }
 }
 
@@ -1322,8 +1790,10 @@ function issueNode(issue) {
 }
 
 async function loadQuestionIssues() {
+  const load = beginLoad("question-issues", "#question-issues-list", "正在加载问题题目…");
   try {
     const data = await api("/api/question-issues");
+    if (!load.isCurrent()) return;
     if (!data.records.length) {
       $("#question-issues-list").replaceChildren(
         emptyMessage(
@@ -1331,17 +1801,68 @@ async function loadQuestionIssues() {
           "练习中发现题目有误时，可以在题目下方标记。",
         ),
       );
+      load.finish();
       return;
     }
     $("#question-issues-list").replaceChildren(...data.records.map(issueNode));
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadQuestionIssues);
+  }
+}
+
+const auditActionNames = {
+  "data.export": "导出备份",
+  "data.import": "导入备份",
+  "data.clear": "清空数据",
+};
+const auditScopeNames = {
+  questions: "题库",
+  wrongBook: "错题本",
+  attempts: "练习记录",
+  all: "全部数据",
+};
+
+function auditRow(entry) {
+  const scope = entry.scope
+    ? `范围：${auditScopeNames[entry.scope] || entry.scope}`
+    : "";
+  return element("div", { className: "audit-row" }, [
+    element("strong", { text: auditActionNames[entry.action] || entry.action }),
+    scope ? element("span", { className: "muted", text: scope }) : null,
+    element("time", {
+      text: new Date(entry.at).toLocaleString("zh-CN"),
+      attrs: { datetime: entry.at },
+    }),
+  ]);
+}
+
+async function loadAuditLog() {
+  const load = beginLoad("audit-log", "#audit-log-list", "正在加载操作审计…");
+  try {
+    const { records } = await api("/api/audit-log");
+    if (!load.isCurrent()) return;
+    $("#audit-log-list").replaceChildren(
+      ...(records.length
+        ? records.map(auditRow)
+        : [
+            emptyMessage(
+              "暂无操作记录",
+              "导出备份、导入备份和清空数据会记录在这里。",
+            ),
+          ]),
+    );
+    load.finish();
+  } catch (error) {
+    load.fail(error, loadAuditLog);
   }
 }
 
 async function loadDataStatus() {
+  const load = beginLoad("data-status", "#data-summary", "正在加载数据概况…");
   try {
     const summary = await api("/api/data/status");
+    if (!load.isCurrent()) return;
     $("#data-summary").replaceChildren(
       wrongSummaryNode(summary.questions, "题库题目"),
       wrongSummaryNode(summary.generatedQuestions ?? 0, "生成题"),
@@ -1352,18 +1873,229 @@ async function loadDataStatus() {
       wrongSummaryNode(summary.wrongQuestions, "错题记录"),
       wrongSummaryNode(summary.attempts, "练习记录"),
     );
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadDataStatus);
   }
+}
+
+function workspaceDraft(config = {}) {
+  const providers = (Array.isArray(config.providers) ? config.providers : []).map((provider, index) => ({
+    id: String(provider.id || `provider-${index + 1}`),
+    name: String(provider.name || `供应商 ${index + 1}`),
+    type: provider.type === "claude-cli" ? "claude-cli" : "openai-compatible",
+    baseUrl: String(provider.baseUrl || ""),
+    apiKey: String(provider.apiKey || ""),
+    models: [...new Set((Array.isArray(provider.models) ? provider.models : []).map(String).filter(Boolean))],
+    defaultModel: String(provider.defaultModel || ""),
+  }));
+  const agents = (Array.isArray(config.agents) ? config.agents : []).map((agent, index) => ({
+    id: String(agent.id || `agent-${index + 1}`),
+    name: String(agent.name || `Agent ${index + 1}`),
+    description: String(agent.description || ""),
+    providerId: String(agent.providerId || providers[0]?.id || ""),
+    model: String(agent.model || ""),
+    systemPrompt: String(agent.systemPrompt || ""),
+    enabled: agent.enabled !== false,
+  }));
+  return {
+    providers,
+    agents,
+    defaultAgentId: String(config.defaultAgentId || agents[0]?.id || ""),
+  };
+}
+
+function ensureWorkspaceDraft() {
+  if (state.modelWorkspace.providers.length) return;
+  const providerId = `provider-${Date.now()}`;
+  const agentId = `agent-${Date.now()}`;
+  state.modelWorkspace = {
+    providers: [{
+      id: providerId,
+      name: "OpenAI 兼容供应商",
+      type: "openai-compatible",
+      baseUrl: "",
+      apiKey: "",
+      models: [],
+      defaultModel: "",
+    }],
+    agents: [{
+      id: agentId,
+      name: "默认答题 Agent",
+      description: "日常题目、资料和知识库任务",
+      providerId,
+      model: "",
+      systemPrompt: "你是一个严谨的系统架构设计师备考助教。先给出结论，再列出依据和不确定性。",
+      enabled: true,
+    }],
+    defaultAgentId: agentId,
+  };
+}
+
+function modelSelectNode(models, selected, className) {
+  const values = [...new Set([...(models || []), selected].filter(Boolean))];
+  const select = element("select", { className });
+  select.append(element("option", { text: values.length ? "选择默认模型" : "先获取模型列表", attrs: { value: "" } }));
+  select.append(...values.map((model) => element("option", { text: model, attrs: { value: model } })));
+  select.value = selected || "";
+  return select;
+}
+
+function providerTypeSelect(provider) {
+  const select = element("select", { className: "provider-type" });
+  select.append(
+    element("option", { text: "OpenAI 兼容接口", attrs: { value: "openai-compatible" } }),
+    element("option", { text: "Claude CLI", attrs: { value: "claude-cli" } }),
+  );
+  select.value = provider.type;
+  return select;
+}
+
+function providerNode(provider) {
+  const card = element("article", { className: "provider-card", attrs: { "data-provider-id": provider.id } });
+  const nameInput = element("input", { attrs: { type: "text", "aria-label": "供应商名称" } });
+  nameInput.value = provider.name;
+  const deleteButton = element("button", {
+    className: "workspace-delete",
+    text: "删除供应商",
+    attrs: { type: "button" },
+  });
+  deleteButton.addEventListener("click", () => {
+    if (state.modelWorkspace.providers.length <= 1) {
+      showToast("至少保留一个供应商", true);
+      return;
+    }
+    state.modelWorkspace.providers = state.modelWorkspace.providers.filter((item) => item.id !== provider.id);
+    state.modelWorkspace.agents = state.modelWorkspace.agents.filter((agent) => agent.providerId !== provider.id);
+    if (!state.modelWorkspace.agents.length) state.modelWorkspace.defaultAgentId = "";
+    renderModelWorkspace();
+  });
+  const baseUrl = element("input", { className: "provider-base-url", attrs: { type: "url", placeholder: "https://api.example.com/v1" } });
+  baseUrl.value = provider.baseUrl;
+  const apiKey = element("input", { className: "provider-api-key", attrs: { type: "password", placeholder: "留空表示无需鉴权" } });
+  apiKey.value = provider.apiKey;
+  const type = providerTypeSelect(provider);
+  const model = modelSelectNode(provider.models, provider.defaultModel, "provider-default-model");
+  const fetchButton = element("button", { className: "secondary mc-provider-fetch", text: "获取模型列表", attrs: { type: "button" } });
+  const fetchState = element("span", { className: "provider-fetch-state", text: provider.models.length ? `${provider.models.length} 个模型可选` : "尚未获取模型" });
+  fetchButton.addEventListener("click", () => fetchProviderModels(provider.id));
+  card.append(
+    element("div", { className: "provider-card-header" }, [nameInput, deleteButton]),
+    element("div", { className: "provider-card-grid" }, [
+      element("label", { text: "接口类型" }, [type]),
+      element("label", { text: "默认模型" }, [model]),
+      element("label", { className: "provider-base-url", text: "Base URL" }, [baseUrl]),
+      element("label", { className: "provider-api-key", text: "API Key" }, [apiKey]),
+    ]),
+    element("div", { className: "provider-card-actions" }, [fetchButton, fetchState]),
+  );
+  return card;
+}
+
+function agentNode(agent) {
+  const card = element("article", { className: "agent-config-card", attrs: { "data-agent-id": agent.id } });
+  const nameInput = element("input", { attrs: { type: "text", "aria-label": "Agent 名称" } });
+  nameInput.value = agent.name;
+  const deleteButton = element("button", { className: "workspace-delete", text: "删除 Agent", attrs: { type: "button" } });
+  deleteButton.addEventListener("click", () => {
+    if (state.modelWorkspace.agents.length <= 1) {
+      showToast("至少保留一个 Agent", true);
+      return;
+    }
+    state.modelWorkspace.agents = state.modelWorkspace.agents.filter((item) => item.id !== agent.id);
+    if (state.modelWorkspace.defaultAgentId === agent.id) state.modelWorkspace.defaultAgentId = state.modelWorkspace.agents[0]?.id || "";
+    renderModelWorkspace();
+  });
+  const providerSelect = element("select", { className: "agent-provider" });
+  providerSelect.append(...state.modelWorkspace.providers.map((provider) => element("option", { text: provider.name, attrs: { value: provider.id } })));
+  providerSelect.value = agent.providerId;
+  const provider = state.modelWorkspace.providers.find((item) => item.id === agent.providerId) || state.modelWorkspace.providers[0];
+  let modelSelect = modelSelectNode(provider?.models, agent.model, "agent-model");
+  providerSelect.addEventListener("change", () => {
+    const nextProvider = state.modelWorkspace.providers.find((item) => item.id === providerSelect.value);
+    modelSelect = modelSelectNode(nextProvider?.models, "", "agent-model");
+    card.querySelector(".agent-model")?.replaceWith(modelSelect);
+  });
+  const description = element("input", { className: "agent-description", attrs: { type: "text", placeholder: "简短说明这个 Agent 的职责" } });
+  description.value = agent.description;
+  const prompt = element("textarea", { className: "agent-prompt", attrs: { rows: "4", placeholder: "例如：优先指出概念边界，引用知识库条目，避免编造资料外事实。" } });
+  prompt.value = agent.systemPrompt;
+  const enabled = element("input", { attrs: { type: "checkbox" } });
+  enabled.checked = agent.enabled;
+  card.append(
+    element("div", { className: "agent-config-card-header" }, [nameInput, deleteButton]),
+    element("div", { className: "agent-config-grid" }, [
+      element("label", { text: "绑定供应商" }, [providerSelect]),
+      element("label", { text: "使用模型" }, [modelSelect]),
+      element("label", { text: "职责说明" }, [description]),
+      element("label", { className: "agent-prompt", text: "角色提示词" }, [prompt]),
+      element("label", { className: "agent-task-member" }, [enabled, element("span", { text: "允许参与任务" })]),
+    ]),
+  );
+  return card;
+}
+
+function collectWorkspaceDraft() {
+  const providers = [...document.querySelectorAll(".provider-card")].map((card) => {
+    const existing = state.modelWorkspace.providers.find((item) => item.id === card.dataset.providerId);
+    const model = card.querySelector(".provider-default-model")?.value || "";
+    return {
+      ...existing,
+      id: card.dataset.providerId,
+      name: card.querySelector(".provider-card-header input")?.value.trim() || existing?.name || "未命名供应商",
+      type: card.querySelector(".provider-type")?.value || "openai-compatible",
+      baseUrl: card.querySelector("input.provider-base-url")?.value.trim() || "",
+      apiKey: card.querySelector("input.provider-api-key")?.value.trim() || "",
+      defaultModel: model,
+      models: [...new Set([...(existing?.models || []), model].filter(Boolean))],
+    };
+  });
+  const agents = [...document.querySelectorAll(".agent-config-card")].map((card) => {
+    const existing = state.modelWorkspace.agents.find((item) => item.id === card.dataset.agentId);
+    return {
+      ...existing,
+      id: card.dataset.agentId,
+      name: card.querySelector(".agent-config-card-header input")?.value.trim() || existing?.name || "未命名 Agent",
+      description: card.querySelector(".agent-description")?.value.trim() || "",
+      providerId: card.querySelector(".agent-provider")?.value || providers[0]?.id || "",
+      model: card.querySelector(".agent-model")?.value || "",
+      systemPrompt: card.querySelector(".agent-prompt")?.value.trim() || "",
+      enabled: card.querySelector('input[type="checkbox"]')?.checked !== false,
+    };
+  });
+  return {
+    providers,
+    agents,
+    defaultAgentId: $("#agent-default")?.value || agents[0]?.id || "",
+  };
+}
+
+function renderModelWorkspace() {
+  ensureWorkspaceDraft();
+  const providerList = $("#provider-list");
+  const agentList = $("#agent-list");
+  if (!providerList || !agentList) return;
+  providerList.replaceChildren(...state.modelWorkspace.providers.map(providerNode));
+  agentList.replaceChildren(...state.modelWorkspace.agents.map(agentNode));
+  const defaultSelect = $("#agent-default");
+  defaultSelect.replaceChildren(...state.modelWorkspace.agents.map((agent) => element("option", { text: agent.name, attrs: { value: agent.id } })));
+  defaultSelect.value = state.modelWorkspace.defaultAgentId || state.modelWorkspace.agents[0]?.id || "";
+  const judgeSelect = $("#agent-task-judge");
+  judgeSelect.replaceChildren(...state.modelWorkspace.agents.filter((agent) => agent.enabled).map((agent) => element("option", { text: agent.name, attrs: { value: agent.id } })));
+  judgeSelect.value = state.modelWorkspace.defaultAgentId || state.modelWorkspace.agents.find((agent) => agent.enabled)?.id || "";
+  const members = $("#agent-task-members");
+  members.replaceChildren(...state.modelWorkspace.agents.filter((agent) => agent.enabled).map((agent) => {
+    const checkbox = element("input", { attrs: { type: "checkbox", value: agent.id } });
+    checkbox.checked = agent.id === state.modelWorkspace.defaultAgentId;
+    return element("label", { className: "agent-task-member" }, [checkbox, element("span", { text: agent.name })]);
+  }));
 }
 
 async function loadModelConfig() {
   try {
     const config = await api("/api/model-config");
-    $("#mc-base-url").value = config.ARCHITECT_LLM_BASE_URL || "";
-    $("#mc-api-key").value = config.ARCHITECT_LLM_API_KEY || "";
-    $("#mc-model").value = config.ARCHITECT_LLM_MODEL || "";
-    $("#mc-models").value = config.ARCHITECT_LLM_MODELS || "";
+    state.modelWorkspace = workspaceDraft(config);
+    renderModelWorkspace();
   } catch (error) {
     showToast(error.message, true);
   }
@@ -1371,63 +2103,157 @@ async function loadModelConfig() {
 
 async function saveModelConfig() {
   const button = $("#mc-save");
+  const draft = collectWorkspaceDraft();
   button.disabled = true;
   button.textContent = "保存中…";
   try {
-    await api("/api/model-config", {
+    const config = await api("/api/model-config/workspace", {
       method: "POST",
-      body: JSON.stringify({
-        ARCHITECT_LLM_BASE_URL: $("#mc-base-url").value.trim(),
-        ARCHITECT_LLM_API_KEY: $("#mc-api-key").value.trim(),
-        ARCHITECT_LLM_MODEL: $("#mc-model").value.trim(),
-        ARCHITECT_LLM_MODELS: $("#mc-models").value.trim(),
-      }),
+      body: JSON.stringify(draft),
     });
-    showToast("模型配置已保存并生效");
+    state.modelWorkspace = workspaceDraft(config);
+    renderModelWorkspace();
+    showToast("模型工作区已保存并生效");
     await loadModelStatus();
   } catch (error) {
     showToast(error.message, true);
   } finally {
     button.disabled = false;
-    button.textContent = "保存配置";
+    button.textContent = "保存工作区";
   }
 }
 
-async function fetchModels() {
-  const button = $("#mc-fetch");
+async function fetchProviderModels(providerId) {
+  const draft = collectWorkspaceDraft();
+  state.modelWorkspace = workspaceDraft(draft);
+  const provider = state.modelWorkspace.providers.find((item) => item.id === providerId);
+  if (!provider) return;
   const result = $("#mc-fetch-result");
-  button.disabled = true;
-  button.textContent = "获取中…";
   result.hidden = true;
+  const button = document.querySelector(`[data-provider-id="${CSS.escape(providerId)}"] .mc-provider-fetch`);
+  if (button) {
+    button.disabled = true;
+    button.textContent = "获取中…";
+  }
   try {
     const data = await api("/api/model-config/fetch-models", {
       method: "POST",
-      body: JSON.stringify({
-        baseUrl: $("#mc-base-url").value.trim(),
-        apiKey: $("#mc-api-key").value.trim(),
-      }),
+      body: JSON.stringify({ providerId, baseUrl: provider.baseUrl, apiKey: provider.apiKey, type: provider.type }),
     });
-    if (!data.models.length) {
-      result.textContent = "该接口未返回可用模型，请检查 Base URL 或手动填写模型名。";
-      result.className = "mc-fetch-result error";
-    } else {
-      result.textContent = `获取到 ${data.models.length} 个模型：${data.models.join("、")}`;
-      result.className = "mc-fetch-result";
-      $("#mc-models").value = data.models.join(",");
-    }
+    provider.models = [...new Set((data.models || []).map(String).filter(Boolean))];
+    provider.defaultModel = provider.defaultModel && provider.models.includes(provider.defaultModel)
+      ? provider.defaultModel
+      : provider.models[0] || provider.defaultModel;
+    state.modelWorkspace.providers = state.modelWorkspace.providers.map((item) => item.id === providerId ? provider : item);
+    renderModelWorkspace();
+    result.textContent = provider.models.length ? `已获取 ${provider.models.length} 个模型，请在供应商卡片的下拉框中选择默认模型。` : "接口未返回可用模型，请检查地址或接口类型。";
+    result.className = provider.models.length ? "mc-fetch-result" : "mc-fetch-result error";
     result.hidden = false;
   } catch (error) {
     result.textContent = error.message;
     result.className = "mc-fetch-result error";
     result.hidden = false;
   } finally {
-    button.disabled = false;
-    button.textContent = "获取模型列表";
+    const currentButton = document.querySelector(`[data-provider-id="${CSS.escape(providerId)}"] .mc-provider-fetch`);
+    if (currentButton) {
+      currentButton.disabled = false;
+      currentButton.textContent = "获取模型列表";
+    }
+  }
+}
+
+function addProvider() {
+  const providerId = `provider-${Date.now()}`;
+  state.modelWorkspace.providers.push({
+    id: providerId,
+    name: `供应商 ${state.modelWorkspace.providers.length + 1}`,
+    type: "openai-compatible",
+    baseUrl: "",
+    apiKey: "",
+    models: [],
+    defaultModel: "",
+  });
+  renderModelWorkspace();
+}
+
+function addAgent() {
+  const provider = state.modelWorkspace.providers[0];
+  if (!provider) {
+    showToast("请先添加供应商", true);
+    return;
+  }
+  const agentId = `agent-${Date.now()}`;
+  state.modelWorkspace.agents.push({
+    id: agentId,
+    name: `Agent ${state.modelWorkspace.agents.length + 1}`,
+    description: "",
+    providerId: provider.id,
+    model: provider.defaultModel || provider.models[0] || "",
+    systemPrompt: "",
+    enabled: true,
+  });
+  renderModelWorkspace();
+}
+
+function renderAgentTaskResult(result) {
+  const box = $("#agent-task-result");
+  const answers = (result.results || []).map((item) => element("div", { className: "agent-task-answer" }, [
+    element("div", { className: "agent-task-meta" }, [
+      element("strong", { text: item.agentName }),
+      element("span", { text: item.error ? "调用失败" : `${item.model || "默认模型"} · 置信度 ${Math.round((item.confidence || 0) * 100)}%` }),
+    ]),
+    element("p", { text: item.error || item.answer }),
+    item.keyPoints?.length ? element("ul", {}, item.keyPoints.map((point) => element("li", { text: point }))) : null,
+  ]));
+  const synthesis = result.synthesis
+    ? element("div", { className: "agent-task-answer agent-task-synthesis" }, [
+        element("h4", { text: `综合结果 · ${result.synthesis.judgedBy || "评审 Agent"}` }),
+        element("p", { text: result.synthesis.answer }),
+      ])
+    : null;
+  box.replaceChildren(
+    element("h4", { text: result.strategy === "battle" ? "对战与评审结果" : result.strategy === "parallel" ? "并行回答结果" : "Agent 回答" }),
+    ...answers,
+    synthesis,
+  );
+  box.hidden = false;
+}
+
+async function runAgentTask() {
+  const button = $("#agent-task-run");
+  const prompt = $("#agent-task-prompt").value.trim();
+  const strategy = $("#agent-task-strategy").value;
+  const agentIds = [...document.querySelectorAll('#agent-task-members input:checked')].map((input) => input.value);
+  const task = beginGenerationTask({
+    key: "agent-task",
+    button,
+    progress: $("#agent-task-progress"),
+    progressText: $("#agent-task-progress-text"),
+    cancel: $("#agent-task-cancel"),
+    label: "运行 Agent 任务",
+  });
+  try {
+    const result = await api("/api/agents/run", {
+      method: "POST",
+      body: JSON.stringify({ prompt, strategy, agentIds, judgeAgentId: $("#agent-task-judge").value }),
+      signal: task.signal,
+      timeoutMs: LONG_API_TIMEOUT_MS,
+    });
+    renderAgentTaskResult(result);
+  } catch (error) {
+    if (isGenerationCancelled(error, task.signal)) {
+      showToast("已停止 Agent 任务");
+      return;
+    }
+    showToast(error.message, true);
+  } finally {
+    task.finish();
   }
 }
 
 async function refreshAfterDataChange() {
   state.session = null;
+  resetExamSaveState();
   state.result = null;
   await loadChapters();
   await loadSections();
@@ -1436,6 +2262,7 @@ async function refreshAfterDataChange() {
     refreshReviewBadge(),
     loadDataStatus(),
     loadQuestionIssues(),
+    loadAuditLog(),
   ]);
 }
 
@@ -1454,12 +2281,30 @@ async function exportData() {
     link.remove();
     URL.revokeObjectURL(url);
     showToast("备份已导出");
+    loadAuditLog();
   } catch (error) {
     showToast(error.message, true);
   }
 }
 
-const materialState = { note: "", materials: [], selectedId: null };
+const materialFormatNames = {
+  markdown: "Markdown",
+  mermaid: "Mermaid",
+  html: "HTML",
+  svg: "SVG",
+  text: "纯文本",
+};
+
+const materialState = {
+  note: "",
+  materials: [],
+  selectedId: null,
+  fontScale: 1,
+  narrow: false,
+  focus: false,
+  preferencesLoaded: false,
+  loadId: 0,
+};
 
 function safeHttpUrl(value) {
   try {
@@ -1471,8 +2316,15 @@ function safeHttpUrl(value) {
 }
 
 async function loadMaterials() {
+  const load = beginLoad(
+    "materials",
+    "#materials-groups",
+    "正在加载资料…",
+  );
+  loadMaterialPreferences();
   try {
     const data = await api("/api/study-materials");
+    if (!load.isCurrent()) return;
     materialState.note = data.note || "";
     materialState.materials = data.materials || [];
     $("#materials-note").textContent =
@@ -1485,13 +2337,10 @@ async function loadMaterials() {
     }
     renderMaterialGroups();
     if (materialState.selectedId) await openMaterial(materialState.selectedId);
-    else {
-      $("#materials-content").replaceChildren(
-        emptyMessage("选择一篇资料", "左侧按大纲和教材分组，点开后只读显示正文。"),
-      );
-    }
+    else renderMaterialEmpty();
+    if (load.isCurrent()) load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadMaterials);
   }
 }
 
@@ -1533,28 +2382,250 @@ function renderMaterialGroups() {
 async function openMaterial(id) {
   materialState.selectedId = id;
   renderMaterialGroups();
-  const body = $("#materials-content");
-  body.replaceChildren(element("p", { className: "muted", text: "正在读取…" }));
+  const requestId = ++materialState.loadId;
+  const load = beginLoad("material-document", "#materials-document", "正在读取资料…");
+  const body = $("#materials-document");
+  $("#materials-toc").replaceChildren();
+  $("#materials-toc").hidden = true;
+  updateMaterialToolbar();
   try {
     const doc = await api(`/api/study-materials/${encodeURIComponent(id)}`);
-    const article = element("div", { className: "markdown-body" });
-    article.innerHTML = renderMarkdown(doc.markdown, window.location.origin);
-    const source = safeHttpUrl(doc.sourceUrl);
-    const heading = [
-      element("h2", { text: doc.title }),
-      source
-        ? element("p", { className: "muted" }, [
-            element("a", {
-              text: "查看来源",
-              attrs: { href: source, target: "_blank", rel: "noreferrer" },
-            }),
-          ])
-        : null,
-    ];
-    body.replaceChildren(...heading.filter(Boolean), article);
+    if (requestId !== materialState.loadId || !load.isCurrent()) return;
+    renderMaterialDocument(doc);
+    $("#materials-content").scrollTo({ top: 0, behavior: "auto" });
+    load.finish();
   } catch (error) {
-    body.replaceChildren(emptyMessage("资料打不开", error.message));
+    if (requestId !== materialState.loadId || !load.isCurrent()) return;
+    load.fail(error, () => openMaterial(id));
+    updateMaterialToolbar();
   }
+}
+
+function loadMaterialPreferences() {
+  if (materialState.preferencesLoaded) return;
+  materialState.preferencesLoaded = true;
+  try {
+    const scale = Number(localStorage.getItem("architect-material-font-scale"));
+    if (Number.isFinite(scale)) materialState.fontScale = clampMaterialScale(scale);
+    materialState.narrow = localStorage.getItem("architect-material-narrow") === "true";
+  } catch {
+    materialState.fontScale = 1;
+    materialState.narrow = false;
+  }
+  applyMaterialReaderState();
+}
+
+function persistMaterialPreference(key, value) {
+  try {
+    localStorage.setItem(key, String(value));
+  } catch {
+  }
+}
+
+function clampMaterialScale(value) {
+  return Math.min(1.25, Math.max(0.9, Math.round(Number(value) * 20) / 20));
+}
+
+function materialById(id) {
+  return materialState.materials.find((item) => item.id === id) || null;
+}
+
+function materialCountText(doc) {
+  const count = doc?.charCount ?? String(doc?.content ?? doc?.markdown ?? "").length;
+  return count ? `${Number(count).toLocaleString("zh-CN")} 字` : "";
+}
+
+function updateMaterialToolbar(doc = materialById(materialState.selectedId)) {
+  const format = $("#materials-format");
+  const count = $("#materials-count");
+  const previous = $("#materials-prev");
+  const next = $("#materials-next");
+  if (!format || !count || !previous || !next) return;
+  format.textContent = doc ? materialFormatNames[doc.format] || doc.format || "资料" : "未选择";
+  format.dataset.format = doc?.format || "";
+  count.textContent = materialCountText(doc);
+  const index = materialState.materials.findIndex((item) => item.id === materialState.selectedId);
+  previous.disabled = index <= 0;
+  next.disabled = index < 0 || index >= materialState.materials.length - 1;
+  previous.title = index > 0 ? `上一篇：${materialState.materials[index - 1].title}` : "已经是第一篇";
+  next.title = index >= 0 && index < materialState.materials.length - 1
+    ? `下一篇：${materialState.materials[index + 1].title}`
+    : "已经是最后一篇";
+}
+
+function renderMaterialEmpty() {
+  const body = $("#materials-document");
+  const toc = $("#materials-toc");
+  body.replaceChildren(
+    emptyMessage("选择一篇资料", "左侧按大纲和教材分组，正文会在这里按原格式阅读。"),
+  );
+  toc.replaceChildren();
+  toc.hidden = true;
+  updateMaterialToolbar(null);
+  applyMaterialReaderState();
+}
+
+function renderMaterialDocument(doc) {
+  const body = $("#materials-document");
+  const content = String(doc.content ?? doc.markdown ?? "");
+  const title = element("h2", { className: "materials-title", text: doc.title });
+  const sourceUrl = safeHttpUrl(doc.sourceUrl);
+  const meta = element("div", { className: "materials-document-meta" }, [
+    sourceUrl
+      ? element("a", {
+          text: "查看来源",
+          attrs: { href: sourceUrl, target: "_blank", rel: "noreferrer" },
+        })
+      : element("span", { className: "muted", text: "本地资料" }),
+  ]);
+  const rendered = renderMaterialContent(doc.format || "markdown", content, doc.title);
+  body.replaceChildren(title, meta, ...rendered);
+  updateMaterialToolbar(doc);
+  applyMaterialReaderState();
+}
+
+function renderMaterialContent(format, content, title) {
+  if (format === "markdown") return [renderMaterialMarkdown(content)];
+  if (format === "mermaid") return renderMaterialMermaid(content);
+  if (format === "html" || format === "svg") {
+    const frame = document.createElement("iframe");
+    frame.className = "material-frame";
+    frame.title = `${title}预览`;
+    frame.setAttribute("sandbox", "");
+    frame.setAttribute("referrerpolicy", "no-referrer");
+    frame.srcdoc = content;
+    return [element("div", { className: "material-frame-wrap" }, [frame])];
+  }
+  return [element("pre", { className: "material-plain-text", text: content })];
+}
+
+function renderMaterialMarkdown(content) {
+  const article = element("div", { className: "markdown-body" });
+  article.innerHTML = renderMarkdown(content, window.location.origin);
+  const firstHeading = article.querySelector(":scope > h1");
+  const selected = materialById(materialState.selectedId);
+  if (firstHeading && selected && firstHeading.textContent.trim() === selected.title.trim()) {
+    firstHeading.remove();
+  }
+  article.querySelectorAll("pre code[data-language]").forEach((code) => {
+    const language = String(code.dataset.language || "").toLowerCase().replace(/^language-/, "");
+    if (language !== "mermaid") return;
+    const nodes = renderMaterialMermaid(code.textContent || "");
+    code.closest("pre")?.replaceWith(...nodes);
+  });
+  buildMaterialToc(article);
+  return article;
+}
+
+function renderMaterialMermaid(code) {
+  const source = String(code || "").trim();
+  const rendered = renderQuestionFigure({ kind: "mermaid", code: source }, false);
+  const knownType = /^(?:flowchart|graph|classDiagram|sequenceDiagram|stateDiagram(?:-v2)?)\b/im.test(source);
+  const failed = /无法解析|尚未支持渲染/.test(rendered);
+  const diagram = element("div", { className: "material-diagram" });
+  diagram.innerHTML = rendered;
+  if (!knownType || failed) {
+    diagram.prepend(
+      element("p", {
+        className: "material-render-warning",
+        text: "该 Mermaid 语法暂不完全支持，已保留源码供核对。",
+      }),
+    );
+  }
+  const sourceBlock = element("details", { className: "material-source" }, [
+    element("summary", { text: "查看 Mermaid 源码" }),
+    element("pre", { className: "material-source-code" }, [
+      element("code", { text: source }),
+    ]),
+  ]);
+  return [diagram, sourceBlock];
+}
+
+function buildMaterialToc(article) {
+  const toc = $("#materials-toc");
+  if (!toc) return;
+  const headings = [...article.querySelectorAll("h1, h2, h3")];
+  if (!headings.length) {
+    toc.replaceChildren();
+    toc.hidden = true;
+    return;
+  }
+  const used = new Set();
+  const buttons = headings.map((heading, index) => {
+    const base = String(heading.textContent || "section")
+      .trim()
+      .replace(/[^\w\u4e00-\u9fff-]+/g, "-")
+      .replace(/^-+|-+$/g, "") || "section";
+    let id = `material-${base}-${index + 1}`;
+    while (used.has(id)) id = `${id}-copy`;
+    used.add(id);
+    heading.id = id;
+    const button = element("button", {
+      className: `materials-toc-item level-${heading.tagName.slice(1)}`,
+      text: heading.textContent.trim(),
+      attrs: { type: "button", "data-target": id },
+    });
+    button.addEventListener("click", () => {
+      heading.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return button;
+  });
+  toc.replaceChildren(
+    element("strong", { className: "materials-toc-title", text: "本页目录" }),
+    ...buttons,
+  );
+  toc.hidden = false;
+  updateMaterialTocState();
+}
+
+function updateMaterialTocState() {
+  const toc = $("#materials-toc");
+  const body = $("#materials-content");
+  if (!toc || toc.hidden || !body) return;
+  const headings = [...$("#materials-document").querySelectorAll("h1, h2, h3")];
+  if (!headings.length) return;
+  const boundary = body.getBoundingClientRect().top + 36;
+  let active = headings[0];
+  for (const heading of headings) {
+    if (heading.getBoundingClientRect().top <= boundary) active = heading;
+  }
+  toc.querySelectorAll("button[data-target]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.target === active.id);
+  });
+}
+
+function applyMaterialReaderState() {
+  const content = $("#materials-content");
+  const documentNode = $("#materials-document");
+  const shell = document.querySelector(".app-shell");
+  if (content) {
+    content.classList.toggle("is-narrow", materialState.narrow);
+    content.classList.toggle("is-focus", materialState.focus);
+  }
+  if (documentNode) {
+    documentNode.style.setProperty("--material-font-scale", String(materialState.fontScale));
+  }
+  shell?.classList.toggle("materials-focus", materialState.focus);
+  const width = $("#materials-width");
+  const focus = $("#materials-focus");
+  const down = $("#materials-font-down");
+  const up = $("#materials-font-up");
+  if (width) {
+    width.textContent = materialState.narrow ? "使用宽版" : "窄版";
+    width.setAttribute("aria-pressed", String(materialState.narrow));
+  }
+  if (focus) {
+    focus.textContent = materialState.focus ? "退出专注" : "专注阅读";
+    focus.setAttribute("aria-pressed", String(materialState.focus));
+  }
+  if (down) down.disabled = materialState.fontScale <= 0.9;
+  if (up) up.disabled = materialState.fontScale >= 1.25;
+}
+
+function openAdjacentMaterial(offset) {
+  const index = materialState.materials.findIndex((item) => item.id === materialState.selectedId);
+  const target = materialState.materials[index + offset];
+  if (target) openMaterial(target.id);
 }
 
 async function exportDiagnosis() {
@@ -1587,7 +2658,14 @@ async function importDataFile(file) {
     } catch {
       throw new Error("备份文件不是有效的 JSON");
     }
-    if (!window.confirm("导入会替换当前题库、错题本和练习记录。确认继续？"))
+    if (
+      !(await confirmDialog({
+        title: "导入备份",
+        message: "导入会替换当前题库、错题本和练习记录。确认继续？",
+        confirmText: "导入",
+        danger: true,
+      }))
+    )
       return;
     await api("/api/data/import", {
       method: "POST",
@@ -1609,7 +2687,15 @@ async function clearData(scope) {
     questions: "题库、未完成练习和错题本",
     all: "全部学习数据",
   };
-  if (!window.confirm(`确认清空${labels[scope]}？此操作不能撤销。`)) return;
+  if (
+    !(await confirmDialog({
+      title: "清空数据",
+      message: `确认清空${labels[scope]}？此操作不能撤销。`,
+      confirmText: "清空",
+      danger: true,
+    }))
+  )
+    return;
   try {
     await api("/api/data/clear", {
       method: "POST",
@@ -1635,7 +2721,7 @@ async function refreshReviewBadge() {
 async function loadModelStatus() {
   try {
     const status = await api("/api/model-status");
-    let label = "模型未配置，请填写 .env";
+    let label = "模型未配置，请在数据管理中配置模型";
     if (status.configured) {
       label =
         status.provider === "openai-compatible"
@@ -1644,6 +2730,14 @@ async function loadModelStatus() {
     }
     $("#model-status").textContent = label;
     $("#model-status").classList.toggle("error-status", !status.configured);
+    const sidebarStatus = $(".sidebar-status");
+    if (sidebarStatus) {
+      sidebarStatus.classList.toggle("ready", Boolean(status.configured));
+      sidebarStatus.classList.toggle("error", !status.configured);
+    }
+    $("#sidebar-model-status").textContent = status.configured
+      ? `${status.model || status.provider || "已配置"}`
+      : "未配置";
     const select = $("#model-select");
     const models = status.models ?? [];
     select.replaceChildren(
@@ -1655,6 +2749,7 @@ async function loadModelStatus() {
     select.hidden = models.length <= 1;
   } catch {
     $("#model-status").textContent = "模型状态未知";
+    $("#sidebar-model-status").textContent = "状态未知";
   }
 }
 
@@ -1676,6 +2771,10 @@ async function loadStudyPlan() {
         ? "今日目标已完成，继续保持！"
         : `还差 ${Math.max(0, plan.dailyGoal - plan.todayAnswered)} 题完成今日目标`
       : "设置每日目标，开始坚持打卡。";
+    $("#sidebar-plan-progress").textContent = plan.dailyGoal
+      ? `${plan.todayAnswered} / ${plan.dailyGoal}`
+      : `${plan.todayAnswered} 题`;
+    $("#sidebar-plan-bar").style.width = `${percent}%`;
   } catch {
     // 学习计划加载失败不影响其他功能。
   }
@@ -1707,14 +2806,26 @@ function populateCaseChapters() {
 
 async function loadCases() {
   populateCaseChapters();
+  const loadId = ++state.caseLoadId;
+  const load = beginLoad("cases", "#case-list", "正在加载案例…");
   try {
     const params = new URLSearchParams({
       sourceType: $("#case-source")?.value || "all",
+      limit: state.caseLimit,
+      offset: state.caseOffset,
     });
     const data = await api(`/api/cases?${params}`);
-    renderCases(data.cases);
+    if (loadId !== state.caseLoadId || !load.isCurrent()) return;
+    if (state.caseOffset > 0 && !data.cases.length && data.total > 0) {
+      state.caseOffset = Math.max(0, state.caseOffset - state.caseLimit);
+      return loadCases();
+    }
+    state.caseTotal = data.total;
+    state.caseOffset = data.offset;
+    renderCases(data.cases, data.total);
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadCases);
   }
 }
 
@@ -1741,24 +2852,24 @@ function caseNode(caseItem) {
           attrs: { type: "button" },
         }),
       ]),
-      element("div", { className: "case-reference", hidden: true }, [
-        element("h4", { text: "参考答案" }),
+      element("details", { className: "case-reference" }, [
+        element("summary", { text: "查看参考答案" }),
         element("p", { text: question.referenceAnswer }),
       ]),
     ]),
   );
   const showReferenceButton = element("button", {
     className: "ghost",
-    text: "查看参考答案",
+    text: "展开全部参考答案",
     attrs: { type: "button" },
   });
   showReferenceButton.addEventListener("click", () => {
     const container = showReferenceButton.closest(".case-card");
     container.querySelectorAll(".case-reference").forEach((node) => {
-      node.hidden = false;
+      node.open = true;
     });
     showReferenceButton.disabled = true;
-    showReferenceButton.textContent = "已显示参考答案";
+    showReferenceButton.textContent = "已展开全部参考答案";
   });
   const aiGradeButton = element("button", {
     className: "primary case-ai-grade",
@@ -1822,6 +2933,7 @@ async function gradeCaseWithAI(caseItem, button) {
         answers,
         model: $("#model-select").value || undefined,
       }),
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
     gradeBox.replaceChildren(caseGradeNode(grade));
     gradeBox.hidden = false;
@@ -1851,11 +2963,9 @@ function caseGradeNode(grade) {
         : null,
     ]),
   );
-  return element("div", { className: "paper-grade" }, [
-    element("div", { className: "grade-score" }, [
-      element("strong", { text: `${grade.total_score}/${grade.max_score}` }),
-      element("span", { text: "AI 评分" }),
-    ]),
+  return element("details", { className: "paper-grade grade-disclosure" }, [
+    element("summary", { text: "AI 评分：" + grade.total_score + "/" + grade.max_score + " 分" }),
+    element("div", { className: "grade-disclosure-content" }, [
     ...results,
     grade.overall_comment
       ? element("p", { className: "grade-comment", text: grade.overall_comment })
@@ -1870,10 +2980,23 @@ function caseGradeNode(grade) {
           ),
         ])
       : null,
+    ]),
   ]);
 }
 
-function renderCases(cases) {
+function updateCasePagination(total) {
+  const pagination = $("#case-pagination");
+  const pageCount = Math.max(1, Math.ceil(total / state.caseLimit));
+  const currentPage = Math.floor(state.caseOffset / state.caseLimit) + 1;
+  $("#case-page").textContent = total
+    ? `第 ${currentPage} / ${pageCount} 页 · 共 ${total} 道`
+    : "暂无案例";
+  $("#case-previous").disabled = state.caseOffset === 0;
+  $("#case-next").disabled = state.caseOffset + state.caseLimit >= total;
+  pagination.hidden = total <= state.caseLimit;
+}
+
+function renderCases(cases, total = cases.length) {
   $("#case-list").replaceChildren(
     ...(cases.length
       ? cases.map(caseNode)
@@ -1898,6 +3021,9 @@ function renderCases(cases) {
       card.querySelectorAll(".case-draft-button").forEach((button) => {
         button.addEventListener("click", async () => {
           const textarea = button.closest(".case-question").querySelector(".case-answer");
+          if (button.disabled) return;
+          button.disabled = true;
+          button.textContent = "保存中…";
           try {
             await api("/api/cases/draft", {
               method: "POST",
@@ -1910,26 +3036,34 @@ function renderCases(cases) {
             button.textContent = "已保存";
             showToast("案例草稿已保存");
             setTimeout(() => {
-              button.textContent = "保存草稿";
+              if (button.isConnected) {
+                button.disabled = false;
+                button.textContent = "保存草稿";
+              }
             }, 2000);
           } catch (error) {
             showToast(error.message, true);
+            button.disabled = false;
+            button.textContent = "保存草稿";
           }
         });
       });
     });
+  updateCasePagination(total);
 }
 
 async function generateCases() {
   const button = $("#case-generate");
   const progress = $("#case-progress");
   const progressText = $("#case-progress-text");
-  button.disabled = true;
-  progress.hidden = false;
-  const startedAt = Date.now();
-  const timer = setInterval(() => {
-    progressText.textContent = `正在生成案例，已等待 ${Math.round((Date.now() - startedAt) / 1000)} 秒…`;
-  }, 1000);
+  const task = beginGenerationTask({
+    key: "cases",
+    button,
+    progress,
+    progressText,
+    cancel: $("#case-cancel"),
+    label: "生成案例",
+  });
   try {
     const result = await api("/api/cases/generate", {
       method: "POST",
@@ -1938,15 +3072,22 @@ async function generateCases() {
         count: $("#case-count").value,
         model: $("#model-select").value || undefined,
       }),
+      signal: task.signal,
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
-    showToast(`已生成 ${result.added} 道案例分析题`);
+    showToast(
+      `已生成 ${result.added} 道案例分析题${result.duplicatesSkipped ? `，过滤 ${result.duplicatesSkipped} 条重复` : ""}`,
+    );
+    state.caseOffset = 0;
     await loadCases();
   } catch (error) {
+    if (isGenerationCancelled(error, task.signal)) {
+      showToast("已停止生成案例");
+      return;
+    }
     showToast(error.message, true);
   } finally {
-    clearInterval(timer);
-    progress.hidden = true;
-    button.disabled = false;
+    task.finish();
   }
 }
 
@@ -1964,14 +3105,26 @@ function populatePaperChapters() {
 
 async function loadPapers() {
   populatePaperChapters();
+  const loadId = ++state.paperLoadId;
+  const load = beginLoad("papers", "#paper-list", "正在加载论文题目…");
   try {
     const params = new URLSearchParams({
       sourceType: $("#paper-source")?.value || "all",
+      limit: state.paperLimit,
+      offset: state.paperOffset,
     });
     const data = await api(`/api/papers?${params}`);
-    renderPapers(data.papers);
+    if (loadId !== state.paperLoadId || !load.isCurrent()) return;
+    if (state.paperOffset > 0 && !data.papers.length && data.total > 0) {
+      state.paperOffset = Math.max(0, state.paperOffset - state.paperLimit);
+      return loadPapers();
+    }
+    state.paperTotal = data.total;
+    state.paperOffset = data.offset;
+    renderPapers(data.papers, data.total);
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadPapers);
   }
 }
 
@@ -2048,6 +3201,9 @@ function paperNode(paper) {
     attrs: { type: "button" },
   });
   saveButton.addEventListener("click", async () => {
+    if (saveButton.disabled) return;
+    saveButton.disabled = true;
+    saveButton.textContent = "保存中…";
     try {
       await api("/api/papers/draft", {
         method: "POST",
@@ -2056,6 +3212,9 @@ function paperNode(paper) {
       showToast("草稿已保存");
     } catch (error) {
       showToast(error.message, true);
+    } finally {
+      saveButton.disabled = false;
+      saveButton.textContent = "保存草稿";
     }
   });
   const gradeButton = element("button", {
@@ -2083,6 +3242,7 @@ function paperNode(paper) {
           draft: textarea.value,
           model: $("#model-select").value || undefined,
         }),
+        timeoutMs: LONG_API_TIMEOUT_MS,
       });
       await loadPapers();
       showToast(`评分完成：${grade.total_score} 分`);
@@ -2092,7 +3252,8 @@ function paperNode(paper) {
       gradeButton.textContent = "提交评分";
     }
   });
-  const gradeNode = paper.grade ? paperGradeNode(paper.grade) : null;  return element("article", { className: "panel paper-card" }, [
+  const gradeNode = paper.grade ? paperGradeNode(paper.grade) : null;
+  return element("article", { className: "panel paper-card" }, [
     element("div", { className: "paper-card-header" }, [
       element("div", { className: "bank-tags" }, [
         element("span", { text: sourceTypeLabel(paper) }),
@@ -2106,8 +3267,8 @@ function paperNode(paper) {
     element("p", { className: "paper-description", text: paper.description }),
     sourceNodeNode(paper.sourceNode),
     writingPoints.length
-      ? element("div", { className: "paper-points" }, [
-          element("h4", { text: "写作要点" }),
+      ? element("details", { className: "paper-points" }, [
+          element("summary", { text: "写作要点（" + writingPoints.length + "）" }),
           element("ul", {}, writingPoints),
         ])
       : null,
@@ -2132,11 +3293,9 @@ function paperGradeNode(grade) {
           : null,
       ]),
   );
-  return element("div", { className: "paper-grade" }, [
-    element("div", { className: "grade-score" }, [
-      element("strong", { text: `${grade.total_score}/${grade.max_score}` }),
-      element("span", { text: "分" }),
-    ]),
+  return element("details", { className: "paper-grade grade-disclosure" }, [
+    element("summary", { text: "评分结果：" + grade.total_score + "/" + grade.max_score + " 分" }),
+    element("div", { className: "grade-disclosure-content" }, [
     ...dimensions,
     grade.overall_comment
       ? element("p", { className: "grade-comment", text: grade.overall_comment })
@@ -2179,24 +3338,40 @@ function paperGradeNode(grade) {
           ),
         ])
       : null,
+    ]),
   ]);
 }
 
-function renderPapers(papers) {
+function updatePaperPagination(total) {
+  const pagination = $("#paper-pagination");
+  const pageCount = Math.max(1, Math.ceil(total / state.paperLimit));
+  const currentPage = Math.floor(state.paperOffset / state.paperLimit) + 1;
+  $("#paper-page").textContent = total
+    ? `第 ${currentPage} / ${pageCount} 页 · 共 ${total} 道`
+    : "暂无论文题目";
+  $("#paper-previous").disabled = state.paperOffset === 0;
+  $("#paper-next").disabled = state.paperOffset + state.paperLimit >= total;
+  pagination.hidden = total <= state.paperLimit;
+}
+
+function renderPapers(papers, total = papers.length) {
   $("#paper-empty").hidden = papers.length > 0;
   $("#paper-list").replaceChildren(...papers.map(paperNode));
+  updatePaperPagination(total);
 }
 
 async function generatePapers() {
   const button = $("#paper-generate");
   const progress = $("#paper-progress");
   const progressText = $("#paper-progress-text");
-  button.disabled = true;
-  progress.hidden = false;
-  const startedAt = Date.now();
-  const timer = setInterval(() => {
-    progressText.textContent = `正在生成论文题目，已等待 ${Math.round((Date.now() - startedAt) / 1000)} 秒…`;
-  }, 1000);
+  const task = beginGenerationTask({
+    key: "papers",
+    button,
+    progress,
+    progressText,
+    cancel: $("#paper-cancel"),
+    label: "生成论文题目",
+  });
   try {
     const result = await api("/api/papers/generate", {
       method: "POST",
@@ -2205,15 +3380,22 @@ async function generatePapers() {
         count: $("#paper-count").value,
         model: $("#model-select").value || undefined,
       }),
+      signal: task.signal,
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
-    showToast(`已生成 ${result.added} 道论文题目`);
+    showToast(
+      `已生成 ${result.added} 道论文题目${result.duplicatesSkipped ? `，过滤 ${result.duplicatesSkipped} 条重复` : ""}`,
+    );
+    state.paperOffset = 0;
     await loadPapers();
   } catch (error) {
+    if (isGenerationCancelled(error, task.signal)) {
+      showToast("已停止生成论文题目");
+      return;
+    }
     showToast(error.message, true);
   } finally {
-    clearInterval(timer);
-    progress.hidden = true;
-    button.disabled = false;
+    task.finish();
   }
 }
 
@@ -2231,12 +3413,20 @@ function populateWikiChapters() {
 
 async function loadWiki() {
   populateWikiChapters();
+  const load = beginLoad(
+    "wiki",
+    ["#wiki-directory", "#wiki-reader"],
+    "正在加载知识库…",
+  );
   try {
     const data = await api("/api/wiki");
+    if (!load.isCurrent()) return;
     state.wikiEntries = data.entries;
     renderWiki(data.entries);
+    if (!$("#wiki-graph").hidden) renderWikiGraph(data.entries);
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadWiki);
   }
 }
 
@@ -2268,6 +3458,7 @@ async function askWiki() {
         question,
         model: $("#model-select")?.value || undefined,
       }),
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
     const references = (result.references ?? []).map(wikiLinkNode);
     resultBox.replaceChildren(
@@ -2443,7 +3634,7 @@ function wikiNode(entry) {
     attrs: { type: "button" },
   });
   editButton.addEventListener("click", () => {
-    const card = editButton.closest(".wiki-card");
+    const card = editButton.closest(".wiki-entry");
     const editor = card.querySelector(".wiki-editor");
     editor.hidden = !editor.hidden;
   });
@@ -2472,7 +3663,7 @@ function wikiNode(entry) {
       showToast(error.message, true);
     }
   });
-  return element("article", { className: "panel wiki-card", attrs: { "data-id": entry.id } }, [
+  return element("article", { className: "wiki-entry", attrs: { "data-id": entry.id } }, [
     element("div", { className: "wiki-card-header" }, [
       element("div", { className: "bank-tags" }, [
         element("span", { text: `第 ${entry.chapter} 章` }),
@@ -2516,6 +3707,26 @@ function wikiNode(entry) {
   ]);
 }
 
+function wikiDirectoryNode(entry, active) {
+  const button = element("button", {
+    className: `wiki-directory-item${active ? " active" : ""}`,
+    attrs: {
+      type: "button",
+      "aria-current": active ? "page" : "false",
+    },
+  }, [
+    element("span", { className: "wiki-directory-meta", text: `第 ${entry.chapter} 章 · ${entry.section || "整章"}` }),
+    element("strong", { text: entry.title }),
+    element("span", { className: "wiki-directory-summary", text: entry.summary || "暂无摘要" }),
+    element("span", { className: `wiki-status ${entry.status}`, text: wikiStatusNames[entry.status] || entry.status }),
+  ]);
+  button.addEventListener("click", () => {
+    state.wikiSelectedId = entry.id;
+    renderWiki(state.wikiEntries);
+  });
+  return button;
+}
+
 function renderWiki(entries) {
   const search = $("#wiki-search").value.trim().toLowerCase();
   const statusFilter = $("#wiki-status-filter").value;
@@ -2527,19 +3738,40 @@ function renderWiki(entries) {
     }
     return true;
   });
-  $("#wiki-list").replaceChildren(
+  if (!filtered.some((entry) => entry.id === state.wikiSelectedId)) {
+    state.wikiSelectedId = filtered[0]?.id || "";
+  }
+  const selected = entries.find((entry) => entry.id === state.wikiSelectedId);
+  $("#wiki-directory-count").textContent = filtered.length ? `${filtered.length} 个条目` : "0 个条目";
+  $("#wiki-directory").replaceChildren(
     ...(filtered.length
-      ? filtered.map(wikiNode)
-      : [
-          emptyMessage(
-            "还没有知识点条目",
-            "选择章节，点击上方按钮生成知识点条目。",
-          ),
-        ]),
+      ? filtered.map((entry) => wikiDirectoryNode(entry, entry.id === state.wikiSelectedId))
+      : [emptyMessage("暂无匹配条目", "尝试清除搜索或状态筛选。")]),
+  );
+  $("#wiki-reader").replaceChildren(
+    ...(selected
+      ? [wikiNode(selected)]
+      : [emptyMessage("还没有知识点条目", "选择章节后，点击上方按钮生成知识点条目。")]),
   );
 }
 
-// 跳转到指定 Wiki 条目：清除筛选，滚动到对应卡片并高亮。
+function setWikiWorkspaceTab(tab) {
+  const graphActive = tab === "graph";
+  const readerTab = $("#wiki-reader-tab");
+  const graphTab = $("#wiki-graph-toggle");
+  const readerPane = $("#wiki-reader-pane");
+  const graph = $("#wiki-graph");
+  readerTab.classList.toggle("active", !graphActive);
+  graphTab.classList.toggle("active", graphActive);
+  readerTab.setAttribute("aria-selected", String(!graphActive));
+  graphTab.setAttribute("aria-selected", String(graphActive));
+  readerPane.hidden = graphActive;
+  graph.hidden = !graphActive;
+  if (graphActive) renderWikiGraph(state.wikiEntries);
+  else destroyWikiGraph();
+}
+
+// 跳转到指定 Wiki 条目：切换右侧阅读器，不移动整页滚动位置。
 async function jumpToWikiEntry(entryId) {
   switchView("wiki");
   if (!state.wikiEntries.length) {
@@ -2553,160 +3785,73 @@ async function jumpToWikiEntry(entryId) {
   }
   $("#wiki-search").value = "";
   $("#wiki-status-filter").value = "all";
+  state.wikiSelectedId = entryId;
+  setWikiWorkspaceTab("reader");
   renderWiki(state.wikiEntries);
-  const card = document.querySelector(`.wiki-card[data-id="${entryId}"]`);
-  if (!card) {
+  const entry = state.wikiEntries.find((item) => item.id === entryId);
+  if (!entry || state.wikiSelectedId !== entryId) {
     showToast("该条目不存在或已被过滤");
     return;
   }
-  card.scrollIntoView({ behavior: "smooth", block: "center" });
-  card.classList.add("wiki-highlight");
-  setTimeout(() => card.classList.remove("wiki-highlight"), 2000);
+  $("#wiki-reader").scrollTo({ top: 0, behavior: "smooth" });
+  $("#wiki-reader").focus({ preventScroll: true });
 }
 
-// 知识图谱：基于条目 related 关系，用简单力导向布局渲染 SVG。
-const GRAPH_CHAPTER_COLORS = [
-  "#1f6b4f",
-  "#2f6f8f",
-  "#8a5a2b",
-  "#7a3e55",
-  "#3f6b3a",
-  "#5b4b8a",
-  "#8a6d1a",
-  "#3d6b66",
-];
+let wikiDetailScrollY = 0;
 
-function renderWikiGraph(entries) {
-  const canvas = $("#wiki-graph-canvas");
-  if (entries.length < 2) {
-    canvas.replaceChildren(
-      emptyMessage("条目太少", "至少需要 2 个知识点才能展示图谱。"),
-    );
-    return;
-  }
-  const width = 1100;
-  const height = 680;
-  // 节点被限制在画布内侧，给标签留出空间，避免被裁掉。
-  const marginX = 96;
-  const marginY = 64;
-  const nodes = entries.map((entry) => ({
-    id: entry.id,
-    title: entry.title,
-    chapter: entry.chapter,
-    x: marginX + Math.random() * (width - marginX * 2),
-    y: marginY + Math.random() * (height - marginY * 2),
-    vx: 0,
-    vy: 0,
-  }));
-  const nodeById = new Map(nodes.map((node) => [node.id, node]));
-  // 边：基于 links（related 匹配到的条目）。
-  const edges = [];
-  for (const entry of entries) {
-    for (const targetId of entry.links ?? []) {
-      if (nodeById.has(targetId)) {
-        edges.push({ source: entry.id, target: targetId });
-      }
-    }
-  }
-  // 力导向迭代。
-  const iterations = 300;
-  const repulsion = 2600;
-  const attraction = 0.015;
-  const centerForce = 0.008;
-  for (let iter = 0; iter < iterations; iter += 1) {
-    for (const node of nodes) {
-      node.vx += (width / 2 - node.x) * centerForce;
-      node.vy += (height / 2 - node.y) * centerForce;
-      for (const other of nodes) {
-        if (other === node) continue;
-        const dx = node.x - other.x;
-        const dy = node.y - other.y;
-        const dist = Math.max(1, Math.hypot(dx, dy));
-        const force = repulsion / (dist * dist);
-        node.vx += (dx / dist) * force;
-        node.vy += (dy / dist) * force;
-      }
-    }
-    for (const edge of edges) {
-      const a = nodeById.get(edge.source);
-      const b = nodeById.get(edge.target);
-      if (!a || !b) continue;
-      const dx = b.x - a.x;
-      const dy = b.y - a.y;
-      const dist = Math.max(1, Math.hypot(dx, dy));
-      const force = attraction * (dist - 150);
-      a.vx += (dx / dist) * force;
-      a.vy += (dy / dist) * force;
-      b.vx -= (dx / dist) * force;
-      b.vy -= (dy / dist) * force;
-    }
-    for (const node of nodes) {
-      node.x = Math.max(marginX, Math.min(width - marginX, node.x + node.vx));
-      node.y = Math.max(marginY, Math.min(height - marginY, node.y + node.vy));
-      node.vx *= 0.85;
-      node.vy *= 0.85;
-    }
-  }
-  // 标签避让：重叠的标签交替放到节点上方，避免文字压在一起。
-  const placed = [];
-  for (const node of [...nodes].sort((a, b) => a.y - b.y || a.x - b.x)) {
-    node.labelAbove = placed.some(
-      (other) =>
-        !other.labelAbove &&
-        Math.abs(other.x - node.x) < 84 &&
-        Math.abs(other.y - node.y) < 46,
-    );
-    placed.push(node);
-  }
-  const svgNS = "http://www.w3.org/2000/svg";
-  const svg = document.createElementNS(svgNS, "svg");
-  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  svg.setAttribute("class", "wiki-graph-svg");
-  for (const edge of edges) {
-    const a = nodeById.get(edge.source);
-    const b = nodeById.get(edge.target);
-    if (!a || !b) continue;
-    const line = document.createElementNS(svgNS, "line");
-    line.setAttribute("x1", a.x);
-    line.setAttribute("y1", a.y);
-    line.setAttribute("x2", b.x);
-    line.setAttribute("y2", b.y);
-    line.setAttribute("class", "wiki-graph-edge");
-    svg.append(line);
-  }
-  for (const node of nodes) {
-    const group = document.createElementNS(svgNS, "g");
-    group.setAttribute("class", "wiki-graph-node");
-    group.setAttribute("transform", `translate(${node.x},${node.y})`);
-    const circle = document.createElementNS(svgNS, "circle");
-    circle.setAttribute("r", "11");
-    const color =
-      GRAPH_CHAPTER_COLORS[
-        (Number(node.chapter) - 1) % GRAPH_CHAPTER_COLORS.length
-      ] ?? GRAPH_CHAPTER_COLORS[0];
-    circle.setAttribute("fill", color);
-    const label = document.createElementNS(svgNS, "text");
-    label.setAttribute("text-anchor", "middle");
-    label.setAttribute("dy", node.labelAbove ? "-18" : "26");
-    label.textContent =
-      node.title.length > 12 ? `${node.title.slice(0, 12)}…` : node.title;
-    group.append(circle, label);
-    group.addEventListener("click", () => jumpToWikiEntry(node.id));
-    svg.append(group);
-  }
-  canvas.replaceChildren(svg);
+function closeWikiDetail() {
+  const dialog = $("#wiki-detail-dialog");
+  if (!dialog) return;
+  if (dialog.open) dialog.close();
+  else dialog.removeAttribute("open");
+  window.scrollTo({ top: wikiDetailScrollY, behavior: "auto" });
+}
+
+function openWikiDetail(entryId) {
+  const entry = state.wikiEntries.find((item) => item.id === entryId);
+  const dialog = $("#wiki-detail-dialog");
+  if (!entry || !dialog) return;
+  wikiDetailScrollY = window.scrollY;
+  const chapter = state.chapters.find((item) => Number(item.id) === Number(entry.chapter));
+  const related = (entry.related || []).map((title, index) => {
+    const tag = element("button", { className: "wiki-related-tag", text: title, attrs: { type: "button" } });
+    const targetId = entry.links?.[index];
+    if (targetId) tag.addEventListener("click", () => {
+      closeWikiDetail();
+      jumpToWikiEntry(targetId);
+    });
+    else tag.disabled = true;
+    return tag;
+  });
+  $("#wiki-detail-title").textContent = entry.title;
+  $("#wiki-detail-content").replaceChildren(
+    element("div", { className: "bank-tags" }, [
+      element("span", { text: `第 ${entry.chapter} 章${chapter?.title ? ` · ${chapter.title}` : ""}` }),
+      element("span", { text: entry.section || "整章" }),
+      element("span", { className: `wiki-status ${entry.status}`, text: wikiStatusNames[entry.status] || entry.status }),
+    ]),
+    element("p", { className: "wiki-summary", text: entry.summary }),
+    sourceNodeNode(entry.sourceNode),
+    entry.keyPoints?.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "关键要点" }), element("ul", {}, entry.keyPoints.map((point) => element("li", { text: point })))]) : null,
+    entry.commonMistakes?.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "常见误区" }), element("ul", {}, entry.commonMistakes.map((point) => element("li", { text: point })))]) : null,
+    related.length ? element("div", { className: "wiki-section" }, [element("h4", { text: "关联知识点" }), element("div", { className: "wiki-related" }, related)]) : null,
+  );
+  if (typeof dialog.showModal === "function") dialog.showModal();
+  else dialog.setAttribute("open", "");
 }
 
 async function generateWiki() {
   const button = $("#wiki-generate");
   const progress = $("#wiki-progress");
   const progressText = $("#wiki-progress-text");
-  button.disabled = true;
-  progress.hidden = false;
-  const startedAt = Date.now();
-  const timer = setInterval(() => {
-    progressText.textContent = `正在生成知识点，已等待 ${Math.round((Date.now() - startedAt) / 1000)} 秒…`;
-  }, 1000);
+  const task = beginGenerationTask({
+    key: "wiki",
+    button,
+    progress,
+    progressText,
+    cancel: $("#wiki-cancel"),
+    label: "生成知识点",
+  });
   try {
     const result = await api("/api/wiki/generate", {
       method: "POST",
@@ -2715,15 +3860,21 @@ async function generateWiki() {
         count: $("#wiki-count").value,
         model: $("#model-select").value || undefined,
       }),
+      signal: task.signal,
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
-    showToast(`已生成 ${result.added} 个知识点条目`);
+    showToast(
+      `已生成 ${result.added} 个知识点条目${result.duplicatesSkipped ? `，过滤 ${result.duplicatesSkipped} 条重复` : ""}`,
+    );
     await loadWiki();
   } catch (error) {
+    if (isGenerationCancelled(error, task.signal)) {
+      showToast("已停止生成知识点");
+      return;
+    }
     showToast(error.message, true);
   } finally {
-    clearInterval(timer);
-    progress.hidden = true;
-    button.disabled = false;
+    task.finish();
   }
 }
 
@@ -2743,8 +3894,14 @@ async function loadMock() {
 async function loadRealExamCatalog() {
   const select = $("#real-exam-term");
   const start = $("#start-real-exam");
+  const load = beginLoad(
+    "real-exam-catalog",
+    "#real-exam-catalog-status",
+    "正在加载真题目录…",
+  );
   try {
     const { papers } = await api("/api/real-exams");
+    if (!load.isCurrent()) return;
     const choicePapers = (papers ?? []).filter((paper) => paper.questions > 0);
     if (!choicePapers.length) {
       select.replaceChildren(
@@ -2752,7 +3909,8 @@ async function loadRealExamCatalog() {
       );
       select.disabled = true;
       start.disabled = true;
-      $("#real-exam-availability").textContent = "未导入真题";
+      setRealExamCatalogStatus("未导入真题");
+      load.finish();
       return;
     }
     const previous = select.value;
@@ -2773,28 +3931,32 @@ async function loadRealExamCatalog() {
       select.value = previous;
     }
     const latest = choicePapers.find((paper) => paper.sourceType === "real") || choicePapers[0];
-    $("#real-exam-availability").textContent = `${choicePapers.length} 套可开 · 最新 ${latest.term}`;
+    setRealExamCatalogStatus(`${choicePapers.length} 套可开 · 最新 ${latest.term}`);
+    load.finish();
   } catch (error) {
+    if (!load.isCurrent()) return;
     select.replaceChildren(
       element("option", { text: "真题目录加载失败", attrs: { value: "" } }),
     );
     select.disabled = true;
     start.disabled = true;
-    $("#real-exam-availability").textContent = "加载失败";
-    showToast(error.message, true);
+    load.fail(error, loadRealExamCatalog);
   }
 }
 
 async function loadMockHistory() {
+  const load = beginLoad("mock-history", "#mock-history-list", "正在加载模拟记录…");
   const available = state.chapters.reduce(
     (sum, chapter) => sum + (chapter.counts?.all ?? 0),
     0,
   );
   $("#mock-availability").textContent = `生成题 ${available} 道可用`;
+  $("#start-mock-exam").disabled = available === 0;
   $("#start-case-exam").disabled = !(await caseBankCount());
   try {
     const { exams } = await api("/api/case-exams");
     const { attempts } = await api("/api/attempts");
+    if (!load.isCurrent()) return;
     const examRows = exams
       .filter((exam) => exam.gradedAt || exam.abandonedAt)
       .slice(0, 20)
@@ -2831,8 +3993,9 @@ async function loadMockHistory() {
             ),
           ]),
     );
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadMockHistory);
   }
 }
 
@@ -2844,8 +4007,8 @@ function examScorePercent(exam) {
 
 async function caseBankCount() {
   try {
-    const { cases } = await api("/api/cases");
-    return cases.length;
+    const data = await api("/api/cases?limit=1&offset=0");
+    return data.total;
   } catch {
     return 0;
   }
@@ -2861,6 +4024,7 @@ async function startMockExam(event) {
         durationMinutes: $("#mock-duration").value,
       }),
     });
+    resetExamSaveState(state.session);
     state.activeSession = null;
     $("#resume-panel").hidden = true;
     renderQuestions();
@@ -2889,6 +4053,7 @@ async function startRealExam(event) {
         durationMinutes: 150,
       }),
     });
+    resetExamSaveState(state.session);
     state.activeSession = null;
     $("#resume-panel").hidden = true;
     renderQuestions();
@@ -2901,9 +4066,12 @@ async function startRealExam(event) {
 async function importArchitectBank() {
   const button = $("#import-bank");
   if (
-    !window.confirm(
-      "将从相邻仓库导入历年真题和模拟卷。导入按题号更新，不会覆盖生成题或练习进度。确认继续？",
-    )
+    !(await confirmDialog({
+      title: "导入真题库",
+      message:
+        "将从相邻仓库导入历年真题和模拟卷。导入按题号更新，不会覆盖生成题或练习进度。确认继续？",
+      confirmText: "导入",
+    }))
   ) {
     return;
   }
@@ -2926,12 +4094,15 @@ async function importArchitectBank() {
 // ===== 案例模拟卷 =====
 
 async function loadActiveCaseExam() {
+  const load = beginLoad("active-case-exam", "#case-exam-stage", "正在加载案例模拟…");
   try {
     const { exam } = await api("/api/case-exams/active");
+    if (!load.isCurrent()) return;
     state.caseExam = exam;
     renderCaseExam();
+    load.finish();
   } catch (error) {
-    showToast(error.message, true);
+    load.fail(error, loadActiveCaseExam);
   }
 }
 
@@ -2955,9 +4126,49 @@ function renderCaseExam() {
     card.querySelectorAll(".case-answer").forEach((textarea) => {
       const draft = texts[textarea.dataset.questionId];
       if (draft) textarea.value = draft;
+      textarea.dataset.savedText = textarea.value;
+      textarea.addEventListener("input", () => {
+        clearTimeout(textarea.caseDraftTimer);
+        textarea.caseDraftTimer = setTimeout(() => {
+          saveCaseExamTextarea(exam, textarea).catch((error) => {
+            if (error.code !== "EXAM_TIME_OVER") showToast(error.message, true);
+          });
+        }, 800);
+      });
+      textarea.addEventListener("blur", () => {
+        saveCaseExamTextarea(exam, textarea).catch((error) => {
+          if (error.code !== "EXAM_TIME_OVER") showToast(error.message, true);
+        });
+      });
     });
   });
   fillCaseExamCountdown(exam);
+}
+
+function caseExamExpired(exam) {
+  return Date.now() >= new Date(exam.startedAt).getTime() + exam.durationSeconds * 1000;
+}
+
+function saveCaseExamTextarea(exam, textarea) {
+  clearTimeout(textarea.caseDraftTimer);
+  const text = textarea.value;
+  const previous = textarea.caseDraftPending ?? Promise.resolve();
+  if (caseExamExpired(exam)) return previous;
+  const pending = previous.catch(() => {}).then(async () => {
+    if (state.caseExam?.id !== exam.id || caseExamExpired(exam) || text === textarea.dataset.savedText) return;
+    await api("/api/case-exams/draft", {
+      method: "POST",
+      body: JSON.stringify({
+        examId: exam.id,
+        caseId: textarea.dataset.caseId,
+        questionId: textarea.dataset.questionId,
+        text,
+      }),
+    });
+    textarea.dataset.savedText = text;
+  });
+  textarea.caseDraftPending = pending;
+  return pending;
 }
 
 // 在 timerBox 中渲染案例模拟倒计时并启动定时器。
@@ -2972,15 +4183,29 @@ function fillCaseExamCountdown(exam) {
   const deadline =
     new Date(exam.startedAt).getTime() + exam.durationSeconds * 1000;
   const tick = () => {
-    const remaining = Math.max(0, Math.round((deadline - Date.now()) / 1000));
+    const remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
     const minutes = Math.floor(remaining / 60);
     const seconds = remaining % 60;
     countdown.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     countdown.classList.toggle("urgent", remaining <= 300);
+    if (remaining <= 2 && remaining > 0) {
+      document.querySelectorAll("#case-exam-stage .case-answer").forEach((textarea) => {
+        saveCaseExamTextarea(exam, textarea).catch((error) => {
+          if (error.code !== "EXAM_TIME_OVER") showToast(error.message, true);
+        });
+      });
+    }
     if (remaining === 0) {
       clearInterval(state.caseExamTimer);
       state.caseExamTimer = null;
-      showToast("案例模拟时间到，请交卷");
+      label.textContent = "时间已到 · 仅已保存草稿可判分";
+      document.querySelectorAll("#case-exam-stage .case-answer").forEach((textarea) => {
+        clearTimeout(textarea.caseDraftTimer);
+        textarea.disabled = true;
+      });
+      const submit = document.querySelector("#case-exam-stage .case-exam-submit");
+      if (submit && !submit.disabled) submit.textContent = "按已保存草稿判分";
+      showToast("案例模拟时间到，未保存的修改不能提交；可按已保存草稿判分");
     }
   };
   tick();
@@ -3050,7 +4275,13 @@ function caseExamNode(exam) {
 }
 
 async function startCaseExam() {
-  if (!window.confirm("将抽 3 道案例限时 90 分钟连做，交卷后 AI 一次性判分。开始？"))
+  if (
+    !(await confirmDialog({
+      title: "开始案例模拟",
+      message: "将抽 3 道案例限时 90 分钟连做，交卷后 AI 一次性判分。开始？",
+      confirmText: "开始模拟",
+    }))
+  )
     return;
   try {
     state.caseExam = await api("/api/case-exams", {
@@ -3066,7 +4297,15 @@ async function startCaseExam() {
 }
 
 async function abandonCaseExam(examId) {
-  if (!window.confirm("确认放弃本次案例模拟？进度不会保留。")) return;
+  if (
+    !(await confirmDialog({
+      title: "放弃案例模拟",
+      message: "确认放弃本次案例模拟？进度不会保留。",
+      confirmText: "放弃",
+      danger: true,
+    }))
+  )
+    return;
   try {
     await api(`/api/case-exams/${encodeURIComponent(examId)}`, {
       method: "DELETE",
@@ -3081,34 +4320,54 @@ async function abandonCaseExam(examId) {
 }
 
 async function submitCaseExam(exam, button) {
+  if (button.disabled) return;
   const stage = document.querySelector("#case-exam-stage");
   const textareas = stage.querySelectorAll(".case-answer");
-  const drafts = {};
-  let unanswered = 0;
-  for (const textarea of textareas) {
-    const caseId = textarea.dataset.caseId;
-    drafts[caseId] ??= {};
-    drafts[caseId][textarea.dataset.questionId] = textarea.value;
-    if (!textarea.value.trim()) unanswered += 1;
-  }
+  const expired = caseExamExpired(exam);
+  const unanswered = [...textareas].filter((textarea) =>
+    !(expired ? textarea.dataset.savedText : textarea.value).trim(),
+  ).length;
   if (
-    !window.confirm(
-      unanswered
-        ? `还有 ${unanswered} 个小问未作答，交卷后 AI 判分且不能重考。确认交卷？`
-        : "交卷后 AI 一次性判分，且不能重考。确认交卷？",
-    )
+    !(await confirmDialog({
+      title: "案例模拟交卷",
+      message: expired
+        ? "时间已到，不能再保存答案。仅按已保存草稿由 AI 判分，确认交卷？"
+        : unanswered
+          ? `还有 ${unanswered} 个小问未作答，交卷后 AI 判分且不能重考。确认交卷？`
+          : "交卷后 AI 一次性判分，且不能重考。确认交卷？",
+      confirmText: "交卷并由 AI 判分",
+    }))
+  )
+    return;
+  if (
+    !expired &&
+    caseExamExpired(exam) &&
+    !(await confirmDialog({
+      title: "已到截止时间",
+      message: "刚刚到时，未保存的修改不能提交。仍按已保存草稿判分？",
+      confirmText: "按已保存草稿判分",
+      danger: true,
+    }))
   )
     return;
   button.disabled = true;
+  const originalButtonText = button.textContent;
   button.textContent = "AI 判分中，约需 1-2 分钟…";
   try {
-    for (const [caseId, questions] of Object.entries(drafts)) {
-      for (const [questionId, text] of Object.entries(questions)) {
-        await api("/api/case-exams/draft", {
-          method: "POST",
-          body: JSON.stringify({ examId: exam.id, caseId, questionId, text }),
-        });
-      }
+    const saves = await Promise.allSettled(
+      [...textareas].map((textarea) =>
+        expired
+          ? (textarea.caseDraftPending ?? Promise.resolve())
+          : saveCaseExamTextarea(exam, textarea),
+      ),
+    );
+    const unexpectedFailure = saves.find((result) =>
+      result.status === "rejected" && result.reason.code !== "EXAM_TIME_OVER",
+    );
+    if (unexpectedFailure) throw unexpectedFailure.reason;
+    if (saves.some((result) => result.status === "rejected") ||
+        (caseExamExpired(exam) && [...textareas].some((textarea) => textarea.value !== textarea.dataset.savedText))) {
+      showToast("部分修改未赶上截止时间，仅按已保存草稿判分");
     }
     const grade = await api("/api/case-exams/grade", {
       method: "POST",
@@ -3116,15 +4375,20 @@ async function submitCaseExam(exam, button) {
         examId: exam.id,
         model: $("#model-select").value || undefined,
       }),
+      timeoutMs: LONG_API_TIMEOUT_MS,
     });
     state.caseExam = null;
+    clearInterval(state.caseExamTimer);
+    state.caseExamTimer = null;
     renderCaseExamGrade(grade);
     await loadMockHistory();
     showToast(`AI 判分完成：${grade.total_score}/${grade.max_score} 分`);
   } catch (error) {
     showToast(error.message, true);
     button.disabled = false;
-    button.textContent = "交卷并由 AI 判分";
+    button.textContent = caseExamExpired(exam)
+      ? "按已保存草稿判分"
+      : originalButtonText;
   }
 }
 
@@ -3194,24 +4458,92 @@ $("#generate-button").addEventListener("click", generateQuestions);
 $("#start-review").addEventListener("click", startReview);
 $("#review-all").addEventListener("click", startReview);
 $("#export-wrong").addEventListener("click", exportWrong);
+$("#wrong-previous").addEventListener("click", () => {
+  state.wrongOffset = Math.max(0, state.wrongOffset - state.wrongLimit);
+  loadWrong();
+});
+$("#wrong-next").addEventListener("click", () => {
+  if (state.wrongOffset + state.wrongLimit >= state.wrongTotal) return;
+  state.wrongOffset += state.wrongLimit;
+  loadWrong();
+});
 $("#plan-goal-select").addEventListener("change", (event) =>
   setDailyGoal(event.target.value),
 );
 $("#case-generate").addEventListener("click", generateCases);
-$("#case-source").addEventListener("change", loadCases);
+$("#case-source").addEventListener("change", () => {
+  state.caseOffset = 0;
+  loadCases();
+});
+$("#case-previous").addEventListener("click", () => {
+  state.caseOffset = Math.max(0, state.caseOffset - state.caseLimit);
+  loadCases();
+});
+$("#case-next").addEventListener("click", () => {
+  if (state.caseOffset + state.caseLimit >= state.caseTotal) return;
+  state.caseOffset += state.caseLimit;
+  loadCases();
+});
 $("#paper-generate").addEventListener("click", generatePapers);
-$("#paper-source").addEventListener("change", loadPapers);
+$("#paper-source").addEventListener("change", () => {
+  state.paperOffset = 0;
+  loadPapers();
+});
+$("#paper-previous").addEventListener("click", () => {
+  state.paperOffset = Math.max(0, state.paperOffset - state.paperLimit);
+  loadPapers();
+});
+$("#paper-next").addEventListener("click", () => {
+  if (state.paperOffset + state.paperLimit >= state.paperTotal) return;
+  state.paperOffset += state.paperLimit;
+  loadPapers();
+});
 $("#mc-save").addEventListener("click", saveModelConfig);
-$("#mc-fetch").addEventListener("click", fetchModels);
+$("#mc-add-provider").addEventListener("click", addProvider);
+$("#agent-add").addEventListener("click", addAgent);
+$("#agent-task-run").addEventListener("click", runAgentTask);
+$("#wiki-detail-close").addEventListener("click", closeWikiDetail);
+$("#wiki-detail-dialog").addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) closeWikiDetail();
+});
+$("#wiki-detail-dialog").addEventListener("close", () => {
+  window.scrollTo({ top: wikiDetailScrollY, behavior: "auto" });
+});
+$("#app-dialog").addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) {
+    finishAppDialog($("#app-dialog-input").hidden ? false : null);
+  }
+});
 $("#wiki-generate").addEventListener("click", generateWiki);
 $("#wiki-search").addEventListener("input", () => renderWiki(state.wikiEntries));
 $("#wiki-status-filter").addEventListener("change", () =>
   renderWiki(state.wikiEntries),
 );
-$("#wiki-graph-toggle").addEventListener("click", () => {
-  const graph = $("#wiki-graph");
-  graph.hidden = !graph.hidden;
-  if (!graph.hidden) renderWikiGraph(state.wikiEntries);
+// 知识图谱模块需要的应用层回调在首次进入图谱前注入。
+initWikiGraphDeps({ openWikiDetail });
+$("#wiki-reader-tab").addEventListener("click", () => setWikiWorkspaceTab("reader"));
+$("#wiki-graph-toggle").addEventListener("click", () => setWikiWorkspaceTab("graph"));
+$("#wiki-graph-chapter").addEventListener("change", () => {
+  if (!$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
+});
+$("#wiki-graph-search").addEventListener("input", (event) => {
+  const graph = currentWikiGraph();
+  if (graph) updateWikiGraphSearch(graph, event.target.value);
+});
+$("#wiki-graph-fit").addEventListener("click", () => {
+  const graph = currentWikiGraph();
+  if (graph) fitWikiGraph(graph);
+});
+$("#wiki-graph-reset").addEventListener("click", () => {
+  if (!$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
+});
+let wikiGraphResizeTimer = 0;
+window.addEventListener("resize", () => {
+  if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
+  clearTimeout(wikiGraphResizeTimer);
+  wikiGraphResizeTimer = setTimeout(() => {
+    if (currentWikiGraph() && !$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
+  }, 120);
 });
 $("#wiki-lint").addEventListener("click", runWikiLint);
 $("#wiki-ask").addEventListener("click", askWiki);
@@ -3264,6 +4596,29 @@ $("#import-bank").addEventListener("click", importArchitectBank);
 $("#export-data").addEventListener("click", exportData);
 $("#export-diagnosis").addEventListener("click", exportDiagnosis);
 $("#materials-search").addEventListener("input", renderMaterialGroups);
+$("#materials-prev").addEventListener("click", () => openAdjacentMaterial(-1));
+$("#materials-next").addEventListener("click", () => openAdjacentMaterial(1));
+$("#materials-font-down").addEventListener("click", () => {
+  materialState.fontScale = clampMaterialScale(materialState.fontScale - 0.05);
+  persistMaterialPreference("architect-material-font-scale", materialState.fontScale);
+  applyMaterialReaderState();
+});
+$("#materials-font-up").addEventListener("click", () => {
+  materialState.fontScale = clampMaterialScale(materialState.fontScale + 0.05);
+  persistMaterialPreference("architect-material-font-scale", materialState.fontScale);
+  applyMaterialReaderState();
+});
+$("#materials-width").addEventListener("click", () => {
+  materialState.narrow = !materialState.narrow;
+  persistMaterialPreference("architect-material-narrow", materialState.narrow);
+  applyMaterialReaderState();
+});
+$("#materials-focus").addEventListener("click", () => {
+  materialState.focus = !materialState.focus;
+  applyMaterialReaderState();
+});
+$("#materials-content").addEventListener("scroll", updateMaterialTocState, { passive: true });
+window.addEventListener("scroll", updateMaterialTocState, { passive: true });
 $("#import-data").addEventListener("click", () => $("#import-file").click());
 $("#import-file").addEventListener("change", (event) =>
   importDataFile(event.target.files[0]),
