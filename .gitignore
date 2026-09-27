@@ -11,6 +11,17 @@ data/state.json.migrated-backup
 data/*.sqlite
 data/*.sqlite-shm
 data/*.sqlite-wal
+data/backups/
+data/*.json.bak
+data/*backup*.json
+data/*.sqlite.bak*
 
 # local source reference materials
 *.pdf
+.ace-tool/
+
+# local tool artifacts and archived backups
+.playwright-mcp/
+.v2c/
+.zcode/
+data/archive/

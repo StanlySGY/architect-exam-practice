@@ -15,7 +15,7 @@
 - 刷新或关闭页面后恢复未完成练习
 - 最终判卷、练习记录和错题本
 - 按 1、3、7、14、30 天安排错题复习
-- 连续两次复习答对后自动标记为已掌握
+- 每 1、3、7、14、30 天间隔阶梯安排错题复习，连续五次复习答对后自动标记为已掌握
 - 问题题目上报、停用和恢复
 - 题库关键词搜索、组合筛选（含生成题/真题/模拟题来源）、分页；生成题可永久删除
 - 从相邻练题台导入历年真题与模拟卷，按考期开综合知识套卷
@@ -85,8 +85,10 @@ npm start
 监听所有网卡（局域网或 Tailscale 访问）：
 
 ```bash
-HOST=0.0.0.0 PORT=3210 npm start
+ARCHITECT_ACCESS_TOKEN="$(openssl rand -hex 32)" HOST=0.0.0.0 PORT=3210 npm start
 ```
+
+非回环监听必须设置 `ARCHITECT_ACCESS_TOKEN`，否则服务不会启动。网页首次请求 API 时会提示输入令牌；令牌只保存在当前浏览器会话。即使有令牌，也应通过防火墙或隧道限制访问，公共网络不要开放该端口。
 
 浏览器仍应使用具体主机地址，例如：
 
@@ -123,11 +125,20 @@ curl http://127.0.0.1:3210/api/health
 
 一次练习最多取 30 道现有题目。一次模型生成请求最多生成 20 道题目；过滤重复题后数量不足时，系统最多自动尝试 3 轮。章节练习和随机模拟卷默认只抽生成题，避免导入的一千多道真题淹没章节练习。
 
+若希望按章节自动补齐生成题，先启动本机服务并确认模型可用，然后运行：
+
+```bash
+node scripts/fill-generated-bank.mjs --target=20
+node scripts/fill-generated-bank.mjs --target=20 --apply
+```
+
+第一条只读预览；第二条逐章补足到至少 20 道，并在 `~/.local/share/architect-exam-practice/backups/` 保存私有完整备份。可用 `--chapter=7` 只处理一章；重复执行只补不足的部分。生成期间不要同时从页面启动其他模型任务；模型调用可能产生费用。脚本检查选项、解析与导图来源并移除本批无法溯源的题目，但**不能保证模型答案绝对准确**，重要考点仍需人工核对，勿将生成题当作真题。
+
 ### 真题套卷
 
 1. 打开数据管理，点击“导入真题库”。默认读取相邻仓库 `architect-exam-bank/data/bank.json`，也可用 `ARCHITECT_BANK_FILE` 指定路径。
 2. 打开“模拟考试”，在“真题套卷”中选择考期。
-3. 按该考期题号顺序组卷，限时 150 分钟；交卷前可改答案，过程不显示对错。
+3. 按该考期题号顺序组卷，限时 150 分钟；倒计时归零自动交卷，交卷前可改答案，过程不显示对错。
 4. 案例和论文页可按来源筛选历年真题或模拟题，交卷后仍走现有 AI 评分。
 
 导入按原题 `id` 幂等更新，不会覆盖已有生成题或练习进度。导入的真题/模拟题不能永久删除；清空题库或全部数据时也会保留它们。HTTP 导入接口不接受客户端传入的文件路径。
@@ -144,10 +155,11 @@ curl http://127.0.0.1:3210/api/health
 ### 错题本与间隔复习
 
 - 答错或最终未作答的题目会进入错题本。
-- 复习间隔依次为 1、3、7、14、30 天。
-- 连续两次复习答对后，题目自动标记为已掌握。
-- 可以在错题本中手动恢复已掌握题目的复习状态。
-- 被标记为问题题目的内容不会继续进入错题复习。
+- 复习间隔依次为 1、3、7、14、30 天；每次复习答对进入下一个间隔档位。
+- 连续五次复习答对（走完全部间隔档位）后，题目自动标记为已掌握。
+- 可以在错题本中手动恢复已掌握题目的复习状态；恢复会从头重置间隔阶梯。
+- 错题列表每页 50 条分页展示；导出错题始终包含全量记录。
+- 被标记为问题题目的内容不会继续进入错题复习；恢复题目后会按上报前的掌握状态归还错题复习。
 
 ### 题库管理
 
@@ -206,6 +218,7 @@ curl http://127.0.0.1:3210/api/health
 - 清空练习记录
 - 清空题库及关联数据（保留已导入真题/模拟题）
 - 清空全部学习数据（同样保留已导入真题/模拟题和对应案例、论文）
+- 查看操作审计：导出备份、导入备份和清空数据会记录在“操作审计”面板（保留最近 200 条）
 
 导入和清空操作均有二次确认。建议在以下操作前先导出备份：
 
@@ -295,9 +308,15 @@ claude --version
 | `ARCHITECT_LLM_BASE_URL` | 未配置 | OpenAI 兼容 API Base URL |
 | `ARCHITECT_LLM_API_KEY` | 未配置 | 模型 API 密钥 |
 | `ARCHITECT_LLM_MODEL` | 未配置 | 模型名称；使用 HTTP API 时必填 |
+| `ARCHITECT_LLM_MODELS` | 未配置 | 界面模型下拉框的完整列表（逗号分隔） |
+| `ARCHITECT_LLM_STREAM` | 未配置 | 设为 `true` 开启流式响应，慢模型更稳 |
 | `ARCHITECT_LLM_PROVIDER` | 未配置 | 设置为 `claude-cli` 可启用 Claude CLI |
-| `ARCHITECT_CLAUDE_COMMAND` | `claude` | Claude CLI 命令或可执行文件路径 |
+| `ARCHITECT_CLAUDE_COMMAND` | `claude` | Claude CLI 命令或可执行文件路径，只能在启动环境配置，不能由网页 API 修改 |
 | `ARCHITECT_AGENT_TIMEOUT_MS` | `600000` | 单次模型请求超时，单位为毫秒 |
+| `ARCHITECT_ACCESS_TOKEN` | 未配置 | 非回环监听时的 Bearer 访问令牌 |
+| `ARCHITECT_ENABLE_AGENTS` | `false` | 是否启用 `/api/agents/run`；需通过启动环境显式开启 |
+| `ARCHITECT_LLM_ALLOWED_HOSTS` | 未配置 | `fetch-models` 可访问的主机白名单；用于明确允许本机模型服务 |
+| `ARCHITECT_STUDY_TIME_ZONE` | `Asia/Shanghai` | 每日目标和连续打卡的日期时区，例如 `Asia/Shanghai` |
 | `ARCHITECT_BANK_FILE` | `../architect-exam-bank/data/bank.json` | 真题库 JSON 路径，相对于项目根目录 |
 
 项目根目录的 `.env` 会在生成器初始化时读取。操作系统中已经存在的同名环境变量优先级更高，不会被 `.env` 覆盖。修改 `.env` 后需要重启服务。
@@ -340,8 +359,9 @@ node --check public/app.js
 │   └── styles.css             # 页面样式
 ├── src/
 │   ├── generator.mjs          # 模型调用、提示词组装、响应解析和补题
+│   ├── questions.mjs          # 业务服务门面，组装 src/service/ 下各领域模块
+│   ├── service/               # 按领域拆分的业务模块（练习判卷/错题统计/题库/数据/案例/论文/知识库）
 │   ├── mindmap.mjs            # Freeplane XML 解析、章节和小节识别
-│   ├── questions.mjs          # 练习、判卷、错题、统计、题库和备份业务
 │   ├── import-bank.mjs        # 练题台真题库字段映射与考期目录
 │   ├── store.mjs              # SQLite 持久化及旧 JSON 数据迁移
 │   └── utils.mjs              # ID、时间和抽样等工具
@@ -353,12 +373,12 @@ node --check public/app.js
 └── package.json               # npm 命令及 Node.js 版本要求
 ```
 
-仓库根目录的 `create_freeplane_*.mjs`、`append_*.mjs` 和 `reorder_*.mjs` 是思维导图整理辅助脚本，不参与 Web 服务的日常运行。修改或执行这些脚本前建议备份 `architect.mm`。
+`scripts/mindmap-tools/` 下的 `create_freeplane_*.mjs`、`append_*.mjs` 和 `reorder_*.mjs` 是思维导图整理辅助脚本，不参与 Web 服务的日常运行。修改或执行这些脚本前建议备份 `architect.mm`。
 
 ### 主要模块职责
 
 - `server.mjs`：只负责 HTTP 输入输出、静态文件和路由分发。
-- `PracticeService`：集中处理题库、会话、锁定答案、判卷、错题、统计和备份规则。
+- `PracticeService`：业务服务门面。各领域（练习判卷、错题统计、题库、数据备份、案例、论文、知识库）拆分在 `src/service/`，按继承链组装，对外 API 不变。
 - `QuestionGenerator`：提取指定导图材料、调用模型、校验结构并补足去重后的题目。
 - `SQLiteStore`：保留兼容的 `snapshot()` / `update()` 状态接口，并以事务写入 SQLite。
 - `public/app.js`：单页界面的视图切换、数据加载和用户交互。
@@ -392,13 +412,14 @@ PracticeService → HTTP API → 浏览器
 | `POST` | `/api/check-answer` | 首次答题并即时判题 |
 | `POST` | `/api/grade` | 提交并完成判卷 |
 | `POST` | `/api/review-sessions` | 创建错题复习 |
-| `GET` | `/api/wrong-questions` | 查询错题本 |
+| `GET` | `/api/wrong-questions` | 查询错题本（支持 `limit`/`offset` 分页） |
 | `PATCH` | `/api/wrong-questions/:id/mastered` | 修改掌握状态 |
 | `GET` | `/api/questions` | 筛选和分页查询完整题库 |
 | `POST` | `/api/questions/:id/report` | 上报问题题目 |
 | `PATCH` | `/api/questions/:id/active` | 恢复问题题目 |
 | `DELETE` | `/api/questions/:id` | 永久删除题目 |
 | `GET` | `/api/question-issues` | 查询问题题目 |
+| `GET` | `/api/audit-log` | 查询数据管理操作审计（最近 200 条） |
 | `GET` | `/api/attempts` | 查询练习记录 |
 | `GET` | `/api/statistics` | 查询学习统计 |
 | `GET` | `/api/data/status` | 查询数据摘要 |
@@ -424,7 +445,7 @@ npm test
 - 首次答案锁定和最终判卷
 - 未完成练习恢复、放弃和替换
 - 精确/近似重复题过滤及自动补题
-- 错题间隔复习和掌握状态
+- 错题间隔复习阶梯、掌握判定与手动恢复重置
 - 问题题目标记、排除和恢复
 - 题库筛选、搜索、分页和删除
 - 学习统计聚合和空数据
@@ -443,7 +464,7 @@ SQLite 配置包括：
 
 - WAL 日志模式
 - `synchronous = FULL`
-- 事务更新
+- 事务更新，且只写发生变化的字段（跳过未变化 key 的磁盘写入）
 - 单个 `app_state` 表保存结构化状态块
 
 相关运行文件可能包括：
@@ -485,10 +506,9 @@ data/state.json.migrated-backup
 这是一个**本地、单用户 MVP**，没有以下能力：
 
 - 用户账号
-- 登录认证
+- 基于账号的登录和角色权限
 - 多用户权限隔离
 - HTTPS
-- CSRF 防护
 - 请求限流
 - 云同步
 
@@ -496,9 +516,11 @@ data/state.json.migrated-backup
 
 - 默认建议使用 `127.0.0.1`，仅本机访问。
 - 使用 `HOST=0.0.0.0` 会把服务暴露给可访问该端口的其他设备。
+- 非回环监听必须配置 `ARCHITECT_ACCESS_TOKEN`；配置令牌后除健康检查外的 API 都需要 Bearer 令牌。
+- 状态变更 API 要求 JSON 请求体并校验同源 `Origin`（如果客户端发送该请求头），这是基础 CSRF 边界，不等同于完整账号体系。
 - 不要直接暴露到公网。
 - 如需跨设备使用，优先放在可信局域网或 Tailscale 中，并配置主机防火墙。
-- 题库管理、备份导出、数据导入、清空和删除 API 都没有用户鉴权。
+- 题库管理、备份导出、数据导入、清空和删除 API 使用共享访问令牌保护，但没有用户级授权和操作隔离。
 
 ### 答案保护范围
 
@@ -543,7 +565,7 @@ data/state.json.migrated-backup
    ```
 
 3. 确认使用 `http://` 而不是 `https://`。
-4. 跨设备访问时确认使用 `HOST=0.0.0.0` 启动。
+4. 跨设备访问时确认使用 `HOST=0.0.0.0` 和 `ARCHITECT_ACCESS_TOKEN` 启动。
 5. 检查系统防火墙、代理绕过规则和 Tailscale ACL。
 
 ### 模型显示“未配置”
@@ -586,7 +608,7 @@ data/state.json.migrated-backup
 ### 后台运行与日志
 
 ```bash
-HOST=0.0.0.0 PORT=3210 nohup npm start \
+ARCHITECT_ACCESS_TOKEN="$(openssl rand -hex 32)" HOST=0.0.0.0 PORT=3210 nohup npm start \
   >/tmp/architect-practice.log 2>&1 &
 ```
 
