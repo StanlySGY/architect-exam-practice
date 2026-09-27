@@ -15,6 +15,7 @@ const EMPTY_STATE = {
   paperQuestions: [],
   wikiEntries: [],
   caseExams: [],
+  auditLog: [],
 };
 
 const STATE_KEYS = Object.keys(EMPTY_STATE);
@@ -53,6 +54,7 @@ function normalizeState(value) {
       ? saved.wikiEntries
       : [],
     caseExams: Array.isArray(saved.caseExams) ? saved.caseExams : [],
+    auditLog: Array.isArray(saved.auditLog) ? saved.auditLog : [],
   };
 }
 
@@ -74,6 +76,8 @@ export class SQLiteStore {
       this.legacyFile = `${fileInfo.dir}/${fileInfo.name}.json`;
     }
     this.state = clone(EMPTY_STATE);
+    // 每个 key 上次持久化时的 JSON 文本，用于跳过未变化字段的磁盘写入。
+    this.persistedJson = new Map();
     this.writeQueue = Promise.resolve();
     this.db = null;
   }
@@ -111,6 +115,9 @@ export class SQLiteStore {
       }
     }
     this.state = normalizeState(saved);
+    for (const key of STATE_KEYS) {
+      this.persistedJson.set(key, JSON.stringify(this.state[key]));
+    }
   }
 
   async readLegacyState() {
@@ -148,6 +155,16 @@ export class SQLiteStore {
 
   persistState(state = this.state) {
     if (!this.db) throw new Error("SQLite 存储尚未初始化");
+    // 全量序列化后只把发生变化的 key 写入 SQLite；
+    // 状态整体可达数 MB，逐操作全量重写会造成明显的写放大。
+    const serialized = new Map();
+    let changed = false;
+    for (const key of STATE_KEYS) {
+      const json = JSON.stringify(state[key]);
+      serialized.set(key, json);
+      if (this.persistedJson.get(key) !== json) changed = true;
+    }
+    if (!changed) return;
     this.db.exec("BEGIN IMMEDIATE");
     try {
       const statement = this.db.prepare(
@@ -155,9 +172,11 @@ export class SQLiteStore {
           "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
       );
       for (const key of STATE_KEYS) {
-        statement.run(key, JSON.stringify(state[key]));
+        if (this.persistedJson.get(key) === serialized.get(key)) continue;
+        statement.run(key, serialized.get(key));
       }
       this.db.exec("COMMIT");
+      this.persistedJson = serialized;
     } catch (error) {
       this.db.exec("ROLLBACK");
       throw error;

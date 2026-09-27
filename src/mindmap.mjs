@@ -126,18 +126,23 @@ export function chapterIds(root) {
 export function nodePath(root, targetText) {
   const normalized = normalizeNodeText(targetText);
   if (!normalized) return null;
-  let found = null;
+  const exactMatches = [];
+  const unnumberedMatches = [];
   const walk = (node, path) => {
-    if (found) return;
     const next = [...path, node.text];
     if (normalizeNodeText(node.text) === normalized) {
-      found = next;
-      return;
+      exactMatches.push(next);
+    } else if (
+      normalizeNodeText(node.text.replace(/^\d+(?:\.\d+)+\s+/, "")) === normalized
+    ) {
+      unnumberedMatches.push(next);
     }
     for (const child of node.children) walk(child, next);
   };
   walk(root, []);
-  return found;
+  return exactMatches.length + unnumberedMatches.length === 1
+    ? (exactMatches[0] ?? unnumberedMatches[0])
+    : null;
 }
 
 function normalizeNodeText(value = "") {

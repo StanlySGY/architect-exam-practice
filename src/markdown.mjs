@@ -37,7 +37,7 @@ function readCodeBlock(lines, index) {
   let next = index + 1;
   while (next < lines.length && !/^```/.test(lines[next])) body.push(lines[next++]);
   return {
-    html: `<pre><code${language ? ` data-language="${escapeHtml(language)}"` : ""}>${escapeHtml(body.join("\n"))}</code></pre>`,
+    html: `<pre class="markdown-code-block"><code${language ? ` data-language="${escapeHtml(language)}"` : ""}>${escapeHtml(body.join("\n"))}</code></pre>`,
     next: next < lines.length ? next + 1 : next,
   };
 }
@@ -124,6 +124,15 @@ function splitTableRow(line) {
 
 function renderInline(value, baseUrl) {
   let text = escapeHtml(value);
+  text = text.replace(
+    /!\[([^\]]*)\]\(([^)\s]+)(?:\s+&quot;[^)]*&quot;)?\)/g,
+    (_, alt, href) => {
+      const url = safeUrl(href.replaceAll("&amp;", "&"), baseUrl);
+      return url
+        ? `<img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" loading="lazy" />`
+        : alt;
+    },
+  );
   text = text.replace(
     /\[([^\]]+)\]\(([^)\s]+)(?:\s+&quot;[^)]*&quot;)?\)/g,
     (_, label, href) => {

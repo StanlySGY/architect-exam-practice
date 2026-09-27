@@ -5,10 +5,232 @@ import { join, resolve } from "node:path";
 import test from "node:test";
 import { QuestionGenerator } from "../src/generator.mjs";
 import { parseFreeplane } from "../src/mindmap.mjs";
+import { ModelConfig } from "../src/model-config.mjs";
 import { PracticeService } from "../src/questions.mjs";
 import { JsonStore, SQLiteStore } from "../src/store.mjs";
 
 const root = resolve(import.meta.dirname, "..");
+
+test("模型工作区支持多供应商并保留 API Key 掩码兼容", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-model-config-test-"));
+  const keys = [
+    "ARCHITECT_LLM_BASE_URL",
+    "ARCHITECT_LLM_API_KEY",
+    "ARCHITECT_LLM_MODEL",
+    "ARCHITECT_LLM_MODELS",
+    "ARCHITECT_LLM_PROVIDER",
+    "ARCHITECT_LLM_PROVIDERS",
+    "ARCHITECT_LLM_AGENTS",
+    "ARCHITECT_LLM_DEFAULT_AGENT",
+  ];
+  const previous = Object.fromEntries(keys.map((key) => [key, process.env[key]]));
+  t.after(async () => {
+    for (const key of keys) {
+      if (previous[key] === undefined) delete process.env[key];
+      else process.env[key] = previous[key];
+    }
+    await rm(directory, { recursive: true, force: true });
+  });
+  for (const key of keys) delete process.env[key];
+  const config = new ModelConfig({ root: directory });
+  const saved = await config.saveWorkspace({
+    defaultAgentId: "agent-deepseek",
+    providers: [
+      {
+        id: "provider-deepseek",
+        name: "DeepSeek",
+        baseUrl: "https://api.deepseek.com/v1",
+        apiKey: "secret-1234",
+        models: ["deepseek-chat"],
+        defaultModel: "deepseek-chat",
+      },
+      {
+        id: "provider-ollama",
+        name: "Ollama",
+        baseUrl: "http://127.0.0.1:11434/v1",
+        models: ["qwen2.5"],
+        defaultModel: "qwen2.5",
+      },
+    ],
+    agents: [
+      {
+        id: "agent-deepseek",
+        name: "题目 Agent",
+        providerId: "provider-deepseek",
+        model: "deepseek-chat",
+        enabled: true,
+      },
+      {
+        id: "agent-ollama",
+        name: "本地评审 Agent",
+        providerId: "provider-ollama",
+        model: "qwen2.5",
+        enabled: true,
+      },
+    ],
+  });
+  assert.equal(saved.providers.length, 2);
+  assert.equal(process.env.ARCHITECT_LLM_MODEL, "deepseek-chat");
+  assert.equal(config.publicWorkspace().providers[0].apiKey, "********1234");
+  assert.equal(config.publicWorkspace().agents.length, 2);
+
+  await config.saveWorkspace({
+    defaultAgentId: "agent-deepseek",
+    providers: [{
+      id: "provider-deepseek",
+      name: "DeepSeek",
+      baseUrl: "https://api.deepseek.com/v1",
+      apiKey: "********1234",
+      models: ["deepseek-chat"],
+      defaultModel: "deepseek-chat",
+    }],
+    agents: [{
+      id: "agent-deepseek",
+      name: "题目 Agent",
+      providerId: "provider-deepseek",
+      model: "deepseek-chat",
+      enabled: true,
+    }],
+  });
+  assert.equal(process.env.ARCHITECT_LLM_API_KEY, "secret-1234");
+});
+
+test("案例和论文列表支持分页且保留筛选总数", async (t) => {
+  const { service } = await fixture(t);
+  await service.addCases({
+    chapter: 1,
+    cases: Array.from({ length: 5 }, (_, index) => ({
+      title: `案例 ${index + 1}`,
+      scenario: "场景",
+      knowledge_point: "架构",
+      questions: [{ text: "问题", points: 5, reference_answer: "答案" }],
+    })),
+  });
+  await service.addPapers({
+    chapter: 1,
+    papers: Array.from({ length: 5 }, (_, index) => ({
+      title: `论文 ${index + 1}`,
+      description: "说明",
+      writing_points: ["要点"],
+    })),
+  });
+  const cases = service.casePage({ limit: 2, offset: 2 });
+  const papers = service.paperPage({ limit: 2, offset: 2 });
+  assert.equal(cases.total, 5);
+  assert.equal(cases.records.length, 2);
+  assert.equal(cases.records[0].title, "案例 3");
+  assert.equal(papers.total, 5);
+  assert.equal(papers.records.length, 2);
+  assert.equal(papers.records[0].title, "论文 3");
+});
+
+test("默认 Agent 工作流只调用一次模型", async (t) => {
+  const { service } = await fixture(t);
+  const modelConfig = {
+    workspace: () => ({
+      defaultAgentId: "agent-one",
+      providers: [{
+        id: "provider-one",
+        type: "openai-compatible",
+        baseUrl: "http://model.test/v1",
+        apiKey: "secret",
+        models: ["test-model"],
+        defaultModel: "test-model",
+      }],
+      agents: [{
+        id: "agent-one",
+        name: "默认 Agent",
+        providerId: "provider-one",
+        model: "test-model",
+        systemPrompt: "保持简洁",
+        enabled: true,
+      }],
+    }),
+  };
+  const generator = new QuestionGenerator({ root, service, modelConfig });
+  const originalFetch = globalThis.fetch;
+  let calls = 0;
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+  });
+  globalThis.fetch = async () => {
+    calls += 1;
+    return {
+      ok: true,
+      headers: { get: () => "application/json" },
+      json: async () => ({
+        choices: [{ message: { content: JSON.stringify({
+          answer: "结论",
+          confidence: 0.8,
+          key_points: ["依据"],
+          concerns: [],
+        }) } }],
+      }),
+    };
+  };
+  const result = await generator.runAgentTask({ prompt: "比较两种架构", strategy: "single" });
+  assert.equal(calls, 1);
+  assert.equal(result.results.length, 1);
+  assert.equal(result.results[0].answer, "结论");
+});
+
+test("停止 Agent 任务会中断模型请求并释放运行锁", async (t) => {
+  const { service } = await fixture(t);
+  const modelConfig = {
+    workspace: () => ({
+      defaultAgentId: "agent-one",
+      providers: [{
+        id: "provider-one",
+        type: "openai-compatible",
+        baseUrl: "http://model.test/v1",
+        apiKey: "secret",
+        models: ["test-model"],
+        defaultModel: "test-model",
+      }],
+      agents: [{
+        id: "agent-one",
+        name: "默认 Agent",
+        providerId: "provider-one",
+        model: "test-model",
+        enabled: true,
+      }],
+    }),
+  };
+  const generator = new QuestionGenerator({ root, service, modelConfig });
+  const originalFetch = globalThis.fetch;
+  let requestOptions;
+  let resolveFetchStarted;
+  const fetchStarted = new Promise((resolve) => {
+    resolveFetchStarted = resolve;
+  });
+  t.after(() => {
+    globalThis.fetch = originalFetch;
+  });
+  globalThis.fetch = async (_url, options) => {
+    requestOptions = options;
+    resolveFetchStarted();
+    return new Promise((_resolve, reject) => {
+      options.signal.addEventListener("abort", () => {
+        reject(Object.assign(new Error("请求已中断"), { name: "AbortError" }));
+      }, { once: true });
+    });
+  };
+  const controller = new AbortController();
+  const task = generator.runAgentTask({
+    prompt: "比较两种架构",
+    strategy: "single",
+    signal: controller.signal,
+  });
+  await fetchStarted;
+  assert.equal(requestOptions.signal.aborted, false);
+  controller.abort();
+  await assert.rejects(
+    task,
+    (error) => error.code === "LLM_GENERATION_CANCELLED" && error.status === 499,
+  );
+  assert.equal(requestOptions.signal.aborted, true);
+  assert.equal(generator.running, false);
+});
 
 function emptySummary(overrides = {}) {
   return {
@@ -250,7 +472,7 @@ test("完整备份可在清空后恢复", async (t) => {
     count: 1,
   });
   await service.grade({ sessionId: session.id, answers: {} });
-  const backup = service.exportData();
+  const backup = await service.exportData();
   assert.equal(backup.format, "architect-practice-backup");
   assert.equal(service.dataSummary().questions, 1);
   assert.equal(service.dataSummary().attempts, 1);
@@ -340,7 +562,7 @@ test("问题题状态会随备份恢复并在清空题库时移除", async (t) =
   await addQuestions(service, { chapter: 6, difficulty: "easy", count: 1 });
   const question = service.allQuestions()[0];
   await service.reportQuestion({ questionId: question.id, note: "题干有误" });
-  const backup = service.exportData();
+  const backup = await service.exportData();
   await service.clearData({ scope: "all", confirm: "CLEAR" });
   assert.equal(service.dataSummary().questionIssues, 0);
   await service.importData({ backup, confirm: "IMPORT" });
@@ -553,8 +775,9 @@ test("练习接口不泄露答案，判卷后写入错题本", async (t) => {
       (question) => !Object.hasOwn(question, "correctAnswer"),
     ),
   );
+  // 测试模板的正确答案固定为 A，用合法的错误选项 B 判错。
   const answers = Object.fromEntries(
-    session.questions.map((question) => [question.id, "Z"]),
+    session.questions.map((question) => [question.id, "B"]),
   );
   const result = await service.grade({ sessionId: session.id, answers });
   assert.equal(result.correct, 0);
@@ -562,8 +785,9 @@ test("练习接口不泄露答案，判卷后写入错题本", async (t) => {
   assert.equal(service.wrongQuestions().summary.due, 3);
 });
 
-test("错题连续回顾答对两次后标记为已掌握", async (t) => {
-  let time = "2026-04-01T08:00:00.000Z";
+test("错题走完 1/3/7/14/30 天间隔阶梯后标记为已掌握", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
   const { service } = await fixture(t, () => time);
   await addQuestions(service, { chapter: 5, difficulty: "easy", count: 1 });
   const first = await service.createSession({
@@ -574,25 +798,59 @@ test("错题连续回顾答对两次后标记为已掌握", async (t) => {
   const question = first.questions[0];
   const graded = await service.grade({
     sessionId: first.id,
-    answers: { [question.id]: "Z" },
+    answers: { [question.id]: "B" },
   });
   const correctAnswer = graded.details[0].correctAnswer;
 
-  const reviewOne = await service.createReviewSession({ limit: 1 });
-  await service.grade({
-    sessionId: reviewOne.id,
-    answers: { [question.id]: correctAnswer },
-  });
-  assert.equal(service.wrongQuestions().summary.mastered, 0);
-
-  time = "2026-04-03T08:00:00.000Z";
-  const reviewTwo = await service.createReviewSession({ limit: 1 });
-  await service.grade({
-    sessionId: reviewTwo.id,
-    answers: { [question.id]: correctAnswer },
-  });
-  assert.equal(service.wrongQuestions().summary.mastered, 1);
+  // 每次复习答对后进入下一个间隔档位；第 5 次答对才标记掌握。
+  const reviewOffsets = [0, 1, 4, 11, 25];
+  for (const [index, offset] of reviewOffsets.entries()) {
+    time = new Date(base + offset * 86400000).toISOString();
+    const review = await service.createReviewSession({ limit: 1 });
+    assert.ok(review, `第 ${index + 1} 次复习应有到期的错题`);
+    await service.grade({
+      sessionId: review.id,
+      answers: { [question.id]: correctAnswer },
+    });
+    assert.equal(
+      service.wrongQuestions().summary.mastered,
+      index === reviewOffsets.length - 1 ? 1 : 0,
+    );
+  }
   assert.equal(service.wrongQuestions().summary.active, 0);
+  assert.equal(service.wrongQuestions().summary.due, 0);
+});
+
+test("手动恢复错题会重置复习阶梯", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service } = await fixture(t, () => time);
+  await addQuestions(service, { chapter: 5, difficulty: "easy", count: 1 });
+  const first = await service.createSession({
+    chapter: 5,
+    difficulty: "easy",
+    count: 1,
+  });
+  const question = first.questions[0];
+  const graded = await service.grade({
+    sessionId: first.id,
+    answers: { [question.id]: "B" },
+  });
+  const correctAnswer = graded.details[0].correctAnswer;
+
+  const review = await service.createReviewSession({ limit: 1 });
+  await service.grade({
+    sessionId: review.id,
+    answers: { [question.id]: correctAnswer },
+  });
+  // 答对一次后标记掌握再恢复，阶梯应从头开始而不是跳档。
+  await service.setMastered(question.id, true);
+  await service.setMastered(question.id, false);
+  const record = service
+    .wrongQuestions()
+    .records.find((item) => item.questionId === question.id);
+  assert.equal(record.correctStreak, 0);
+  assert.equal(record.mastered, false);
 });
 
 test("按小节识别导图并即时判题", async (t) => {
@@ -791,6 +1049,7 @@ test("生成器过滤重复后会再次请求补足题数", async (t) => {
         knowledge_detail: "",
         common_mistake: "",
         memory_tip: "",
+        source_node: "第1章 绪论",
       },
       {
         question: "架构设计中，使用信息隐藏原则主要降低哪类影响？",
@@ -806,6 +1065,7 @@ test("生成器过滤重复后会再次请求补足题数", async (t) => {
         knowledge_detail: "",
         common_mistake: "",
         memory_tip: "",
+        source_node: "第1章 绪论",
       },
     ],
     [
@@ -823,6 +1083,7 @@ test("生成器过滤重复后会再次请求补足题数", async (t) => {
         knowledge_detail: "",
         common_mistake: "",
         memory_tip: "",
+        source_node: "第1章 绪论",
       },
     ],
   ];
@@ -851,6 +1112,181 @@ test("生成器过滤重复后会再次请求补足题数", async (t) => {
   assert.equal(result.duplicatesSkipped, 1);
   assert.equal(result.complete, true);
   assert.equal(service.allQuestions().length, 3);
+});
+
+test("生成题来源节点必须存在于当前导图范围内", async (t) => {
+  const { service } = await fixture(t);
+  const generator = new QuestionGenerator({ root, service });
+  const candidates = [
+    { question: "来源不明的题目应该被加入题库吗？", source_node: "不存在的架构知识点" },
+    { question: "架构师应如何界定系统边界？", source_node: "第1章 绪论" },
+  ];
+  let calls = 0;
+  generator.callModel = async () => JSON.stringify({
+    questions: [
+      {
+        ...candidates[calls++],
+        options: { A: "区分职责与接口", B: "忽略约束", C: "隐藏需求", D: "取消架构" },
+        correct_answer: "A",
+        knowledge_point: "系统边界",
+        analysis: "边界帮助界定架构职责和系统交互。",
+      },
+    ],
+  });
+  const result = await generator.generate({ chapter: 1, difficulty: "medium", count: 1 });
+  assert.equal(calls, 2);
+  assert.equal(result.added, 1);
+  assert.equal(result.invalidSourcesSkipped, 1);
+  assert.equal(result.duplicatesSkipped, 0);
+  assert.equal(service.allQuestions().length, 1);
+  assert.equal(service.allQuestions()[0].sourceNode, "第1章 绪论");
+});
+
+test("停止生成会中断模型请求且不写入题库", async (t) => {
+  let requestOptions;
+  let resolveFetchStarted;
+  const fetchStarted = new Promise((resolve) => {
+    resolveFetchStarted = resolve;
+  });
+  const generator = await generatorWithFetch(t, async (_url, options) => {
+    requestOptions = options;
+    resolveFetchStarted();
+    return new Promise((_resolve, reject) => {
+      options.signal.addEventListener("abort", () => {
+        reject(Object.assign(new Error("请求已中断"), { name: "AbortError" }));
+      }, { once: true });
+    });
+  });
+  const controller = new AbortController();
+  const generation = generator.generate({
+    chapter: 1,
+    difficulty: "easy",
+    count: 1,
+    signal: controller.signal,
+  });
+  await fetchStarted;
+  assert.equal(requestOptions.signal.aborted, false);
+  controller.abort();
+  await assert.rejects(
+    generation,
+    (error) => error.code === "LLM_GENERATION_CANCELLED" && error.status === 499,
+  );
+  assert.equal(generator.service.allQuestions().length, 0);
+  assert.equal(generator.running, false);
+});
+
+test("停止 Wiki 生成会跳过共享流程持久化", async (t) => {
+  let resolveFetchStarted;
+  const fetchStarted = new Promise((resolve) => {
+    resolveFetchStarted = resolve;
+  });
+  const generator = await generatorWithFetch(t, async (_url, options) => {
+    resolveFetchStarted();
+    return new Promise((_resolve, reject) => {
+      options.signal.addEventListener("abort", () => {
+        reject(Object.assign(new Error("请求已中断"), { name: "AbortError" }));
+      }, { once: true });
+    });
+  });
+  const controller = new AbortController();
+  const generation = generator.generateWiki({
+    chapter: 1,
+    count: 1,
+    signal: controller.signal,
+  });
+  await fetchStarted;
+  controller.abort();
+  await assert.rejects(
+    generation,
+    (error) => error.code === "LLM_GENERATION_CANCELLED" && error.status === 499,
+  );
+  assert.equal(generator.service.wikiList().length, 0);
+  assert.equal(generator.running, false);
+});
+
+test("模型返回后取消也不会在持久化入口写入题库", async (t) => {
+  const { service } = await fixture(t);
+  const generator = new QuestionGenerator({ root, service });
+  const controller = new AbortController();
+  generator.callModel = async () => JSON.stringify({
+    questions: [{
+      question: "模型已经返回但任务随后取消时是否会写入？",
+      options: {
+        A: "不会写入",
+        B: "立即写入",
+        C: "写入两次",
+        D: "忽略取消",
+      },
+      knowledge_point: "取消语义",
+      correct_answer: "A",
+      analysis: "取消信号必须在持久化入口再次检查。",
+      source_node: "第1章 绪论",
+    }],
+  });
+  const addGeneratedQuestions = service.addGeneratedQuestions.bind(service);
+  service.addGeneratedQuestions = async (args) => {
+    controller.abort();
+    return addGeneratedQuestions({ ...args, signal: controller.signal });
+  };
+
+  await assert.rejects(
+    generator.generate({
+      chapter: 1,
+      difficulty: "easy",
+      count: 1,
+      signal: controller.signal,
+    }),
+    (error) => error.code === "LLM_GENERATION_CANCELLED" && error.status === 499,
+  );
+  assert.equal(service.allQuestions().length, 0);
+  assert.equal(generator.running, false);
+});
+
+test("生成题选项必须严格包含四个非空选项", async (t) => {
+  const { service } = await fixture(t);
+  await assert.rejects(
+    () => service.addGeneratedQuestions({
+      chapter: 1,
+      difficulty: "easy",
+      questions: [{
+        question: "选项结构校验",
+        options: { A: "甲", B: "乙", C: "丙", D: "丁", E: "多余" },
+        correct_answer: "A",
+      }],
+    }),
+    (error) => error.status === 502,
+  );
+});
+
+test("按小节生成题会保存从章节根开始的完整来源路径", async (t) => {
+  const { service } = await fixture(t);
+  const generator = new QuestionGenerator({ root, service });
+  generator.callModel = async () => JSON.stringify({
+    questions: [{
+      question: "冯·诺伊曼结构包含哪些基本部分？",
+      options: { A: "运算器、控制器、存储器、输入和输出", B: "显示器和键盘", C: "网络和电源", D: "浏览器和数据库" },
+      correct_answer: "A",
+      knowledge_point: "冯·诺伊曼结构",
+      analysis: "该结构将计算机组织为五个基本部分。",
+      source_node: "冯·诺伊曼结构基础",
+    }],
+  });
+  await generator.generate({ chapter: 1, section: "1.1", difficulty: "easy", count: 1 });
+  assert.equal(
+    service.allQuestions()[0].sourceNode,
+    "第1章 绪论 › 1.1 系统架构概述 › 冯·诺伊曼结构基础",
+  );
+});
+
+test("导图节点来源可识别未写章节编号的唯一标题", async () => {
+  const { nodePath, readMindMap, findChapter } = await import("../src/mindmap.mjs");
+  const chapter = findChapter(await readMindMap("architect.mm"), 6);
+  const path = nodePath(chapter, "概念结构设计");
+  assert.equal(path.at(-1), "6.3.3 概念结构设计");
+  assert.equal(nodePath(chapter, "不存在的概念结构"), null);
+  const futureChapter = findChapter(await readMindMap("architect.mm"), 11);
+  assert.equal(nodePath(futureChapter, "发展历程"), null);
+  assert.equal(nodePath(futureChapter, "11.5.1 发展历程").at(-1), "11.5.1 发展历程");
 });
 
 test("尚未加入思维导图的章节不能开始练习", async (t) => {
@@ -1080,10 +1516,110 @@ test("案例模拟卷交卷 AI 判分逐卷挂接 Wiki 条目并持久化", asyn
   assert.equal(listed.maxScore, 15);
 });
 
+test("案例模拟考到期后拒绝新草稿，仍可判已有草稿", async (t) => {
+  const startedAt = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(startedAt).toISOString();
+  const { service } = await fixture(t, () => time);
+  await service.addCases({
+    chapter: 1,
+    cases: [{
+      title: "支付系统设计",
+      scenario: "设计高可用支付系统。",
+      questions: [{ text: "如何容灾？", points: 5, reference_answer: "多活" }],
+    }],
+  });
+  const exam = await service.createCaseExam({ count: 1, durationMinutes: 10 });
+  const caseId = exam.cases[0].id;
+  const questionId = exam.cases[0].questions[0].id;
+  const save = (text) => service.saveCaseExamDraft({ examId: exam.id, caseId, questionId, text });
+
+  time = new Date(startedAt + 10 * 60 * 1000).toISOString();
+  await save("截止时作答");
+  time = new Date(startedAt + 12 * 60 * 1000).toISOString();
+  await save("宽限期作答");
+  time = new Date(startedAt + 12 * 60 * 1000 + 1).toISOString();
+  await assert.rejects(
+    () => save("迟到作答"),
+    (error) => error.code === "EXAM_TIME_OVER" && error.status === 409,
+  );
+  assert.equal(service.activeCaseExam().drafts[caseId][questionId], "宽限期作答");
+
+  const graded = await service.saveCaseExamGrade({ examId: exam.id, grade: { total_score: 5 } });
+  assert.equal(graded.gradedAt, time);
+  await assert.rejects(
+    () => service.saveCaseExamGrade({ examId: exam.id, grade: { total_score: 0 } }),
+    (error) => error.status === 409,
+  );
+
+  const abandoned = await service.createCaseExam({ count: 1 });
+  await service.abandonCaseExam(abandoned.id);
+  await assert.rejects(
+    () => service.saveCaseExamGrade({ examId: abandoned.id, grade: { total_score: 5 } }),
+    (error) => error.status === 409,
+  );
+  assert.equal(service.caseExamList()[0].totalScore, null);
+});
+
+test("学习计划按设定时区的自然日统计实际作答并计算连续打卡", async (t) => {
+  const previousZone = process.env.ARCHITECT_STUDY_TIME_ZONE;
+  delete process.env.ARCHITECT_STUDY_TIME_ZONE;
+  t.after(() => {
+    if (previousZone === undefined) delete process.env.ARCHITECT_STUDY_TIME_ZONE;
+    else process.env.ARCHITECT_STUDY_TIME_ZONE = previousZone;
+  });
+  const { service, store } = await fixture(t, () => "2026-04-02T16:30:00.000Z");
+  await service.setDailyGoal(2);
+  await store.update((state) => {
+    state.attempts = [
+      { total: 4, unanswered: 3, gradedAt: "2026-04-01T16:10:00.000Z" },
+      { total: 1, unanswered: 0, gradedAt: "2026-04-02T00:10:00.000Z" },
+      { total: 3, unanswered: 1, gradedAt: "2026-04-02T16:05:00.000Z" },
+      { total: 4, unanswered: 4, gradedAt: "2026-04-02T18:00:00.000Z" },
+    ];
+  });
+  assert.deepEqual(service.getStudyPlan(), {
+    dailyGoal: 2,
+    todayAnswered: 2,
+    todayDone: true,
+    streak: 2,
+    totalAnswered: 4,
+  });
+  process.env.ARCHITECT_STUDY_TIME_ZONE = "UTC";
+  assert.deepEqual(service.getStudyPlan(), {
+    dailyGoal: 2,
+    todayAnswered: 3,
+    todayDone: true,
+    streak: 1,
+    totalAnswered: 4,
+  });
+});
+
+test("统计学习天数按本地自然日计算且不计未作答的交卷", async (t) => {
+  const previousZone = process.env.ARCHITECT_STUDY_TIME_ZONE;
+  process.env.ARCHITECT_STUDY_TIME_ZONE = "Asia/Shanghai";
+  t.after(() => {
+    if (previousZone === undefined) delete process.env.ARCHITECT_STUDY_TIME_ZONE;
+    else process.env.ARCHITECT_STUDY_TIME_ZONE = previousZone;
+  });
+  const { service, store } = await fixture(t);
+  await store.update((state) => {
+    state.attempts = [
+      { total: 1, unanswered: 0, gradedAt: "2026-04-01T16:10:00.000Z" },
+      { total: 1, unanswered: 0, gradedAt: "2026-04-02T00:10:00.000Z" },
+      { total: 4, unanswered: 4, gradedAt: "2026-04-03T12:00:00.000Z" },
+    ];
+  });
+  assert.equal(service.statistics().summary.studyDays, 1);
+  process.env.ARCHITECT_STUDY_TIME_ZONE = "UTC";
+  assert.equal(service.statistics().summary.studyDays, 2);
+});
+
 test("Wiki 自检能发现同名、断链、孤立与缺溯源条目", async (t) => {
   const { service } = await fixture(t);
   await service.addWikiEntries({
     chapter: 1,
+    // 故意种下同名重复条目验证 lint，因此绕过写入时的去重。
+    dedupe: false,
     entries: [
       {
         title: "负载均衡",
@@ -1281,6 +1817,8 @@ test("同名条目可合并、断链引用可一键修复", async (t) => {
   const { service } = await fixture(t);
   await service.addWikiEntries({
     chapter: 1,
+    // 故意种下同名重复条目验证合并，因此绕过写入时的去重。
+    dedupe: false,
     entries: [
       {
         title: "负载均衡",
@@ -1595,3 +2133,333 @@ test("清空题库和全部数据会保留导入的真题模拟题", async (t) =
   );
 });
 
+
+test("模拟考会话交卷前不提供逐题判题反馈", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const exam = await service.createMockExamSession({ count: 1 });
+  await assert.rejects(
+    () =>
+      service.checkAnswer({
+        sessionId: exam.id,
+        questionId: exam.questions[0].id,
+        answer: "A",
+      }),
+    (error) => error.code === "EXAM_NO_FEEDBACK" && error.status === 400,
+  );
+  // 模拟考作答本身不受影响，且不会泄露答案。
+  const saved = await service.saveExamAnswer({
+    sessionId: exam.id,
+    questionId: exam.questions[0].id,
+    answer: "B",
+  });
+  assert.equal(saved.saved, true);
+  const active = await service.activeSession();
+  assert.ok(
+    active.questions.every(
+      (question) => !Object.hasOwn(question, "correctAnswer"),
+    ),
+  );
+});
+
+test("模拟考超过时限后不再受理新的作答", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service } = await fixture(t, () => time);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const exam = await service.createMockExamSession({
+    count: 1,
+    durationMinutes: 60,
+  });
+  assert.equal(exam.status, "active");
+  assert.equal(exam.deadlineAt, new Date(base + 60 * 60 * 1000).toISOString());
+  // 宽限期内的补交仍然允许。
+  time = new Date(base + 60 * 60 * 1000).toISOString();
+  await service.saveExamAnswer({
+    sessionId: exam.id,
+    questionId: exam.questions[0].id,
+    answer: "A",
+  });
+  // 超过宽限期后拒绝。
+  time = new Date(base + 62 * 60 * 1000 + 1000).toISOString();
+  await assert.rejects(
+    () =>
+      service.saveExamAnswer({
+        sessionId: exam.id,
+        questionId: exam.questions[0].id,
+        answer: "C",
+      }),
+    (error) => error.code === "EXAM_TIME_OVER" && error.status === 409,
+  );
+  // 超时后的请求体不能补交新答案，只能按服务端已保存答案自动交卷。
+  await assert.rejects(
+    () => service.grade({ sessionId: exam.id, answers: { [exam.questions[0].id]: "B" } }),
+    (error) => error.code === "EXAM_TIME_OVER" && error.status === 409,
+  );
+  const graded = await service.grade({ sessionId: exam.id, answers: {} });
+  assert.equal(graded.total, 1);
+  assert.equal(graded.details[0].userAnswer, "A");
+  assert.equal(graded.submissionStatus, "expired");
+  assert.equal(service.store.snapshot().sessions[exam.id].status, "graded");
+});
+
+test("模拟考答案 revision 拒绝乱序旧请求", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const exam = await service.createMockExamSession({ count: 1 });
+  const questionId = exam.questions[0].id;
+  const latest = await service.saveExamAnswer({
+    sessionId: exam.id,
+    questionId,
+    answer: "B",
+    revision: 2,
+  });
+  const stale = await service.saveExamAnswer({
+    sessionId: exam.id,
+    questionId,
+    answer: "A",
+    revision: 1,
+  });
+  assert.equal(latest.revision, 2);
+  assert.equal(stale.stale, true);
+  assert.equal(service.store.snapshot().sessions[exam.id].checkedAnswers[questionId], "B");
+});
+
+test("模拟考答案 revision 不会因重复的旧值回退", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const exam = await service.createMockExamSession({ count: 1 });
+  const questionId = exam.questions[0].id;
+  await service.saveExamAnswer({ sessionId: exam.id, questionId, answer: "B", revision: 3 });
+  const stale = await service.saveExamAnswer({ sessionId: exam.id, questionId, answer: "B", revision: 2 });
+  assert.equal(stale.stale, true);
+  assert.equal(stale.revision, 3);
+  assert.equal(service.store.snapshot().sessions[exam.id].answerRevisions[questionId], 3);
+});
+
+test("并发判卷只允许一次状态转换", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const session = await service.createSession({ chapter: 7, difficulty: "easy", count: 1 });
+  const results = await Promise.allSettled([
+    service.grade({ sessionId: session.id, answers: {} }),
+    service.grade({ sessionId: session.id, answers: {} }),
+  ]);
+  assert.equal(results.filter((item) => item.status === "fulfilled").length, 1);
+  assert.equal(results.filter((item) => item.status === "rejected")[0].reason.code, "SESSION_ALREADY_GRADED");
+  assert.equal(service.store.snapshot().attempts.length, 1);
+});
+
+test("备份导入拒绝重复 ID、悬空会话题目和无效时间", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 4, difficulty: "easy", count: 1 });
+  const backup = await service.exportData();
+  const duplicate = structuredClone(backup);
+  duplicate.data.generatedQuestions.push(structuredClone(duplicate.data.generatedQuestions[0]));
+  await assert.rejects(
+    () => service.importData({ backup: duplicate, confirm: "IMPORT" }),
+    (error) => error.code === "INVALID_BACKUP",
+  );
+  const dangling = structuredClone(backup);
+  dangling.data.sessions = {
+    "session-bad": {
+      id: "session-bad",
+      questionIds: ["missing-question"],
+      checkedAnswers: {},
+      createdAt: "2026-04-01T08:00:00.000Z",
+    },
+  };
+  await assert.rejects(
+    () => service.importData({ backup: dangling, confirm: "IMPORT" }),
+    (error) => error.code === "INVALID_BACKUP",
+  );
+  const invalidTime = structuredClone(backup);
+  invalidTime.data.generatedQuestions[0].createdAt = "not-a-date";
+  await assert.rejects(
+    () => service.importData({ backup: invalidTime, confirm: "IMPORT" }),
+    (error) => error.code === "INVALID_BACKUP",
+  );
+});
+
+test("论文模拟的草稿和评分都受服务端截止时间约束", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service } = await fixture(t, () => time);
+  const papers = await service.addPapers({
+    chapter: 4,
+    papers: [{ title: "论架构", description: "结合项目论述架构设计" }],
+  });
+  await service.setPaperMockStart({ paperId: papers[0].id });
+  assert.equal(
+    service.paperList()[0].mock.deadlineAt,
+    new Date(base + 120 * 60 * 1000).toISOString(),
+  );
+  time = new Date(base + 120 * 60 * 1000 + 121 * 1000).toISOString();
+  await assert.rejects(
+    () => service.savePaperDraft({ paperId: papers[0].id, draft: "超时草稿" }),
+    (error) => error.code === "ESSAY_TIME_OVER" && error.status === 409,
+  );
+  await assert.rejects(
+    () => service.savePaperGrade({ paperId: papers[0].id, grade: { total_score: 1 } }),
+    (error) => error.code === "ESSAY_TIME_OVER" && error.status === 409,
+  );
+});
+
+test("恢复问题题目会按上报前状态归还错题复习", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const session = await service.createSession({
+    chapter: 7,
+    difficulty: "easy",
+    count: 1,
+  });
+  const question = session.questions[0];
+  await service.grade({ sessionId: session.id, answers: { [question.id]: "B" } });
+  await service.reportQuestion({ questionId: question.id });
+  let record = service
+    .wrongQuestions()
+    .records.find((item) => item.questionId === question.id);
+  assert.equal(record.disabledByIssue, true);
+  assert.equal(record.mastered, true);
+
+  await service.restoreQuestion(question.id);
+  record = service
+    .wrongQuestions()
+    .records.find((item) => item.questionId === question.id);
+  assert.equal(record.disabledByIssue, false);
+  assert.equal(record.mastered, false);
+  assert.equal(record.nextReviewAt <= service.now(), true);
+});
+
+test("判卷会忽略合法范围之外的选项值", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const session = await service.createSession({
+    chapter: 7,
+    difficulty: "easy",
+    count: 1,
+  });
+  const result = await service.grade({
+    sessionId: session.id,
+    answers: { [session.questions[0].id]: "Z" },
+  });
+  assert.equal(result.details[0].userAnswer, null);
+  assert.equal(result.unanswered, 1);
+  assert.equal(result.incorrect, 0);
+});
+
+test("生成案例、论文与 Wiki 条目会按标题去重", async (t) => {
+  const { service } = await fixture(t);
+  const firstCases = await service.addCases({
+    chapter: 7,
+    cases: [
+      {
+        title: "论数据中台建设",
+        scenario: "某银行构建数据中台",
+        questions: [{ text: "说明数据中台的边界", reference_answer: "略" }],
+      },
+      {
+        title: "论数据中台建设",
+        scenario: "同批重复案例",
+        questions: [{ text: "q", reference_answer: "略" }],
+      },
+    ],
+  });
+  assert.equal(firstCases.length, 1);
+  const duplicateCases = await service.addCases({
+    chapter: 7,
+    cases: [
+      {
+        title: "论数据中台建设！ ",
+        scenario: "同名近似标点",
+        questions: [{ text: "q2", reference_answer: "略" }],
+      },
+    ],
+  });
+  assert.equal(duplicateCases.length, 0);
+  const otherChapterCases = await service.addCases({
+    chapter: 5,
+    cases: [
+      {
+        title: "论数据中台建设",
+        scenario: "不同章节允许同名",
+        questions: [{ text: "q3", reference_answer: "略" }],
+      },
+    ],
+  });
+  assert.equal(otherChapterCases.length, 1);
+  const papers = await service.addPapers({
+    chapter: 4,
+    papers: [
+      { title: "论微服务", description: "d" },
+      { title: "论微服务", description: "d2" },
+    ],
+  });
+  assert.equal(papers.length, 1);
+  const entries = await service.addWikiEntries({
+    chapter: 7,
+    entries: [
+      { title: "缓存穿透", summary: "s" },
+      { title: "缓存穿透。", summary: "s2" },
+    ],
+  });
+  assert.equal(entries.length, 1);
+});
+
+test("论文模拟超时后默认拒绝评分，但进行中的评分可豁免落库", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service } = await fixture(t, () => time);
+  const papers = await service.addPapers({
+    chapter: 4,
+    papers: [{ title: "论架构评审", description: "结合项目论述" }],
+  });
+  await service.setPaperMockStart({ paperId: papers[0].id });
+  time = new Date(base + 120 * 60 * 1000 + 121 * 1000).toISOString();
+  await assert.rejects(
+    () =>
+      service.savePaperGrade({ paperId: papers[0].id, grade: { total_score: 1 } }),
+    (error) => error.code === "ESSAY_TIME_OVER" && error.status === 409,
+  );
+  await service.savePaperGrade({
+    paperId: papers[0].id,
+    grade: { total_score: 60 },
+    allowAfterDeadline: true,
+  });
+  assert.equal(service.paperList()[0].grade.total_score, 60);
+});
+
+test("数据管理操作写入审计日志并按时间倒序读取", async (t) => {
+  let time = "2026-04-01T08:00:00.000Z";
+  const { service } = await fixture(t, () => time);
+  await service.exportData();
+  time = "2026-04-01T09:00:00.000Z";
+  await service.clearData({ scope: "wrongBook", confirm: "CLEAR" });
+  const records = service.auditLog();
+  assert.deepEqual(
+    records.map((record) => record.action),
+    ["data.clear", "data.export"],
+  );
+  assert.equal(records[0].scope, "wrongBook");
+  assert.ok(records[0].id);
+});
+
+test("错题本支持分页且汇总统计基于全量记录", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 3 });
+  const session = await service.createSession({
+    chapter: 7,
+    difficulty: "easy",
+    count: 3,
+  });
+  await service.grade({ sessionId: session.id, answers: {} });
+  const page = service.wrongQuestions({ limit: 2, offset: 0 });
+  assert.equal(page.records.length, 2);
+  assert.equal(page.total, 3);
+  assert.equal(page.summary.total, 3);
+  const secondPage = service.wrongQuestions({ limit: 2, offset: 2 });
+  assert.equal(secondPage.records.length, 1);
+  const full = service.wrongQuestions();
+  assert.equal(full.records.length, 3);
+  assert.equal(full.limit, 3);
+});

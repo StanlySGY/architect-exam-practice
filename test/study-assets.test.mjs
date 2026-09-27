@@ -3,10 +3,16 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
-import { confinedMaterialPath, ExamAssets } from "../src/exam-assets.mjs";
+import {
+  confinedMaterialPath,
+  ExamAssets,
+  materialFormat,
+  materialMimeType,
+} from "../src/exam-assets.mjs";
 import { validateEssaySample } from "../src/essay.mjs";
 import { renderQuestionFigure } from "../src/figures.mjs";
 import { QuestionGenerator } from "../src/generator.mjs";
+import { renderMarkdown } from "../src/markdown.mjs";
 import { PracticeService } from "../src/questions.mjs";
 import { JsonStore } from "../src/store.mjs";
 
@@ -107,6 +113,44 @@ test("资料路径会解码中文文件名，并拒绝逃出资料目录", async
   assert.equal("localUrl" in doc, false);
 });
 
+test("资料支持 Markdown、Mermaid、HTML、SVG 和纯文本格式", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-material-formats-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const dataDir = join(directory, "data");
+  const materialsDir = join(dataDir, "study-materials");
+  await mkdir(materialsDir, { recursive: true });
+  await writeFile(join(materialsDir, "guide.md"), "# Guide\n\n正文", "utf8");
+  await writeFile(join(materialsDir, "diagram.mmd"), "flowchart TD\n A --> B", "utf8");
+  await writeFile(join(materialsDir, "preview.html"), "<h1>Preview</h1>", "utf8");
+  await writeFile(join(materialsDir, "icon.svg"), "<svg><text>Icon</text></svg>", "utf8");
+  await writeFile(join(materialsDir, "notes.txt"), "plain text", "utf8");
+  const assets = new ExamAssets({ dataDir });
+  assets.materials = [
+    { id: "guide", title: "Guide", localUrl: "./data/study-materials/guide.md" },
+    { id: "diagram", title: "Diagram", localUrl: "./data/study-materials/diagram.mmd" },
+    { id: "preview", title: "Preview", localUrl: "./data/study-materials/preview.html" },
+    { id: "icon", title: "Icon", localUrl: "./data/study-materials/icon.svg" },
+    { id: "notes", title: "Notes", localUrl: "./data/study-materials/notes.txt" },
+  ];
+  const listing = assets.studyMaterials().materials;
+  assert.deepEqual(
+    listing.map(({ id, format }) => [id, format]),
+    [
+      ["guide", "markdown"],
+      ["diagram", "mermaid"],
+      ["preview", "html"],
+      ["icon", "svg"],
+      ["notes", "text"],
+    ],
+  );
+  assert.equal(materialFormat("diagram.mermaid"), "mermaid");
+  assert.equal(materialMimeType("preview.html"), "text/html; charset=utf-8");
+  const html = await assets.studyMaterial("preview");
+  assert.equal(html.format, "html");
+  assert.equal(html.content, "<h1>Preview</h1>");
+  assert.equal(html.markdown, html.content);
+});
+
 test("论文结构：合格草稿通过，缺摘要或过短则拒绝", () => {
   const valid = validateEssaySample({}, essayDraft());
   assert.equal(valid.valid, true);
@@ -168,4 +212,38 @@ test("图示渲染转义标签，缺失图只给待补录说明", () => {
   );
   assert.match(flow, /开始/);
   assert.match(flow, /结束/);
+  const standardShapes = renderQuestionFigure(
+    {
+      kind: "mermaid",
+      code: 'flowchart LR\n U(["Actor"])\n V(["View"])\n P(["Presenter"])\n U -- "1: makes action" --> V\n V -. "2: action notification" .-> P',
+    },
+    false,
+  );
+  assert.doesNotMatch(standardShapes, /无法解析/);
+  assert.match(standardShapes, /Actor/);
+  assert.match(standardShapes, /dashed/);
+  const grouped = renderQuestionFigure(
+    {
+      kind: "mermaid",
+      code: 'flowchart TD\n  subgraph Group["分组"]\n    A["A"] --> B["B"]\n  end',
+    },
+    false,
+  );
+  assert.doesNotMatch(grouped, /分组/);
+  const sequence = renderQuestionFigure(
+    { kind: "mermaid", code: "sequenceDiagram\n A->>B: 请求" },
+    false,
+  );
+  assert.match(sequence, /figure-sequence-message/);
+  const state = renderQuestionFigure(
+    { kind: "mermaid", code: "stateDiagram-v2\n [*] --> Idle\n Idle --> Ready : start" },
+    false,
+  );
+  assert.match(state, /Ready/);
+});
+
+test("Markdown Mermaid 代码块保留语言标记，供阅读器增强渲染", () => {
+  const html = renderMarkdown("```mermaid\nflowchart TD\n A --> B\n```");
+  assert.match(html, /class="markdown-code-block"/);
+  assert.match(html, /data-language="mermaid"/);
 });

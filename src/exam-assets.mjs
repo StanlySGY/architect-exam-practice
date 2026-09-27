@@ -1,5 +1,5 @@
 import { readFile } from "node:fs/promises";
-import { dirname, resolve, sep } from "node:path";
+import { dirname, extname, resolve, sep } from "node:path";
 import { extractMermaidFigure, hasFigureReference } from "./figures.mjs";
 import { defaultBankFile } from "./import-bank.mjs";
 
@@ -23,6 +23,38 @@ function forbiddenPath() {
     status: 403,
     code: "MATERIAL_PATH_FORBIDDEN",
   });
+}
+
+const MATERIAL_FORMATS = {
+  ".md": { format: "markdown", mimeType: "text/markdown; charset=utf-8" },
+  ".markdown": { format: "markdown", mimeType: "text/markdown; charset=utf-8" },
+  ".mmd": { format: "mermaid", mimeType: "text/plain; charset=utf-8" },
+  ".mermaid": { format: "mermaid", mimeType: "text/plain; charset=utf-8" },
+  ".html": { format: "html", mimeType: "text/html; charset=utf-8" },
+  ".htm": { format: "html", mimeType: "text/html; charset=utf-8" },
+  ".svg": { format: "svg", mimeType: "image/svg+xml; charset=utf-8" },
+  ".txt": { format: "text", mimeType: "text/plain; charset=utf-8" },
+  ".json": { format: "text", mimeType: "application/json; charset=utf-8" },
+  ".xml": { format: "text", mimeType: "application/xml; charset=utf-8" },
+  ".yaml": { format: "text", mimeType: "text/yaml; charset=utf-8" },
+  ".yml": { format: "text", mimeType: "text/yaml; charset=utf-8" },
+};
+
+export function materialFormat(localUrl, declaredFormat = "") {
+  const explicit = String(declaredFormat || "").toLowerCase();
+  if (["markdown", "mermaid", "html", "svg", "text"].includes(explicit)) {
+    return explicit;
+  }
+  return MATERIAL_FORMATS[extname(String(localUrl || "")).toLowerCase()]?.format || "text";
+}
+
+export function materialMimeType(localUrl, declaredFormat = "") {
+  const format = materialFormat(localUrl, declaredFormat);
+  if (format === "markdown") return "text/markdown; charset=utf-8";
+  if (format === "mermaid" || format === "text") return "text/plain; charset=utf-8";
+  if (format === "html") return "text/html; charset=utf-8";
+  if (format === "svg") return "image/svg+xml; charset=utf-8";
+  return "text/plain; charset=utf-8";
 }
 
 export function confinedMaterialPath(dataDir, localUrl) {
@@ -121,6 +153,8 @@ export class ExamAssets {
         group: item.group || "other",
         groupLabel: item.groupLabel || item.group || "资料",
         title: item.title,
+        format: materialFormat(item.localUrl, item.format),
+        mimeType: materialMimeType(item.localUrl, item.format),
         charCount: item.charCount ?? null,
         sourceUrl: item.sourceUrl || null,
       })),
@@ -136,9 +170,9 @@ export class ExamAssets {
       });
     }
     const file = confinedMaterialPath(this.dataDir, item.localUrl);
-    let markdown;
+    let content;
     try {
-      markdown = await readFile(file, "utf8");
+      content = await readFile(file, "utf8");
     } catch (error) {
       if (error.code === "ENOENT") {
         throw Object.assign(new Error("资料正文不存在"), {
@@ -154,7 +188,11 @@ export class ExamAssets {
       groupLabel: item.groupLabel || item.group || "资料",
       title: item.title,
       sourceUrl: item.sourceUrl || null,
-      markdown,
+      format: materialFormat(item.localUrl, item.format),
+      mimeType: materialMimeType(item.localUrl, item.format),
+      content,
+      // 保留旧字段，已有客户端仍可按 Markdown 资料读取。
+      markdown: content,
     };
   }
 }

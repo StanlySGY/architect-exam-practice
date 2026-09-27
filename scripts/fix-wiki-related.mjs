@@ -31,7 +31,7 @@ const normalize = (value) =>
     .replace(/[\s\p{P}\p{S}]+/gu, "");
 
 // 1. 备份：修复前把完整学习状态导出到 data/ 下。
-const backup = service.exportData();
+const backup = await service.exportData();
 if (!dryRun) {
   const backupPath = resolve(root, `data/wiki-fix-backup-${Date.now()}.json`);
   await writeFile(backupPath, JSON.stringify(backup, null, 2));

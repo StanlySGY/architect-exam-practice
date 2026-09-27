@@ -72,15 +72,19 @@ function renderLayerStack(figure) {
 
 function renderMermaid(figure) {
   const code = String(figure.code || "").trim();
-  if (/^flowchart\s+/im.test(code))
+  if (/^(?:flowchart|graph)\s+/im.test(code))
     return figureShell(renderFlowchart(code), figure.caption);
   if (/^classDiagram/im.test(code))
     return figureShell(renderClassDiagram(code), figure.caption);
+  if (/^sequenceDiagram/im.test(code))
+    return figureShell(renderSequenceDiagram(code), figure.caption);
+  if (/^stateDiagram(?:-v2)?/im.test(code))
+    return figureShell(renderStateDiagram(code), figure.caption);
   return renderMissingFigure("题库已保存图示结构，但当前图示类型尚未支持渲染。");
 }
 
 function renderFlowchart(code) {
-  const direction = /^flowchart\s+(TB|LR)/im.exec(code)?.[1] || "TB";
+  const direction = /^(?:flowchart|graph)\s+(TB|TD|LR|RL)/im.exec(code)?.[1] || "TB";
   const nodes = new Map();
   const edges = [];
   const lines = code
@@ -88,16 +92,35 @@ function renderFlowchart(code) {
     .map((line) => line.trim())
     .filter(Boolean);
   for (const line of lines) {
-    for (const match of line.matchAll(/\b([A-Za-z][\w]*)\s*\["([^"\n]*)"\]/g)) {
-      nodes.set(match[1], match[2]);
+    if (/^(?:subgraph\b|end$)/i.test(line)) continue;
+    const nodePatterns = [
+      /\b([A-Za-z][\w]*)\s*\(\s*\[\s*"([^"\n]*)"\s*\]\s*\)/g,
+      /\b([A-Za-z][\w]*)\s*\(\s*"([^"\n]*)"\s*\)/g,
+      /\b([A-Za-z][\w]*)\s*\(\(\s*"([^"\n]*)"\s*\)\)/g,
+      /\b([A-Za-z][\w]*)\s*\{\s*"([^"\n]*)"\s*\}/g,
+      /\b([A-Za-z][\w]*)\s*\[\s*"([^"\n]*)"\s*\]/g,
+      /\b([A-Za-z][\w]*)\s*\[([^\]\n]*)\]/g,
+    ];
+    for (const pattern of nodePatterns) {
+      for (const match of line.matchAll(pattern)) {
+        if (!nodes.has(match[1])) nodes.set(match[1], match[2]);
+      }
     }
-    for (const match of line.matchAll(/\b([A-Za-z][\w]*)\s*\[([^\]\n]*)\]/g)) {
-      if (!nodes.has(match[1])) nodes.set(match[1], match[2]);
-    }
-    const edge =
-      /^([A-Za-z][\w]*)\s*(<-->|-->|--)\s*(?:\|([^|]+)\|\s*)?([A-Za-z][\w]*)\b/.exec(
+    const labelledEdge =
+      /^([A-Za-z][\w]*)\s*(--|-\.|==)\s*(?:"([^"]*)"|'([^']*)')\s*(<-->|-->|\.->|==>|->)\s*([A-Za-z][\w]*)\b/.exec(
         line,
       );
+    const edge = labelledEdge
+      ? [
+          null,
+          labelledEdge[1],
+          labelledEdge[5],
+          labelledEdge[3] ?? labelledEdge[4] ?? "",
+          labelledEdge[6],
+        ]
+      : /^([A-Za-z][\w]*)\s*(<-->|-->|\.->|==>|->|--|-\.)\s*(?:\|([^|]+)\|\s*)?([A-Za-z][\w]*)\b/.exec(
+          line,
+        );
     if (edge) {
       const [, from, connector, label, to] = edge;
       if (!nodes.has(from)) nodes.set(from, from);
@@ -166,7 +189,9 @@ function layoutFlowchart(ids, edges, direction) {
       const x =
         direction === "LR"
           ? 30 + level * (nodeWidth + levelGap)
-          : 30 + index * (nodeWidth + gap);
+          : direction === "RL"
+            ? 30 + (maxLevel - level) * (nodeWidth + levelGap)
+            : 30 + index * (nodeWidth + gap);
       const y =
         direction === "LR"
           ? 30 + index * (nodeHeight + gap)
@@ -177,11 +202,11 @@ function layoutFlowchart(ids, edges, direction) {
   return {
     positions,
     width:
-      direction === "LR"
+      direction === "LR" || direction === "RL"
         ? 60 + (maxLevel + 1) * nodeWidth + maxLevel * levelGap
         : 60 + maxGroup * nodeWidth + Math.max(0, maxGroup - 1) * gap,
     height:
-      direction === "LR"
+      direction === "LR" || direction === "RL"
         ? 60 + maxGroup * nodeHeight + Math.max(0, maxGroup - 1) * gap
         : 60 + (maxLevel + 1) * nodeHeight + maxLevel * levelGap,
   };
@@ -191,17 +216,19 @@ function renderEdge(edge, positions, direction) {
   const from = positions.get(edge.from);
   const to = positions.get(edge.to);
   if (!from || !to) return "";
-  const horizontal = direction === "LR";
-  const x1 = horizontal ? from.x + from.width : from.x + from.width / 2;
+  const horizontal = direction === "LR" || direction === "RL";
+  const reverse = direction === "RL";
+  const x1 = horizontal ? from.x + from.width : reverse ? from.x : from.x + from.width / 2;
   const y1 = horizontal ? from.y + from.height / 2 : from.y + from.height;
-  const x2 = horizontal ? to.x : to.x + to.width / 2;
+  const x2 = horizontal ? to.x : reverse ? to.x + to.width : to.x + to.width / 2;
   const y2 = horizontal ? to.y + to.height / 2 : to.y;
   const markerStart = edge.connector === "<-->" ? ' marker-start="url(#figure-arrow)"' : "";
   const markerEnd = edge.connector === "--" ? "" : ' marker-end="url(#figure-arrow)"';
   const label = edge.label
     ? `<text class="figure-edge-label" x="${(x1 + x2) / 2}" y="${(y1 + y2) / 2 - 5}" text-anchor="middle">${escapeXml(edge.label)}</text>`
     : "";
-  return `<line class="figure-edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${markerStart}${markerEnd} />${label}`;
+  const edgeClass = edge.connector.includes(".") ? "figure-edge dashed" : "figure-edge";
+  return `<line class="${edgeClass}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"${markerStart}${markerEnd} />${label}`;
 }
 
 function renderFlowNode(position, label) {
@@ -214,6 +241,104 @@ function renderFlowNode(position, label) {
       ${lines.map((line, index) => `<tspan x="${position.x + position.width / 2}" dy="${index ? 18 : 0}">${escapeXml(line)}</tspan>`).join("")}
     </text>
   `;
+}
+
+function renderSequenceDiagram(code) {
+  const participants = new Map();
+  const messages = [];
+  const notes = [];
+  for (const rawLine of code.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || /^sequenceDiagram$/i.test(line)) continue;
+    const participant = /^(?:participant|actor)\s+([A-Za-z][\w]*)(?:\s+as\s+(.+))?$/i.exec(line);
+    if (participant) {
+      participants.set(participant[1], participant[2]?.trim() || participant[1]);
+      continue;
+    }
+    const note = /^Note\s+over\s+([A-Za-z][\w]*)(?:\s*,\s*([A-Za-z][\w]*))?\s*:\s*(.+)$/i.exec(line);
+    if (note) {
+      participants.set(note[1], note[1]);
+      if (note[2]) participants.set(note[2], note[2]);
+      notes.push({ left: note[1], right: note[2] || note[1], text: note[3].trim() });
+      continue;
+    }
+    const message = /^([A-Za-z][\w]*)\s*(-->>|->>|-->|->|--)\s*([A-Za-z][\w]*)\s*:\s*(.+)$/.exec(line);
+    if (!message) continue;
+    participants.set(message[1], message[1]);
+    participants.set(message[3], message[3]);
+    messages.push({ from: message[1], connector: message[2], to: message[3], text: message[4].trim() });
+  }
+  if (participants.size < 1) return unsupportedSvg("无法解析该时序图。");
+  const ids = [...participants.keys()];
+  const width = Math.max(680, 120 + ids.length * 180);
+  const height = 120 + (messages.length + notes.length) * 58;
+  const positions = new Map(ids.map((id, index) => [id, 80 + index * 180]));
+  const marker = "sequence-arrow";
+  const participantMarkup = ids
+    .map((id) => {
+      const x = positions.get(id);
+      return '<rect class="figure-sequence-participant" x="' + (x - 62) + '" y="20" width="124" height="38" rx="8" />' +
+        '<text class="figure-sequence-label" x="' + x + '" y="44" text-anchor="middle">' + escapeXml(participants.get(id)) + '</text>';
+    })
+    .join("");
+  const lifelines = ids
+    .map((id) => {
+      const x = positions.get(id);
+      return '<line class="figure-sequence-lifeline" x1="' + x + '" y1="58" x2="' + x + '" y2="' + (height - 20) + '" />';
+    })
+    .join("");
+  const messageMarkup = messages
+    .map((message, index) => {
+      const y = 92 + index * 58;
+      const x1 = positions.get(message.from);
+      const x2 = positions.get(message.to);
+      const markerEnd = message.connector === "--" ? "" : ' marker-end="url(#' + marker + ')"';
+      return '<line class="figure-sequence-message ' + (message.connector === "--" ? "dashed" : "") + '" x1="' + x1 + '" y1="' + y + '" x2="' + x2 + '" y2="' + y + '"' + markerEnd + ' />' +
+        '<text class="figure-sequence-label" x="' + ((x1 + x2) / 2) + '" y="' + (y - 8) + '" text-anchor="middle">' + escapeXml(message.text) + '</text>';
+    })
+    .join("");
+  const noteMarkup = notes
+    .map((note, index) => {
+      const y = 82 + (messages.length + index) * 58;
+      const left = positions.get(note.left);
+      const right = positions.get(note.right);
+      const x = Math.min(left, right) - 70;
+      const noteWidth = Math.abs(right - left) + 140;
+      return '<rect class="figure-sequence-note" x="' + x + '" y="' + (y - 22) + '" width="' + noteWidth + '" height="44" rx="6" />' +
+        '<text class="figure-sequence-label" x="' + (x + noteWidth / 2) + '" y="' + (y + 5) + '" text-anchor="middle">' + escapeXml(note.text) + '</text>';
+    })
+    .join("");
+  return '<svg viewBox="0 0 ' + width + ' ' + height + '" role="img" aria-label="结构化时序图" preserveAspectRatio="xMinYMin meet">' +
+    '<defs><marker id="' + marker + '" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="figure-arrow-head" /></marker></defs>' +
+    lifelines + participantMarkup + messageMarkup + noteMarkup + '</svg>';
+}
+
+function renderStateDiagram(code) {
+  const labels = new Map();
+  const edges = [];
+  const idFor = (value) => {
+    const label = String(value || "").trim().replace(/^"|"$/g, "");
+    const normalized = label === "[*]" ? "__start__" : label;
+    if (!labels.has(normalized)) labels.set(normalized, normalized === "__start__" ? "开始" : normalized);
+    return normalized;
+  };
+  for (const rawLine of code.split(/\r?\n/)) {
+    const line = rawLine.trim();
+    if (!line || /^stateDiagram(?:-v2)?$/i.test(line) || line === "}" || /^state\s+/i.test(line)) continue;
+    const transition = /^(.*?)\s+--?>\s+(.*?)(?:\s*:\s*(.*))?$/.exec(line);
+    if (!transition) continue;
+    const from = idFor(transition[1]);
+    const to = idFor(transition[2]);
+    edges.push({ from, to, connector: "-->", label: transition[3] || "" });
+  }
+  if (edges.length === 0) return unsupportedSvg("无法解析该状态图。");
+  const ids = [...labels.keys()];
+  const layout = layoutFlowchart(ids, edges, "TB");
+  const edgeMarkup = edges.map((edge) => renderEdge(edge, layout.positions, "TB")).join("");
+  const nodeMarkup = ids.map((id) => renderFlowNode(layout.positions.get(id), labels.get(id))).join("");
+  return '<svg viewBox="0 0 ' + layout.width + ' ' + layout.height + '" role="img" aria-label="结构化状态图" preserveAspectRatio="xMinYMin meet">' +
+    '<defs><marker id="figure-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="figure-arrow-head" /></marker></defs>' +
+    edgeMarkup + nodeMarkup + '</svg>';
 }
 
 function renderClassDiagram(code) {
