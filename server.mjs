@@ -1,23 +1,49 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
+import dns from "node:dns";
+import { isIP, setDefaultAutoSelectFamily, setDefaultAutoSelectFamilyAttemptTimeout } from "node:net";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
-import { QuestionGenerator } from "./src/generator.mjs";
+import { loadDotEnv, QuestionGenerator } from "./src/generator.mjs";
 import { PracticeService } from "./src/questions.mjs";
 import { SQLiteStore } from "./src/store.mjs";
-import { ModelConfig } from "./src/model-config.mjs";
+import { ModelConfig, isMaskedSecret } from "./src/model-config.mjs";
+import {
+  accessTokenMatches,
+  isLoopbackHost,
+  normalizeHost,
+} from "./src/security.mjs";
+
+// WSL2 等环境下 IPv6 路由不可用，而 DNS 常把 AAAA 记录排在前面，
+// 会让 Node fetch 优先尝试 IPv6 后连接超时；强制 IPv4 优先解析。
+// 另外 Happy Eyeballs 默认每地址族只等 250ms，到 Cloudflare 的握手
+// 经常超过该窗口导致 AggregateError ETIMEDOUT，放宽到 3 秒。
+dns.setDefaultResultOrder("ipv4first");
+setDefaultAutoSelectFamily(true);
+setDefaultAutoSelectFamilyAttemptTimeout(3000);
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 const publicRoot = resolve(root, "public");
+loadDotEnv(root);
+const bindHost = process.env.HOST || "127.0.0.1";
+const accessToken = String(process.env.ARCHITECT_ACCESS_TOKEN || "").trim();
+const remoteBind = !isLoopbackHost(bindHost);
+const authRequired = Boolean(accessToken) || remoteBind;
+const agentsEnabled = process.env.ARCHITECT_ENABLE_AGENTS === "true";
+if (remoteBind && !accessToken) {
+  throw new Error(
+    "监听非本机地址时必须设置 ARCHITECT_ACCESS_TOKEN（建议使用至少 32 个随机字符）",
+  );
+}
 const store = new SQLiteStore(
   resolve(root, process.env.ARCHITECT_DATA_FILE || "data/state.sqlite"),
 );
 await store.init();
 const practice = new PracticeService({ store, root });
 await practice.init();
-const generator = new QuestionGenerator({ root, service: practice });
 const modelConfig = new ModelConfig({ root });
+const generator = new QuestionGenerator({ root, service: practice, modelConfig });
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -28,16 +54,25 @@ const mimeTypes = {
   ".svg": "image/svg+xml",
 };
 
-function sendJson(response, status, body) {
+function sendJson(response, status, body, extraHeaders = {}) {
   response.writeHead(status, {
     "content-type": "application/json; charset=utf-8",
     "cache-control": "no-store",
     "x-content-type-options": "nosniff",
+    ...extraHeaders,
   });
   response.end(JSON.stringify(body));
 }
 
 async function readJson(request, maxBytes = 1_000_000) {
+  // 拒绝非 JSON 的请求体：跨站表单只能以 text/plain 等类型提交，此检查同时挡掉 CSRF。
+  const contentType = String(request.headers["content-type"] || "");
+  if (!contentType.toLowerCase().startsWith("application/json")) {
+    throw Object.assign(new Error("请求体必须是 application/json"), {
+      status: 415,
+      code: "UNSUPPORTED_MEDIA_TYPE",
+    });
+  }
   const chunks = [];
   let size = 0;
   for await (const chunk of request) {
@@ -56,19 +91,60 @@ async function readJson(request, maxBytes = 1_000_000) {
   }
 }
 
+function cancellableRequest(request, response) {
+  const controller = new AbortController();
+  let completed = false;
+  const abort = () => {
+    if (!completed && !controller.signal.aborted) controller.abort();
+  };
+  const onRequestAborted = () => abort();
+  const onResponseClose = () => {
+    if (!response.writableEnded) abort();
+  };
+  if (request.aborted) abort();
+  request.once("aborted", onRequestAborted);
+  response.once("close", onResponseClose);
+  return {
+    signal: controller.signal,
+    complete() {
+      completed = true;
+      request.removeListener("aborted", onRequestAborted);
+      response.removeListener("close", onResponseClose);
+    },
+  };
+}
+
+async function runCancellable(request, response, operation) {
+  const lifecycle = cancellableRequest(request, response);
+  try {
+    return await operation(lifecycle.signal);
+  } finally {
+    lifecycle.complete();
+  }
+}
+
 const libraryFiles = new Map([
   ["/lib/figures.mjs", resolve(root, "src/figures.mjs")],
   ["/lib/markdown.mjs", resolve(root, "src/markdown.mjs")],
   ["/lib/essay.mjs", resolve(root, "src/essay.mjs")],
 ]);
 
-async function serveLibrary(pathname, method, response) {
+async function serveLibrary(pathname, request, method, response) {
   const file = libraryFiles.get(pathname);
   if (!file) throw Object.assign(new Error("页面不存在"), { status: 404 });
   const info = await stat(file);
+  if (notModifiedSince(request, info)) {
+    response.writeHead(304, {
+      "cache-control": "no-cache",
+      "x-content-type-options": "nosniff",
+    });
+    response.end();
+    return;
+  }
   response.writeHead(200, {
     "content-type": mimeTypes[".mjs"],
     "content-length": info.size,
+    "last-modified": new Date(info.mtimeMs).toUTCString(),
     "cache-control": "no-cache",
     "x-content-type-options": "nosniff",
   });
@@ -79,7 +155,17 @@ async function serveLibrary(pathname, method, response) {
   createReadStream(file).pipe(response);
 }
 
-async function serveStatic(pathname, response) {
+// no-cache 允许浏览器每次携带 If-Modified-Since 复验，未变化时返回 304，
+// 避免每次刷新全量重拉静态资源。
+function notModifiedSince(request, info) {
+  const header = request.headers["if-modified-since"];
+  if (!header) return false;
+  const since = Date.parse(header);
+  if (!Number.isFinite(since)) return false;
+  return Math.floor(since / 1000) === Math.floor(info.mtimeMs / 1000);
+}
+
+async function serveStatic(pathname, request, response) {
   let decoded;
   try {
     decoded = decodeURIComponent(pathname);
@@ -100,18 +186,71 @@ async function serveStatic(pathname, response) {
   }
   if (!info.isFile())
     throw Object.assign(new Error("页面不存在"), { status: 404 });
+  if (notModifiedSince(request, info)) {
+    response.writeHead(304, {
+      "cache-control": "no-cache",
+      "x-content-type-options": "nosniff",
+    });
+    response.end();
+    return;
+  }
   response.writeHead(200, {
     "content-type": mimeTypes[extname(file)] || "application/octet-stream",
     "content-length": info.size,
+    "last-modified": new Date(info.mtimeMs).toUTCString(),
+    "cache-control": "no-cache",
     "x-content-type-options": "nosniff",
   });
   createReadStream(file).pipe(response);
 }
 
+function hostHeaderAllowed(host) {
+  if (remoteBind || !host) return true;
+  const hostname = normalizeHost(host);
+  return hostname === "localhost" || isIP(hostname) !== 0;
+}
+
 async function route(request, response) {
+  if (!hostHeaderAllowed(request.headers.host)) {
+    throw Object.assign(new Error("Host 不被允许"), {
+      status: 403,
+      code: "HOST_FORBIDDEN",
+    });
+  }
   const origin = `http://${request.headers.host || "localhost"}`;
   const url = new URL(request.url, origin);
   const { pathname } = url;
+  if (pathname.startsWith("/api/") && pathname !== "/api/health" && authRequired) {
+    const authorization = String(request.headers.authorization || "");
+    const provided = authorization.startsWith("Bearer ")
+      ? authorization.slice("Bearer ".length).trim()
+      : String(request.headers["x-architect-token"] || "").trim();
+    if (!accessTokenMatches(provided, accessToken)) {
+      throw Object.assign(new Error("需要有效的访问令牌"), {
+        status: 401,
+        code: "AUTH_REQUIRED",
+        headers: { "www-authenticate": "Bearer" },
+      });
+    }
+  }
+  if (
+    pathname.startsWith("/api/") &&
+    !["GET", "HEAD", "OPTIONS"].includes(request.method) &&
+    request.headers.origin
+  ) {
+    let sameOrigin = false;
+    try {
+      sameOrigin = new URL(request.headers.origin).host === request.headers.host;
+    } catch {
+      sameOrigin = false;
+    }
+    if (!sameOrigin) {
+      throw Object.assign(new Error("跨站请求被拒绝"), {
+        status: 403,
+        code: "CSRF_ORIGIN_FORBIDDEN",
+      });
+    }
+  }
   if (request.method === "GET" && pathname === "/api/health") {
     return sendJson(response, 200, {
       ok: true,
@@ -132,25 +271,64 @@ async function route(request, response) {
     return sendJson(response, 200, generator.modelStatus());
   }
   if (request.method === "GET" && pathname === "/api/model-config") {
-    return sendJson(response, 200, modelConfig.read());
+    return sendJson(response, 200, modelConfig.publicConfig());
   }
   if (request.method === "POST" && pathname === "/api/model-config") {
     const body = await readJson(request);
-    return sendJson(response, 200, await modelConfig.save(body));
+    return sendJson(response, 200, modelConfig.publicConfig(await modelConfig.save(body)));
+  }
+  if (request.method === "POST" && pathname === "/api/model-config/workspace") {
+    const body = await readJson(request);
+    return sendJson(response, 200, modelConfig.publicWorkspace ? modelConfig.publicWorkspace(await modelConfig.saveWorkspace(body)) : modelConfig.publicConfig());
   }
   if (request.method === "POST" && pathname === "/api/model-config/fetch-models") {
     const body = await readJson(request);
+    // 掩码或空值表示沿用已保存的密钥，而不是把掩码当作真实密钥发送。
+    const provider = body.providerId
+      ? modelConfig.providerCredentials(body.providerId, body)
+      : body;
+    const storedKey = modelConfig.read().ARCHITECT_LLM_API_KEY || "";
+    const apiKey = body.providerId
+      ? provider.apiKey || ""
+      : isMaskedSecret(body.apiKey)
+        ? storedKey
+        : body.apiKey || "";
+    if (provider.type === "claude-cli") {
+      return sendJson(response, 200, { models: ["Claude CLI"], endpoint: "local" });
+    }
     return sendJson(
       response,
       200,
       await modelConfig.fetchModels({
-        baseUrl: body.baseUrl,
-        apiKey: body.apiKey,
+        baseUrl: provider.baseUrl,
+        apiKey,
       }),
     );
   }
+  if (request.method === "POST" && pathname === "/api/agents/run") {
+    if (!agentsEnabled) {
+      throw Object.assign(new Error("Agent 执行能力已关闭，请通过启动环境显式开启"), {
+        status: 403,
+        code: "AGENT_DISABLED",
+      });
+    }
+    const body = await readJson(request);
+    return sendJson(
+      response,
+      200,
+      await runCancellable(request, response, (signal) =>
+        generator.runAgentTask({ ...body, signal }),
+      ),
+    );
+  }
   if (request.method === "GET" && pathname === "/api/wrong-questions") {
-    return sendJson(response, 200, practice.wrongQuestions());
+    // 不带 limit 时返回全量记录；带 limit/offset 时按页切片（汇总仍基于全量）。
+    return sendJson(response, 200, practice.wrongQuestions({
+      limit: url.searchParams.has("limit")
+        ? url.searchParams.get("limit")
+        : null,
+      offset: url.searchParams.get("offset") || 0,
+    }));
   }
   if (request.method === "GET" && pathname === "/api/questions") {
     return sendJson(
@@ -197,7 +375,7 @@ async function route(request, response) {
     return sendJson(response, 200, practice.dataSummary());
   }
   if (request.method === "GET" && pathname === "/api/data/export") {
-    return sendJson(response, 200, practice.exportData());
+    return sendJson(response, 200, await practice.exportData());
   }
   if (request.method === "GET" && pathname === "/api/data/diagnosis") {
     return sendJson(response, 200, practice.diagnosisExport());
@@ -229,6 +407,9 @@ async function route(request, response) {
   }
   if (request.method === "GET" && pathname === "/api/question-issues") {
     return sendJson(response, 200, { records: practice.questionIssues() });
+  }
+  if (request.method === "GET" && pathname === "/api/audit-log") {
+    return sendJson(response, 200, { records: practice.auditLog() });
   }
   if (request.method === "POST" && pathname.endsWith("/report")) {
     const reportMatch = pathname.match(/^\/api\/questions\/([^/]+)\/report$/);
@@ -361,13 +542,16 @@ async function route(request, response) {
     return sendJson(
       response,
       201,
-      await generator.generate({
-        chapter: body.chapter,
-        section: body.section,
-        difficulty: body.difficulty,
-        count: body.count,
-        model: body.model,
-      }),
+      await runCancellable(request, response, (signal) =>
+        generator.generate({
+          chapter: body.chapter,
+          section: body.section,
+          difficulty: body.difficulty,
+          count: body.count,
+          model: body.model,
+          signal,
+        }),
+      ),
     );
   }
   if (request.method === "POST" && pathname === "/api/cases/generate") {
@@ -375,23 +559,37 @@ async function route(request, response) {
     return sendJson(
       response,
       201,
-      await generator.generateCase({
-        chapter: body.chapter,
-        section: body.section,
-        count: body.count,
-        model: body.model,
-      }),
+      await runCancellable(request, response, (signal) =>
+        generator.generateCase({
+          chapter: body.chapter,
+          section: body.section,
+          count: body.count,
+          model: body.model,
+          signal,
+        }),
+      ),
     );
   }
   if (request.method === "GET" && pathname === "/api/cases") {
+    const sourceType = url.searchParams.get("sourceType") || "all";
+    const term = url.searchParams.get("term") || "all";
+    const records = practice.caseList({ sourceType, term });
+    const page = url.searchParams.has("limit") || url.searchParams.has("offset")
+      ? practice.casePage({
+          sourceType,
+          term,
+          limit: url.searchParams.get("limit") || 4,
+          offset: url.searchParams.get("offset") || 0,
+        })
+      : { records, total: records.length, offset: 0, limit: records.length };
     return sendJson(
       response,
       200,
       {
-        cases: practice.caseList({
-          sourceType: url.searchParams.get("sourceType") || "all",
-          term: url.searchParams.get("term") || "all",
-        }),
+        cases: page.records,
+        total: page.total,
+        offset: page.offset,
+        limit: page.limit,
       },
     );
   }
@@ -432,23 +630,37 @@ async function route(request, response) {
     return sendJson(
       response,
       201,
-      await generator.generatePaper({
-        chapter: body.chapter,
-        section: body.section,
-        count: body.count,
-        model: body.model,
-      }),
+      await runCancellable(request, response, (signal) =>
+        generator.generatePaper({
+          chapter: body.chapter,
+          section: body.section,
+          count: body.count,
+          model: body.model,
+          signal,
+        }),
+      ),
     );
   }
   if (request.method === "GET" && pathname === "/api/papers") {
+    const sourceType = url.searchParams.get("sourceType") || "all";
+    const term = url.searchParams.get("term") || "all";
+    const records = practice.paperList({ sourceType, term });
+    const page = url.searchParams.has("limit") || url.searchParams.has("offset")
+      ? practice.paperPage({
+          sourceType,
+          term,
+          limit: url.searchParams.get("limit") || 4,
+          offset: url.searchParams.get("offset") || 0,
+        })
+      : { records, total: records.length, offset: 0, limit: records.length };
     return sendJson(
       response,
       200,
       {
-        papers: practice.paperList({
-          sourceType: url.searchParams.get("sourceType") || "all",
-          term: url.searchParams.get("term") || "all",
-        }),
+        papers: page.records,
+        total: page.total,
+        offset: page.offset,
+        limit: page.limit,
       },
     );
   }
@@ -480,12 +692,15 @@ async function route(request, response) {
     return sendJson(
       response,
       201,
-      await generator.generateWiki({
-        chapter: body.chapter,
-        section: body.section,
-        count: body.count,
-        model: body.model,
-      }),
+      await runCancellable(request, response, (signal) =>
+        generator.generateWiki({
+          chapter: body.chapter,
+          section: body.section,
+          count: body.count,
+          model: body.model,
+          signal,
+        }),
+      ),
     );
   }
   if (request.method === "GET" && pathname === "/api/wiki") {
@@ -589,12 +804,16 @@ async function route(request, response) {
   if (!["GET", "HEAD"].includes(request.method))
     throw Object.assign(new Error("请求方法不允许"), { status: 405 });
   if (libraryFiles.has(pathname))
-    return serveLibrary(pathname, request.method, response);
-  return serveStatic(pathname, response);
+    return serveLibrary(pathname, request, request.method, response);
+  return serveStatic(pathname, request, response);
 }
 
 export const server = createServer((request, response) => {
   route(request, response).catch((error) => {
+    if (request.aborted || response.destroyed || error.code === "LLM_GENERATION_CANCELLED") {
+      if (!response.destroyed) response.destroy();
+      return;
+    }
     if (response.headersSent) {
       response.destroy(error);
       return;
@@ -602,17 +821,21 @@ export const server = createServer((request, response) => {
     const status = Number.isInteger(error.status) ? error.status : 500;
     if (status >= 500)
       process.stderr.write(`${error.stack || error.message}\n`);
-    sendJson(response, status, {
-      error: error.message,
-      code: error.code || "REQUEST_FAILED",
-    });
+    sendJson(
+      response,
+      status,
+      {
+        error: error.message,
+        code: error.code || "REQUEST_FAILED",
+      },
+      error.headers,
+    );
   });
 });
 
 if (process.env.NODE_ENV !== "test") {
-  const host = process.env.HOST || "127.0.0.1";
   const port = Number(process.env.PORT) || 3210;
-  server.listen(port, host, () => {
-    process.stdout.write(`软考章节练习服务已启动：http://${host}:${port}\n`);
+  server.listen(port, bindHost, () => {
+    process.stdout.write(`软考章节练习服务已启动：http://${bindHost}:${port}\n`);
   });
 }
