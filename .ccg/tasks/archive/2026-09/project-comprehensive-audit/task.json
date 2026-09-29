@@ -1,0 +1,12 @@
+{
+  "id": "project-comprehensive-audit",
+  "title": "全项目产品、技术与工程审查",
+  "status": "completed",
+  "complexity": "L",
+  "risk": "medium",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "归档完成",
+  "createdAt": "2026-09-27T01:15:33Z",
+  "branch": "main"
+}
