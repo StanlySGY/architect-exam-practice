@@ -1,0 +1,12 @@
+{
+  "id": "audit-study-materials-question-accuracy",
+  "title": "审计学习资料、图示与题库准确性",
+  "status": "completed",
+  "complexity": "M",
+  "risk": "medium",
+  "domain": "content-quality",
+  "currentPhase": "completed",
+  "nextAction": "归档任务并保留内容人工核验入口",
+  "createdAt": "2026-09-29T08:00:00Z",
+  "branch": "main"
+}
