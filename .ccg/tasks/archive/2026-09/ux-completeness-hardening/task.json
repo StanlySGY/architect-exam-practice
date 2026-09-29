@@ -1,0 +1,12 @@
+{
+  "id": "ux-completeness-hardening",
+  "title": "补齐真实用户流程与交互完整性",
+  "status": "completed",
+  "complexity": "M",
+  "risk": "medium",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "归档已完成任务",
+  "createdAt": "2026-09-29T04:40:00Z",
+  "branch": "main"
+}
