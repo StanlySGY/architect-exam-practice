@@ -1,0 +1,12 @@
+{
+  "id": "project-experience-audit-and-improvements",
+  "title": "整体审查并改进项目功能与用户交互体验",
+  "status": "completed",
+  "complexity": "L+",
+  "risk": "medium",
+  "domain": "fullstack",
+  "currentPhase": "completed",
+  "nextAction": "已完成审查与验证；外部双模型审查受环境限制，详见 review.md",
+  "createdAt": "2026-09-29T06:03:55Z",
+  "branch": "main"
+}

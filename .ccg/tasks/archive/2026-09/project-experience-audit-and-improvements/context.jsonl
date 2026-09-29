@@ -1,0 +1,7 @@
+{"path":"src/service/case-exam.mjs","reason":"案例模拟卷私有快照、恢复、草稿校验和判分上下文"}
+{"path":"src/service/helpers.mjs","reason":"备份导入验证及已删除题目会话快照引用"}
+{"path":"src/service/review.mjs","reason":"FSRS 未来到期负载统计"}
+{"path":"public/app.js","reason":"图谱筛选重绘、模型配置草稿保留、活动案例模拟入口和统计展示"}
+{"path":"server.mjs","reason":"案例模拟判分 API 接入私有快照上下文"}
+{"path":"test/practice.test.mjs","reason":"服务层回归测试"}
+{"path":"test/frontend-contract.test.mjs","reason":"前端交互契约回归测试"}
