@@ -1,0 +1,9 @@
+{"file":"src/service/sessions.mjs","reason":"活动会话创建、恢复、判卷与题目版本快照"}
+{"file":"src/service/essay.mjs","reason":"论文草稿与评分持久化"}
+{"file":"src/service/case-exam.mjs","reason":"单案例草稿与评分持久化"}
+{"file":"public/app.js","reason":"论文和单案例评分请求及刷新回填"}
+{"file":"src/generator.mjs","reason":"模型请求重试、评分验证、用量记账"}
+{"file":"src/import-bank.mjs","reason":"真题导入 ID 映射"}
+{"file":"src/service/data.mjs","reason":"真题导入写入与冲突处理"}
+{"file":"src/model-config.mjs","reason":"模型配置文件写入权限"}
+{"file":"public/index.html","reason":"复习说明文案"}
