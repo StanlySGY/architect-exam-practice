@@ -1,0 +1,12 @@
+{
+  "id": "restore-knowledge-data-visibility",
+  "title": "恢复 3297 服务的架构师知识数据可见性",
+  "status": "completed",
+  "complexity": "S",
+  "risk": "medium",
+  "domain": "operations-data",
+  "currentPhase": "completed",
+  "nextAction": "归档任务",
+  "createdAt": "2026-10-02T00:00:00+08:00",
+  "branch": "main"
+}
