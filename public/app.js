@@ -9,7 +9,7 @@ import {
   focusWikiGraphNode,
   initWikiGraphDeps,
   renderWikiGraph,
-  updateWikiGraphSearch,
+  updateWikiGraphFocus,
 } from "/graph.js";
 
 const state = {
@@ -31,6 +31,7 @@ const state = {
   wrongOffset: 0,
   wrongLimit: 50,
   wrongTotal: 0,
+  dueCount: 0,
   wikiEntries: [],
   wikiSelectedId: "",
   generationControllers: new Map(),
@@ -44,13 +45,18 @@ const state = {
   paperLimit: 4,
   paperTotal: 0,
   paperLoadId: 0,
+  paperMockTimers: new Set(),
   caseExam: null,
   wikiGraphColorBy: "chapter",
+  wikiGraphDepth: 1,
   caseExamTimer: null,
   examDeadline: null,
   examTimer: null,
   examSaveQueues: new Map(),
   examAnswerRevisions: new Map(),
+  // 复习自评(1-4)与作答置信度(1-3):复习模式判题后可选档位,影响 FSRS 间隔。
+  ratings: {},
+  confidenceByQuestion: {},
 };
 const difficultyNames = {
   easy: "简单",
@@ -106,6 +112,43 @@ function itemSourceType(item) {
 
 function sourceTypeLabel(item) {
   return sourceTypeNames[itemSourceType(item)] || "生成题";
+}
+
+function answerTrustFor(item) {
+  if (item?.answerTrustLabel || item?.answerTrustNote) {
+    return {
+      code: item.answerTrust || "unverified",
+      label: item.answerTrustLabel || "答案来源未标注",
+      note: item.answerTrustNote || "当前题目的答案来源没有独立核验记录。",
+    };
+  }
+  if (itemSourceType(item) === "real") {
+    return {
+      code: "third-party",
+      label: "第三方整理答案",
+      note: "题库清单明确说明真题答案是非官方整理，请以原卷和权威资料核对。",
+    };
+  }
+  if (itemSourceType(item) === "mock") {
+    return {
+      code: "mock-unverified",
+      label: "模拟题答案未独立核验",
+      note: "模拟题没有官方原卷背书，答案和解析遇到争议时请提交问题。",
+    };
+  }
+  return {
+    code: "generated",
+    label: "生成题答案未独立核验",
+    note: "题目和解析由 Agent 生成，尚未经过独立事实核验；请结合教材判断。",
+  };
+}
+
+function answerTrustNode(item) {
+  const trust = answerTrustFor(item);
+  return element("div", { className: `source-trust source-trust-${trust.code}` }, [
+    element("strong", { text: `答案来源：${trust.label}` }),
+    element("span", { text: trust.note }),
+  ]);
 }
 
 function isImportedItem(item) {
@@ -467,6 +510,7 @@ function isGenerationCancelled(error, signal) {
 }
 
 function switchView(view) {
+  if (view !== "paper") clearPaperMockTimers();
   if (view !== "materials" && materialState.focus) {
     materialState.focus = false;
     applyMaterialReaderState();
@@ -486,7 +530,10 @@ function switchView(view) {
     history.replaceState(null, "", `#${view}`);
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
-  if (view === "home") loadActiveSession();
+  if (view === "home") {
+    loadActiveSession();
+    loadStudyQueue();
+  }
   if (view === "mock") loadMock();
   if (view === "wrong") loadWrong();
   if (view === "history") loadHistory();
@@ -498,6 +545,7 @@ function switchView(view) {
   if (view === "stats") loadStatistics();
   if (view === "data") {
     loadDataStatus();
+    loadContentHealth();
     loadQuestionIssues();
     loadAuditLog();
     loadModelConfig();
@@ -665,6 +713,68 @@ function currentQuestion() {
   return state.session?.questions[state.currentIndex];
 }
 
+const CONFIDENCE_LEVELS = [
+  { value: 1, name: "猜测" },
+  { value: 2, name: "大概" },
+  { value: 3, name: "确定" },
+];
+
+// 置信度选择(答题前):"自信地错=误解,心虚地错=没掌握",是单人场景最好的错因分类信号。
+function confidenceNode(question) {
+  if (state.session?.mode === "exam-mcq") return null;
+  if (state.answers[question.id]) return null;
+  const current = state.confidenceByQuestion[question.id];
+  const row = element("div", { className: "confidence-row" }, [
+    element("span", { className: "confidence-label", text: "把握程度" }),
+    ...CONFIDENCE_LEVELS.map((level) => {
+      const chip = element("button", {
+        className: `confidence-chip${current === level.value ? " active" : ""}`,
+        attrs: { type: "button", "aria-pressed": String(current === level.value) },
+      }, [
+        element("kbd", { text: String(level.value) }),
+        element("span", { text: level.name }),
+      ]);
+      chip.addEventListener("click", () => {
+        state.confidenceByQuestion[question.id] =
+          state.confidenceByQuestion[question.id] === level.value ? null : level.value;
+        renderCurrentQuestion();
+      });
+      return chip;
+    }),
+  ]);
+  return row;
+}
+
+// 复习模式的四档调度预览:选择自评档位,FSRS 据此计算下一次间隔。
+function scheduleNode(schedule) {
+  if (!schedule?.grades?.length) return null;
+  const row = element("div", { className: "schedule-row" });
+  for (const grade of schedule.grades) {
+    const active = (state.ratings[currentQuestion()?.id] ?? null) === grade.grade;
+    const button = element("button", {
+      className: "schedule-btn",
+      attrs: { type: "button", "aria-pressed": String(active) },
+    }, [
+      element("span", { className: "schedule-days", text: grade.intervalDays >= 1 ? `${grade.intervalDays} 天` : "今天" }),
+      element("span", { className: "schedule-name", text: grade.name }),
+    ]);
+    button.addEventListener("click", () => {
+      const question = currentQuestion();
+      if (!question) return;
+      state.ratings[question.id] =
+        state.ratings[question.id] === grade.grade ? undefined : grade.grade;
+      renderCurrentQuestion();
+    });
+    row.append(button);
+  }
+  const meta = element("p", {
+    className: "muted",
+    text: `自评档位决定下次复习间隔；连续答对 ${schedule.graduation} 次毕业（当前 ${schedule.currentStreak ?? 0}）`,
+  });
+  const wrap = element("div", {}, [element("strong", { text: "这次复习感觉如何？" }), row, meta]);
+  return wrap;
+}
+
 function questionNode(question, index, total) {
   const options = Object.entries(question.options).map(([key, value]) =>
     optionNode(question, key, value),
@@ -684,8 +794,10 @@ function questionNode(question, index, total) {
         }),
       ]),
       element("div", { className: "question-text", text: question.question }),
+      answerTrustNode(question),
       figureNode(question),
       element("div", {}, options),
+      confidenceNode(question),
       element("div", { className: "question-actions" }, [
         reportButtonNode(question.id),
       ]),
@@ -693,6 +805,11 @@ function questionNode(question, index, total) {
   );
   const checked = state.checks[question.id];
   if (checked) {
+    const wrongOptionRationale =
+      !checked.isCorrect && checked.optionRationale?.[checked.userAnswer]
+        ? checked.optionRationale[checked.userAnswer]
+        : null;
+    const correctRationale = checked.optionRationale?.[checked.correctAnswer];
     const feedback = element(
       "div",
       {
@@ -707,10 +824,19 @@ function questionNode(question, index, total) {
             ? "继续保持，可以进入下一题。"
             : `正确答案：${checked.correctAnswer}`,
         }),
+        wrongOptionRationale
+          ? element("p", { text: `你选的 ${checked.userAnswer}：${wrongOptionRationale}` })
+          : null,
+        !checked.isCorrect && correctRationale
+          ? element("p", { text: `正确项 ${checked.correctAnswer}：${correctRationale}` })
+          : null,
         element("p", { text: checked.analysis }),
         aiAnalysisNode(checked.aiAnalysis),
         sourceNodeNode(question.sourceNode),
-      ],
+        state.session?.mode === "review" && checked.isCorrect
+          ? scheduleNode(checked.schedule)
+          : null,
+      ].filter(Boolean),
     );
     card.append(feedback);
   }
@@ -821,6 +947,7 @@ async function checkCurrentAnswer(answer) {
         sessionId: state.session.id,
         questionId: question.id,
         answer,
+        confidence: state.confidenceByQuestion[question.id] ?? null,
       }),
     });
     $("#submit-hint").textContent = "答案已锁定；请继续作答或提交整套练习";
@@ -847,6 +974,8 @@ function renderQuestions({ restore = false } = {}) {
     state.currentIndex = 0;
     state.answers = {};
     state.checks = {};
+    state.ratings = {};
+    state.confidenceByQuestion = {};
     state.pendingChecks.clear();
   }
   let title = `第 ${state.session.chapter} 章练习`;
@@ -921,10 +1050,170 @@ async function loadActiveSession() {
     if (data.session.mode === "review") scope = "错题回顾";
     if (data.session.mode === "exam-mcq") scope = examSessionTitle(data.session);
     $("#resume-title").textContent = scope;
+    if ($("#home-view")?.classList.contains("active")) loadStudyQueue();
     $("#resume-meta").textContent =
       `${answered}/${data.session.total} 道已作答 · 创建于 ${new Date(data.session.createdAt).toLocaleString("zh-CN")}`;
   } catch (error) {
     showToast(error.message, true);
+  }
+}
+
+function setReviewActionState(due) {
+  state.dueCount = Math.max(0, Number(due) || 0);
+  const disabled = state.dueCount === 0;
+  for (const selector of ["#start-review", "#review-all"]) {
+    const button = $(selector);
+    if (!button) continue;
+    button.disabled = disabled;
+    button.textContent = disabled
+      ? "暂无到期题"
+      : selector === "#review-all"
+        ? "回顾未掌握错题"
+        : "开始回顾";
+  }
+}
+
+function studyQueueActionButton(item, label = "开始") {
+  const button = element("button", {
+    className: "primary",
+    text: label,
+    attrs: { type: "button" },
+  });
+  button.addEventListener("click", async () => {
+    button.disabled = true;
+    try {
+      await runStudyQueueAction(item.action);
+    } catch (error) {
+      showToast(error.message, true);
+    } finally {
+      button.disabled = false;
+    }
+  });
+  return button;
+}
+
+async function runStudyQueueAction(action) {
+  if (!action) return;
+  if (action.type === "resume-session") {
+    if (state.activeSession?.id !== action.sessionId) await loadActiveSession();
+    if (state.activeSession?.id !== action.sessionId) {
+      throw new Error("未找到可恢复的练习会话");
+    }
+    resumeActiveSession();
+    return;
+  }
+  if (action.type === "start-review") {
+    await startReview(action.limit);
+    return;
+  }
+  if (action.type === "start-practice") {
+    switchView("home");
+    $("#chapter").value = String(action.chapter);
+    await loadSections();
+    $("#section").value = action.section || "all";
+    $("#difficulty").value = action.difficulty || "mixed";
+    $("#count").value = String(action.count || 10);
+    updateAvailability();
+    await startPractice();
+    return;
+  }
+  if (action.type === "open-materials") {
+    switchView("materials");
+    await loadMaterials();
+    const targetId = action.materialId;
+    if (targetId && materialState.materials.some((item) => item.id === targetId)) {
+      await openMaterial(targetId);
+    }
+    return;
+  }
+  if (action.type === "open-mock") {
+    switchView("mock");
+    $("#mock-exam-form")?.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  if (action.type === "resume-case-exam") {
+    switchView("mock");
+    await loadActiveCaseExam();
+    $("#mock-exam-resume-button")?.click();
+    return;
+  }
+  if (action.type === "configure-model") {
+    switchView("data");
+    document
+      .querySelector(".model-config-panel")
+      ?.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  if (action.type === "generate") {
+    switchView("home");
+    document
+      .querySelector(".agent-panel")
+      ?.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  if (action.type === "import-bank") {
+    switchView("data");
+    document
+      .querySelector("#import-bank")
+      ?.scrollIntoView({ behavior: "smooth" });
+  }
+}
+
+function studyQueueItemNode(item) {
+  const isSetup = item.kind === "setup";
+  const actions = isSetup
+    ? (item.action?.options ?? []).map((option) =>
+        studyQueueActionButton({ action: option }, option.label),
+      )
+    : [
+        studyQueueActionButton(
+          item,
+          item.kind === "resume-case-exam" || item.kind === "resume-session"
+            ? "继续"
+            : item.kind === "review"
+              ? "开始回顾"
+              : "开始练习",
+        ),
+      ];
+  return element("article", { className: "study-queue-item" }, [
+    element("div", { className: "study-queue-item-copy" }, [
+      element("strong", { text: item.title }),
+      element("span", { text: item.description }),
+    ]),
+    element("div", { className: "study-queue-item-actions" }, actions),
+  ]);
+}
+
+function renderStudyQueue(data) {
+  const panel = $("#study-queue");
+  const body = $("#study-queue-body");
+  if (!panel || !body) return;
+  panel.hidden = false;
+  $("#study-queue-status").textContent = data.next
+    ? "按优先级排列"
+    : "暂无安排";
+  body.replaceChildren(
+    ...(data.items?.length
+      ? data.items.map(studyQueueItemNode)
+      : [
+          emptyMessage(
+            "当前没有可执行安排",
+            "完成一次练习后，这里会给出下一步。",
+          ),
+        ]),
+  );
+}
+
+async function loadStudyQueue() {
+  const load = beginLoad("study-queue", "#study-queue-body", "正在整理下一步…");
+  try {
+    const data = await api("/api/study-queue?limit=5");
+    if (!load.isCurrent()) return;
+    setReviewActionState(data.counts?.dueReviews ?? 0);
+    renderStudyQueue(data);
+    load.finish();
+  } catch (error) {
+    load.fail(error, loadStudyQueue);
   }
 }
 
@@ -1093,6 +1382,9 @@ async function submitPractice(event, { auto = false } = {}) {
       body: JSON.stringify({
         sessionId: state.session.id,
         answers: state.answers,
+        ratings: Object.fromEntries(
+          Object.entries(state.ratings).filter(([, grade]) => grade != null),
+        ),
       }),
       timeoutMs: LONG_API_TIMEOUT_MS,
     });
@@ -1117,11 +1409,46 @@ function resultStatus(detail) {
   return "— 未作答";
 }
 
+// 复盘的逐选项分解:正确项与错选项高亮,并展示生成时的选项级归因。
+function optionReviewList(detail) {
+  if (!detail.options) return null;
+  const rows = Object.entries(detail.options).map(([key, value]) => {
+    const isCorrect = key === detail.correctAnswer;
+    const isChosen = key === detail.userAnswer;
+    let className = "option-review";
+    if (isCorrect) className += " is-correct";
+    else if (isChosen) className += " is-wrong";
+    const marks = [key];
+    if (isChosen && !isCorrect) marks.push("你的选择");
+    if (isCorrect) marks.push("正确答案");
+    const rationale = detail.optionRationale?.[key];
+    return element("div", { className }, [
+      element("span", {
+        className: "option-mark",
+        text: `${isCorrect ? "✓" : isChosen ? "✗" : "·"} ${marks.join(" · ")}`,
+      }),
+      element("span", { text: value }),
+      rationale
+        ? element("span", { className: "option-rationale", text: rationale })
+        : null,
+    ].filter(Boolean));
+  });
+  return element("div", { className: "option-review-list" }, rows);
+}
+
 function resultDetailNode(detail, index) {
   const analysisChildren = [
     element("h4", { text: `解析 · ${detail.knowledgePoint}` }),
     element("p", { text: detail.analysis }),
   ];
+  if (detail.knowledgeDetail) {
+    analysisChildren.push(
+      element("div", { className: "knowledge-detail" }, [
+        element("h5", { text: "考点详解" }),
+        element("p", { text: detail.knowledgeDetail }),
+      ]),
+    );
+  }
   if (detail.sourceNode)
     analysisChildren.push(sourceNodeNode(detail.sourceNode));
   if (detail.commonMistake)
@@ -1139,26 +1466,31 @@ function resultDetailNode(detail, index) {
       }),
     );
   analysisChildren.push(aiAnalysisNode(detail.aiAnalysis));
-  return element(
-    "article",
-    { className: `result-card ${detail.isCorrect ? "" : "incorrect"}` },
-    [
-      element("div", {}, [
-        element("span", {
-          className: "result-status",
-          text: resultStatus(detail),
-        }),
-        element("span", {
-          className: "question-number",
-          text: `　${String(index + 1).padStart(2, "0")}`,
-        }),
-      ]),
-      element("div", { className: "question-text", text: detail.question }),
-      figureNode(detail),
+  const mainChildren = [
+    element("div", {}, [
+      element("span", {
+        className: "result-status",
+        text: resultStatus(detail),
+      }),
+      element("span", {
+        className: "question-number",
+        text: `　${String(index + 1).padStart(2, "0")}`,
+      }),
+    ]),
+    element("div", { className: "question-text", text: detail.question }),
+    answerTrustNode(detail),
+    figureNode(detail),
+    optionReviewList(detail) ??
       element("div", {
         className: "answer-line",
         text: `你的答案：${detail.userAnswer || "未作答"}　正确答案：${detail.correctAnswer}`,
       }),
+  ];
+  return element(
+    "article",
+    { className: `result-card ${detail.isCorrect ? "" : "incorrect"}` },
+    [
+      element("div", { className: "result-main" }, mainChildren),
       element("div", { className: "analysis" }, analysisChildren),
       element("div", { className: "result-actions" }, [
         reportButtonNode(detail.id),
@@ -1224,10 +1556,16 @@ function wrongRecordNode(record) {
   if (record.disabledByIssue) meta.push("· 题目已停用");
   const button = element("button", {
     className: "small-button",
-    text: record.mastered ? "重新加入回顾" : "标记已掌握",
+    text: record.disabledByIssue
+      ? "题目已停用"
+      : record.mastered
+        ? "重新加入回顾"
+        : "标记已掌握",
     attrs: {
+      type: "button",
       "data-mastered": String(!record.mastered),
       "data-question-id": record.questionId,
+      ...(record.disabledByIssue ? { disabled: "" } : {}),
     },
   });
   const wikiLinks = (record.wikiEntries ?? []).map(wikiLinkNode);
@@ -1259,12 +1597,22 @@ function wrongRecordNode(record) {
 function renderWrong(data) {
   $("#due-count").textContent = data.summary.due;
   $("#due-badge").textContent = data.summary.due;
+  setReviewActionState(data.summary.due);
   $("#wrong-summary").replaceChildren(
     wrongSummaryNode(data.summary.total, "累计错题"),
     wrongSummaryNode(data.summary.active, "未掌握"),
     wrongSummaryNode(data.summary.due, "今日待回顾"),
     wrongSummaryNode(data.summary.mastered, "已掌握"),
   );
+  const total = data.total ?? data.records.length;
+  const pageCount = Math.max(1, Math.ceil(total / state.wrongLimit));
+  const currentPage = Math.floor(state.wrongOffset / state.wrongLimit) + 1;
+  $("#wrong-page").textContent = total
+    ? `第 ${currentPage} / ${pageCount} 页 · 共 ${total} 道`
+    : "暂无错题";
+  $("#wrong-previous").disabled = state.wrongOffset === 0;
+  $("#wrong-next").disabled = state.wrongOffset + state.wrongLimit >= total;
+  $("#wrong-pagination").hidden = total <= state.wrongLimit;
   if (!data.records.length) {
     const empty = emptyMessage(
       "错题本还是空的",
@@ -1275,15 +1623,6 @@ function renderWrong(data) {
     return;
   }
   $("#wrong-list").replaceChildren(...data.records.map(wrongRecordNode));
-  const total = data.total ?? data.records.length;
-  const pageCount = Math.max(1, Math.ceil(total / state.wrongLimit));
-  const currentPage = Math.floor(state.wrongOffset / state.wrongLimit) + 1;
-  $("#wrong-page").textContent = total
-    ? `第 ${currentPage} / ${pageCount} 页 · 共 ${total} 道`
-    : "暂无错题";
-  $("#wrong-previous").disabled = state.wrongOffset === 0;
-  $("#wrong-next").disabled = state.wrongOffset + state.wrongLimit >= total;
-  $("#wrong-pagination").hidden = total <= state.wrongLimit;
   $("#wrong-list")
     .querySelectorAll("[data-question-id]")
     .forEach((button) =>
@@ -1370,11 +1709,15 @@ async function exportWrong() {
   showToast("错题已导出");
 }
 
-async function startReview() {
+async function startReview(limit = null) {
+  if (!state.dueCount) {
+    showToast("暂无到期错题");
+    return;
+  }
   try {
     state.session = await api("/api/review-sessions", {
       method: "POST",
-      body: JSON.stringify({ limit: $("#count").value }),
+      body: JSON.stringify({ limit: limit || $("#count").value }),
     });
     resetExamSaveState(state.session);
     state.activeSession = null;
@@ -1525,10 +1868,25 @@ function bankQuestionNode(question) {
           className: `bank-status${statusClass}`,
           text: statusText,
         }),
-      ]),
-      element("span", { className: "muted", text: question.knowledgePoint }),
+        question.difficultyFlag === "too_easy"
+          ? element("span", { className: "flag-easy", text: "疑似过易" })
+          : null,
+        question.difficultyFlag === "too_hard"
+          ? element("span", { className: "flag-hard", text: "疑似过难" })
+          : null,
+        question.revision > 1
+          ? element("span", { text: `v${question.revision}` })
+          : null,
+      ].filter(Boolean)),
+      element("span", {
+        className: "muted",
+        text: question.stats
+          ? `${question.knowledgePoint} · 作答 ${question.stats.seen} 次 · 正确率 ${Math.round((question.stats.correct / question.stats.seen) * 100)}%`
+          : question.knowledgePoint,
+      }),
     ]),
     element("div", { className: "question-text", text: question.question }),
+    answerTrustNode(question),
     figureNode(question),
     element("ol", { className: "bank-options" }, options),
     element("div", {
@@ -1544,9 +1902,80 @@ function bankQuestionNode(question) {
     element(
       "div",
       { className: "bank-actions" },
-      isImportedItem(question) ? [star, toggle] : [star, toggle, remove],
+      isImportedItem(question)
+        ? [star, toggle]
+        : [star, editBankQuestionButton(question), toggle, remove],
     ),
   ]);
+}
+
+function editBankQuestionButton(question) {
+  const button = element("button", {
+    className: "small-button",
+    text: "编辑",
+    attrs: { type: "button" },
+  });
+  button.addEventListener("click", () => openBankQuestionEditor(question));
+  return button;
+}
+
+// 题目编辑器:保存后旧版本进入 revisions(服务端保留最近 5 版),可在历史统计中追溯。
+function openBankQuestionEditor(question) {
+  const dialog = $("#bank-edit-dialog");
+  const form = $("#bank-edit-form");
+  const stem = element("textarea", { attrs: { rows: "3" } });
+  stem.value = question.question;
+  const optionInputs = Object.fromEntries(
+    ["A", "B", "C", "D"].map((key) => {
+      const input = element("input", { attrs: { type: "text" } });
+      input.value = question.options?.[key] ?? "";
+      return [key, input];
+    }),
+  );
+  const correct = element("select");
+  for (const key of ["A", "B", "C", "D"]) {
+    const option = element("option", { text: key, attrs: { value: key } });
+    if (key === question.correctAnswer) option.selected = true;
+    correct.append(option);
+  }
+  const analysis = element("textarea", { attrs: { rows: "4" } });
+  analysis.value = question.analysis ?? "";
+  const knowledge = element("input", { attrs: { type: "text" } });
+  knowledge.value = question.knowledgePoint ?? "";
+  form.replaceChildren(
+    element("label", {}, ["题干", stem]),
+    element("div", { className: "edit-grid" }, [
+      element("label", {}, ["正确答案", correct]),
+      element("label", {}, ["知识点", knowledge]),
+    ]),
+    ...["A", "B", "C", "D"].map((key) =>
+      element("label", {}, [`选项 ${key}`, optionInputs[key]]),
+    ),
+    element("label", {}, ["解析", analysis]),
+  );
+  dialog.showModal();
+  $("#bank-edit-cancel").onclick = () => dialog.close();
+  $("#bank-edit-save").onclick = async () => {
+    try {
+      await api(`/api/questions/${encodeURIComponent(question.id)}`, {
+        method: "PATCH",
+        body: JSON.stringify({
+          question: stem.value,
+          options: Object.fromEntries(
+            Object.entries(optionInputs).map(([key, input]) => [key, input.value]),
+          ),
+          correctAnswer: correct.value,
+          analysis: analysis.value,
+          knowledgePoint: knowledge.value,
+        }),
+      });
+      dialog.close();
+      showToast("题目已更新（保留历史版本）");
+      await refreshQuestionBank();
+    } catch (error) {
+      showToast(error.message, true);
+    }
+  };
 }
 
 async function deleteBankQuestion(question) {
@@ -1741,12 +2170,102 @@ function renderStatistics(data) {
       text: `${data.review.mastered} 道已掌握 · ${data.review.active} 道未掌握 · ${data.review.due} 道待回顾`,
     }),
   );
+  renderLearningInsights(data);
+}
+
+// 打卡热力图:GitHub 贡献图风格,四级色阶按当日作答量分档。
+function heatmapNode(days) {
+  if (!days?.length) return emptyMessage("暂无打卡数据", "答题后按天累计到这里。");
+  const max = Math.max(...days.map((day) => day.count), 1);
+  const level = (count) =>
+    count === 0 ? 0 : count / max > 0.66 ? 4 : count / max > 0.33 ? 3 : count / max > 0.1 ? 2 : 1;
+  return days.map((day) =>
+    element("span", {
+      className: "heatmap-cell",
+      attrs: {
+        "data-level": String(level(day.count)),
+        title: `${day.date} · ${day.count} 题`,
+      },
+    }),
+  );
+}
+
+// 章节掌握度阶梯:0 未入门 → 3 已掌握,直观显示每章走到哪一级。
+function masteryRow(chapter) {
+  const titles = ["未入门", "起步", "熟练", "已掌握"];
+  const row = element("div", { className: "mastery-row" }, [
+    element("div", { className: "stat-row-heading" }, [
+      element("strong", { text: chapter.title }),
+      element("span", {
+        text: `${chapter.accuracy}% · ${titles[chapter.level]}${chapter.active ? ` · ${chapter.active} 题待巩固` : ""}`,
+      }),
+    ]),
+  ]);
+  const ladder = element("div", { className: "mastery-ladder" });
+  for (let step = 0; step < 4; step += 1) {
+    ladder.append(
+      element("span", { className: `mastery-step${step <= chapter.level ? " on" : ""}` }),
+    );
+  }
+  row.append(ladder);
+  return row;
+}
+
+function renderLearningInsights(data) {
+  $("#stats-heatmap")?.replaceChildren(...heatmapNode(data.heatmap));
+  const memory = data.memory;
+  $("#stats-memory")?.replaceChildren(
+    ...(memory
+      ? [
+          element("div", { className: "memory-item" }, [
+            element("strong", { text: memory.retention != null ? `${memory.retention}%` : "—" }),
+            element("span", { text: `当前记忆保持率（${memory.tracked} 题在复习中）` }),
+          ]),
+          element("div", { className: "memory-item" }, [
+            element("strong", {
+              text: memory.upcoming?.[0] ? String(memory.upcoming[0].due) : "0",
+            }),
+            element("span", { text: "今天到期复习" }),
+          ]),
+          element("div", { className: "memory-item" }, [
+            element("strong", {
+              text: String(
+                (memory.upcomingDistinct ?? memory.upcoming ?? [])
+                  .slice(1)
+                  .reduce((sum, day) => sum + day.due, 0),
+              ),
+            }),
+            element("span", { text: "未来 6 天到期合计" }),
+          ]),
+        ]
+      : []),
+  );
+  const taxonomy = data.errorTaxonomy;
+  $("#stats-taxonomy")?.replaceChildren(
+    ...(taxonomy && (taxonomy.confidentWrong || taxonomy.unsureWrong)
+      ? [
+          element("span", {
+            className: "taxonomy-chip",
+            text: `自信地错 ${taxonomy.confidentWrong} 次 · 多为概念误解`,
+          }),
+          element("span", {
+            className: "taxonomy-chip gap",
+            text: `心虚答错 ${taxonomy.unsureWrong} 次 · 多为没记牢`,
+          }),
+        ]
+      : [element("span", { className: "muted", text: "作答时选择把握程度后,这里会给出错因分类。" })]),
+  );
+  $("#stats-mastery")?.replaceChildren(
+    ...(data.chapterMastery?.length
+      ? data.chapterMastery.map(masteryRow)
+      : [emptyMessage("暂无掌握度数据", "完成章节练习后显示每章掌握阶梯。")]),
+  );
 }
 
 async function loadStatistics() {
   const load = beginLoad(
     "statistics",
-    ["#stats-summary", "#chapter-stats", "#practice-trend", "#weak-points", "#knowledge-mastery", "#review-stats"],
+    ["#stats-summary", "#chapter-stats", "#practice-trend", "#weak-points", "#knowledge-mastery", "#review-stats", "#stats-heatmap", "#stats-memory", "#stats-taxonomy", "#stats-mastery"],
     "正在加载学习统计…",
   );
   try {
@@ -1760,6 +2279,33 @@ async function loadStatistics() {
 }
 
 function issueNode(issue) {
+  const issueStatus = issue.status ?? "open";
+  const statusChip = element("span", {
+    className: `issue-status ${issueStatus}`,
+    text: issueStatus === "acknowledged" ? "已确认" : "待处理",
+  });
+  const acknowledge =
+    issueStatus === "open"
+      ? element("button", {
+          className: "small-button",
+          text: "确认（保留下架）",
+          attrs: { type: "button" },
+        })
+      : null;
+  if (acknowledge) {
+    acknowledge.addEventListener("click", async () => {
+      try {
+        await api(
+          `/api/questions/${encodeURIComponent(issue.questionId)}/issue-status`,
+          { method: "PATCH", body: JSON.stringify({ status: "acknowledged" }) },
+        );
+        await loadQuestionIssues();
+        showToast("已确认问题题，题目保持下架");
+      } catch (error) {
+        showToast(error.message, true);
+      }
+    });
+  }
   const restore = element("button", {
     className: "small-button",
     text: "恢复到题库",
@@ -1781,13 +2327,16 @@ function issueNode(issue) {
       showToast(error.message, true);
     }
   });
+  const meta = element("div", { className: "wrong-meta" }, [
+    element("span", { text: `第 ${issue.chapter} 章 · ${issue.note} · ${new Date(issue.createdAt).toLocaleString("zh-CN")}` }),
+    statusChip,
+  ]);
+  const actions = [restore];
+  if (acknowledge) actions.unshift(acknowledge);
   return element("article", { className: "question-issue-row" }, [
     element("div", { className: "question-text", text: issue.question }),
-    element("div", {
-      className: "wrong-meta",
-      text: `第 ${issue.chapter} 章 · ${issue.note} · ${new Date(issue.createdAt).toLocaleString("zh-CN")}`,
-    }),
-    restore,
+    meta,
+    ...actions,
   ]);
 }
 
@@ -1863,7 +2412,10 @@ async function loadAuditLog() {
 async function loadDataStatus() {
   const load = beginLoad("data-status", "#data-summary", "正在加载数据概况…");
   try {
-    const summary = await api("/api/data/status");
+    const [summary, usage] = await Promise.all([
+      api("/api/data/status"),
+      api("/api/llm-usage").catch(() => null),
+    ]);
     if (!load.isCurrent()) return;
     $("#data-summary").replaceChildren(
       wrongSummaryNode(summary.questions, "题库题目"),
@@ -1875,9 +2427,139 @@ async function loadDataStatus() {
       wrongSummaryNode(summary.wrongQuestions, "错题记录"),
       wrongSummaryNode(summary.attempts, "练习记录"),
     );
+    if (usage) renderLlmUsage(usage);
     load.finish();
   } catch (error) {
     load.fail(error, loadDataStatus);
+  }
+}
+
+function healthSummaryNode(value, label, tone = "") {
+  return element("div", { className: "health-summary-item " + tone }, [
+    element("strong", { text: value }),
+    element("span", { text: label }),
+  ]);
+}
+
+function renderContentHealth(data) {
+  const body = $("#content-health-body");
+  if (!body) return;
+  const questions = data.sources?.questions ?? {};
+  const quality = data.generatedQuality ?? {};
+  const coverage = data.examCoverage ?? {};
+  const wiki = data.wiki ?? {};
+  const issues = data.questionIssues ?? {};
+  const trustRows = (data.answerTrust ?? []).map((item) =>
+    element("div", { className: "health-line" }, [
+      element("span", { text: item.label }),
+      element("strong", { text: item.count }),
+    ]),
+  );
+  const incompleteRows = (coverage.incomplete ?? []).map((item) =>
+    element("div", { className: "health-line health-line-wrap" }, [
+      element("span", {
+        text:
+          item.term +
+          " · 缺第 " +
+          item.missingQuestionNos.join("、") +
+          " 题",
+      }),
+      element("strong", {
+        text: String(item.questions) + "/" + String(item.expectedQuestions),
+      }),
+    ]),
+  );
+  body.replaceChildren(
+    element("div", { className: "health-summary-grid" }, [
+      healthSummaryNode(questions.total ?? 0, "选择题总量"),
+      healthSummaryNode(
+        quality.traceabilityRate == null
+          ? "—"
+          : String(quality.traceabilityRate) + "%",
+        "生成题有导图来源",
+      ),
+      healthSummaryNode(
+        quality.missingAnalysis ?? 0,
+        "生成题缺解析",
+        quality.missingAnalysis ? "warning" : "",
+      ),
+      healthSummaryNode(
+        coverage.missingQuestionCount ?? 0,
+        "真题套卷缺题",
+        coverage.missingQuestionCount ? "warning" : "",
+      ),
+      healthSummaryNode(
+        wiki.draft ?? 0,
+        "Wiki 待校对",
+        wiki.draft ? "warning" : "",
+      ),
+      healthSummaryNode(
+        issues.unresolved ?? 0,
+        "问题题待处理",
+        issues.unresolved ? "warning" : "",
+      ),
+    ]),
+    element("div", { className: "health-columns" }, [
+      element("section", { className: "health-block" }, [
+        element("h3", { text: "答案来源" }),
+        ...(trustRows.length
+          ? trustRows
+          : [element("p", { className: "muted", text: "暂无来源数据" })]),
+      ]),
+      element("section", { className: "health-block" }, [
+        element("h3", { text: "生成题质量" }),
+        element("p", {
+          text:
+            String(quality.withSourceNode ?? 0) +
+            "/" +
+            String(quality.active ?? 0) +
+            " 有导图来源 · " +
+            String(quality.withAnalysis ?? 0) +
+            "/" +
+            String(quality.active ?? 0) +
+            " 有解析",
+        }),
+        element("p", {
+          className: "muted",
+          text:
+            "Wiki " +
+            String(wiki.reviewed ?? 0) +
+            " 已校对 · " +
+            String(wiki.lintProblems ?? 0) +
+            " 个自检问题",
+        }),
+      ]),
+      element("section", { className: "health-block" }, [
+        element("h3", { text: "真题套卷覆盖" }),
+        ...(incompleteRows.length
+          ? incompleteRows
+          : [
+              element("p", {
+                className: "muted",
+                text: coverage.totalPapers
+                  ? "已导入套卷题号完整"
+                  : "尚未导入真题套卷",
+              }),
+            ]),
+      ]),
+    ]),
+  );
+  $("#content-health-status").textContent = "已更新";
+}
+
+async function loadContentHealth() {
+  const load = beginLoad(
+    "content-health",
+    "#content-health-body",
+    "正在检查内容质量…",
+  );
+  try {
+    const data = await api("/api/content-health");
+    if (!load.isCurrent()) return;
+    renderContentHealth(data);
+    load.finish();
+  } catch (error) {
+    load.fail(error, loadContentHealth);
   }
 }
 
@@ -1963,6 +2645,7 @@ function providerNode(provider) {
     attrs: { type: "button" },
   });
   deleteButton.addEventListener("click", () => {
+    state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
     if (state.modelWorkspace.providers.length <= 1) {
       showToast("至少保留一个供应商", true);
       return;
@@ -2000,6 +2683,7 @@ function agentNode(agent) {
   nameInput.value = agent.name;
   const deleteButton = element("button", { className: "workspace-delete", text: "删除 Agent", attrs: { type: "button" } });
   deleteButton.addEventListener("click", () => {
+    state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
     if (state.modelWorkspace.agents.length <= 1) {
       showToast("至少保留一个 Agent", true);
       return;
@@ -2061,7 +2745,7 @@ function collectWorkspaceDraft() {
       description: card.querySelector(".agent-description")?.value.trim() || "",
       providerId: card.querySelector(".agent-provider")?.value || providers[0]?.id || "",
       model: card.querySelector(".agent-model")?.value || "",
-      systemPrompt: card.querySelector(".agent-prompt")?.value.trim() || "",
+      systemPrompt: card.querySelector("textarea.agent-prompt")?.value.trim() || "",
       enabled: card.querySelector('input[type="checkbox"]')?.checked !== false,
     };
   });
@@ -2165,6 +2849,7 @@ async function fetchProviderModels(providerId) {
 }
 
 function addProvider() {
+  state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
   const providerId = `provider-${Date.now()}`;
   state.modelWorkspace.providers.push({
     id: providerId,
@@ -2179,6 +2864,7 @@ function addProvider() {
 }
 
 function addAgent() {
+  state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
   const provider = state.modelWorkspace.providers[0];
   if (!provider) {
     showToast("请先添加供应商", true);
@@ -2262,7 +2948,9 @@ async function refreshAfterDataChange() {
   await Promise.all([
     loadActiveSession(),
     refreshReviewBadge(),
+    loadStudyQueue(),
     loadDataStatus(),
+    loadContentHealth(),
     loadQuestionIssues(),
     loadAuditLog(),
   ]);
@@ -2394,7 +3082,8 @@ async function openMaterial(id) {
     const doc = await api(`/api/study-materials/${encodeURIComponent(id)}`);
     if (requestId !== materialState.loadId || !load.isCurrent()) return;
     renderMaterialDocument(doc);
-    $("#materials-content").scrollTo({ top: 0, behavior: "auto" });
+    // 恢复上次阅读位置；没有记录时回到顶部。
+    restoreReaderPosition(id);
     load.finish();
   } catch (error) {
     if (requestId !== materialState.loadId || !load.isCurrent()) return;
@@ -2526,7 +3215,7 @@ function renderMaterialMermaid(code) {
   const failed = /无法解析|尚未支持渲染/.test(rendered);
   const diagram = element("div", { className: "material-diagram" });
   diagram.innerHTML = rendered;
-  if (!knownType || failed) {
+  if ((!knownType || failed) && !rendered.includes("figure-render-warning")) {
     diagram.prepend(
       element("p", {
         className: "material-render-warning",
@@ -2715,6 +3404,7 @@ async function refreshReviewBadge() {
     const data = await api("/api/wrong-questions");
     $("#due-count").textContent = data.summary.due;
     $("#due-badge").textContent = data.summary.due;
+    setReviewActionState(data.summary.due);
   } catch {
     // 首页仍可使用；错题数据会在下次导航时重试。
   }
@@ -2900,6 +3590,7 @@ function caseNode(caseItem) {
       ]),
     ]),
     element("h3", { className: "case-title", text: caseItem.title }),
+    answerTrustNode(caseItem),
     element("p", { className: "case-scenario", text: caseItem.scenario }),
     sourceNodeNode(caseItem.sourceNode),
     ...questions,
@@ -3105,9 +3796,15 @@ function populatePaperChapters() {
   );
 }
 
+function clearPaperMockTimers() {
+  for (const timer of state.paperMockTimers) clearInterval(timer);
+  state.paperMockTimers.clear();
+}
+
 async function loadPapers() {
   populatePaperChapters();
   const loadId = ++state.paperLoadId;
+  clearPaperMockTimers();
   const load = beginLoad("papers", "#paper-list", "正在加载论文题目…");
   try {
     const params = new URLSearchParams({
@@ -3147,9 +3844,14 @@ function paperNode(paper) {
   // 论文模拟计时：120 分钟倒计时基于服务端开始时间，刷新安全。
   let mockTimer = null;
   const mockBar = element("div", { className: "paper-mock-bar" }, []);
-  const renderMockBar = () => {
+  const stopMockTimer = () => {
+    if (mockTimer === null) return;
     clearInterval(mockTimer);
+    state.paperMockTimers.delete(mockTimer);
     mockTimer = null;
+  };
+  const renderMockBar = () => {
+    stopMockTimer();
     const mock = paper.mock;
     if (!mock) {
       const startButton = element("button", {
@@ -3163,6 +3865,7 @@ function paperNode(paper) {
             method: "POST",
             body: JSON.stringify({ paperId: paper.id }),
           });
+          if (!mockBar.isConnected) return;
           paper.mock = result.mock;
           showToast("论文模拟已开始，倒计时 120 分钟");
           renderMockBar();
@@ -3179,6 +3882,11 @@ function paperNode(paper) {
     const deadline =
       new Date(mock.startedAt).getTime() + mock.durationSeconds * 1000;
     const tick = () => {
+      // 列表刷新会移除旧卡片；避免旧卡片继续计时并弹出过期提示。
+      if (mockTimer !== null && !mockBar.isConnected) {
+        stopMockTimer();
+        return;
+      }
       const remaining = Math.max(
         0,
         Math.round((deadline - Date.now()) / 1000),
@@ -3188,13 +3896,13 @@ function paperNode(paper) {
       countdown.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
       countdown.classList.toggle("urgent", remaining <= 300);
       if (remaining === 0) {
-        clearInterval(mockTimer);
-        mockTimer = null;
-        showToast("论文模拟时间到，请提交论文");
+        stopMockTimer();
+        if (mockBar.isConnected) showToast("论文模拟时间到，请提交论文");
       }
     };
     tick();
     mockTimer = setInterval(tick, 1000);
+    state.paperMockTimers.add(mockTimer);
   };
   renderMockBar();
   const saveButton = element("button", {
@@ -3266,6 +3974,7 @@ function paperNode(paper) {
       ]),
     ]),
     element("h3", { className: "paper-title", text: paper.title }),
+    answerTrustNode(paper),
     element("p", { className: "paper-description", text: paper.description }),
     sourceNodeNode(paper.sourceNode),
     writingPoints.length
@@ -3357,6 +4066,7 @@ function updatePaperPagination(total) {
 }
 
 function renderPapers(papers, total = papers.length) {
+  clearPaperMockTimers();
   $("#paper-empty").hidden = papers.length > 0;
   $("#paper-list").replaceChildren(...papers.map(paperNode));
   updatePaperPagination(total);
@@ -3469,7 +4179,9 @@ async function askWiki() {
     });
     const references = (result.references ?? []).map(wikiLinkNode);
     resultBox.replaceChildren(
-      element("div", { className: "wiki-ask-answer" }, [
+      element("div", {
+        className: `wiki-ask-answer${result.abstained ? " wiki-ask-abstain" : ""}`,
+      }, [
         element("p", { className: "wiki-ask-text", text: result.answer }),
         references.length
           ? element("div", { className: "wiki-section" }, [
@@ -3586,6 +4298,12 @@ const wikiStatusNames = {
 };
 
 function wikiNode(entry) {
+  const relatedSuggestions = element("div", {
+    className: "wiki-related-suggestions",
+    attrs: { "aria-busy": "true" },
+  });
+  loadWikiRelatedSuggestions(entry.id, relatedSuggestions);
+  entry._relatedSuggestionsNode = relatedSuggestions;
   const statusClass = `wiki-status ${entry.status}`;
   const keyPoints = (entry.keyPoints ?? []).map((point) =>
     element("li", { text: point }),
@@ -3705,6 +4423,10 @@ function wikiNode(entry) {
           element("div", { className: "wiki-backlinks" }, backlinks),
         ])
       : null,
+    element("div", { className: "wiki-section" }, [
+      element("h4", { text: "猜你想看（语义相关）" }),
+      relatedSuggestions,
+    ]),
     element("div", { className: "wiki-actions" }, [editButton, statusButton]),
     element("div", { className: "wiki-editor", hidden: true }, [
       element("h4", { text: "编辑概念解释" }),
@@ -3773,6 +4495,17 @@ function wikiFilteredEntries() {
   });
 }
 
+function renderFilteredWikiGraph() {
+  if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
+  const depth = Number($("#wiki-graph-depth")?.value) || state.wikiGraphDepth || 1;
+  state.wikiGraphDepth = depth;
+  renderWikiGraph(wikiFilteredEntries(), {
+    focusId: state.wikiSelectedId,
+    colorBy: state.wikiGraphColorBy,
+    focusDepth: depth,
+  });
+}
+
 function renderWiki() {
   populateWikiChapterFilter();
   const filtered = wikiFilteredEntries();
@@ -3809,6 +4542,7 @@ function setWikiWorkspaceTab(tab) {
     renderWikiGraph(wikiFilteredEntries(), {
       focusId: state.wikiSelectedId,
       colorBy: state.wikiGraphColorBy,
+      focusDepth: Number($("#wiki-graph-depth")?.value) || state.wikiGraphDepth || 1,
     });
   } else destroyWikiGraph();
 }
@@ -3880,10 +4614,19 @@ async function generateWiki() {
 }
 
 async function loadChapters() {
-  const data = await api("/api/chapters");
-  state.chapters = data.chapters;
-  state.chapterMap = new Map(state.chapters.map((item) => [item.id, item]));
-  renderChapters();
+  const load = beginLoad("chapters", "#coverage", "正在加载章节…");
+  try {
+    const data = await api("/api/chapters");
+    if (!load.isCurrent()) return false;
+    state.chapters = data.chapters;
+    state.chapterMap = new Map(state.chapters.map((item) => [item.id, item]));
+    renderChapters();
+    load.finish();
+    return true;
+  } catch (error) {
+    load.fail(error, loadChapters);
+    return false;
+  }
 }
 
 // ===== 模拟考试 =====
@@ -3918,7 +4661,7 @@ async function loadRealExamCatalog() {
     select.replaceChildren(
       ...choicePapers.map((paper) =>
         element("option", {
-          text: `${paper.term} · ${paper.questions} 题${paper.cases ? ` · ${paper.cases} 案例` : ""}${paper.papers ? ` · ${paper.papers} 论文` : ""}`,
+          text: `${paper.term} · ${paper.questions} 题${paper.cases ? ` · ${paper.cases} 案例` : ""}${paper.papers ? ` · ${paper.papers} 论文` : ""}${paper.missingQuestionNos?.length ? ` · 缺题号 ${paper.missingQuestionNos.join(",")}` : ""}`,
           attrs: {
             value: paper.term,
             "data-source-type": paper.sourceType,
@@ -3947,13 +4690,25 @@ async function loadRealExamCatalog() {
 
 async function loadMockHistory() {
   const load = beginLoad("mock-history", "#mock-history-list", "正在加载模拟记录…");
-  const available = state.chapters.reduce(
+  const generatedAvailable = state.chapters.reduce(
     (sum, chapter) => sum + (chapter.counts?.all ?? 0),
     0,
   );
-  $("#mock-availability").textContent = `生成题 ${available} 道可用`;
-  $("#start-mock-exam").disabled = available === 0;
-  $("#start-case-exam").disabled = !(await caseBankCount());
+  // 综合模拟的服务端在没有生成题时会回退到导入题；查询同一份活动题库，
+  // 避免导入真题后前端仍把入口置灰。
+  const [activeBank, caseBankAvailable] = await Promise.all([
+    api("/api/questions?status=active&limit=1&offset=0").catch(() => ({ total: 0 })),
+    caseBankCount(),
+  ]);
+  const importedFallbackAvailable = Math.max(0, Number(activeBank.total) || 0);
+  const canStartMock = generatedAvailable > 0 || importedFallbackAvailable > 0;
+  $("#mock-availability").textContent = generatedAvailable > 0
+    ? `生成题 ${generatedAvailable} 道可用`
+    : importedFallbackAvailable > 0
+      ? `题库 ${importedFallbackAvailable} 道可用（将使用导入题）`
+      : "暂无可用题目";
+  $("#start-mock-exam").disabled = !canStartMock;
+  $("#start-case-exam").disabled = !caseBankAvailable || Boolean(state.caseExam);
   try {
     const { exams } = await api("/api/case-exams");
     const { attempts } = await api("/api/attempts");
@@ -4100,6 +4855,7 @@ async function loadActiveCaseExam() {
     const { exam } = await api("/api/case-exams/active");
     if (!load.isCurrent()) return;
     state.caseExam = exam;
+    if (exam) $("#start-case-exam").disabled = true;
     renderCaseExam();
     load.finish();
   } catch (error) {
@@ -4118,7 +4874,9 @@ function renderCaseExam() {
     resume.hidden = true;
     return;
   }
-  resume.hidden = true;
+  $("#mock-exam-resume-title").textContent = "继续案例模拟卷";
+  $("#mock-exam-resume-meta").textContent = `已开始于 ${new Date(exam.startedAt).toLocaleString("zh-CN")}，草稿会持续保存。`;
+  resume.hidden = false;
   stage.replaceChildren(caseExamNode(exam));
   // 回填草稿
   stage.querySelectorAll(".case-card").forEach((card, index) => {
@@ -4276,6 +5034,11 @@ function caseExamNode(exam) {
 }
 
 async function startCaseExam() {
+  if (state.caseExam) {
+    document.querySelector("#case-exam-stage")?.scrollIntoView({ behavior: "smooth" });
+    showToast("已有进行中的案例模拟，请继续作答");
+    return;
+  }
   if (
     !(await confirmDialog({
       title: "开始案例模拟",
@@ -4396,6 +5159,7 @@ async function submitCaseExam(exam, button) {
 // 案例模拟卷判分结果展示（整卷逐问得分 + 总分）。
 function renderCaseExamGrade(grade) {
   const stage = $("#case-exam-stage");
+  $("#mock-exam-resume").hidden = true;
   const passed = grade.max_score
     ? Math.round((grade.total_score / grade.max_score) * 100) >= 60
     : false;
@@ -4520,60 +5284,71 @@ $("#wiki-generate-dialog").addEventListener("cancel", (event) => {
   if (state.generationControllers.has("wiki")) event.preventDefault();
 });
 // 问知识库以右侧抽屉承载（多轮问答）：浏览目录/图谱不中断。
+let wikiAskCloseTimer = null;
+let wikiAskReturnFocus = null;
+
 function openWikiAskDrawer() {
   const drawer = $("#wiki-ask-drawer");
+  if (wikiAskCloseTimer !== null) {
+    clearTimeout(wikiAskCloseTimer);
+    wikiAskCloseTimer = null;
+  }
+  if (drawer.hidden) {
+    const active = document.activeElement;
+    wikiAskReturnFocus =
+      active instanceof HTMLElement && !drawer.contains(active)
+        ? active
+        : $("#wiki-ask-open");
+  }
   drawer.hidden = false;
+  drawer.setAttribute("aria-hidden", "false");
+  $("#wiki-ask-backdrop").hidden = false;
   requestAnimationFrame(() => drawer.classList.add("open"));
   $("#wiki-question").focus();
 }
 function closeWikiAskDrawer() {
   const drawer = $("#wiki-ask-drawer");
-  if (drawer.hidden) return;
+  const backdrop = $("#wiki-ask-backdrop");
+  if (drawer.hidden) {
+    backdrop.hidden = true;
+    return;
+  }
+  if (wikiAskCloseTimer !== null) clearTimeout(wikiAskCloseTimer);
   drawer.classList.remove("open");
-  setTimeout(() => {
+  drawer.setAttribute("aria-hidden", "true");
+  backdrop.hidden = true;
+  const returnFocus = wikiAskReturnFocus;
+  wikiAskCloseTimer = setTimeout(() => {
     drawer.hidden = true;
+    wikiAskCloseTimer = null;
+    if (returnFocus?.isConnected) returnFocus.focus();
   }, 240);
 }
 $("#wiki-ask-open").addEventListener("click", openWikiAskDrawer);
 $("#wiki-ask-close").addEventListener("click", closeWikiAskDrawer);
 $("#wiki-ask-backdrop").addEventListener("click", closeWikiAskDrawer);
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && !$("#wiki-ask-drawer").hidden) closeWikiAskDrawer();
+  if (event.key === "Escape" && !$("#wiki-ask-drawer").hidden) {
+    event.preventDefault();
+    closeWikiAskDrawer();
+  }
 });
 $("#wiki-search").addEventListener("input", () => {
   renderWiki();
-  // 图谱激活时同步关键词高亮，目录与图谱共用同一套搜索。
-  const graph = currentWikiGraph();
-  if (graph && !$("#wiki-graph").hidden) {
-    updateWikiGraphSearch(graph, $("#wiki-search").value);
-  }
+  // 搜索结果必须同步重建图谱，避免目录已过滤而图谱仍显示旧节点。
+  renderFilteredWikiGraph();
 });
 $("#wiki-chapter-filter").addEventListener("change", () => {
   renderWiki();
-  if (!$("#wiki-graph").hidden) {
-    renderWikiGraph(wikiFilteredEntries(), {
-      focusId: state.wikiSelectedId,
-      colorBy: state.wikiGraphColorBy,
-    });
-  }
+  renderFilteredWikiGraph();
 });
 $("#wiki-status-filter").addEventListener("change", () => {
   renderWiki();
-  if (!$("#wiki-graph").hidden) {
-    renderWikiGraph(wikiFilteredEntries(), {
-      focusId: state.wikiSelectedId,
-      colorBy: state.wikiGraphColorBy,
-    });
-  }
+  renderFilteredWikiGraph();
 });
 $("#wiki-graph-colorby").addEventListener("change", (event) => {
   state.wikiGraphColorBy = event.target.value;
-  if (!$("#wiki-graph").hidden) {
-    renderWikiGraph(wikiFilteredEntries(), {
-      focusId: state.wikiSelectedId,
-      colorBy: state.wikiGraphColorBy,
-    });
-  }
+  renderFilteredWikiGraph();
 });
 // 知识图谱模块需要的应用层回调在首次进入图谱前注入。
 initWikiGraphDeps({ openEntry: jumpToWikiEntry });
@@ -4603,29 +5378,17 @@ document.addEventListener("fullscreenchange", () => {
   if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
   // 全屏切换会改变画布尺寸，短暂等待布局生效后按新视口重建图谱。
   setTimeout(() => {
-    if (currentWikiGraph() && !$("#wiki-graph").hidden) {
-      renderWikiGraph(wikiFilteredEntries(), {
-        focusId: state.wikiSelectedId,
-        colorBy: state.wikiGraphColorBy,
-      });
-    }
+    renderFilteredWikiGraph();
   }, 80);
 });
 $("#wiki-graph-reset").addEventListener("click", () => {
-  if (!$("#wiki-graph").hidden) renderWikiGraph(state.wikiEntries);
+  renderFilteredWikiGraph();
 });
 let wikiGraphResizeTimer = 0;
 window.addEventListener("resize", () => {
   if (!currentWikiGraph() || $("#wiki-graph").hidden) return;
   clearTimeout(wikiGraphResizeTimer);
-  wikiGraphResizeTimer = setTimeout(() => {
-    if (currentWikiGraph() && !$("#wiki-graph").hidden) {
-      renderWikiGraph(state.wikiEntries, {
-        focusId: state.wikiSelectedId,
-        colorBy: state.wikiGraphColorBy,
-      });
-    }
-  }, 120);
+  wikiGraphResizeTimer = setTimeout(renderFilteredWikiGraph, 120);
 });
 $("#wiki-lint").addEventListener("click", runWikiLint);
 $("#wiki-ask").addEventListener("click", askWiki);
@@ -4642,7 +5405,13 @@ $("#bank-filters").addEventListener("submit", (event) => {
 });
 $("#bank-chapter").addEventListener("change", async () => {
   state.bankOffset = 0;
-  await loadBankSections();
+  try {
+    await loadBankSections();
+  } catch (error) {
+    // 章节切换仍应刷新题库；失败时回退到整章，避免沿用旧小节筛选。
+    $("#bank-section").value = "all";
+    showToast(error.message, true);
+  }
   loadQuestionBank();
 });
 $("#bank-section").addEventListener("change", () => {
@@ -4732,15 +5501,41 @@ document.addEventListener("keydown", (event) => {
     goToQuestion(state.currentIndex - 1);
   } else if (event.key === "ArrowRight") {
     goToQuestion(state.currentIndex + 1);
+  } else if (["1", "2", "3"].includes(event.key)) {
+    // 答题前选把握程度：1 猜测 / 2 大概 / 3 确定。
+    const question = currentQuestion();
+    if (!question || state.answers[question.id]) return;
+    const value = Number(event.key);
+    state.confidenceByQuestion[question.id] =
+      state.confidenceByQuestion[question.id] === value ? null : value;
+    renderCurrentQuestion();
+  } else if (event.key === "Enter") {
+    // 答完当前题后 Enter 进入下一题（最后一题交给按钮/提交栏）。
+    const question = currentQuestion();
+    const answered =
+      state.answers[question?.id] ||
+      (state.session.mode === "exam-mcq" && state.answers[question?.id]);
+    if (!question || !answered) return;
+    if (state.currentIndex < state.session.questions.length - 1) {
+      goToQuestion(state.currentIndex + 1);
+    }
   }
 });
 
-await loadChapters();
-await loadSections();
-await loadModelStatus();
-await loadActiveSession();
-await refreshReviewBadge();
-await loadStudyPlan();
+async function initializeApp() {
+  // 章节是筛选器的基础，先完成它，再让其他启动任务互相隔离失败。
+  await Promise.allSettled([loadChapters()]);
+  await Promise.allSettled([
+    loadSections(),
+    loadModelStatus(),
+    loadActiveSession(),
+    refreshReviewBadge(),
+    loadStudyPlan(),
+    loadStudyQueue(),
+  ]);
+}
+
+await initializeApp();
 
 // 启动时按 URL hash 直达视图（如 #wiki），并响应 hash 变化。
 function viewFromHash() {
@@ -4756,3 +5551,308 @@ if (viewFromHash() && !document.querySelector(".view.active#home-view")) {
 } else if (viewFromHash()) {
   switchView(viewFromHash());
 }
+
+// ===== 2026 UI 升级:主题切换 / 命令面板 / Wiki 相关推荐 / 数据库备份 / 阅读器增强 =====
+
+// --- 主题:OKLCH token 双主题,跟随系统 + 手动切换,localStorage 持久化 ---
+const THEME_KEY = "architect-theme";
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  const label = $("#theme-toggle-label");
+  if (label) label.textContent = theme === "dark" ? "深色" : "浅色";
+}
+
+function currentTheme() {
+  return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+}
+
+(function initTheme() {
+  let stored = null;
+  try {
+    stored = localStorage.getItem(THEME_KEY);
+  } catch {
+    stored = null;
+  }
+  const prefersDark = window.matchMedia?.("(prefers-color-scheme: dark)").matches;
+  applyTheme(stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light");
+})();
+
+$("#theme-toggle")?.addEventListener("click", () => {
+  const next = currentTheme() === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try {
+    localStorage.setItem(THEME_KEY, next);
+  } catch {
+    /* 隐私模式忽略 */
+  }
+});
+
+// --- 命令面板:Ctrl/Cmd+K,静态命令表 + 子序列模糊过滤 + 方向键导航 ---
+const COMMANDS = [
+  ...[...document.querySelectorAll(".nav-button")].map((button) => ({
+    label: button.querySelector(".label")?.textContent?.trim() || button.textContent.trim(),
+    group: "页面",
+    run: () => switchView(button.dataset.view),
+  })),
+  { label: "开始错题回顾", group: "操作", run: () => startReview() },
+  { label: "导出完整备份 (JSON)", group: "操作", run: () => exportData() },
+  { label: "备份数据库 (SQLite)", group: "操作", run: () => backupDatabase() },
+  { label: "切换浅色 / 深色主题", group: "操作", run: () => $("#theme-toggle").click() },
+  { label: "刷新学习统计", group: "操作", run: () => { switchView("stats"); loadStatistics(); } },
+];
+
+const paletteState = { index: 0, matches: [] };
+
+function commandMatches(query) {
+  const text = query.trim().toLowerCase();
+  if (!text) return COMMANDS;
+  const scored = [];
+  for (const command of COMMANDS) {
+    const label = command.label.toLowerCase();
+    let cursor = 0;
+    let score = 0;
+    for (const char of text) {
+      const found = label.indexOf(char, cursor);
+      if (found === -1) {
+        score = -1;
+        break;
+      }
+      score += found === cursor ? 2 : 1;
+      cursor = found + 1;
+    }
+    if (score >= 0) scored.push({ command, score });
+  }
+  return scored
+    .sort((left, right) => right.score - left.score)
+    .map((item) => item.command);
+}
+
+function renderCommandList() {
+  const input = $("#command-input");
+  const list = $("#command-list");
+  const empty = $("#command-empty");
+  paletteState.matches = commandMatches(input.value);
+  paletteState.index = 0;
+  list.replaceChildren(
+    ...paletteState.matches.map((command, index) => {
+      const item = element("li", { className: "command-item", attrs: { role: "option" } }, [
+        element("span", { text: command.label }),
+        element("span", { className: "cmd-group", text: command.group }),
+      ]);
+      if (index === paletteState.index) item.classList.add("active");
+      item.addEventListener("click", () => executeCommand(command));
+      item.addEventListener("mousemove", () => {
+        if (paletteState.index === index) return;
+        paletteState.index = index;
+        updateCommandActive();
+      });
+      return item;
+    }),
+  );
+  empty.hidden = paletteState.matches.length > 0;
+}
+
+function updateCommandActive() {
+  [...$("#command-list").children].forEach((item, index) =>
+    item.classList.toggle("active", index === paletteState.index),
+  );
+}
+
+function executeCommand(command) {
+  $("#command-palette").close();
+  try {
+    command.run();
+  } catch (error) {
+    showToast(error.message, true);
+  }
+}
+
+function openCommandPalette() {
+  const dialog = $("#command-palette");
+  $("#command-input").value = "";
+  renderCommandList();
+  dialog.showModal();
+  $("#command-input").focus();
+}
+
+$("#command-input")?.addEventListener("input", renderCommandList);
+$("#command-input")?.addEventListener("keydown", (event) => {
+  if (event.key === "ArrowDown") {
+    event.preventDefault();
+    paletteState.index = Math.min(
+      paletteState.index + 1,
+      paletteState.matches.length - 1,
+    );
+    updateCommandActive();
+  } else if (event.key === "ArrowUp") {
+    event.preventDefault();
+    paletteState.index = Math.max(paletteState.index - 1, 0);
+    updateCommandActive();
+  } else if (event.key === "Enter") {
+    event.preventDefault();
+    const command = paletteState.matches[paletteState.index];
+    if (command) executeCommand(command);
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k") {
+    event.preventDefault();
+    const dialog = $("#command-palette");
+    if (dialog.open) dialog.close();
+    else openCommandPalette();
+  } else if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "j") {
+    event.preventDefault();
+    $("#theme-toggle").click();
+  } else if (event.key === "/" && event.target === document.body) {
+    event.preventDefault();
+    openCommandPalette();
+  }
+});
+
+// --- Wiki 语义相关推荐:嵌入向量检索,一键跳转 ---
+async function loadWikiRelatedSuggestions(entryId, container) {
+  if (!entryId) {
+    container.replaceChildren(
+      element("span", { className: "muted", text: "暂无推荐。" }),
+    );
+    return;
+  }
+  try {
+    const data = await api(
+      `/api/wiki/related?entryId=${encodeURIComponent(entryId)}&limit=5`,
+    );
+    if (!data.suggestions.length) {
+      container.replaceChildren(
+        element("span", { className: "muted", text: "还没有足够相似的其他条目。" }),
+      );
+      return;
+    }
+    const chips = data.suggestions.map((suggestion) => {
+      const chip = element("button", {
+        className: "related-chip",
+        text: `${suggestion.title} · ${suggestion.score}`,
+        attrs: { type: "button" },
+      });
+      chip.addEventListener("click", () => jumpToWikiEntry(suggestion.id));
+      return chip;
+    });
+    container.replaceChildren(...chips);
+  } catch {
+    container.replaceChildren(
+      element("span", { className: "muted", text: "相关推荐加载失败。" }),
+    );
+  } finally {
+    container.removeAttribute("aria-busy");
+  }
+}
+
+// --- 数据库在线备份(VACUUM INTO)+ LLM 用量展示 ---
+async function backupDatabase() {
+  const button = $("#backup-db");
+  if (button) button.disabled = true;
+  try {
+    const result = await api("/api/data/backup-db", { method: "POST" });
+    showToast(
+      `数据库已备份：${result.file}（${Math.max(1, Math.round(result.bytes / 1024))} KB）`,
+    );
+    await loadDataStatus();
+  } catch (error) {
+    showToast(error.message, true);
+  } finally {
+    if (button) button.disabled = false;
+  }
+}
+
+$("#backup-db")?.addEventListener("click", backupDatabase);
+
+function renderLlmUsage(summary) {
+  const target = $("#llm-usage-summary");
+  if (!target) return;
+  if (!summary?.requests) {
+    target.textContent = "模型用量：暂无调用记录。";
+    return;
+  }
+  const tokens = summary.promptTokens + summary.completionTokens;
+  target.textContent = `模型用量：最近 ${summary.requests} 次调用 · 输入 ${summary.promptTokens.toLocaleString()} + 输出 ${summary.completionTokens.toLocaleString()} = ${tokens.toLocaleString()} tokens`;
+}
+
+// --- 阅读器:滚动进度条 + 阅读位置记忆 + 宋体正文 ---
+const READER_POSITION_PREFIX = "architect-reader-pos-";
+
+function registerReaderProgress() {
+  const body = $(".materials-body");
+  const bar = $("#reader-progress");
+  if (!body || !bar) return;
+  let frame = 0;
+  body.addEventListener("scroll", () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      const max = body.scrollHeight - body.clientHeight;
+      const ratio = max > 0 ? body.scrollTop / max : 0;
+      bar.style.width = `${Math.min(100, Math.round(ratio * 100))}%`;
+      if (materialState.selectedId) {
+        try {
+          localStorage.setItem(
+            READER_POSITION_PREFIX + materialState.selectedId,
+            String(Math.round(body.scrollTop)),
+          );
+        } catch {
+          /* 忽略 */
+        }
+      }
+    });
+  });
+}
+
+function restoreReaderPosition(id) {
+  const body = $(".materials-body");
+  if (!body || !id) return;
+  let position = 0;
+  try {
+    position = Number(localStorage.getItem(READER_POSITION_PREFIX + id)) || 0;
+  } catch {
+    position = 0;
+  }
+  if (position > 0) requestAnimationFrame(() => body.scrollTo({ top: position }));
+}
+
+(function initReaderEnhancements() {
+  registerReaderProgress();
+  const serifButton = $("#materials-serif");
+  const body = $(".materials-body");
+  if (!serifButton) return;
+  let serif = false;
+  try {
+    serif = localStorage.getItem("architect-material-serif") === "true";
+  } catch {
+    serif = false;
+  }
+  const apply = () => {
+    $(".materials-document")?.classList.toggle("is-serif", serif);
+    serifButton.setAttribute("aria-pressed", String(serif));
+  };
+  apply();
+  serifButton.addEventListener("click", () => {
+    serif = !serif;
+    apply();
+    try {
+      localStorage.setItem("architect-material-serif", String(serif));
+    } catch {
+      /* 忽略 */
+    }
+  });
+  void body;
+})();
+
+// --- 图谱邻域深度:1 度/2 度/关(选中节点时按 BFS 深度高亮邻域) ---
+$("#wiki-graph-depth")?.addEventListener("change", (event) => {
+  state.wikiGraphDepth = Number(event.target.value);
+  const graph = currentWikiGraph();
+  if (graph) {
+    graph.focusDepth = state.wikiGraphDepth;
+    updateWikiGraphFocus(graph);
+  }
+});

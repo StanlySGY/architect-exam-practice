@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "node:fs/promises";
+import { chmod, readFile, writeFile } from "node:fs/promises";
 import { lookup as dnsLookup } from "node:dns/promises";
 import http from "node:http";
 import https from "node:https";
@@ -381,7 +381,12 @@ export class ModelConfig {
         output.push(`${key}=${config[key]}`);
       }
     }
-    await writeFile(this.envFile, output.join("\n").replace(/\n+$/, "") + "\n");
+    await writeFile(
+      this.envFile,
+      output.join("\n").replace(/\n+$/, "") + "\n",
+      { mode: 0o600 },
+    );
+    await chmod(this.envFile, 0o600);
   }
 
   // 调用 OpenAI 兼容的 /models 端点获取可用模型列表。

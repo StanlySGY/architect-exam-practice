@@ -5,12 +5,12 @@
   "description": "系统架构设计师章节练习、判卷与错题回顾微服务",
   "type": "module",
   "scripts": {
-    "start": "node server.mjs",
-    "dev": "node --watch server.mjs",
+    "start": "NODE_USE_ENV_PROXY=1 node server.mjs",
+    "dev": "NODE_USE_ENV_PROXY=1 node --watch server.mjs",
     "test": "node --test",
     "lint": "find server.mjs src test scripts public -type f \\( -name '*.mjs' -o -name '*.js' \\) -print0 | xargs -0 -n1 node --check"
   },
   "engines": {
-    "node": ">=22.5"
+    "node": ">=22.15"
   }
 }

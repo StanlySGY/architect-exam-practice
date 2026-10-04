@@ -1,5 +1,6 @@
 // wiki 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
 import { makeId } from "../utils.mjs";
+import { embedDocument, cosine } from "../hash-embed.mjs";
 import {
   bigramSimilarity,
   normalizeComparableText,
@@ -7,6 +8,9 @@ import {
   throwIfAborted,
 } from "./helpers.mjs";
 import { EssayDomain } from "./essay.mjs";
+
+// 近重复判定阈值（余弦）。字符哈希嵌入下 0.9+ 基本可视为同义改写。
+const NEAR_DUPLICATE_THRESHOLD = 0.9;
 
 export class WikiDomain extends EssayDomain {
   async addWikiEntries({
@@ -101,6 +105,77 @@ export class WikiDomain extends EssayDomain {
         .map((other) => ({ id: other.id, title: other.title }));
       return { ...entry, links, backlinks };
     });
+  }
+
+  // 条目文本向量（标题+摘要+要点+误区），供相关推荐与近重复检测使用。
+  wikiEntryVectors(entries) {
+    const vectors = new Map();
+    for (const entry of entries) {
+      vectors.set(
+        entry.id,
+        embedDocument([
+          entry.title,
+          entry.title,
+          entry.summary,
+          entry.keyPoints ?? [],
+          entry.commonMistakes ?? [],
+        ]),
+      );
+    }
+    return vectors;
+  }
+
+  // 相关条目推荐：嵌入余弦相似度排序，排除自身与已关联条目。
+  relatedWikiSuggestions({ entryId, limit = 5 } = {}) {
+    const entries = this.store.snapshot().wikiEntries ?? [];
+    const vectors = this.wikiEntryVectors(entries);
+    const target = vectors.get(entryId);
+    if (!target) return [];
+    const self = entries.find((entry) => entry.id === entryId);
+    const linked = new Set(
+      (self?.related ?? []).map(
+        (name) => this.resolveWikiEntry(name, { entries })?.id,
+      ),
+    );
+    return entries
+      .filter((entry) => entry.id !== entryId && !linked.has(entry.id))
+      .map((entry) => ({ entry, score: cosine(target, vectors.get(entry.id)) }))
+      .filter((item) => item.score > 0.05)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, Math.max(1, Math.min(10, Number(limit) || 5)))
+      .map(({ entry, score }) => ({
+        id: entry.id,
+        title: entry.title,
+        chapter: entry.chapter,
+        score: Math.round(score * 1000) / 1000,
+      }));
+  }
+
+  // 问答检索：问题 → 候选条目排序（词面重合 + 嵌入余弦混合）。
+  // 返回前 limit 条；全部得分过低时返回空数组，由调用方弃答。
+  rankWikiEntriesForQuestion(question, { entries = null, limit = 12 } = {}) {
+    const pool = entries ?? this.store.snapshot().wikiEntries ?? [];
+    if (!pool.length) return [];
+    const vectors = this.wikiEntryVectors(pool);
+    const queryVector = embedDocument([question, question]);
+    const terms = normalizeComparableText(question);
+    const scored = pool.map((entry) => {
+      const titleNorm = normalizeComparableText(entry.title);
+      const bodyNorm = normalizeComparableText(
+        [entry.summary, ...(entry.keyPoints ?? [])].join(""),
+      );
+      // 词面分：标题命中权重 3，正文命中权重 1（包含关系）。
+      const lexical =
+        (titleNorm && terms && (titleNorm.includes(terms) || terms.includes(titleNorm)) ? 3 : 0) +
+        (bodyNorm && terms && bodyNorm.includes(terms) ? 1 : 0);
+      const semantic = cosine(queryVector, vectors.get(entry.id));
+      return { entry, score: lexical + semantic * 2 };
+    });
+    return scored
+      .filter((item) => item.score > 0.04)
+      .sort((left, right) => right.score - left.score)
+      .slice(0, Math.max(1, Math.min(20, Number(limit) || 12)))
+      .map(({ entry, score }) => ({ ...entry, retrievalScore: Math.round(score * 1000) / 1000 }));
   }
 
   // 名称 → 条目解析：精确匹配优先，其次互相包含（≥4 字），最后 bigram 相似度兜底。
@@ -201,7 +276,7 @@ export class WikiDomain extends EssayDomain {
       .map((entry) => ({ id: entry.id, title: entry.title }));
   }
 
-  // Wiki 自检（Lint）：同名条目、断链引用、孤立条目、缺溯源，并给出修复建议。
+  // Wiki 自检（Lint）：同名条目、断链引用、孤立条目、缺溯源、语义近重复，并给出修复建议。
   wikiLint() {
     const entries = this.store.snapshot().wikiEntries ?? [];
     const byTitle = new Map();
@@ -211,6 +286,7 @@ export class WikiDomain extends EssayDomain {
       byTitle.set(titleNorm, (byTitle.get(titleNorm) ?? 0) + 1);
       if (!firstByTitle.has(titleNorm)) firstByTitle.set(titleNorm, entry.id);
     }
+    const vectors = this.wikiEntryVectors(entries);
     const issues = [];
     for (const entry of entries) {
       const titleNorm = normalizeComparableText(entry.title);
@@ -241,6 +317,29 @@ export class WikiDomain extends EssayDomain {
         }
       }
       if (!entry.sourceNode) entryIssues.push("missing_source");
+      // 语义近重复：标题不同但内容高度重合的条目（同义改写、重复生成）。
+      if (!entryIssues.includes("duplicate_title")) {
+        let nearDuplicate = null;
+        for (const other of entries) {
+          if (other.id === entry.id) continue;
+          const score = cosine(vectors.get(entry.id), vectors.get(other.id));
+          if (
+            score >= NEAR_DUPLICATE_THRESHOLD &&
+            (!nearDuplicate || score > nearDuplicate.score)
+          ) {
+            nearDuplicate = { entry: other, score };
+          }
+        }
+        if (nearDuplicate) {
+          entryIssues.push("near_duplicate");
+          suggestions.push({
+            name: nearDuplicate.entry.title,
+            candidate: nearDuplicate.entry.title,
+            id: nearDuplicate.entry.id,
+            score: Math.round(nearDuplicate.score * 1000) / 1000,
+          });
+        }
+      }
       const hasOutbound = resolved.some(
         (name) => firstByTitle.get(normalizeComparableText(name)) !== entry.id,
       );

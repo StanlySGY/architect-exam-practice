@@ -201,6 +201,10 @@ async function serveStatic(pathname, request, response) {
     "cache-control": "no-cache",
     "x-content-type-options": "nosniff",
   });
+  if (request.method === "HEAD") {
+    response.end();
+    return;
+  }
   createReadStream(file).pipe(response);
 }
 
@@ -360,6 +364,15 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/study-plan") {
     return sendJson(response, 200, practice.getStudyPlan());
   }
+  if (request.method === "GET" && pathname === "/api/study-queue") {
+    return sendJson(
+      response,
+      200,
+      practice.studyQueue({
+        limit: url.searchParams.get("limit") || 5,
+      }),
+    );
+  }
   if (request.method === "POST" && pathname === "/api/study-plan/goal") {
     const body = await readJson(request);
     return sendJson(
@@ -373,6 +386,9 @@ async function route(request, response) {
   }
   if (request.method === "GET" && pathname === "/api/data/status") {
     return sendJson(response, 200, practice.dataSummary());
+  }
+  if (request.method === "GET" && pathname === "/api/content-health") {
+    return sendJson(response, 200, practice.contentHealth());
   }
   if (request.method === "GET" && pathname === "/api/data/export") {
     return sendJson(response, 200, await practice.exportData());
@@ -432,6 +448,35 @@ async function route(request, response) {
       200,
       await practice.restoreQuestion(decodeURIComponent(restoreMatch[1])),
     );
+  }
+  const issueStatusMatch = pathname.match(
+    /^\/api\/questions\/([^/]+)\/issue-status$/,
+  );
+  if (request.method === "PATCH" && issueStatusMatch) {
+    const body = await readJson(request);
+    return sendJson(
+      response,
+      200,
+      await practice.setIssueStatus({
+        questionId: decodeURIComponent(issueStatusMatch[1]),
+        status: body.status,
+      }),
+    );
+  }
+  const questionEditMatch = pathname.match(/^\/api\/questions\/([^/]+)$/);
+  if (request.method === "PATCH" && questionEditMatch) {
+    const body = await readJson(request);
+    return sendJson(
+      response,
+      200,
+      await practice.updateQuestion({
+        questionId: decodeURIComponent(questionEditMatch[1]),
+        updates: body,
+      }),
+    );
+  }
+  if (request.method === "GET" && pathname === "/api/llm-usage") {
+    return sendJson(response, 200, practice.llmUsageSummary());
   }
   const starMatch = pathname.match(/^\/api\/questions\/([^/]+)\/star$/);
   if (request.method === "PATCH" && starMatch) {
@@ -502,15 +547,16 @@ async function route(request, response) {
     if (!exam || exam.id !== body.examId) {
       throw Object.assign(new Error("模拟卷不存在或已结束"), { status: 404 });
     }
-    const cases = exam.cases.map((item) =>
-      practice.caseList().find((caseItem) => caseItem.id === item.id),
-    );
+    const context = practice.caseExamForGrading(body.examId);
+    if (!context) {
+      throw Object.assign(new Error("模拟卷不存在或已结束"), { status: 404 });
+    }
     return sendJson(
       response,
       200,
       await generator.gradeCaseExam({
-        exam,
-        cases: cases.filter(Boolean),
+        exam: context.exam,
+        cases: context.cases,
         model: body.model,
       }),
     );
@@ -731,6 +777,21 @@ async function route(request, response) {
         model: body.model,
       }),
     );
+  }
+  if (request.method === "GET" && pathname === "/api/wiki/related") {
+    return sendJson(
+      response,
+      200,
+      {
+        suggestions: practice.relatedWikiSuggestions({
+          entryId: url.searchParams.get("entryId") || "",
+          limit: url.searchParams.get("limit") || 5,
+        }),
+      },
+    );
+  }
+  if (request.method === "POST" && pathname === "/api/data/backup-db") {
+    return sendJson(response, 200, await practice.backupDatabase());
   }
   if (request.method === "POST" && pathname === "/api/wiki/merge") {
     const body = await readJson(request);

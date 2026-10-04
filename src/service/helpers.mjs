@@ -103,6 +103,27 @@ function assertRevisionMap(value, label, questionIds) {
   }
 }
 
+function assertQuestionSnapshot(snapshot, questionId, label) {
+  if (!isRecord(snapshot) || snapshot.id !== questionId) {
+    invalidBackup(`${label}引用无效`);
+  }
+  assertText(snapshot.question, `${label}题干`, { required: true });
+  if (!validateOptions(snapshot.options)) invalidBackup(`${label}选项无效`);
+  for (const option of Object.values(snapshot.options)) {
+    assertText(option, `${label}选项`, { required: true, max: 20_000 });
+  }
+  if (!["A", "B", "C", "D"].includes(snapshot.correctAnswer)) {
+    invalidBackup(`${label}正确答案无效`);
+  }
+  if (
+    snapshot.sourceType !== undefined &&
+    !["generated", "real", "mock"].includes(snapshot.sourceType)
+  ) {
+    invalidBackup(`${label}题目来源无效`);
+  }
+  assertTime(snapshot.createdAt, `${label}创建时间`);
+}
+
 function validateBackupData(data) {
   if (!isRecord(data)) invalidBackup("数据结构无效");
   try {
@@ -141,16 +162,41 @@ function validateBackupData(data) {
     if (!Array.isArray(session.questionIds) || session.questionIds.length > MAX_BACKUP_ITEMS) {
       invalidBackup("会话题目列表无效");
     }
+    const snapshots =
+      session.questionSnapshots === undefined
+        ? {}
+        : assertCollection(session.questionSnapshots, `会话 ${key} 题目快照`, {
+            array: false,
+          });
+    const snapshotIds = new Set();
+    for (const [snapshotId, snapshot] of Object.entries(snapshots)) {
+      assertId(snapshotId, `会话 ${key} 题目快照 id`);
+      assertQuestionSnapshot(
+        snapshot,
+        snapshotId,
+        `会话 ${key} 题目快照 ${snapshotId}`,
+      );
+      snapshotIds.add(snapshotId);
+    }
+    const completed = Boolean(
+      session.gradedAt ||
+        session.abandonedAt ||
+        ["abandoned", "submitted", "expired", "graded"].includes(session.status),
+    );
     const seenQuestionIds = new Set();
+    const sessionQuestionIds = new Set(questionIds);
     for (const questionId of session.questionIds) {
       assertId(questionId, "会话题目引用");
-      if (!questionIds.has(questionId) || seenQuestionIds.has(questionId)) {
+      const liveQuestion = questionIds.has(questionId);
+      const snapshotQuestion = completed && snapshotIds.has(questionId);
+      if ((!liveQuestion && !snapshotQuestion) || seenQuestionIds.has(questionId)) {
         invalidBackup("会话包含无效或重复题目引用");
       }
       seenQuestionIds.add(questionId);
+      if (snapshotQuestion) sessionQuestionIds.add(questionId);
     }
-    assertAnswerMap(session.checkedAnswers, "会话答案", questionIds);
-    assertRevisionMap(session.answerRevisions, "会话答案版本", questionIds);
+    assertAnswerMap(session.checkedAnswers, "会话答案", sessionQuestionIds);
+    assertRevisionMap(session.answerRevisions, "会话答案版本", sessionQuestionIds);
     for (const field of ["createdAt", "startedAt", "deadlineAt", "submittedAt", "gradedAt", "abandonedAt"]) {
       assertTime(session[field], `会话 ${field}`);
     }
@@ -198,6 +244,12 @@ function validateBackupData(data) {
       assertText(issue.note, `${label}说明`, { max: 2_000 });
       assertTime(issue.createdAt, `${label}创建时间`);
       assertTime(issue.resolvedAt, `${label}解决时间`);
+      if (
+        issue.status !== undefined &&
+        !["open", "acknowledged", "resolved"].includes(issue.status)
+      ) {
+        invalidBackup(`${label}状态无效`);
+      }
     }
   }
 
@@ -263,6 +315,14 @@ function validateBackupData(data) {
       assertTime(entry.at, "审计时间");
     }
   }
+  if (data.llmUsage !== undefined) {
+    const usage = assertCollection(data.llmUsage, "模型用量记录");
+    for (const entry of usage) {
+      assertText(entry.kind, "模型用量任务类型", { required: true, max: 60 });
+      assertText(entry.model, "模型用量模型名", { max: 200 });
+      assertTime(entry.at, "模型用量时间");
+    }
+  }
 }
 
 function publicQuestion(question) {
@@ -291,8 +351,11 @@ function answerFeedback(question, answer, assets) {
     correctAnswer: question.correctAnswer,
     isCorrect: answer === question.correctAnswer,
     analysis: question.analysis,
+    knowledgeDetail: question.knowledgeDetail,
+    knowledgePoint: question.knowledgePoint,
     commonMistake: question.commonMistake,
     memoryTip: question.memoryTip,
+    optionRationale: question.optionRationale ?? null,
     figure: attached.figure ?? null,
     figureMissing: Boolean(attached.figureMissing),
     aiAnalysis: attached.aiAnalysis ?? null,

@@ -184,6 +184,45 @@ test("结构不合格的论文不会进入模型评分", async (t) => {
   assert.equal(generator.running, false);
 });
 
+test("论文评分拒绝超范围或与维度合计不一致的模型结果", async (t) => {
+  const { service } = await fixture(t);
+  const papers = await service.addPapers({
+    chapter: 4,
+    papers: [{ title: "论软件架构", description: "结合项目论述" }],
+  });
+  const generator = new QuestionGenerator({ root, service });
+  const dimensionNames = [
+    ["切合题意", 20],
+    ["观点正确", 20],
+    ["逻辑清晰", 15],
+    ["论据充分", 20],
+    ["语言流畅", 10],
+    ["格式规范", 15],
+  ];
+  const validDimensions = Object.fromEntries(
+    dimensionNames.map(([name, max]) => [name, { score: max, max, comment: "好" }]),
+  );
+  generator.callModel = async () => JSON.stringify({
+    total_score: 101,
+    max_score: 100,
+    dimensions: validDimensions,
+  });
+  await assert.rejects(
+    () => generator.gradePaper({ paperId: papers[0].id, draft: essayDraft() }),
+    (error) => error.code === "LLM_INVALID_RESPONSE" && error.status === 502,
+  );
+  generator.callModel = async () => JSON.stringify({
+    total_score: 99,
+    max_score: 100,
+    dimensions: validDimensions,
+  });
+  await assert.rejects(
+    () => generator.gradePaper({ paperId: papers[0].id, draft: essayDraft() }),
+    (error) => error.code === "LLM_INVALID_RESPONSE" && error.status === 502,
+  );
+  assert.equal(service.paperList()[0].grade, null);
+});
+
 test("空练习也能导出不含密钥的架构师诊断", async (t) => {
   const { service } = await fixture(t);
   const diagnosis = service.diagnosisExport();
@@ -212,6 +251,31 @@ test("图示渲染转义标签，缺失图只给待补录说明", () => {
   );
   assert.match(flow, /开始/);
   assert.match(flow, /结束/);
+  assert.match(flow, /data-figure-edge-count="1"/);
+  assert.doesNotMatch(flow, />flowchart</);
+  const unquotedLabels = renderQuestionFigure(
+    {
+      kind: "mermaid",
+      code: "flowchart TB\n A -. 迭代 .-> B\n B --约束--> C",
+    },
+    false,
+  );
+  assert.match(unquotedLabels, /data-figure-edge-count="2"/);
+  assert.match(unquotedLabels, /迭代/);
+  assert.match(unquotedLabels, /约束/);
+  const reverseEdge = renderQuestionFigure(
+    { kind: "mermaid", code: "flowchart TB\n A <-- B" },
+    false,
+  );
+  assert.match(reverseEdge, /marker-start="url\(#figure-arrow\)"/);
+  assert.doesNotMatch(reverseEdge, /marker-end="url\(#figure-arrow\)"/);
+  const bidirectionalLabel = renderQuestionFigure(
+    { kind: "mermaid", code: 'flowchart TB\n A <-. "双向" .-> B' },
+    false,
+  );
+  assert.match(bidirectionalLabel, /marker-start="url\(#figure-arrow\)"/);
+  assert.match(bidirectionalLabel, /marker-end="url\(#figure-arrow\)"/);
+  assert.match(bidirectionalLabel, /figure-edge dashed/);
   const standardShapes = renderQuestionFigure(
     {
       kind: "mermaid",
@@ -229,7 +293,8 @@ test("图示渲染转义标签，缺失图只给待补录说明", () => {
     },
     false,
   );
-  assert.doesNotMatch(grouped, /分组/);
+  assert.doesNotMatch(grouped, />分组</);
+  assert.match(grouped, /figure-render-warning/);
   const sequence = renderQuestionFigure(
     { kind: "mermaid", code: "sequenceDiagram\n A->>B: 请求" },
     false,
@@ -246,4 +311,30 @@ test("Markdown Mermaid 代码块保留语言标记，供阅读器增强渲染", 
   const html = renderMarkdown("```mermaid\nflowchart TD\n A --> B\n```");
   assert.match(html, /class="markdown-code-block"/);
   assert.match(html, /data-language="mermaid"/);
+});
+
+test("Markdown 内嵌 SVG 只保留安全的本地结构", () => {
+  const html = renderMarkdown(
+    [
+      "<div align=\"center\">",
+      "<svg viewBox=\"0 0 10 10\" onclick=\"alert(1)\" onload=\"alert(2)\">",
+      "  <style>svg { fill: url(https://example.com/style) }</style>",
+      "  <script>alert(1)</script>",
+      "  <foreignObject><div>危险内容</div></foreignObject>",
+      "  <image href=\"https://example.com/x.png\" />",
+      "  <image href=\"data:image/svg+xml,evil\" />",
+      "  <rect fill=\"url(https://example.com/pattern)\" />",
+      "  <animate attributeName=\"href\" to=\"javascript:alert(3)\" />",
+      "  <use href=\"#local-image\" />",
+      "  <rect fill=\"url(#safe-pattern)\" />",
+      "</svg>",
+      "</div>",
+    ].join("\n"),
+  );
+  assert.match(html, /class="markdown-svg"/);
+  assert.match(html, /viewBox="0 0 10 10"/);
+  assert.doesNotMatch(html, /<script|<style|<foreignObject|<image|<animate|onclick|onload|style=|example\.com|data:image|javascript:/);
+  assert.match(html, /href="#local-image"/);
+  assert.match(html, /fill="url\(#safe-pattern\)"/);
+  assert.match(html, /href="#local-image"/);
 });

@@ -97,10 +97,12 @@ function availableModels() {
 
 // 聚合 SSE 流里的增量文本。开启流式后，慢模型的字节持续到达，
 // 可避免代理网关在固定窗口内无响应就掐断长生成（如 Cloudflare 524）。
+// stream_options.include_usage 开启时，最后一个 chunk 会带 usage 计量。
 async function readStreamContent(response, signal) {
   const decoder = new TextDecoder();
   let buffer = "";
   let content = "";
+  let usage = null;
   for await (const chunk of response.body) {
     throwIfAborted(signal);
     buffer += decoder.decode(chunk, { stream: true });
@@ -114,12 +116,61 @@ async function readStreamContent(response, signal) {
       try {
         const delta = JSON.parse(payload);
         content += delta.choices?.[0]?.delta?.content ?? "";
+        if (delta.usage) usage = delta.usage;
       } catch {
         // 忽略无法解析的心跳或注释行。
       }
     }
   }
-  return content;
+  return { content, usage };
+}
+
+// 429/5xx/网络抖动时的自动重试：指数退避（1s/4s），鉴权与参数错误不重试。
+function isRetryableModelError(error) {
+  if (!error || typeof error !== "object") return false;
+  return [
+    "LLM_RATE_LIMITED",
+    "LLM_SERVICE_UNAVAILABLE",
+    "LLM_NETWORK_FAILED",
+    "LLM_TIMEOUT",
+  ].includes(error.code);
+}
+
+async function withRetries(retries, fn, signal) {
+  let lastError;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    if (attempt > 0) {
+      // 限流（如共享中转的并发槽被占）需要比瞬时网络抖动更长的退避窗口。
+      const rateLimited = lastError?.code === "LLM_RATE_LIMITED";
+      const delayMs = rateLimited
+        ? Math.min(45_000, 10_000 * attempt)
+        : Math.min(15_000, 1000 * 4 ** (attempt - 1));
+      await new Promise((resolveDelay, rejectDelay) => {
+        let delay;
+        const abort = () => {
+          clearTimeout(delay);
+          signal?.removeEventListener("abort", abort);
+          rejectDelay(modelError("生成已停止", { status: 499, code: "LLM_GENERATION_CANCELLED" }));
+        };
+        if (signal?.aborted) return abort();
+        signal?.addEventListener("abort", abort, { once: true });
+        delay = setTimeout(() => {
+          signal?.removeEventListener("abort", abort);
+          resolveDelay();
+        }, delayMs);
+      });
+    }
+    try {
+      return await fn(attempt);
+    } catch (error) {
+      lastError = error;
+      if (attempt === retries || !isRetryableModelError(error)) throw error;
+      process.stderr.write(
+        `[llm] ${error.code || "MODEL_REQUEST_FAILED"}，第 ${attempt + 1} 次重试前退避\n`,
+      );
+    }
+  }
+  throw lastError;
 }
 
 async function callOpenAiCompatible({
@@ -128,87 +179,146 @@ async function callOpenAiCompatible({
   model,
   systemPrompt,
   userPrompt,
+  schema,
   timeoutMs,
   signal,
 }) {
   throwIfAborted(signal);
-  const controller = new AbortController();
-  let timedOut = false;
-  const abortExternal = () => controller.abort(signal.reason);
-  if (signal) {
-    if (signal.aborted) abortExternal();
-    else signal.addEventListener("abort", abortExternal, { once: true });
+  // 优先用 strict json_schema 约束解码；部分兼容网关不支持时自动退回 json_object。
+  // 支持方会对不合规输出直接拒答，解析失败率显著低于"提示词约定 + 正则兜底"。
+  let useJsonSchema = false;
+  let parsedSchema = null;
+  if (schema) {
+    try {
+      parsedSchema = JSON.parse(schema);
+      useJsonSchema = true;
+    } catch {
+      useJsonSchema = false;
+    }
   }
-  const timer = setTimeout(() => {
-    timedOut = true;
-    controller.abort();
-  }, timeoutMs);
-  try {
-    const headers = { "content-type": "application/json" };
-    if (apiKey) headers.authorization = `Bearer ${apiKey}`;
-    const stream = process.env.ARCHITECT_LLM_STREAM === "true";
-    const response = await fetch(apiEndpoint(baseUrl), {
-      method: "POST",
-      signal: controller.signal,
-      headers,
-      body: JSON.stringify({
-        model,
-        temperature: 0.3,
-        messages: [
-          { role: "system", content: systemPrompt },
-          { role: "user", content: userPrompt },
-        ],
-        response_format: { type: "json_object" },
-        ...(stream ? { stream: true } : {}),
-      }),
-    });
-    if (!response.ok) {
-      const body = await response.json().catch(() => ({}));
-      throw classifyModelHttpError(response.status, body.error?.message);
-    }
-    const contentType = response.headers?.get?.("content-type") || "";
-    let content;
-    if (stream && contentType.includes("text/event-stream")) {
-      content = await readStreamContent(response, signal);
-    } else {
-      const body = await response.json().catch(() => ({}));
-      content = body.choices?.[0]?.message?.content;
-    }
-    if (typeof content !== "string" || !content.trim()) {
-      throw modelError("模型接口返回为空，请检查模型配置或稍后重试", {
-        status: 502,
-        code: "LLM_EMPTY_RESPONSE",
-      });
-    }
+  const buildBody = (withSchema) => ({
+    model,
+    temperature: 0.3,
+    messages: [
+      // system 前缀内容稳定（Agent 提示词 + 运行时约束），是供应商自动
+      // prompt 缓存的理想前缀；变量内容（历史题、资料）保持在 user 尾部。
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+    response_format: withSchema
+      ? {
+          type: "json_schema",
+          json_schema: { name: "response", strict: true, schema: parsedSchema },
+        }
+      : { type: "json_object" },
+    ...(process.env.ARCHITECT_LLM_STREAM === "true"
+      ? { stream: true, stream_options: { include_usage: true } }
+      : {}),
+  });
+
+  const headers = { "content-type": "application/json" };
+  if (apiKey) headers.authorization = `Bearer ${apiKey}`;
+  const stream = process.env.ARCHITECT_LLM_STREAM === "true";
+  const performRequest = async (withSchema) => {
     throwIfAborted(signal);
-    return content;
+    const controller = new AbortController();
+    let timedOut = false;
+    const abortExternal = () => controller.abort(signal.reason);
+    if (signal) {
+      if (signal.aborted) abortExternal();
+      else signal.addEventListener("abort", abortExternal, { once: true });
+    }
+    const timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort();
+    }, timeoutMs);
+    try {
+      const response = await fetch(apiEndpoint(baseUrl), {
+        method: "POST",
+        signal: controller.signal,
+        headers,
+        body: JSON.stringify(buildBody(withSchema)),
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        const error = classifyModelHttpError(
+          response.status,
+          body.error?.message,
+        );
+        if (
+          withSchema &&
+          !error.code.startsWith("LLM_AUTH") &&
+          [400, 404, 422].includes(response.status)
+        ) {
+          throw Object.assign(new Error("JSON_SCHEMA_UNSUPPORTED"), {
+            code: "LLM_JSON_SCHEMA_UNSUPPORTED",
+            fallback: true,
+          });
+        }
+        throw error;
+      }
+      const contentType = response.headers?.get?.("content-type") || "";
+      let content;
+      let usage = null;
+      if (stream && contentType.includes("text/event-stream")) {
+        ({ content, usage } = await readStreamContent(response, signal));
+      } else {
+        const body = await response.json().catch(() => ({}));
+        content = body.choices?.[0]?.message?.content;
+        usage = body.usage ?? null;
+      }
+      if (typeof content !== "string" || !content.trim()) {
+        throw modelError("模型接口返回为空，请检查模型配置或稍后重试", {
+          status: 502,
+          code: "LLM_EMPTY_RESPONSE",
+        });
+      }
+      throwIfAborted(signal);
+      return { content, usage };
+    } catch (error) {
+      if (signal?.aborted) {
+        throw modelError("生成已停止", {
+          status: 499,
+          code: "LLM_GENERATION_CANCELLED",
+        });
+      }
+      if (error?.name === "AbortError") {
+        throw modelError(
+          timedOut
+            ? "模型接口请求超时，请检查网络或增大 ARCHITECT_AGENT_TIMEOUT_MS"
+            : "生成已停止",
+          timedOut
+            ? { status: 504, code: "LLM_TIMEOUT" }
+            : { status: 499, code: "LLM_GENERATION_CANCELLED" },
+        );
+      }
+      if (error instanceof TypeError && error.message === "fetch failed") {
+        throw modelError("无法连接模型接口，请检查 Base URL、网络和代理设置", {
+          status: 503,
+          code: "LLM_NETWORK_FAILED",
+          cause: error,
+        });
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", abortExternal);
+    }
+  };
+  try {
+    return await withRetries(2, (attempt) => {
+      if (attempt > 0) throwIfAborted(signal);
+      return performRequest(useJsonSchema);
+    }, signal);
   } catch (error) {
-    if (signal?.aborted) {
-      throw modelError("生成已停止", {
-        status: 499,
-        code: "LLM_GENERATION_CANCELLED",
-      });
-    }
-    if (error.name === "AbortError") {
-      throw modelError(
-        "模型接口请求超时，请检查网络或增大 ARCHITECT_AGENT_TIMEOUT_MS",
-        {
-          status: 504,
-          code: "LLM_TIMEOUT",
-        },
-      );
-    }
-    if (error instanceof TypeError && error.message === "fetch failed") {
-      throw modelError("无法连接模型接口，请检查 Base URL、网络和代理设置", {
-        status: 503,
-        code: "LLM_NETWORK_FAILED",
-        cause: error,
-      });
-    }
-    throw error;
-  } finally {
-    clearTimeout(timer);
-    signal?.removeEventListener("abort", abortExternal);
+    if (error?.code !== "LLM_JSON_SCHEMA_UNSUPPORTED") throw error;
+    process.stderr.write(
+      "[llm] 响应码提示不支持 json_schema，本次降级为 json_object\n",
+    );
+    return withRetries(2, (attempt) => {
+      if (attempt > 0) throwIfAborted(signal);
+      return performRequest(false);
+    }, signal);
   }
 }
 
@@ -322,6 +432,66 @@ function parseAgentResult(raw) {
   return outer;
 }
 
+// Claude CLI 的 JSON 输出是一个包装对象，模型实际 JSON 通常位于 result
+// 或 structured_output；usage 字段只在部分版本/配置中返回，因此按能力读取。
+function parseClaudeCliOutput(raw) {
+  const text = String(raw ?? "").trim();
+  if (!text) return { content: text, usage: null };
+  let outer;
+  try {
+    outer = JSON.parse(text);
+  } catch {
+    return { content: text, usage: null };
+  }
+  if (!outer || typeof outer !== "object" || Array.isArray(outer)) {
+    return { content: text, usage: null };
+  }
+  const usage =
+    outer.usage ??
+    outer.usage_metadata ??
+    outer.metadata?.usage ??
+    outer.result?.usage ??
+    null;
+  if (outer.structured_output !== undefined) {
+    return {
+      content:
+        typeof outer.structured_output === "string"
+          ? outer.structured_output
+          : JSON.stringify(outer.structured_output),
+      usage,
+    };
+  }
+  if (typeof outer.result === "string") {
+    return { content: outer.result, usage };
+  }
+  if (outer.result && typeof outer.result === "object") {
+    const result = { ...outer.result };
+    delete result.usage;
+    return { content: JSON.stringify(result), usage };
+  }
+  if (typeof outer.output_text === "string") {
+    return { content: outer.output_text, usage };
+  }
+  // 某些 CLI 版本直接输出模型 JSON；保留原文供 parseAgentResult 使用。
+  return { content: text, usage };
+}
+
+function paperGradeError(message) {
+  return Object.assign(new Error(message), {
+    status: 502,
+    code: "LLM_INVALID_RESPONSE",
+  });
+}
+
+const PAPER_DIMENSION_MAX = Object.freeze({
+  "切合题意": 20,
+  "观点正确": 20,
+  "逻辑清晰": 15,
+  "论据充分": 20,
+  "语言流畅": 10,
+  "格式规范": 15,
+});
+
 export class QuestionGenerator {
   constructor({ root = process.cwd(), service, modelConfig = null }) {
     this.root = root;
@@ -383,6 +553,17 @@ export class QuestionGenerator {
                 knowledge_detail: { type: "string" },
                 common_mistake: { type: "string" },
                 memory_tip: { type: "string" },
+                option_rationale: {
+                  type: "object",
+                  properties: {
+                    A: { type: "string" },
+                    B: { type: "string" },
+                    C: { type: "string" },
+                    D: { type: "string" },
+                  },
+                  required: ["A", "B", "C", "D"],
+                  additionalProperties: false,
+                },
                 source_node: { type: "string" },
               },
               required: [
@@ -394,6 +575,7 @@ export class QuestionGenerator {
                 "knowledge_detail",
                 "common_mistake",
                 "memory_tip",
+                "option_rationale",
                 "source_node",
               ],
               additionalProperties: false,
@@ -427,8 +609,9 @@ export class QuestionGenerator {
           "题干及选项组合不得与历史题目相同或仅做同义改写；应更换知识切入点、情境或考查方式。",
           "上游提示中的“75 道”和全书题型分布在本次章节练习中不适用；以本消息指定的数量、章节和难度为准。",
           "解析必须说明正确选项，并逐项解释主要干扰项。",
+          "必须为每道题给出 option_rationale：A–D 每个选项一句，干扰项写明它错在哪里、与正确项的混淆点；正确项写明为什么对。",
           "每道题必须返回 source_node：该题所依据的思维导图节点标题原文。若多个节点同名，必须写出包含编号的完整节点标题（如 11.5.1 发展历程），以便唯一定位；不能猜测不存在的标题。",
-          "只返回一个 JSON 对象，不要输出 Markdown、代码围栏、文件说明或其他文字。JSON 顶层必须是 questions 数组，每道题必须包含 question、options、knowledge_point、correct_answer、analysis、knowledge_detail、common_mistake、memory_tip、source_node。",
+          "只返回一个 JSON 对象，不要输出 Markdown、代码围栏、文件说明或其他文字。JSON 顶层必须是 questions 数组，每道题必须包含 question、options、knowledge_point、correct_answer、analysis、knowledge_detail、common_mistake、memory_tip、option_rationale、source_node。",
           `严格遵守以下 JSON Schema：${schema}`,
           previousQuestions
             ? `\n--- 同章历史题目（禁止重复或改写）---\n${previousQuestions}\n--- 历史题目结束 ---`
@@ -445,6 +628,7 @@ export class QuestionGenerator {
           schema,
           timeoutMs,
           model,
+          kind: "mcq",
           signal,
         });
         throwIfAborted(signal);
@@ -548,6 +732,7 @@ export class QuestionGenerator {
         schema: schemaText,
         timeoutMs,
         model,
+        kind: `generate:${arrayKey}`,
         signal,
       });
       throwIfAborted(signal);
@@ -858,13 +1043,60 @@ export class QuestionGenerator {
         schema,
         timeoutMs,
         model,
+        kind: "paper-grade",
       });
       const result = parseAgentResult(raw);
-      if (typeof result.total_score !== "number") {
-        throw Object.assign(new Error("评分结果格式无效"), {
-          status: 502,
-          code: "LLM_INVALID_RESPONSE",
-        });
+      const totalScore = result.total_score;
+      const maxScore = result.max_score;
+      if (
+        !Number.isSafeInteger(totalScore) ||
+        !Number.isSafeInteger(maxScore) ||
+        maxScore <= 0 ||
+        maxScore > 100 ||
+        totalScore < 0 ||
+        totalScore > maxScore
+      ) {
+        throw paperGradeError("论文评分结果的总分或满分无效");
+      }
+      if (!result.dimensions || typeof result.dimensions !== "object" || Array.isArray(result.dimensions)) {
+        throw paperGradeError("论文评分结果缺少评分维度");
+      }
+      const dimensionNames = Object.keys(PAPER_DIMENSION_MAX);
+      if (
+        dimensionNames.length !== Object.keys(result.dimensions).length ||
+        dimensionNames.some((name) => !Object.hasOwn(result.dimensions, name))
+      ) {
+        throw paperGradeError("论文评分结果必须包含六个规定维度");
+      }
+      const dimensions = {};
+      let dimensionScore = 0;
+      let dimensionMax = 0;
+      for (const [name, rawDimension] of Object.entries(result.dimensions)) {
+        if (!rawDimension || typeof rawDimension !== "object" || Array.isArray(rawDimension)) {
+          throw paperGradeError(`论文评分维度“${name}”格式无效`);
+        }
+        const score = rawDimension.score;
+        const max = rawDimension.max;
+        if (
+          !Number.isSafeInteger(score) ||
+          !Number.isSafeInteger(max) ||
+          max <= 0 ||
+          max !== PAPER_DIMENSION_MAX[name] ||
+          score < 0 ||
+          score > max
+        ) {
+          throw paperGradeError(`论文评分维度“${name}”分数超出范围`);
+        }
+        dimensionScore += score;
+        dimensionMax += max;
+        dimensions[name] = {
+          score,
+          max,
+          comment: String(rawDimension.comment ?? "").trim(),
+        };
+      }
+      if (!Object.keys(dimensions).length || dimensionScore !== totalScore || dimensionMax !== maxScore) {
+        throw paperGradeError("论文总分必须等于各维度分数之和");
       }
       const knowledgePoints = (Array.isArray(result.knowledge_points)
         ? result.knowledge_points
@@ -875,6 +1107,9 @@ export class QuestionGenerator {
         .slice(0, 6);
       const grade = {
         ...result,
+        total_score: totalScore,
+        max_score: maxScore,
+        dimensions,
         knowledgePoints,
         wikiEntries: this.service.matchWikiEntries(knowledgePoints),
         structureWarnings: structure.warnings,
@@ -883,7 +1118,12 @@ export class QuestionGenerator {
       delete grade.knowledge_points;
       // 截止校验已在方法入口完成；模型评分耗时可能超过宽限期，
       // 落库时跳过重复的截止检查，避免已完成评分被丢弃。
-      await this.service.savePaperGrade({ paperId, grade, allowAfterDeadline: true });
+      await this.service.savePaperGrade({
+        paperId,
+        draft,
+        grade,
+        allowAfterDeadline: true,
+      });
       return grade;
     } finally {
       this.running = false;
@@ -997,6 +1237,7 @@ export class QuestionGenerator {
         schema,
         timeoutMs,
         model,
+        kind: "case-grade",
       });
       const result = parseAgentResult(raw);
       const grade = this._validateCaseGrade(result, caseItem.questions, answers);
@@ -1012,7 +1253,11 @@ export class QuestionGenerator {
         gradedAt: new Date().toISOString(),
       };
       // 与模拟卷判分对齐：单案例评分也持久化，刷新后可回看。
-      await this.service.saveCaseGrade({ caseId: caseItem.id, grade: graded });
+      await this.service.saveCaseGrade({
+        caseId: caseItem.id,
+        answers,
+        grade: graded,
+      });
       return graded;
     } finally {
       this.running = false;
@@ -1047,6 +1292,7 @@ export class QuestionGenerator {
           schema,
           timeoutMs,
           model,
+          kind: "case-exam-grade",
         });
         const result = parseAgentResult(raw);
         const validated = this._validateCaseGrade(
@@ -1103,13 +1349,28 @@ export class QuestionGenerator {
       );
       const timeoutMs =
         Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000;
+      // 第零阶段：本地混合检索（词面重合 + 字符哈希嵌入余弦）预筛候选条目。
+      // 相关度整体为零时直接弃答，不浪费模型调用。
+      const candidates = this.service.rankWikiEntriesForQuestion(trimmed, {
+        entries,
+        limit: 12,
+      });
+      if (!candidates.length) {
+        return {
+          question: trimmed,
+          answer:
+            "本地检索未发现与该问题相关的知识库条目，已停止作答。请先确认知识库已覆盖该考点，或换一种问法。",
+          references: [],
+          abstained: true,
+        };
+      }
       // 第一阶段：只挑条目，不答题。相关条目最多 5 个，控制上下文规模。
       const selectionRaw = await this.callModel({
         runtimePrompt: `${qaPrompt}\n\n运行时约束：本次调用是选题阶段，只负责从标题清单里挑出与问题相关的条目标题，不要回答问题本身。`,
         userPrompt: [
           `考生问题：${trimmed}`,
-          "已有知识点条目标题：",
-          ...entries.map((entry) => `- ${entry.title}`),
+          "候选知识点条目标题：",
+          ...candidates.map((entry) => `- ${entry.title}`),
           '请只返回一个 JSON 对象：{"titles":["与问题最相关的条目标题原文"]}，最多 5 个；没有相关条目就返回空数组。',
         ].join("\n"),
         schema: JSON.stringify({
@@ -1120,6 +1381,7 @@ export class QuestionGenerator {
         }),
         timeoutMs,
         model,
+        kind: "wiki-select",
       });
       const selection = parseAgentResult(selectionRaw);
       const titles = (Array.isArray(selection.titles) ? selection.titles : [])
@@ -1183,6 +1445,7 @@ export class QuestionGenerator {
         }),
         timeoutMs,
         model,
+        kind: "wiki-answer",
       });
       const answerResult = parseAgentResult(answerRaw);
       const answer = String(answerResult.answer ?? "").trim();
@@ -1240,7 +1503,7 @@ export class QuestionGenerator {
     };
   }
 
-  async callModel({ runtimePrompt, userPrompt, schema, timeoutMs, model, agentId, signal }) {
+  async callModel({ runtimePrompt, userPrompt, schema, timeoutMs, model, agentId, kind = "agent", signal }) {
     const runtime = this.resolveAgentRuntime({ agentId, model });
     if (runtime.provider.baseUrl && runtime.provider.type !== "claude-cli") {
       const selectedModel = runtime.model;
@@ -1250,18 +1513,26 @@ export class QuestionGenerator {
           { status: 503, code: "LLM_NOT_CONFIGURED" },
         );
       }
-      return callOpenAiCompatible({
+      const { content, usage } = await callOpenAiCompatible({
         baseUrl: runtime.provider.baseUrl,
         apiKey: runtime.provider.apiKey,
         model: selectedModel,
         systemPrompt: [runtime.agent?.systemPrompt, runtimePrompt].filter(Boolean).join("\n\n"),
         userPrompt,
+        schema,
         timeoutMs,
         signal,
       });
+      this.recordUsage({
+        kind,
+        model: selectedModel,
+        usage,
+        signal,
+      });
+      return content;
     }
     if (runtime.provider.type === "claude-cli") {
-      return run(
+      const output = await run(
         process.env.ARCHITECT_CLAUDE_COMMAND || "claude",
         [
           "--print",
@@ -1275,11 +1546,36 @@ export class QuestionGenerator {
         ],
         { timeoutMs, signal },
       );
+      const parsed = parseClaudeCliOutput(output);
+      this.recordUsage({
+        kind,
+        model: runtime.model || "claude-cli",
+        usage: parsed.usage,
+        signal,
+      });
+      return parsed.content;
     }
     throw Object.assign(
       new Error("大模型尚未配置，请在数据管理中配置供应商和 Agent"),
       { status: 503, code: "LLM_NOT_CONFIGURED" },
     );
+  }
+
+  // 记录模型调用的 token 用量（尽力而为：失败不影响生成流程）。
+  recordUsage({ kind, model, usage, signal }) {
+    if (!usage || !this.service?.recordLlmUsage) return;
+    this.service
+      .recordLlmUsage({
+        kind,
+        model,
+        promptTokens: usage.prompt_tokens ?? usage.input_tokens ?? 0,
+        completionTokens: usage.completion_tokens ?? usage.output_tokens ?? 0,
+        requests: 1,
+      })
+      .catch((error) => {
+        process.stderr.write(`[llm] 用量记录失败：${error.message}\n`);
+        void signal;
+      });
   }
 
   async runAgentTask({
@@ -1334,6 +1630,7 @@ export class QuestionGenerator {
           additionalProperties: false,
         }),
         timeoutMs: Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000,
+        kind: "agent-task",
         signal,
       });
       throwIfAborted(signal);

@@ -115,7 +115,13 @@ export class ExamAssets {
       resolve(this.dataDir, "study-materials.json"),
     );
     this.materials = Array.isArray(materials?.materials) ? materials.materials : [];
-    this.materialsNote = String(materials?.note ?? "");
+    const sourceNote = String(materials?.note ?? "").trim();
+    this.materialsNote = [
+      sourceNote,
+      "资料是第三方同步副本，不等同于出版社原始电子版；正文中的 Mermaid 和 SVG 均属于结构化重绘或转录，图形布局、文字和连线应以页面标注的来源为准。",
+    ]
+      .filter(Boolean)
+      .join(" ");
     this.loaded = true;
   }
 

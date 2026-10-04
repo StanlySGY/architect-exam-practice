@@ -87,46 +87,25 @@ function renderFlowchart(code) {
   const direction = /^(?:flowchart|graph)\s+(TB|TD|LR|RL)/im.exec(code)?.[1] || "TB";
   const nodes = new Map();
   const edges = [];
+  const warnings = [];
   const lines = code
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
+  const hasSubgraph = lines.some((line) => /^subgraph\b/i.test(line));
+  if (hasSubgraph) warnings.push("subgraph grouping");
   for (const line of lines) {
-    if (/^(?:subgraph\b|end$)/i.test(line)) continue;
-    const nodePatterns = [
-      /\b([A-Za-z][\w]*)\s*\(\s*\[\s*"([^"\n]*)"\s*\]\s*\)/g,
-      /\b([A-Za-z][\w]*)\s*\(\s*"([^"\n]*)"\s*\)/g,
-      /\b([A-Za-z][\w]*)\s*\(\(\s*"([^"\n]*)"\s*\)\)/g,
-      /\b([A-Za-z][\w]*)\s*\{\s*"([^"\n]*)"\s*\}/g,
-      /\b([A-Za-z][\w]*)\s*\[\s*"([^"\n]*)"\s*\]/g,
-      /\b([A-Za-z][\w]*)\s*\[([^\]\n]*)\]/g,
-    ];
-    for (const pattern of nodePatterns) {
-      for (const match of line.matchAll(pattern)) {
-        if (!nodes.has(match[1])) nodes.set(match[1], match[2]);
-      }
+    if (/^(?:flowchart|graph)\s+/i.test(line)) continue;
+    if (/^(?:subgraph\b|end$|direction\s+)/i.test(line)) continue;
+    if (/^(?:style|classDef|class)\s+/i.test(line)) continue;
+    const parsed = parseFlowchartLine(line);
+    for (const node of parsed.nodes) {
+      const label = node.label || node.id;
+      if (!nodes.has(node.id) || nodes.get(node.id) === node.id) nodes.set(node.id, label);
     }
-    const labelledEdge =
-      /^([A-Za-z][\w]*)\s*(--|-\.|==)\s*(?:"([^"]*)"|'([^']*)')\s*(<-->|-->|\.->|==>|->)\s*([A-Za-z][\w]*)\b/.exec(
-        line,
-      );
-    const edge = labelledEdge
-      ? [
-          null,
-          labelledEdge[1],
-          labelledEdge[5],
-          labelledEdge[3] ?? labelledEdge[4] ?? "",
-          labelledEdge[6],
-        ]
-      : /^([A-Za-z][\w]*)\s*(<-->|-->|\.->|==>|->|--|-\.)\s*(?:\|([^|]+)\|\s*)?([A-Za-z][\w]*)\b/.exec(
-          line,
-        );
-    if (edge) {
-      const [, from, connector, label, to] = edge;
-      if (!nodes.has(from)) nodes.set(from, from);
-      if (!nodes.has(to)) nodes.set(to, to);
-      edges.push({ from, to, connector, label: label || "" });
-    }
+    edges.push(...parsed.edges);
+    if (parsed.incomplete && parsed.hasRelation && !parsed.onlyInvisibleRelation)
+      warnings.push(line);
   }
   if (!nodes.size) return unsupportedSvg("无法解析该结构图。");
   const layout = layoutFlowchart([...nodes.keys()], edges, direction);
@@ -137,7 +116,7 @@ function renderFlowchart(code) {
     .map(([id, label]) => renderFlowNode(layout.positions.get(id), label))
     .join("");
   return `
-    <svg viewBox="0 0 ${layout.width} ${layout.height}" role="img" aria-label="结构化流程图" preserveAspectRatio="xMinYMin meet">
+    <svg viewBox="0 0 ${layout.width} ${layout.height}" role="img" aria-label="结构化流程图" preserveAspectRatio="xMinYMin meet" data-figure-incomplete="${warnings.length ? "true" : "false"}" data-figure-edge-count="${edges.length}">
       <defs>
         <marker id="figure-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
           <path d="M 0 0 L 10 5 L 0 10 z" class="figure-arrow-head" />
@@ -147,6 +126,183 @@ function renderFlowchart(code) {
       ${nodesMarkup}
     </svg>
   `;
+}
+
+// Mermaid 的节点定义可以紧跟在边两侧，不能只用“ID 后立即是箭头”的正则。
+// 这里按节点/关系/节点扫描一行，同时保留常见的链式边和标签边。
+function parseFlowchartLine(line) {
+  const nodes = [];
+  const edges = [];
+  let cursor = skipSpaces(line, 0);
+  let node = parseFlowNode(line, cursor);
+  const hasRelation = /(?:<-->|-->|-\.->|==>|\.->|~~~|---|--|-\.)/.test(line);
+  if (!node) {
+    return { nodes, edges, hasRelation, incomplete: hasRelation, onlyInvisibleRelation: false };
+  }
+  nodes.push(node);
+  cursor = node.end;
+  let sawRelation = false;
+  let sawVisibleRelation = false;
+  while (cursor < line.length) {
+    const connector = parseFlowConnector(line, cursor);
+    if (!connector) break;
+    sawRelation = true;
+    sawVisibleRelation ||= connector.value !== "~~~";
+    cursor = connector.end;
+    const next = parseFlowNode(line, cursor);
+    if (!next) {
+      return {
+        nodes,
+        edges,
+        hasRelation,
+        incomplete: true,
+        onlyInvisibleRelation: sawRelation && !sawVisibleRelation,
+      };
+    }
+    nodes.push(next);
+    if (connector.value !== "~~~") {
+      edges.push({ from: node.id, to: next.id, connector: connector.value, label: connector.label });
+    }
+    node = next;
+    cursor = next.end;
+  }
+  const trailing = line.slice(skipSpaces(line, cursor)).trim();
+  const incomplete = Boolean(trailing) && sawRelation;
+  return {
+    nodes,
+    edges,
+    hasRelation,
+    incomplete,
+    onlyInvisibleRelation: sawRelation && !sawVisibleRelation,
+  };
+}
+
+function parseFlowNode(line, start) {
+  const cursor = skipSpaces(line, start);
+  const match = /^[A-Za-z][\w-]*/.exec(line.slice(cursor));
+  if (!match) return null;
+  const id = match[0];
+  let end = cursor + id.length;
+  let label = id;
+  const shapeStart = skipSpaces(line, end);
+  const shape = readFlowShape(line, shapeStart);
+  if (shape) {
+    end = shape.end;
+    label = shapeLabel(shape.value);
+  }
+  return { id, label, end };
+}
+
+function readFlowShape(line, start) {
+  const opening = line[start];
+  if (!(opening === "[" || opening === "(" || opening === "{" || opening === "<" || opening === ">")) return null;
+  const stack = [];
+  const closing = { "[": "]", "(": ")", "{": "}", "<": ">", ">": "]" };
+  let quote = "";
+  let escaped = false;
+  for (let index = start; index < line.length; index += 1) {
+    const char = line[index];
+    if (quote) {
+      if (escaped) escaped = false;
+      else if (char === "\\") escaped = true;
+      else if (char === quote) quote = "";
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      continue;
+    }
+    if (closing[char] && (char !== "<" || stack.length === 0)) {
+      stack.push(char);
+      continue;
+    }
+    if (stack.length && char === closing[stack.at(-1)]) {
+      stack.pop();
+      if (!stack.length) return { value: line.slice(start, index + 1), end: index + 1 };
+    }
+  }
+  return null;
+}
+
+function shapeLabel(value) {
+  return String(value)
+    .replace(/^[([<{>]+/, "")
+    .replace(/[\])}>]+$/, "")
+    .replace(/^(["'])([\s\S]*)\1$/, "$2")
+    .replace(/<br\s*\/?>/gi, " ")
+    .trim() || "节点";
+}
+
+function parseFlowConnector(line, start) {
+  const cursor = skipSpaces(line, start);
+  const source = line.slice(cursor);
+
+  // Mermaid permits labels between the connector's two halves, for example
+  // `-. 迭代 .->` and `--约束-->`. Parse these before the plain connector so
+  // the label is not mistaken for the next node.
+  const labelled = /^(<-.|--|-\.)\s*(?:\|([^|]*)\||"([^"]*)"|'([^']*)'|([^<>|]*?))\s*(<-.->|<-->|\.->|-->|==>|->)/.exec(source);
+  if (labelled && (labelled[2] || labelled[3] || labelled[4] || labelled[5]?.trim())) {
+    return {
+      value: `${labelled[1]}${labelled[6]}`,
+      label: stripFlowLabel(labelled[2] ?? labelled[3] ?? labelled[4] ?? labelled[5]),
+      end: cursor + labelled[0].length,
+    };
+  }
+
+  const match = /^(<-.->|<-->|-\.->|-->|==>|\.->|<--|<-.|->|~~~|---|--|-\.)/.exec(source);
+  if (!match) return null;
+  let end = cursor + match[0].length;
+  let value = match[0];
+  let label = "";
+  const after = skipSpaces(line, end);
+  if (line[after] === "|") {
+    const closing = findUnescaped(line, "|", after + 1);
+    if (closing < 0) return { value, label, end: line.length, incomplete: true };
+    label = stripFlowLabel(line.slice(after + 1, closing));
+    end = closing + 1;
+  } else if (line[after] === '"' || line[after] === "'") {
+    const quoteEnd = findQuotedEnd(line, after);
+    if (quoteEnd < 0) return { value, label, end: line.length, incomplete: true };
+    label = line.slice(after + 1, quoteEnd);
+    end = quoteEnd + 1;
+    const finalArrow = /^(<-->|-\.->|-->|==>|\.->|->)/.exec(line.slice(skipSpaces(line, end)));
+    if (finalArrow) {
+      value = `${value}${finalArrow[0]}`;
+      end = skipSpaces(line, end) + finalArrow[0].length;
+    }
+  }
+  return { value, label, end };
+}
+
+function stripFlowLabel(value) {
+  return String(value).replace(/^(["'])([\s\S]*)\1$/, "$2").trim();
+}
+
+function findQuotedEnd(value, start) {
+  const quote = value[start];
+  let escaped = false;
+  for (let index = start + 1; index < value.length; index += 1) {
+    if (escaped) escaped = false;
+    else if (value[index] === "\\") escaped = true;
+    else if (value[index] === quote) return index;
+  }
+  return -1;
+}
+
+function findUnescaped(value, needle, start) {
+  let escaped = false;
+  for (let index = start; index < value.length; index += 1) {
+    if (escaped) escaped = false;
+    else if (value[index] === "\\") escaped = true;
+    else if (value[index] === needle) return index;
+  }
+  return -1;
+}
+
+function skipSpaces(value, start) {
+  let cursor = start;
+  while (/\s/.test(value[cursor] || "")) cursor += 1;
+  return cursor;
 }
 
 function layoutFlowchart(ids, edges, direction) {
@@ -218,12 +374,24 @@ function renderEdge(edge, positions, direction) {
   if (!from || !to) return "";
   const horizontal = direction === "LR" || direction === "RL";
   const reverse = direction === "RL";
-  const x1 = horizontal ? from.x + from.width : reverse ? from.x : from.x + from.width / 2;
+  const x1 = horizontal
+    ? reverse
+      ? from.x
+      : from.x + from.width
+    : from.x + from.width / 2;
   const y1 = horizontal ? from.y + from.height / 2 : from.y + from.height;
-  const x2 = horizontal ? to.x : reverse ? to.x + to.width : to.x + to.width / 2;
+  const x2 = horizontal
+    ? reverse
+      ? to.x + to.width
+      : to.x
+    : to.x + to.width / 2;
   const y2 = horizontal ? to.y + to.height / 2 : to.y;
-  const markerStart = edge.connector === "<-->" ? ' marker-start="url(#figure-arrow)"' : "";
-  const markerEnd = edge.connector === "--" ? "" : ' marker-end="url(#figure-arrow)"';
+  const markerStart = edge.connector.startsWith("<")
+    ? ' marker-start="url(#figure-arrow)"'
+    : "";
+  const markerEnd = edge.connector.endsWith(">")
+    ? ' marker-end="url(#figure-arrow)"'
+    : "";
   const label = edge.label
     ? `<text class="figure-edge-label" x="${(x1 + x2) / 2}" y="${(y1 + y2) / 2 - 5}" text-anchor="middle">${escapeXml(edge.label)}</text>`
     : "";
@@ -421,8 +589,10 @@ function renderMissingFigure(message = "原题引用图示，当前题库尚未�
 }
 
 function figureShell(svg, caption = "结构化重绘示意（非原卷图）") {
+  const incomplete = /data-figure-incomplete="true"/.test(svg);
   return `
     <figure class="question-diagram">
+      ${incomplete ? '<p class="figure-render-warning" role="note">该图有部分 Mermaid 语义未能完整呈现（可能包括分组、布局或连线），已保留当前可识别内容；请展开源码并以可核对来源为准。</p>' : ""}
       <div class="diagram-scroll">${svg}</div>
       <figcaption>${escapeHtml(caption)}</figcaption>
     </figure>

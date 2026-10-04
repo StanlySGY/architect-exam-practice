@@ -31,6 +31,8 @@ test("主要列表容器声明 aria-busy 并使用页面级重试", () => {
     "case-exam-stage",
     "real-exam-catalog-status",
     "question-issues-list",
+    "study-queue-body",
+    "content-health-body",
   ]) {
     assert.match(html, new RegExp(`id="${id}"[^>]*aria-busy="false"`));
   }
@@ -52,4 +54,50 @@ test("加载态和错误态具有稳定的可视样式", () => {
   assert.match(css, /\.loading-state/);
   assert.match(css, /\.load-error/);
   assert.match(css, /\.retry-button/);
+});
+
+test("论文模拟计时器随列表生命周期清理", () => {
+  assert.match(app, /function clearPaperMockTimers\(\)/);
+  assert.match(app, /state\.paperMockTimers\.add\(mockTimer\)/);
+  assert.match(app, /function renderPapers\(papers, total = papers\.length\) \{\s*clearPaperMockTimers\(\);/);
+  assert.match(app, /if \(mockTimer !== null && !mockBar\.isConnected\)/);
+  assert.match(app, /if \(view !== "paper"\) clearPaperMockTimers\(\);/);
+  assert.match(app, /if \(!mockBar\.isConnected\) return;/);
+});
+
+test("Wiki 提问抽屉管理遮罩、焦点和关闭竞态", () => {
+  assert.match(html, /id="wiki-ask-drawer"[^>]*aria-modal="true"/);
+  assert.match(app, /let wikiAskCloseTimer = null/);
+  assert.match(app, /\$\("#wiki-ask-backdrop"\)\.hidden = false/);
+  assert.match(app, /clearTimeout\(wikiAskCloseTimer\)/);
+  assert.match(app, /if \(returnFocus\?\.isConnected\) returnFocus\.focus\(\)/);
+});
+
+test("启动和章节筛选失败时仍保留可恢复流程", () => {
+  assert.match(app, /beginLoad\("chapters", "#coverage", "正在加载章节…"\)/);
+  assert.match(app, /load\.fail\(error, loadChapters\)/);
+  assert.match(app, /async function initializeApp\(\)/);
+  assert.match(app, /await Promise\.allSettled\(\[/);
+  assert.match(app, /await loadBankSections\(\);[\s\S]*?\$\("#bank-section"\)\.value = "all"/);
+});
+
+test("知识图谱、模型工作区和案例模拟保持当前交互状态", () => {
+  assert.match(app, /function renderFilteredWikiGraph\(\)/);
+  assert.match(app, /renderWikiGraph\(wikiFilteredEntries\(\), \{/);
+  assert.match(app, /focusDepth: depth/);
+  assert.match(app, /state\.modelWorkspace = workspaceDraft\(collectWorkspaceDraft\(\)\)/);
+  assert.match(app, /textarea\.agent-prompt/);
+  assert.match(app, /state\.caseExam\)/);
+  assert.match(app, /已有进行中的案例模拟，请继续作答/);
+  assert.match(app, /memory\.upcomingDistinct \?\? memory\.upcoming/);
+});
+
+test("首页学习队列和内容质量概览使用只读 API，并禁用零到期复习入口", () => {
+  assert.match(app, /api\("\/api\/study-queue\?limit=5"\)/);
+  assert.match(app, /api\("\/api\/content-health"\)/);
+  assert.match(app, /function setReviewActionState\(due\)/);
+  assert.match(app, /button\.disabled = disabled/);
+  assert.match(app, /textContent = disabled[\s\S]*?"暂无到期题"/);
+  assert.match(html, /id="start-review"[^>]*disabled/);
+  assert.match(html, /id="review-all"[^>]*disabled/);
 });

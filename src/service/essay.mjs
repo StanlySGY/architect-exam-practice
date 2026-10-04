@@ -111,7 +111,12 @@ export class EssayDomain extends CaseExamDomain {
 
   // allowAfterDeadline 供"入口已校验、模型耗时超过宽限"的评分落库使用：
   // 已提交仍拒绝，但不再因评分期间的超时丢弃已完成评分。
-  async savePaperGrade({ paperId, grade, allowAfterDeadline = false }) {
+  async savePaperGrade({
+    paperId,
+    grade,
+    draft,
+    allowAfterDeadline = false,
+  }) {
     return this.store.update((state) => {
       const paper = state.paperQuestions.find((item) => item.id === paperId);
       if (!paper)
@@ -132,6 +137,7 @@ export class EssayDomain extends CaseExamDomain {
           code: "ESSAY_TIME_OVER",
         });
       }
+      if (draft !== undefined) paper.draft = String(draft ?? "");
       paper.grade = grade;
       if (paper.mock) {
         paper.mock.submittedAt = grade?.gradedAt || this.now();

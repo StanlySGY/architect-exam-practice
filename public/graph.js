@@ -163,19 +163,21 @@ function showWikiGraphTooltip(graph, node) {
   const tooltip = graph.tooltip;
   if (!tooltip) return;
   tooltip.replaceChildren(
-    element("strong", { text: node.title }),
-    element("span", {
-      className: "wiki-graph-tooltip-meta",
-      text: `第 ${node.chapter} 章 · ${node.degree} 条关联`,
-    }),
-    node.summary ? element("p", { text: node.summary }) : null,
-    (node.keyPoints ?? []).length
-      ? element(
-          "ul",
-          { className: "wiki-graph-tooltip-points" },
-          node.keyPoints.slice(0, 2).map((point) => element("li", { text: point })),
-        )
-      : null,
+    ...[
+      element("strong", { text: node.title }),
+      element("span", {
+        className: "wiki-graph-tooltip-meta",
+        text: `第 ${node.chapter} 章 · ${node.degree} 条关联`,
+      }),
+      node.summary ? element("p", { text: node.summary }) : null,
+      (node.keyPoints ?? []).length
+        ? element(
+            "ul",
+            { className: "wiki-graph-tooltip-points" },
+            node.keyPoints.slice(0, 2).map((point) => element("li", { text: point })),
+          )
+        : null,
+    ].filter(Boolean),
   );
   const k = graph.view.width / graph.world.width;
   const x = (node.x * graph.scale + graph.tx) * k;
@@ -227,8 +229,11 @@ function showWikiGraphPopover(graph, node) {
   const expanded = Boolean(graph.popoverExpanded);
   popover.classList.toggle("is-expanded", expanded);
   const body = element("div", { className: "wiki-graph-popover-body" });
+  // 注意:replaceChildren 会把 null 参数字符串化成 "null" 文本节点,
+  // 条件渲染必须先收集成数组并过滤 Boolean。
   body.replaceChildren(
-    element("span", {
+    ...[
+      element("span", {
       className: "wiki-graph-tooltip-meta",
       text: `第 ${node.chapter} 章 · ${node.section || "整章"} · ${node.degree} 条关联`,
     }),
@@ -276,6 +281,7 @@ function showWikiGraphPopover(graph, node) {
           ),
         ])
       : null,
+    ].filter(Boolean),
   );
   popover.replaceChildren(
     element("div", { className: "wiki-graph-popover-head" }, [
@@ -332,11 +338,33 @@ function hideWikiGraphPopover(graph) {
   if (graph.popover) graph.popover.hidden = true;
 }
 
-function updateWikiGraphFocus(graph) {
+// 邻域集合:深度 1 = 直接相邻,深度 2 = 两跳内(Obsidian local graph 约定)。
+function wikiGraphNeighborhood(graph, rootId, depth) {
+  const found = new Set([rootId]);
+  let frontier = new Set([rootId]);
+  for (let hop = 0; hop < depth; hop += 1) {
+    const next = new Set();
+    for (const id of frontier) {
+      for (const neighbor of graph.adjacency.get(id) ?? []) {
+        if (!found.has(neighbor)) {
+          found.add(neighbor);
+          next.add(neighbor);
+        }
+      }
+    }
+    frontier = next;
+  }
+  return found;
+}
+
+export function updateWikiGraphFocus(graph) {
   const focusId = graph.hoveredId || graph.selectedId;
-  const focus = focusId
-    ? new Set([focusId, ...(graph.adjacency.get(focusId) ?? [])])
-    : null;
+  const depth = graph.focusDepth ?? 1;
+  // depth 0 = 关闭邻域高亮;1 = 直接相邻(默认);2 = 两跳邻域。
+  let focus = null;
+  if (focusId && depth >= 2) focus = wikiGraphNeighborhood(graph, focusId, depth);
+  else if (focusId && depth === 1)
+    focus = new Set([focusId, ...(graph.adjacency.get(focusId) ?? [])]);
   for (const node of graph.nodes) {
     const isFocus = focus?.has(node.id) ?? false;
     node.element.classList.toggle("is-selected", node.id === graph.selectedId);
@@ -612,7 +640,7 @@ function installWikiGraphPointerEvents(graph) {
   }, { passive: false });
 }
 
-export function renderWikiGraph(entries, { focusId = null, colorBy = "chapter" } = {}) {
+export function renderWikiGraph(entries, { focusId = null, colorBy = "chapter", focusDepth = 1 } = {}) {
   const canvas = $("#wiki-graph-canvas");
   destroyWikiGraph();
   const world = graphWorldForCanvas(canvas);
@@ -758,6 +786,7 @@ export function renderWikiGraph(entries, { focusId = null, colorBy = "chapter" }
     chapterCenters,
     selectedId: null,
     hoveredId: null,
+    focusDepth,
     scale: 1,
     tx: 0,
     ty: 0,

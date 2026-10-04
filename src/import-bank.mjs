@@ -83,13 +83,39 @@ function sourceTypeOf(raw) {
   return raw.sourceType === "mock" || raw.source_type === "mock" ? "mock" : "real";
 }
 
+function answerTrustOf(raw) {
+  const sourceType = sourceTypeOf(raw);
+  const answerSource = String(raw.answerSource ?? raw.answer_source ?? "").toLowerCase();
+  if (answerSource.includes("glm") || answerSource.includes("ai")) {
+    return {
+      code: "ai-reference",
+      label: "AI 参考答案",
+      note: "参考答案由模型整理或复核，不等同于官方阅卷标准；请结合教材和原题核对。",
+    };
+  }
+  if (sourceType === "mock") {
+    return {
+      code: "mock-unverified",
+      label: "模拟题答案未独立核验",
+      note: "这是项目整理的模拟题，答案和解析没有官方原卷背书，遇到争议请提交问题。",
+    };
+  }
+  return {
+    code: "third-party",
+    label: "第三方整理答案",
+    note: "题干、选项或答案来自第三方整理，题库清单明确说明不是官方答案，请以可核对原卷和权威资料为准。",
+  };
+}
+
 export function mapChoice(raw, createdAt) {
   const options = raw.options ?? {};
   const answer = String(raw.answer ?? raw.correctAnswer ?? "")
     .trim()
     .toUpperCase();
+  const answerTrust = answerTrustOf(raw);
   return {
     id: String(raw.id),
+    sourceId: String(raw.id),
     sourceType: sourceTypeOf(raw),
     source: "architect-practice",
     chapter: mapModule(raw.module),
@@ -105,6 +131,9 @@ export function mapChoice(raw, createdAt) {
     questionNo: Number(raw.questionNo || raw.question_no) || null,
     module: raw.module || "other",
     sourceFile: raw.sourceFile || raw.source_file || null,
+    answerTrust: answerTrust.code,
+    answerTrustLabel: answerTrust.label,
+    answerTrustNote: answerTrust.note,
     createdAt,
   };
 }
@@ -116,8 +145,10 @@ export function mapCase(raw, createdAt) {
     : 25;
   const title = String(raw.title ?? "").trim();
   const scenario = String(raw.description ?? "").trim() || title;
+  const answerTrust = answerTrustOf(raw);
   return {
     id: String(raw.id),
+    sourceId: String(raw.id),
     sourceType: sourceTypeOf(raw),
     source: "architect-practice",
     chapter: mapModule(raw.module),
@@ -135,13 +166,18 @@ export function mapCase(raw, createdAt) {
     paper: raw.paper || null,
     module: raw.module || "other",
     sourceFile: raw.sourceFile || raw.source_file || null,
+    answerTrust: answerTrust.code,
+    answerTrustLabel: answerTrust.label,
+    answerTrustNote: answerTrust.note,
     createdAt,
   };
 }
 
 export function mapPaper(raw, createdAt) {
+  const answerTrust = answerTrustOf(raw);
   return {
     id: String(raw.id),
+    sourceId: String(raw.id),
     sourceType: sourceTypeOf(raw),
     source: "architect-practice",
     chapter: mapModule(raw.module) || 20,
@@ -156,6 +192,9 @@ export function mapPaper(raw, createdAt) {
     paper: raw.paper || null,
     module: raw.module || "other",
     sourceFile: raw.sourceFile || raw.source_file || null,
+    answerTrust: answerTrust.code,
+    answerTrustLabel: answerTrust.label,
+    answerTrustNote: answerTrust.note,
     createdAt,
   };
 }

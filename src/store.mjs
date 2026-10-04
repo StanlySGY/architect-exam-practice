@@ -16,6 +16,7 @@ const EMPTY_STATE = {
   wikiEntries: [],
   caseExams: [],
   auditLog: [],
+  llmUsage: [],
 };
 
 const STATE_KEYS = Object.keys(EMPTY_STATE);
@@ -55,6 +56,7 @@ function normalizeState(value) {
       : [],
     caseExams: Array.isArray(saved.caseExams) ? saved.caseExams : [],
     auditLog: Array.isArray(saved.auditLog) ? saved.auditLog : [],
+    llmUsage: Array.isArray(saved.llmUsage) ? saved.llmUsage : [],
   };
 }
 
@@ -87,7 +89,7 @@ export class SQLiteStore {
     this.db = new DatabaseSync(this.file);
     this.db.exec(`
       PRAGMA journal_mode = WAL;
-      PRAGMA synchronous = FULL;
+      PRAGMA synchronous = NORMAL;
       PRAGMA foreign_keys = ON;
       CREATE TABLE IF NOT EXISTS app_state (
         key TEXT PRIMARY KEY NOT NULL,
@@ -186,6 +188,14 @@ export class SQLiteStore {
   close() {
     this.db?.close();
     this.db = null;
+  }
+
+  // 在线备份：VACUUM INTO 写出一致性快照，主库在备份期间仍可读写。
+  async backupToFile(targetPath) {
+    if (!this.db) throw new Error("SQLite 存储尚未初始化");
+    this.db
+      .prepare("VACUUM INTO ?")
+      .run(targetPath);
   }
 }
 

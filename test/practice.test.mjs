@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
@@ -73,6 +73,7 @@ test("模型工作区支持多供应商并保留 API Key 掩码兼容", async (t
   assert.equal(process.env.ARCHITECT_LLM_MODEL, "deepseek-chat");
   assert.equal(config.publicWorkspace().providers[0].apiKey, "********1234");
   assert.equal(config.publicWorkspace().agents.length, 2);
+  assert.equal((await stat(join(directory, ".env"))).mode & 0o777, 0o600);
 
   await config.saveWorkspace({
     defaultAgentId: "agent-deepseek",
@@ -252,6 +253,8 @@ function emptySummary(overrides = {}) {
     mockPapers: 0,
     wikiEntries: 0,
     caseExams: 0,
+    llmRequests: 0,
+    llmTokens: 0,
     ...overrides,
   };
 }
@@ -557,6 +560,64 @@ test("标记错题为问题题后停止安排回顾", async (t) => {
   );
 });
 
+test("问题题即使只剩历史快照也不会重新进入回顾", async (t) => {
+  const { service, store } = await fixture(t);
+  await addQuestions(service, { chapter: 6, difficulty: "easy", count: 1 });
+  const session = await service.createSession({
+    chapter: 6,
+    difficulty: "easy",
+    count: 1,
+  });
+  const question = session.questions[0];
+  await service.grade({
+    sessionId: session.id,
+    answers: { [question.id]: "B" },
+  });
+  await service.reportQuestion({ questionId: question.id });
+  // 模拟旧备份/外部清理留下的快照错题：题目已不在题库，错题记录仍在。
+  await store.update((state) => {
+    state.generatedQuestions = state.generatedQuestions.filter(
+      (item) => item.id !== question.id,
+    );
+  });
+  const summary = service.wrongQuestions().summary;
+  assert.equal(summary.active, 0);
+  assert.equal(summary.due, 0);
+  assert.equal(summary.mastered, 0);
+  await assert.rejects(
+    () => service.createReviewSession({ limit: 1 }),
+    (error) => error.code === "NO_DUE_QUESTIONS",
+  );
+  await assert.rejects(
+    () => service.setMastered(question.id, false),
+    (error) => error.code === "QUESTION_DISABLED",
+  );
+  const persisted = store.snapshot().wrongBook[question.id];
+  assert.equal(persisted.disabledByIssue, true);
+});
+
+test("旧错题记录缺少快照时优先使用当前题库内容", async (t) => {
+  const { service, store } = await fixture(t);
+  await addQuestions(service, { chapter: 6, difficulty: "easy", count: 1 });
+  const question = service.allQuestions()[0];
+  await store.update((state) => {
+    state.wrongBook = {
+      [question.id]: {
+        questionId: question.id,
+        mastered: false,
+        disabledByIssue: false,
+        timesWrong: 1,
+        nextReviewAt: "2026-04-01T00:00:00.000Z",
+        lastWrongAt: "2026-04-01T00:00:00.000Z",
+      },
+    };
+  });
+  const record = service.wrongQuestions().records[0];
+  assert.equal(record.question, question.question);
+  assert.deepEqual(record.options, question.options);
+  assert.equal(record.correctAnswer, question.correctAnswer);
+});
+
 test("问题题状态会随备份恢复并在清空题库时移除", async (t) => {
   const { service } = await fixture(t);
   await addQuestions(service, { chapter: 6, difficulty: "easy", count: 1 });
@@ -655,6 +716,80 @@ test("永久删除题目清理关联状态但保留历史汇总", async (t) => {
     state.sessions[activeSession.id].questionIds.includes(target.id),
     false,
   );
+});
+
+test("案例模拟卷固定创建时快照并按快照保存草稿与判分上下文", async (t) => {
+  const { service, store } = await fixture(t);
+  await service.addCases({
+    chapter: 3,
+    cases: [{
+      title: "原始案例",
+      scenario: "原始场景",
+      questions: [{ text: "原始小问", points: 10, reference_answer: "原始参考答案" }],
+    }],
+  });
+  const exam = await service.createCaseExam({ count: 1, durationMinutes: 10 });
+  const original = exam.cases[0];
+  await store.update((state) => {
+    const current = state.caseQuestions.find((item) => item.id === original.id);
+    current.title = "重新导入后的案例";
+    current.scenario = "重新导入后的场景";
+    current.questions = [{
+      id: original.questions[0].id,
+      text: "重新导入后的小问",
+      points: 10,
+      referenceAnswer: "重新导入后的参考答案",
+    }];
+  });
+  const active = service.activeCaseExam();
+  assert.equal(active.cases[0].title, "原始案例");
+  assert.equal(active.cases[0].questions[0].text, "原始小问");
+  assert.equal("referenceAnswer" in active.cases[0].questions[0], false);
+  await service.saveCaseExamDraft({
+    examId: exam.id,
+    caseId: original.id,
+    questionId: original.questions[0].id,
+    text: "我的作答",
+  });
+  const context = service.caseExamForGrading(exam.id);
+  assert.equal(context.cases[0].questions[0].referenceAnswer, "原始参考答案");
+  assert.equal(context.exam.drafts[original.id][original.questions[0].id], "我的作答");
+});
+
+test("删除生成题后自有备份仍可导入", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 8, difficulty: "easy", count: 1 });
+  const session = await service.createSession({ chapter: 8, difficulty: "easy", count: 1 });
+  await service.grade({ sessionId: session.id, answers: {} });
+  const questionId = session.questions[0].id;
+  await service.deleteQuestion({ questionId, confirm: "DELETE" });
+  const backup = await service.exportData();
+  const result = await service.importData({ backup, confirm: "IMPORT" });
+  assert.equal(result.questions, 0);
+  assert.equal(result.attempts, 1);
+});
+
+test("未来六天复习负载按到期日去重", async (t) => {
+  const { service, store } = await fixture(t, () => "2026-04-01T08:00:00.000Z");
+  const snapshot = (id) => ({
+    id,
+    question: id,
+    options: { A: "正确", B: "错", C: "错", D: "错" },
+    correctAnswer: "A",
+    analysis: "解析",
+    sourceType: "generated",
+    createdAt: "2026-03-01T00:00:00.000Z",
+  });
+  await store.update((state) => {
+    state.wrongBook = {
+      today: { questionId: "today", questionSnapshot: snapshot("today"), mastered: false, disabledByIssue: false, nextReviewAt: "2026-04-01T09:00:00.000Z", lastReviewAt: "2026-03-31T09:00:00.000Z", lastWrongAt: "2026-03-31T09:00:00.000Z" },
+      later: { questionId: "later", questionSnapshot: snapshot("later"), mastered: false, disabledByIssue: false, nextReviewAt: "2026-04-03T09:00:00.000Z", lastReviewAt: "2026-03-31T09:00:00.000Z", lastWrongAt: "2026-03-31T09:00:00.000Z" },
+      far: { questionId: "far", questionSnapshot: snapshot("far"), mastered: false, disabledByIssue: false, nextReviewAt: "2026-04-05T09:00:00.000Z", lastReviewAt: "2026-03-31T09:00:00.000Z", lastWrongAt: "2026-03-31T09:00:00.000Z" },
+    };
+  });
+  const upcoming = service.statistics().memory.upcomingDistinct;
+  assert.deepEqual(upcoming.slice(0, 5).map((day) => day.due), [1, 0, 1, 0, 1]);
+  assert.equal(upcoming.slice(1).reduce((sum, day) => sum + day.due, 0), 2);
 });
 
 test("学习统计按题数加权并聚合章节和薄弱知识点", async (t) => {
@@ -785,7 +920,7 @@ test("练习接口不泄露答案，判卷后写入错题本", async (t) => {
   assert.equal(service.wrongQuestions().summary.due, 3);
 });
 
-test("错题走完 1/3/7/14/30 天间隔阶梯后标记为已掌握", async (t) => {
+test("错题复习按 FSRS-6 调度,连续答对 5 次后毕业", async (t) => {
   const base = Date.parse("2026-04-01T08:00:00.000Z");
   let time = new Date(base).toISOString();
   const { service } = await fixture(t, () => time);
@@ -802,23 +937,84 @@ test("错题走完 1/3/7/14/30 天间隔阶梯后标记为已掌握", async (t) 
   });
   const correctAnswer = graded.details[0].correctAnswer;
 
-  // 每次复习答对后进入下一个间隔档位；第 5 次答对才标记掌握。
-  const reviewOffsets = [0, 1, 4, 11, 25];
-  for (const [index, offset] of reviewOffsets.entries()) {
-    time = new Date(base + offset * 86400000).toISOString();
+  // FSRS 只接管间隔计算；毕业语义保持"连续 5 次复习答对"。
+  let previousInterval = 0;
+  for (let round = 1; round <= 5; round += 1) {
+    const record = service
+      .wrongQuestions()
+      .records.find((item) => item.questionId === question.id);
+    time = new Date(
+      Math.max(Date.parse(record.nextReviewAt), Date.parse(time) + 86_400_000),
+    ).toISOString();
     const review = await service.createReviewSession({ limit: 1 });
-    assert.ok(review, `第 ${index + 1} 次复习应有到期的错题`);
+    assert.ok(review, `第 ${round} 次复习应有到期的错题`);
+    const checked = await service.checkAnswer({
+      sessionId: review.id,
+      questionId: question.id,
+      answer: correctAnswer,
+      confidence: 3,
+    });
+    assert.ok(checked.schedule, "复习模式应返回四档调度预览");
+    assert.equal(checked.schedule.grades.length, 4);
+    assert.deepEqual(
+      checked.schedule.grades.map((grade) => grade.name),
+      ["再记", "困难", "良好", "简单"],
+    );
     await service.grade({
       sessionId: review.id,
       answers: { [question.id]: correctAnswer },
     });
+    const after = service
+      .wrongQuestions()
+      .records.find((item) => item.questionId === question.id);
     assert.equal(
-      service.wrongQuestions().summary.mastered,
-      index === reviewOffsets.length - 1 ? 1 : 0,
+      after.mastered,
+      round === 5,
+      `第 ${round} 次答对后掌握状态应为 ${round === 5}`,
     );
+    if (round < 5) {
+      const interval = Date.parse(after.nextReviewAt) - Date.parse(time);
+      assert.ok(interval > 0, "FSRS 应给出未来的到期时间");
+      assert.ok(
+        interval >= previousInterval,
+        `间隔应单调不减：${interval} < ${previousInterval}`,
+      );
+      previousInterval = interval;
+    }
   }
   assert.equal(service.wrongQuestions().summary.active, 0);
-  assert.equal(service.wrongQuestions().summary.due, 0);
+  assert.equal(service.wrongQuestions().summary.mastered, 1);
+});
+
+test("复习答错会用 FSRS 记一次遗忘并保持到期", async (t) => {
+  const base = Date.parse("2026-04-01T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service } = await fixture(t, () => time);
+  await addQuestions(service, { chapter: 5, difficulty: "easy", count: 1 });
+  const first = await service.createSession({
+    chapter: 5,
+    difficulty: "easy",
+    count: 1,
+  });
+  const question = first.questions[0];
+  const graded = await service.grade({
+    sessionId: first.id,
+    answers: { [question.id]: "B" },
+  });
+  const correctAnswer = graded.details[0].correctAnswer;
+  const wrongAnswer = ["A", "B", "C", "D"].find((key) => key !== correctAnswer);
+  const review = await service.createReviewSession({ limit: 1 });
+  await service.grade({
+    sessionId: review.id,
+    answers: { [question.id]: wrongAnswer },
+  });
+  const record = service
+    .wrongQuestions()
+    .records.find((item) => item.questionId === question.id);
+  assert.equal(record.correctStreak, 0);
+  assert.equal(record.timesWrong, 2);
+  assert.equal(record.memory.lapses, 2);
+  assert.equal(record.nextReviewAt, time);
 });
 
 test("手动恢复错题会重置复习阶梯", async (t) => {
@@ -1594,6 +1790,127 @@ test("学习计划按设定时区的自然日统计实际作答并计算连续�
   });
 });
 
+test("学习队列按恢复、到期复习、薄弱章节排序，并过滤不可执行错题", async (t) => {
+  const { service, store } = await fixture(t);
+  await addQuestions(service, { chapter: 4, difficulty: "easy", count: 2 });
+  const questions = service.allQuestions();
+  await store.update((state) => {
+    state.sessions.active = {
+      id: "active",
+      chapter: 4,
+      section: null,
+      difficulty: "easy",
+      mode: "practice",
+      questionIds: [questions[0].id],
+      checkedAnswers: {},
+      createdAt: "2026-04-01T07:00:00.000Z",
+      gradedAt: null,
+      abandonedAt: null,
+    };
+    state.wrongBook = {
+      due: {
+        questionId: questions[1].id,
+        chapter: 4,
+        mastered: false,
+        disabledByIssue: false,
+        nextReviewAt: "2026-03-31T08:00:00.000Z",
+        lastWrongAt: "2026-03-31T08:00:00.000Z",
+      },
+      unavailable: {
+        questionId: "removed",
+        chapter: 4,
+        mastered: false,
+        disabledByIssue: false,
+        nextReviewAt: "2026-03-30T08:00:00.000Z",
+        lastWrongAt: "2026-03-30T08:00:00.000Z",
+      },
+    };
+  });
+  const queue = service.studyQueue({ limit: 5 });
+  assert.equal(queue.next.action.type, "resume-session");
+  assert.deepEqual(
+    queue.items.slice(0, 3).map((item) => item.kind),
+    ["resume-session", "review", "practice"],
+  );
+  assert.equal(queue.counts.dueReviews, 1);
+  assert.equal(queue.items.find((item) => item.kind === "review").count, 1);
+});
+
+test("学习队列对零记录新手给出入门路径，产生学习记录后消失", async (t) => {
+  const { service } = await fixture(t);
+  // 空题库：入门路径收缩为"读教材 → 导入/生成"，且不再重复给准备题库条目。
+  const emptyQueue = service.studyQueue({ limit: 5 });
+  const emptyBeginner = emptyQueue.items.find(
+    (item) => item.id === "beginner:path",
+  );
+  assert.ok(emptyBeginner, "空学习状态应包含入门路径条目");
+  assert.deepEqual(
+    emptyBeginner.action.options.map((option) => option.type),
+    ["open-materials", "import-bank", "generate"],
+  );
+  assert.equal(
+    emptyQueue.items.find((item) => item.id === "setup:question-bank"),
+    undefined,
+  );
+
+  await addQuestions(service, { chapter: 1, difficulty: "easy", count: 2 });
+  const queue = service.studyQueue({ limit: 5 });
+  const beginner = queue.items.find((item) => item.id === "beginner:path");
+  assert.ok(beginner, "题库就绪后仍应保留入门路径");
+  assert.equal(beginner.priority, 0);
+  assert.equal(queue.next?.id, "beginner:path");
+  const options = beginner.action.options.map((option) => option.type);
+  assert.deepEqual(options, ["open-materials", "start-practice", "open-mock"]);
+
+  // 产生一条练习记录后，入门路径应退出队列。
+  await service.createSession({ chapter: 1, section: "all", difficulty: "mixed", count: 2 });
+  const afterPractice = service.studyQueue({ limit: 5 });
+  assert.equal(
+    afterPractice.items.find((item) => item.id === "beginner:path"),
+    undefined,
+  );
+});
+
+test("内容质量摘要区分来源、答案信任、套卷缺题、Wiki 校对和问题题", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, {
+    chapter: 4,
+    difficulty: "easy",
+    count: 1,
+  });
+  await service.addWikiEntries({
+    chapter: 1,
+    entries: [{
+      title: "待校对知识点",
+      summary: "摘要",
+      key_points: [],
+      common_mistakes: [],
+      related: [],
+    }],
+  });
+  await importSampleBank(service, t);
+  await service.reportQuestion({
+    questionId: "real-2025-1",
+    note: "待确认",
+  });
+  const health = service.contentHealth();
+  assert.equal(health.sources.questions.generated, 1);
+  assert.equal(health.sources.questions.real, 2);
+  assert.equal(health.sources.questions.mock, 1);
+  assert.ok(
+    health.answerTrust.some(
+      (item) =>
+        item.code === "third-party" &&
+        item.count >= 3,
+    ),
+  );
+  assert.equal(health.generatedQuality.missingSourceNode, 1);
+  assert.equal(health.examCoverage.incompletePapers, 1);
+  assert.equal(health.examCoverage.missingQuestionCount, 73);
+  assert.equal(health.wiki.draft, 1);
+  assert.equal(health.questionIssues.unresolved, 1);
+});
+
 test("统计学习天数按本地自然日计算且不计未作答的交卷", async (t) => {
   const previousZone = process.env.ARCHITECT_STUDY_TIME_ZONE;
   process.env.ARCHITECT_STUDY_TIME_ZONE = "Asia/Shanghai";
@@ -2055,6 +2372,83 @@ test("导入真题库按 id 幂等更新并保留生成题", async (t) => {
   );
 });
 
+test("导入 ID 与生成题冲突时隔离命名空间，并拒绝同批重复外部 ID", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const directory = await mkdtemp(join(tmpdir(), "architect-bank-conflict-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const file = join(directory, "bank.json");
+  const bank = sampleBank();
+  bank.choices = [
+    {
+      id: service.allQuestions()[0].id,
+      sourceType: "real",
+      module: "architecture",
+      stem: "与生成题 ID 冲突的真题？",
+      options: { A: "甲", B: "乙", C: "丙", D: "丁" },
+      answer: "A",
+      term: "2025年下半年",
+      questionNo: 1,
+    },
+  ];
+  await writeFile(file, JSON.stringify(bank), "utf8");
+  const imported = await service.importArchitectBank({ file });
+  assert.equal(imported.questions.added, 1);
+  const rows = service.allQuestions();
+  assert.equal(rows.filter((item) => item.sourceType === "generated").length, 1);
+  const importedRow = rows.find((item) => item.sourceType === "real");
+  assert.match(importedRow.id, /^import:real:/);
+  assert.equal(importedRow.sourceId, service.allQuestions()[0].id);
+
+  bank.choices.push({ ...bank.choices[0], stem: "批内重复" });
+  await writeFile(file, JSON.stringify(bank), "utf8");
+  await assert.rejects(
+    () => service.importArchitectBank({ file }),
+    (error) => error.code === "IMPORT_DUPLICATE_ID" && error.status === 400,
+  );
+});
+
+test("导入原始 ID 和命名空间 ID 同时冲突时分配稳定的第三个 ID", async (t) => {
+  const { service, store } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const original = service.allQuestions()[0];
+  const sourceId = "collision-source";
+  const namespaceId = `import:real:${encodeURIComponent(sourceId)}`;
+  await store.update((state) => {
+    state.generatedQuestions[0] = { ...state.generatedQuestions[0], id: sourceId };
+    state.generatedQuestions.push({ ...original, id: namespaceId });
+  });
+  const directory = await mkdtemp(join(tmpdir(), "architect-bank-double-conflict-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const file = join(directory, "bank.json");
+  const bank = sampleBank();
+  bank.choices = [
+    {
+      id: sourceId,
+      sourceType: "real",
+      module: "architecture",
+      stem: "双重冲突的真题？",
+      options: { A: "甲", B: "乙", C: "丙", D: "丁" },
+      answer: "A",
+      term: "2025年下半年",
+      questionNo: 1,
+    },
+  ];
+  await writeFile(file, JSON.stringify(bank), "utf8");
+
+  const imported = await service.importArchitectBank({ file });
+  assert.equal(imported.questions.added, 1);
+  const rows = service.allQuestions();
+  const importedRow = rows.find((item) => item.question === "双重冲突的真题？");
+  assert.equal(importedRow.sourceId, sourceId);
+  assert.equal(importedRow.id, `${namespaceId}:2`);
+  assert.equal(new Set(rows.map((item) => item.id)).size, rows.length);
+
+  const second = await service.importArchitectBank({ file });
+  assert.equal(second.questions.updated, 1);
+  assert.equal(service.allQuestions().find((item) => item.sourceId === sourceId).id, `${namespaceId}:2`);
+});
+
 test("章节练习和随机模拟卷只抽生成题", async (t) => {
   const { service } = await fixture(t);
   await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
@@ -2463,3 +2857,95 @@ test("错题本支持分页且汇总统计基于全量记录", async (t) => {
   assert.equal(full.records.length, 3);
   assert.equal(full.limit, 3);
 });
+
+// ===== 2026 升级功能:FSRS 调度 / 题目版本 / 问题题状态机 / 用量记账 / 数据库备份 =====
+
+test("编辑生成题会保留历史版本并递增 revision", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 5, difficulty: "easy", count: 1 });
+  const question = service.allQuestions()[0];
+  const original = question.question;
+  await service.updateQuestion({
+    questionId: question.id,
+    updates: { question: "改写后的题干？", analysis: "更正后的解析" },
+  });
+  const updated = service.allQuestions()[0];
+  assert.equal(updated.question, "改写后的题干？");
+  assert.equal(updated.revision, 2);
+  assert.equal(updated.revisions.length, 1);
+  assert.equal(updated.revisions[0].snapshot.question, original);
+  assert.equal(updated.revisions[0].revision, 1);
+  // 导入题只读
+  await importSampleBank(service, t);
+  const imported = service.allQuestions().find((item) => item.sourceType === "real");
+  await assert.rejects(
+    () => service.updateQuestion({ questionId: imported.id, updates: { question: "x" } }),
+    (error) => error.code === "IMPORTED_QUESTION_READONLY",
+  );
+});
+
+test("问题题支持 待处理 → 已确认 状态流转,恢复后关闭", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 6, difficulty: "easy", count: 1 });
+  const question = service.allQuestions()[0];
+  await service.reportQuestion({ questionId: question.id, note: "题干有误" });
+  assert.equal(service.questionIssues()[0].status, "open");
+  await service.setIssueStatus({ questionId: question.id, status: "acknowledged" });
+  assert.equal(service.questionIssues()[0].status, "acknowledged");
+  await assert.rejects(
+    () => service.setIssueStatus({ questionId: question.id, status: "bogus" }),
+    (error) => error.status === 400,
+  );
+  await service.restoreQuestion(question.id);
+  assert.equal(service.questionIssues().length, 0);
+});
+
+test("模型调用会记录 token 用量并可汇总", async (t) => {
+  const { service } = await fixture(t);
+  await service.recordLlmUsage({
+    kind: "mcq",
+    model: "test-model",
+    promptTokens: 1200,
+    completionTokens: 800,
+    requests: 1,
+  });
+  await service.recordLlmUsage({
+    kind: "mcq",
+    model: "test-model",
+    promptTokens: 500,
+    completionTokens: 200,
+    requests: 2,
+  });
+  const summary = service.llmUsageSummary();
+  assert.equal(summary.requests, 3);
+  assert.equal(summary.promptTokens, 1700);
+  assert.equal(summary.completionTokens, 1000);
+  assert.ok(summary.recent.length >= 2);
+});
+
+test("VACUUM INTO 在线备份生成独立数据库文件", async (t) => {
+  const { service, directory } = await fixture2(t);
+  await addQuestions(service, { chapter: 3, difficulty: "easy", count: 2 });
+  const result = await service.backupDatabase();
+  const { stat } = await import("node:fs/promises");
+  const { join } = await import("node:path");
+  const info = await stat(join(directory, "backups", result.file));
+  assert.ok(info.size > 0);
+  // 再备份一次应保留两份并清理到上限内
+  const second = await service.backupDatabase();
+  assert.notEqual(second.file, result.file);
+});
+
+// 供备份测试使用的目录可见 fixture(返回 service 与临时目录)。
+async function fixture2(t) {
+  const directory = await mkdtemp(join(tmpdir(), "architect-test-"));
+  const store = new JsonStore(join(directory, "state.json"));
+  t.after(() => {
+    store.close();
+    return rm(directory, { recursive: true, force: true });
+  });
+  await store.init();
+  const service = new PracticeService({ store, root });
+  await service.init();
+  return { service, directory };
+}

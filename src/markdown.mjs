@@ -1,4 +1,72 @@
-const blockStart = /^(?:#{1,6}\s|```|[-*+]\s+|\d+\.\s+|>\s?|---+$|\|)/;
+const blockStart = /^(?:#{1,6}\s|```|[-*+]\s+|\d+\.\s+|>\s?|---+$|\||<svg\b|<div\b)/i;
+const safeSvgElements = new Set([
+  "svg",
+  "title",
+  "desc",
+  "defs",
+  "pattern",
+  "path",
+  "g",
+  "rect",
+  "line",
+  "text",
+  "tspan",
+  "use",
+  "circle",
+  "ellipse",
+  "polygon",
+  "polyline",
+]);
+const safeSvgAttributes = new Set([
+  "xmlns",
+  "xmlns:xlink",
+  "viewbox",
+  "width",
+  "height",
+  "id",
+  "class",
+  "role",
+  "aria-labelledby",
+  "x",
+  "y",
+  "x1",
+  "y1",
+  "x2",
+  "y2",
+  "cx",
+  "cy",
+  "r",
+  "rx",
+  "ry",
+  "d",
+  "points",
+  "fill",
+  "fill-rule",
+  "fill-opacity",
+  "stroke",
+  "stroke-width",
+  "stroke-opacity",
+  "stroke-dasharray",
+  "stroke-linecap",
+  "stroke-linejoin",
+  "opacity",
+  "text-anchor",
+  "font-family",
+  "font-size",
+  "font-weight",
+  "dominant-baseline",
+  "alignment-baseline",
+  "transform",
+  "preserveaspectratio",
+  "patternunits",
+  "patterncontentunits",
+  "patterntransform",
+  "clip-path",
+  "clip-rule",
+  "vector-effect",
+  "href",
+  "xlink:href",
+]);
 
 export function renderMarkdown(value, baseUrl = "") {
   const lines = String(value ?? "")
@@ -21,6 +89,7 @@ export function renderMarkdown(value, baseUrl = "") {
 function readBlock(lines, index, baseUrl) {
   const line = lines[index];
   if (/^```/.test(line)) return readCodeBlock(lines, index);
+  if (isSvgBlockStart(lines, index)) return readSvgBlock(lines, index);
   if (/^\|/.test(line) && isTableSeparator(lines[index + 1]))
     return readTable(lines, index, baseUrl);
   if (/^(#{1,6})\s+/.test(line)) return readHeading(line, index, baseUrl);
@@ -29,6 +98,79 @@ function readBlock(lines, index, baseUrl) {
   if (/^>\s?/.test(line)) return readQuote(lines, index, baseUrl);
   if (/^---+$/.test(line.trim())) return { html: "<hr />", next: index + 1 };
   return readParagraph(lines, index, baseUrl);
+}
+
+function isSvgBlockStart(lines, index) {
+  const line = String(lines[index] || "").trim();
+  if (/^<svg\b/i.test(line)) return true;
+  return (
+    /^<div\b[^>]*>\s*$/i.test(line) &&
+    /^\s*<svg\b/i.test(String(lines[index + 1] || ""))
+  );
+}
+
+function readSvgBlock(lines, index) {
+  let next = index;
+  const wrapper = /^<div\b[^>]*>\s*$/i.test(String(lines[next] || "").trim());
+  if (wrapper) next += 1;
+  const body = [];
+  let closed = false;
+  while (next < lines.length) {
+    body.push(lines[next]);
+    if (/<\/svg\s*>/i.test(lines[next])) {
+      next += 1;
+      closed = true;
+      break;
+    }
+    next += 1;
+  }
+  if (wrapper && closed && /^\s*<\/div>\s*$/i.test(String(lines[next] || ""))) next += 1;
+  const source = body.join("\n");
+  const svg = closed ? sanitizeSvg(source) : "";
+  if (!svg) {
+    return {
+      html: `<pre class="markdown-code-block"><code>${escapeHtml(source)}</code></pre>`,
+      next,
+    };
+  }
+  return {
+    html: `<figure class="markdown-svg" role="img">${svg}</figure>`,
+    next,
+  };
+}
+
+// 教材 SVG 只保留绘图所需标签和属性，避免执行脚本或加载外部资源。
+function sanitizeSvg(value) {
+  let svg = String(value || "").trim();
+  if (!/^<svg\b/i.test(svg) || !/<\/svg>\s*$/i.test(svg)) return "";
+  svg = svg
+    .replace(/<script\b[\s\S]*?<\/script\s*>/gi, "")
+    .replace(/<foreignObject\b[\s\S]*?<\/foreignObject\s*>/gi, "")
+    .replace(/<style\b[\s\S]*?<\/style\s*>/gi, "")
+    .replace(/<(?:animate|animateMotion|animateTransform|set)\b[^>]*>[\s\S]*?<\/(?:animate|animateMotion|animateTransform|set)\s*>/gi, "")
+    .replace(/<\/?([a-z][\w:-]*)\b[^>]*>/gi, (tag, rawName) => {
+      const name = rawName.toLowerCase();
+      if (!safeSvgElements.has(name)) return "";
+      if (tag.startsWith("</")) return `</${name}>`;
+      const attributes = [];
+      const attributePattern = /([^\s=/>]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
+      for (const match of tag.matchAll(attributePattern)) {
+        const attribute = match[1].toLowerCase();
+        const attributeValue = match[2] ?? match[3] ?? match[4] ?? "";
+        if (!safeSvgAttributes.has(attribute)) continue;
+        if (
+          (attribute === "href" || attribute === "xlink:href") &&
+          !attributeValue.trim().startsWith("#")
+        ) continue;
+        if (/url\(/i.test(attributeValue) && !/^url\(\s*['"]?#[-\w:.]+['"]?\s*\)$/i.test(attributeValue))
+          continue;
+        if (/javascript:|data:/i.test(attributeValue)) continue;
+        attributes.push(`${match[1]}="${escapeHtml(attributeValue)}"`);
+      }
+      const selfClosing = /\/>$/.test(tag);
+      return `<${name}${attributes.length ? ` ${attributes.join(" ")}` : ""}${selfClosing ? " />" : ">"}`;
+    });
+  return /<svg\b/i.test(svg) && /<\/svg>\s*$/i.test(svg) ? svg : "";
 }
 
 function readCodeBlock(lines, index) {

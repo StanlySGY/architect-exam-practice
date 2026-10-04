@@ -48,11 +48,16 @@
             </div>
             <div class="sidebar-progress-track"><span id="sidebar-plan-bar"></span></div>
           </div>
-          <button class="sidebar-status" data-view="data" type="button">
-            <span class="status-dot" aria-hidden="true"></span>
-            <span class="sidebar-status-label">模型状态</span>
-            <span id="sidebar-model-status">未配置</span>
-          </button>
+          <div class="sidebar-footer-row">
+            <button class="sidebar-status" data-view="data" type="button">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span class="sidebar-status-label">模型状态</span>
+              <span id="sidebar-model-status">未配置</span>
+            </button>
+            <button id="theme-toggle" class="theme-toggle" type="button" title="切换浅色 / 深色主题 (Ctrl+J)">
+              <span aria-hidden="true">◐</span><span id="theme-toggle-label">浅色</span>
+            </button>
+          </div>
         </div>
       </aside>
       <div class="content">
@@ -84,6 +89,16 @@
               </select></label
             >
           </div>
+        </section>
+        <section id="study-queue" class="panel study-queue" hidden>
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">下一步</p>
+              <h2>今天接着学</h2>
+            </div>
+            <span id="study-queue-status" class="availability"></span>
+          </div>
+          <div id="study-queue-body" aria-busy="false" aria-live="polite"></div>
         </section>
         <section id="resume-panel" class="panel resume-panel" hidden>
           <div>
@@ -149,8 +164,8 @@
             <div class="review-count">
               <strong id="due-count">0</strong><span>道待回顾</span>
             </div>
-            <p>复习按 1、3、7、14、30 天间隔推进，连续五次答对后自动标记为已掌握。</p>
-            <button id="start-review" class="secondary wide" type="button">
+            <p>复习间隔由 FSRS 根据记忆稳定度动态安排，可自评四档难度；连续五次答对后自动标记为已掌握。</p>
+            <button id="start-review" class="secondary wide" type="button" disabled>
               开始回顾
             </button>
           </aside>
@@ -255,7 +270,7 @@
               </select></label
             >
             <p class="muted" style="margin: 0 0 18px">
-              按题号顺序组卷，题量以该考期实际题目为准；交卷规则与综合知识模拟卷相同。
+              按题号顺序组卷，题量以该考期实际题目为准；交卷规则与综合知识模拟卷相同。题干和答案来自第三方整理，不是官方答案；缺失题号会标在考期名称后。
             </p>
             <button id="start-real-exam" class="primary wide" type="submit" disabled>
               开始真题套卷 <span>→</span>
@@ -324,6 +339,7 @@
                   下一题 →
                 </button>
               </div>
+              <p class="keycap-hint muted"><kbd>A</kbd>–<kbd>D</kbd> 选择 · <kbd>1</kbd>–<kbd>3</kbd> 置信度 · <kbd>Enter</kbd> 下一题 · <kbd>Ctrl</kbd>+<kbd>K</kbd> 命令面板</p>
             </section>
           </div>
           <div class="submit-bar">
@@ -347,7 +363,7 @@
           </div>
           <div class="page-actions">
             <button id="export-wrong" class="ghost">导出错题</button>
-            <button id="review-all" class="primary">回顾未掌握错题</button>
+            <button id="review-all" class="primary" disabled>回顾未掌握错题</button>
           </div>
         </div>
         <div id="wrong-summary" class="summary-grid"></div>
@@ -449,6 +465,7 @@
                 <button id="materials-next" class="ghost" type="button" aria-label="下一篇资料">下一篇</button>
                 <button id="materials-font-down" class="ghost" type="button" aria-label="减小字号">A−</button>
                 <button id="materials-font-up" class="ghost" type="button" aria-label="增大字号">A＋</button>
+                <button id="materials-serif" class="ghost" type="button" aria-pressed="false" title="切换宋体正文">宋体</button>
                 <button id="materials-width" class="ghost" type="button">窄版</button>
                 <button id="materials-focus" class="ghost" type="button">专注阅读</button>
               </div>
@@ -608,7 +625,15 @@
                         <option value="degree">按关联度</option>
                       </select>
                     </label>
-                    <div class="wiki-graph-tools">
+                    <label class="wiki-graph-colorby">
+                      <span>邻域</span>
+                      <select id="wiki-graph-depth" aria-label="选中节点的邻域高亮深度">
+                        <option value="1">1 度</option>
+                        <option value="2">2 度</option>
+                        <option value="0">关</option>
+                      </select>
+                    </label>
+                  <div class="wiki-graph-tools">
                       <button id="wiki-graph-fit" class="graph-tool-button" type="button" title="缩放至显示全部节点">
                         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                           <polyline points="4 14 10 14 10 20" />
@@ -729,7 +754,17 @@
           </div>
         </div>
         <div id="stats-summary" class="summary-grid" aria-busy="false" aria-live="polite"></div>
+        <div id="stats-memory" class="memory-strip" aria-busy="false"></div>
         <div class="stats-layout">
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>打卡热力图（近 26 周）</h2></div>
+            <div id="stats-heatmap" class="heatmap" aria-busy="false"></div>
+            <div id="stats-taxonomy" class="taxonomy-strip" aria-busy="false"></div>
+          </section>
+          <section class="panel stats-panel">
+            <div class="panel-heading"><h2>章节掌握度</h2></div>
+            <div id="stats-mastery" aria-busy="false"></div>
+          </section>
           <section class="panel stats-panel">
             <div class="panel-heading"><h2>章节正确率</h2></div>
             <div id="chapter-stats" aria-busy="false"></div>
@@ -761,6 +796,16 @@
           </div>
         </div>
         <div id="data-summary" class="summary-grid" aria-busy="false" aria-live="polite"></div>
+        <section class="panel content-health-panel">
+          <div class="panel-heading">
+            <div>
+              <h2>内容质量概览</h2>
+              <p class="muted">来源和校对状态单独统计，不代表答案已经被官方核验。</p>
+            </div>
+            <span id="content-health-status" class="availability"></span>
+          </div>
+          <div id="content-health-body" aria-busy="false" aria-live="polite"></div>
+        </section>
         <section class="panel data-panel model-config-panel">
           <div class="panel-heading">
             <div>
@@ -847,6 +892,9 @@
               <button id="export-data" class="primary" type="button">
                 导出备份
               </button>
+              <button id="backup-db" class="secondary" type="button">
+                备份数据库
+              </button>
               <button id="export-diagnosis" class="ghost" type="button">
                 导出学习诊断
               </button>
@@ -860,6 +908,7 @@
                 hidden
               />
             </div>
+            <p id="llm-usage-summary" class="muted" style="margin:10px 0 0"></p>
           </div>
         </section>
         <section class="panel data-panel danger-panel">
@@ -949,7 +998,7 @@
       </div>
     </dialog>
     <div id="wiki-ask-backdrop" class="wiki-ask-backdrop" hidden></div>
-    <aside id="wiki-ask-drawer" class="wiki-ask-drawer" role="dialog" aria-label="问知识库" hidden>
+    <aside id="wiki-ask-drawer" class="wiki-ask-drawer" role="dialog" aria-modal="true" aria-label="问知识库" aria-hidden="true" hidden>
       <div class="wiki-ask-drawer-head">
         <h2>问知识库</h2>
         <span class="availability">只基于条目作答，答案附引用</span>
@@ -965,6 +1014,23 @@
       </div>
       <div id="wiki-ask-result" class="wiki-ask-result" hidden></div>
     </aside>
+    <dialog id="command-palette" class="command-palette" aria-label="命令面板">
+      <input id="command-input" class="command-input" type="search"
+        placeholder="搜索页面与操作…（↑↓ 选择，Enter 执行，Esc 关闭）" />
+      <ul id="command-list" class="command-list" role="listbox"></ul>
+      <div id="command-empty" class="command-empty" hidden>没有匹配的命令</div>
+    </dialog>
+    <div id="reader-progress" class="reader-progress" aria-hidden="true"></div>
+    <dialog id="bank-edit-dialog" class="app-dialog" aria-labelledby="bank-edit-title">
+      <div class="app-dialog-shell">
+        <h2 id="bank-edit-title">编辑题目</h2>
+        <div class="bank-edit-form" id="bank-edit-form"></div>
+        <div class="app-dialog-actions">
+          <button id="bank-edit-cancel" class="ghost" type="button">取消</button>
+          <button id="bank-edit-save" class="primary" type="button">保存（保留历史版本）</button>
+        </div>
+      </div>
+    </dialog>
     <dialog id="app-dialog" class="app-dialog" aria-labelledby="app-dialog-title">
       <div class="app-dialog-shell">
         <h2 id="app-dialog-title"></h2>

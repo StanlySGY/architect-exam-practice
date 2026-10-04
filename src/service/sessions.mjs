@@ -1,10 +1,17 @@
 // sessions 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
 import { findSection } from "../mindmap.mjs";
-import { addDays, makeId, sample } from "../utils.mjs";
+import { makeId, sample } from "../utils.mjs";
+import {
+  applyReview,
+  memoryForNewLapse,
+  memoryFromLadderRecord,
+  previewSchedule,
+  GRADE,
+  GRADE_NAMES,
+} from "../fsrs.mjs";
 import {
   DIFFICULTIES,
   EXAM_GRACE_SECONDS,
-  REVIEW_INTERVALS,
   isImported,
   presentQuestion,
   answerFeedback,
@@ -15,6 +22,24 @@ import {
   throwIfAborted,
 } from "./helpers.mjs";
 import { PracticeServiceBase } from "./base.mjs";
+
+// 复习毕业线：连续答对次数（调度间隔由 FSRS 决定，毕业语义与旧版一致）。
+export const MASTERED_STREAK = 5;
+
+function cloneQuestion(question) {
+  return JSON.parse(JSON.stringify(question));
+}
+
+// 选项级归因：{A:"...",B:"..."} 归一化，缺省选项不补齐，供复盘逐项解释。
+function normalizeOptionRationale(raw) {
+  if (!isRecord(raw)) return null;
+  const rationale = {};
+  for (const key of ["A", "B", "C", "D"]) {
+    const text = String(raw[key] ?? "").trim();
+    if (text) rationale[key] = text.slice(0, 2000);
+  }
+  return Object.keys(rationale).length ? rationale : null;
+}
 
 export class SessionsDomain extends PracticeServiceBase {
   async createSession({
@@ -81,7 +106,9 @@ export class SessionsDomain extends PracticeServiceBase {
     const records = Object.values(state.wrongBook)
       .filter(
         (record) =>
-          !record.mastered && (includeNotDue || record.nextReviewAt <= now),
+          !record.mastered &&
+          !record.disabledByIssue &&
+          (includeNotDue || record.nextReviewAt <= now),
       )
       .sort((left, right) =>
         left.nextReviewAt.localeCompare(right.nextReviewAt),
@@ -273,6 +300,9 @@ export class SessionsDomain extends PracticeServiceBase {
       paper,
       sourceType,
       questionIds: questions.map((question) => question.id),
+      questionSnapshots: Object.fromEntries(
+        questions.map((question) => [question.id, cloneQuestion(question)]),
+      ),
       checkedAnswers: {},
       answerRevisions: {},
       createdAt,
@@ -297,7 +327,7 @@ export class SessionsDomain extends PracticeServiceBase {
       state.sessions[id] = session;
     });
     return {
-      ...session,
+      ...this.publicSession(session),
       questions: questions.map((question) =>
         presentQuestion(question, this.assets),
       ),
@@ -311,13 +341,13 @@ export class SessionsDomain extends PracticeServiceBase {
       .filter((item) => !item.gradedAt && !item.abandonedAt)
       .sort((left, right) => right.createdAt.localeCompare(left.createdAt))[0];
     if (!session) return null;
-    const map = this.questionMap(state);
+    const map = this.sessionQuestionMap(session, state);
     const questions = session.questionIds
       .map((id) => map.get(id))
       .filter(Boolean);
     const answers = { ...(session.checkedAnswers ?? {}) };
     const payload = {
-      ...session,
+      ...this.publicSession(session),
       questions: questions.map((question) =>
         presentQuestion(question, this.assets),
       ),
@@ -337,6 +367,19 @@ export class SessionsDomain extends PracticeServiceBase {
       }
       payload.checks = checks;
     }
+    return payload;
+  }
+
+  sessionQuestionMap(session, state = this.store.snapshot()) {
+    const current = this.questionMap(state);
+    const snapshots = session.questionSnapshots ?? {};
+    return new Map(
+      (session.questionIds ?? []).map((id) => [id, snapshots[id] ?? current.get(id)]),
+    );
+  }
+
+  publicSession(session) {
+    const { questionSnapshots: _questionSnapshots, ...payload } = session;
     return payload;
   }
 
@@ -416,7 +459,9 @@ export class SessionsDomain extends PracticeServiceBase {
         knowledgeDetail: item.knowledge_detail?.trim() || "",
         commonMistake: item.common_mistake?.trim() || "",
         memoryTip: item.memory_tip?.trim() || "",
+        optionRationale: normalizeOptionRationale(item.option_rationale),
         sourceNode: resolveSourceNode(sourceNode, item.source_node),
+        revision: 1,
         createdAt,
       };
     });
@@ -431,12 +476,13 @@ export class SessionsDomain extends PracticeServiceBase {
     });
   }
 
-  async checkAnswer({ sessionId, questionId, answer }) {
+  async checkAnswer({ sessionId, questionId, answer, confidence }) {
     if (!["A", "B", "C", "D"].includes(answer)) {
       throw Object.assign(new Error("答案必须是 A、B、C 或 D"), {
         status: 400,
       });
     }
+    const confidenceLevel = Number(confidence);
     return this.store.update((state) => {
       const session = state.sessions[sessionId];
       if (!session)
@@ -464,16 +510,39 @@ export class SessionsDomain extends PracticeServiceBase {
           code: "ANSWER_LOCKED",
         });
       }
-      const question = this.questionMap(state).get(questionId);
+      const question = this.sessionQuestionMap(session, state).get(questionId);
       if (!question)
         throw Object.assign(new Error("题目不存在"), { status: 404 });
       session.checkedAnswers[questionId] = answer;
-      return answerFeedback(question, answer, this.assets);
+      // 置信度 1=猜测 2=大概 3=确定；用于错因分类（自信地错=误解，心虚地错=没掌握）。
+      if ([1, 2, 3].includes(confidenceLevel)) {
+        session.confidences ??= {};
+        session.confidences[questionId] = confidenceLevel;
+      }
+      const feedback = answerFeedback(question, answer, this.assets);
+      if (session.mode === "review") {
+        const record = state.wrongBook[questionId];
+        if (record) {
+          record.memory ??= memoryFromLadderRecord(record);
+          record.lastReviewAt ??= record.lastWrongAt;
+          feedback.schedule = {
+            grades: previewSchedule({
+              memory: record.memory,
+              lastReviewAt: record.lastReviewAt,
+              nowIso: this.now(),
+            }),
+            graduation: MASTERED_STREAK,
+            currentStreak: record.correctStreak ?? 0,
+          };
+        }
+      }
+      return feedback;
     });
   }
 
-  async grade({ sessionId, answers = {} }) {
+  async grade({ sessionId, answers = {}, ratings = {} }) {
     const submittedAnswers = isRecord(answers) ? answers : {};
+    const submittedRatings = isRecord(ratings) ? ratings : {};
     return this.store.update((draft) => {
       const session = draft.sessions[sessionId];
       if (!session)
@@ -504,9 +573,12 @@ export class SessionsDomain extends PracticeServiceBase {
           }
         }
       }
-      const map = this.questionMap(draft);
+      // 判卷必须使用会话开始时的题目快照；统计和 Elo 则要回写当前题库记录。
+      // 题库编辑或导入更新后，不能把快照对象当成 state.generatedQuestions 中的记录。
+      const snapshotMap = this.sessionQuestionMap(session, draft);
+      const liveMap = this.questionMap(draft);
       const questions = session.questionIds
-        .map((id) => map.get(id))
+        .map((id) => snapshotMap.get(id))
         .filter(Boolean);
       const details = questions.map((question) => {
         // 超时后只读服务端已保存答案；正常练习保留客户端补交兼容行为。
@@ -518,6 +590,12 @@ export class SessionsDomain extends PracticeServiceBase {
               ? submittedAnswers[question.id]
               : null);
         const attached = this.assets.attachChoice(question);
+        const confidence = session.confidences?.[question.id] ?? null;
+        const rating = [1, 2, 3, 4].includes(
+          Number(submittedRatings[question.id]),
+        )
+          ? Number(submittedRatings[question.id])
+          : null;
         return {
           id: question.id,
           question: attached.question,
@@ -531,10 +609,18 @@ export class SessionsDomain extends PracticeServiceBase {
           knowledgeDetail: question.knowledgeDetail,
           commonMistake: question.commonMistake,
           memoryTip: question.memoryTip,
+          optionRationale: question.optionRationale ?? null,
           sourceNode: question.sourceNode,
+          sourceType: question.sourceType ?? "generated",
+          sourceFile: question.sourceFile ?? null,
+          answerTrust: question.answerTrust ?? null,
+          answerTrustLabel: question.answerTrustLabel ?? null,
+          answerTrustNote: question.answerTrustNote ?? null,
           figure: attached.figure ?? null,
           figureMissing: Boolean(attached.figureMissing),
           aiAnalysis: attached.aiAnalysis ?? null,
+          confidence,
+          rating,
         };
       });
       const correct = details.filter((detail) => detail.isCorrect).length;
@@ -567,10 +653,21 @@ export class SessionsDomain extends PracticeServiceBase {
       session.submissionStatus = timedOut ? "expired" : "submitted";
       session.deadlineAt ??= this.deadlineAtOf(session);
       draft.attempts.unshift(attempt);
+      const ability = this.userAbility(draft);
       for (const [index, detail] of details.entries()) {
         const question = questions[index];
+        const liveQuestion = liveMap.get(detail.id);
         const existing = draft.wrongBook[detail.id];
+        // 题目级统计与 Elo 难度校准（对所有模式生效，模拟卷也参与校准）。
+        if (liveQuestion) {
+          liveQuestion.stats ??= { seen: 0, correct: 0 };
+          liveQuestion.stats.seen += 1;
+          if (detail.isCorrect) liveQuestion.stats.correct += 1;
+          this.updateElo(draft, liveQuestion, ability, detail.isCorrect);
+        }
         if (!detail.isCorrect) {
+          // 答错/未作答：进入错题本（或记一次遗忘），FSRS 记一次 lapse 并立刻到期。
+          const memory = memoryForNewLapse(existing?.memory ?? null, gradedAt);
           draft.wrongBook[detail.id] = {
             questionId: detail.id,
             chapter: question.chapter,
@@ -581,23 +678,56 @@ export class SessionsDomain extends PracticeServiceBase {
             correctStreak: 0,
             firstWrongAt: existing?.firstWrongAt ?? gradedAt,
             lastWrongAt: gradedAt,
+            lastReviewAt: gradedAt,
             nextReviewAt: gradedAt,
             mastered: false,
+            memory,
+            lastConfidence: detail.confidence ?? existing?.lastConfidence ?? null,
             questionSnapshot: question,
           };
         } else if (session.mode === "review" && existing) {
-          // 间隔阶梯 1/3/7/14/30 天走完（连续 5 次复习答对）后才标记掌握，
-          // 让每个间隔档位都有真实的巩固作用。
-          const streak = existing.correctStreak + 1;
-          existing.correctStreak = streak;
-          existing.mastered = streak >= REVIEW_INTERVALS.length;
-          existing.nextReviewAt = addDays(
-            gradedAt,
-            REVIEW_INTERVALS[Math.min(streak - 1, REVIEW_INTERVALS.length - 1)],
-          );
+          // 复习答对：间隔由 FSRS-6 决定；连续答对满 MASTERED_STREAK 次即毕业。
+          // 客户端可在判题后补充自评（再记/困难/良好/简单），默认按"良好"处理。
+          const rating = detail.rating ?? GRADE.GOOD;
+          const memory = applyReview({
+            memory: existing.memory ?? memoryFromLadderRecord(existing),
+            lastReviewAt: existing.lastReviewAt ?? existing.lastWrongAt,
+            grade: rating,
+            nowIso: gradedAt,
+          });
+          existing.memory = memory.memory;
+          existing.lastReviewAt = gradedAt;
+          existing.correctStreak = (existing.correctStreak ?? 0) + 1;
+          existing.mastered = existing.correctStreak >= MASTERED_STREAK;
+          existing.nextReviewAt = memory.due;
+          existing.lastConfidence = detail.confidence ?? existing.lastConfidence ?? null;
+        } else if (detail.confidence && existing) {
+          existing.lastConfidence = detail.confidence;
         }
       }
       return { ...attempt, details };
     });
+  }
+
+  // 学习者能力估计（Elo，全库共享一个能力值；题目难度各自维护）。
+  userAbility(state) {
+    const settings = state.settings ?? {};
+    return Number(settings.abilityRating) || 1500;
+  }
+
+  // 在线 Elo 更新：题目难度与学习者能力互相逼近。K 取小值保证单用户低频作答下平稳。
+  updateElo(state, question, ability, isCorrect) {
+    const rating = Number(question.eloRating) || 1500;
+    const expected = 1 / (1 + 10 ** ((ability - rating) / 400));
+    const score = isCorrect ? 1 : 0;
+    const kQuestion = 24;
+    question.eloRating = Math.round(
+      rating + kQuestion * (score - expected),
+    );
+    const kAbility = 4;
+    const nextAbility =
+      ability + kAbility * (score - expected);
+    state.settings ??= {};
+    state.settings.abilityRating = Math.round(nextAbility);
   }
 }

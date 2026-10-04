@@ -87,6 +87,27 @@ export class CaseExamDomain extends DataDomain {
     return records;
   }
 
+  // 模拟卷创建后固定案例内容，避免题库重导入或编辑改变进行中的试卷。
+  snapshotCase(caseItem) {
+    return structuredClone(caseItem);
+  }
+
+  // 新版模拟卷优先使用卷内快照；旧记录没有快照时继续读取当前案例库。
+  resolveCaseExamCases(exam, state = this.store.snapshot()) {
+    const currentById = new Map(
+      state.caseQuestions.map((item) => [item.id, item]),
+    );
+    const snapshots = Array.isArray(exam.caseSnapshots)
+      ? exam.caseSnapshots
+      : [];
+    const snapshotById = new Map(
+      snapshots.map((item) => [item.id, item]),
+    );
+    return (exam.caseIds ?? [])
+      .map((caseId) => snapshotById.get(caseId) ?? currentById.get(caseId))
+      .filter(Boolean);
+  }
+
   casePage({ sourceType = "all", term = "all", limit = 4, offset = 0 } = {}) {
     const records = this.caseList({ sourceType, term });
     const pageSize = Math.max(1, Math.min(20, Number(limit) || 4));
@@ -139,6 +160,7 @@ export class CaseExamDomain extends DataDomain {
       const exam = {
         id,
         caseIds: selected.map((item) => item.id),
+        caseSnapshots: selected.map((item) => this.snapshotCase(item)),
         durationSeconds,
         startedAt: createdAt,
         drafts: {},
@@ -171,6 +193,7 @@ export class CaseExamDomain extends DataDomain {
     const exam = {
       id,
       caseIds: selected.map((item) => item.id),
+      caseSnapshots: selected.map((item) => this.snapshotCase(item)),
       durationSeconds,
       startedAt: createdAt,
       drafts: {},
@@ -190,9 +213,9 @@ export class CaseExamDomain extends DataDomain {
     return this.caseExamPayload(exam, selected);
   }
 
-  caseExamPayload(exam, cases) {
+  caseExamPayload(exam, cases = this.resolveCaseExamCases(exam)) {
     const caseById = new Map(cases.map((item) => [item.id, item]));
-    const payloadCases = exam.caseIds
+    const payloadCases = (exam.caseIds ?? [])
       .map((caseId) => caseById.get(caseId))
       .filter(Boolean)
       .map((item) =>
@@ -201,8 +224,10 @@ export class CaseExamDomain extends DataDomain {
           texts: { ...(exam.drafts?.[item.id] ?? {}) },
         }),
       );
+    const publicExam = { ...exam };
+    delete publicExam.caseSnapshots;
     return {
-      ...exam,
+      ...publicExam,
       cases: payloadCases,
       remainingSeconds: this.remainingSecondsOf(exam),
     };
@@ -214,11 +239,19 @@ export class CaseExamDomain extends DataDomain {
       .filter((item) => !item.gradedAt && !item.abandonedAt)
       .sort((left, right) => right.startedAt.localeCompare(left.startedAt))[0];
     if (!exam) return null;
-    const caseById = new Map(
-      state.caseQuestions.map((item) => [item.id, item]),
-    );
-    const cases = exam.caseIds.map((caseId) => caseById.get(caseId)).filter(Boolean);
+    const cases = this.resolveCaseExamCases(exam, state);
     return this.caseExamPayload(exam, cases);
+  }
+
+  // 返回评分所需的私有案例内容（含参考答案），供服务端交给评分器使用。
+  caseExamForGrading(examId) {
+    const state = this.store.snapshot();
+    const exam = state.caseExams.find((item) => item.id === examId);
+    if (!exam) return null;
+    return {
+      exam,
+      cases: this.resolveCaseExamCases(exam, state),
+    };
   }
 
   async saveCaseExamDraft({ examId, caseId, questionId, text }) {
@@ -242,7 +275,9 @@ export class CaseExamDomain extends DataDomain {
       }
       if (!exam.caseIds.includes(caseId))
         throw Object.assign(new Error("案例不属于当前模拟卷"), { status: 400 });
-      const caseItem = state.caseQuestions.find((item) => item.id === caseId);
+      const caseItem = this.resolveCaseExamCases(exam, state).find(
+        (item) => item.id === caseId,
+      );
       if (!caseItem || !caseItem.questions.some((q) => q.id === questionId))
         throw Object.assign(new Error("小问不存在"), { status: 404 });
       exam.drafts ??= {};
@@ -281,7 +316,6 @@ export class CaseExamDomain extends DataDomain {
 
   caseExamList() {
     const state = this.store.snapshot();
-    const caseById = new Map(state.caseQuestions.map((item) => [item.id, item]));
     return state.caseExams
       .toSorted((left, right) => right.startedAt.localeCompare(left.startedAt))
       .slice(0, 50)
@@ -293,7 +327,12 @@ export class CaseExamDomain extends DataDomain {
         durationSeconds: exam.durationSeconds,
         totalScore: exam.grade?.total_score ?? null,
         maxScore: exam.grade?.max_score ?? null,
-        titles: exam.caseIds.map((caseId) => caseById.get(caseId)?.title ?? "已删除案例"),
+        titles: (exam.caseIds ?? []).map((caseId) => {
+          const caseItem = this.resolveCaseExamCases(exam, state).find(
+            (item) => item.id === caseId,
+          );
+          return caseItem?.title ?? "已删除案例";
+        }),
       }));
   }
 
@@ -331,11 +370,19 @@ export class CaseExamDomain extends DataDomain {
   }
 
   // 单案例 AI 评分持久化到案例记录（与模拟卷判分对齐）。
-  async saveCaseGrade({ caseId, grade }) {
+  async saveCaseGrade({ caseId, grade, answers = undefined }) {
     return this.store.update((state) => {
       const caseItem = state.caseQuestions.find((item) => item.id === caseId);
       if (!caseItem)
         throw Object.assign(new Error("案例不存在"), { status: 404 });
+      if (answers && typeof answers === "object") {
+        caseItem.drafts ??= {};
+        for (const question of caseItem.questions ?? []) {
+          if (Object.prototype.hasOwnProperty.call(answers, question.id)) {
+            caseItem.drafts[question.id] = String(answers[question.id] ?? "");
+          }
+        }
+      }
       caseItem.grade = grade;
       caseItem.gradedAt = grade.gradedAt ?? this.now();
       return { caseId, gradedAt: caseItem.gradedAt };

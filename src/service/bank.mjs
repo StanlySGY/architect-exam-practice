@@ -1,6 +1,16 @@
 // bank 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
-import { isImported, normalizeComparableText } from "./helpers.mjs";
+import { isImported, normalizeComparableText, validateOptions } from "./helpers.mjs";
 import { ReviewDomain } from "./review.mjs";
+
+// 题目难度诊断标签：基于题目自身作答统计（至少 5 次作答才判定）。
+function difficultyFlagOf(question) {
+  const stats = question.stats;
+  if (!stats || stats.seen < 5) return null;
+  const facility = stats.correct / stats.seen;
+  if (facility >= 1) return "too_easy";
+  if (facility <= 0.2) return "too_hard";
+  return null;
+}
 
 export class BankDomain extends ReviewDomain {
   questionBank({
@@ -76,8 +86,84 @@ export class BankDomain extends ReviewDomain {
       records: records.slice(start, start + pageSize).map((question) => ({
         ...this.assets.attachChoice(question),
         status: question.disabledAt ? "disabled" : "active",
+        stats: question.stats ?? null,
+        eloRating: question.eloRating ?? null,
+        revision: question.revision ?? 1,
+        difficultyFlag: difficultyFlagOf(question),
       })),
     };
+  }
+
+  // 编辑生成题：旧版本快照存入 revisions（保留最近 5 版），revision 递增。
+  async updateQuestion({ questionId, updates }) {
+    return this.store.update((state) => {
+      const question = this.questionMap(state).get(questionId);
+      if (!question)
+        throw Object.assign(new Error("题目不存在"), { status: 404 });
+      if (isImported(question)) {
+        throw Object.assign(
+          new Error("导入的真题/模拟题只读，不能编辑"),
+          { status: 409, code: "IMPORTED_QUESTION_READONLY" },
+        );
+      }
+      const patch = {};
+      if (typeof updates?.question === "string" && updates.question.trim())
+        patch.question = updates.question.trim();
+      if (validateOptions(updates?.options)) patch.options = updates.options;
+      if (["A", "B", "C", "D"].includes(updates?.correctAnswer))
+        patch.correctAnswer = updates.correctAnswer;
+      if (typeof updates?.analysis === "string")
+        patch.analysis = updates.analysis.trim() || "暂无解析";
+      if (typeof updates?.knowledgePoint === "string")
+        patch.knowledgePoint = updates.knowledgePoint.trim();
+      if (["easy", "medium", "hard"].includes(updates?.difficulty))
+        patch.difficulty = updates.difficulty;
+      if (!Object.keys(patch).length) {
+        throw Object.assign(new Error("没有可更新的题目字段"), { status: 400 });
+      }
+      question.revisions ??= [];
+      question.revisions.unshift({
+        revision: question.revision ?? 1,
+        editedAt: this.now(),
+        snapshot: {
+          question: question.question,
+          options: { ...question.options },
+          correctAnswer: question.correctAnswer,
+          analysis: question.analysis,
+          knowledgePoint: question.knowledgePoint,
+          difficulty: question.difficulty,
+        },
+      });
+      question.revisions = question.revisions.slice(0, 5);
+      Object.assign(question, patch);
+      question.revision = (question.revision ?? 1) + 1;
+      question.editedAt = this.now();
+      return {
+        questionId,
+        revision: question.revision,
+        updatedFields: Object.keys(patch),
+      };
+    });
+  }
+
+  // 问题题处理状态机：open → acknowledged →（恢复时）resolved。
+  async setIssueStatus({ questionId, status }) {
+    if (!["open", "acknowledged"].includes(status)) {
+      throw Object.assign(new Error("问题题状态无效"), { status: 400 });
+    }
+    return this.store.update((state) => {
+      const issue = state.questionIssues[questionId];
+      if (!issue)
+        throw Object.assign(new Error("问题题记录不存在"), { status: 404 });
+      if (issue.resolvedAt) {
+        throw Object.assign(new Error("该问题题已恢复，状态不再变更"), {
+          status: 409,
+        });
+      }
+      issue.status = status;
+      issue.statusAt = this.now();
+      return { questionId, status };
+    });
   }
 
   async deleteQuestion({ questionId, confirm }) {
@@ -105,12 +191,31 @@ export class BankDomain extends ReviewDomain {
       delete state.questionIssues[questionId];
       const deletedAt = this.now();
       for (const session of Object.values(state.sessions)) {
-        if (session.gradedAt || session.abandonedAt) continue;
-        session.questionIds = session.questionIds.filter(
+        const completed = Boolean(
+          session.gradedAt ||
+            session.abandonedAt ||
+            ["abandoned", "submitted", "expired", "graded"].includes(session.status),
+        );
+        const hasSnapshot = Object.hasOwn(
+          session.questionSnapshots ?? {},
+          questionId,
+        );
+        if (completed && hasSnapshot) continue;
+        session.questionIds = (session.questionIds ?? []).filter(
           (id) => id !== questionId,
         );
-        if (session.checkedAnswers) delete session.checkedAnswers[questionId];
-        if (!session.questionIds.length) session.abandonedAt = deletedAt;
+        for (const field of [
+          "checkedAnswers",
+          "answerRevisions",
+          "confidences",
+          "questionSnapshots",
+        ]) {
+          if (session[field]) delete session[field][questionId];
+        }
+        if (!completed && !session.questionIds.length) {
+          session.abandonedAt = deletedAt;
+          session.status = "abandoned";
+        }
       }
       return { questionId, deleted: true };
     });
@@ -124,6 +229,7 @@ export class BankDomain extends ReviewDomain {
       .sort((left, right) => right.createdAt.localeCompare(left.createdAt))
       .map((issue) => ({
         ...issue,
+        status: issue.status ?? "open",
         question: map.get(issue.questionId)?.question ?? issue.question,
         chapter: map.get(issue.questionId)?.chapter ?? issue.chapter,
       }));
@@ -141,6 +247,7 @@ export class BankDomain extends ReviewDomain {
         questionId,
         chapter: question.chapter,
         note: normalizedNote || "用户标记题目有问题",
+        status: "open",
         createdAt: reportedAt,
         resolvedAt: null,
       };
