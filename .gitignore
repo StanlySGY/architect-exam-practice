@@ -25,3 +25,6 @@ data/*.sqlite.bak*
 .v2c/
 .zcode/
 data/archive/
+
+# local test artifacts
+artifacts/
