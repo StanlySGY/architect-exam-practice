@@ -3963,6 +3963,7 @@ function paperNode(paper) {
     }
   });
   const gradeNode = paper.grade ? paperGradeNode(paper.grade) : null;
+  const aiSample = paper.aiSample;
   return element("article", { className: "panel paper-card" }, [
     element("div", { className: "paper-card-header" }, [
       element("div", { className: "bank-tags" }, [
@@ -3981,6 +3982,16 @@ function paperNode(paper) {
       ? element("details", { className: "paper-points" }, [
           element("summary", { text: "写作要点（" + writingPoints.length + "）" }),
           element("ul", {}, writingPoints),
+        ])
+      : null,
+    aiSample
+      ? element("details", { className: "paper-points paper-ai-sample" }, [
+          element("summary", { text: "AI 参考范文（非官方，学习结构用）" }),
+          element("p", { className: "muted", text: aiSample.note }),
+          element("div", {
+            className: "paper-ai-sample-content",
+            text: aiSample.content,
+          }),
         ])
       : null,
     textarea,
@@ -4398,6 +4409,9 @@ function wikiNode(entry) {
     ]),
     element("h3", { className: "wiki-title", text: entry.title }),
     element("p", { className: "wiki-summary", text: entry.summary }),
+    entry.aiCheckNote
+      ? element("p", { className: "wiki-ai-note muted", text: entry.aiCheckNote })
+      : null,
     sourceNodeNode(entry.sourceNode),
     keyPoints.length
       ? element("div", { className: "wiki-section" }, [

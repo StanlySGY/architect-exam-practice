@@ -151,6 +151,36 @@ test("资料支持 Markdown、Mermaid、HTML、SVG 和纯文本格式", async (t
   assert.equal(html.markdown, html.content);
 });
 
+test("论文挂载 AI 参考范文，无样本时字段为 null", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-essay-sample-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  await writeFile(
+    join(directory, "ai-essay-samples.json"),
+    JSON.stringify({
+      schemaVersion: 1,
+      samples: {
+        "essay-real-1": {
+          content: "摘要\n我负责某电商架构项目……\n正文\n我于 2024 年……",
+          generatedAt: "2026-10-05T00:00:00.000Z",
+          model: "test-model",
+        },
+        "essay-broken": { content: "   " },
+      },
+    }),
+    "utf8",
+  );
+  const assets = new ExamAssets({ dataDir: directory });
+  await assets.load();
+  const withSample = assets.attachPaper({ id: "essay-real-1", title: "论微服务" });
+  assert.equal(withSample.aiSample.model, "test-model");
+  assert.match(withSample.aiSample.content, /摘要/);
+  assert.match(withSample.aiSample.note, /非官方/);
+  const blank = assets.attachPaper({ id: "essay-broken", title: "空白样本" });
+  assert.equal(blank.aiSample, null);
+  const missing = assets.attachPaper({ id: "essay-none", title: "无样本" });
+  assert.equal(missing.aiSample, null);
+});
+
 test("论文结构：合格草稿通过，缺摘要或过短则拒绝", () => {
   const valid = validateEssaySample({}, essayDraft());
   assert.equal(valid.valid, true);

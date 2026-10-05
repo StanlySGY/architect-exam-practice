@@ -453,6 +453,10 @@ export class WikiDomain extends EssayDomain {
         entry.commonMistakes = updates.commonMistakes.map((p) => String(p).trim()).filter(Boolean);
       if (Array.isArray(updates.related))
         entry.related = updates.related.map((p) => String(p).trim()).filter(Boolean);
+      if (typeof updates.aiCheckedAt === "string")
+        entry.aiCheckedAt = updates.aiCheckedAt.trim() || null;
+      if (typeof updates.aiCheckNote === "string")
+        entry.aiCheckNote = updates.aiCheckNote.trim() || null;
       entry.updatedAt = this.now();
       return { entryId, saved: true };
     });

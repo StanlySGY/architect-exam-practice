@@ -83,7 +83,7 @@ export class EssayDomain extends CaseExamDomain {
     if (term !== "all" && term !== "") {
       records = records.filter((item) => item.term === term);
     }
-    return records;
+    return records.map((item) => this.assets.attachPaper(item));
   }
 
   paperPage({ sourceType = "all", term = "all", limit = 4, offset = 0 } = {}) {

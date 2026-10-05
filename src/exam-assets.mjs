@@ -97,6 +97,7 @@ export class ExamAssets {
     this.figures = new Map();
     this.choiceExplanations = new Map();
     this.caseExplanations = new Map();
+    this.essaySamples = new Map();
     this.materials = [];
     this.materialsNote = "";
     this.loaded = false;
@@ -111,6 +112,10 @@ export class ExamAssets {
     this.caseExplanations = explanationMap(
       await readOptionalJson(resolve(this.dataDir, "ai-case-explanations.json")),
     );
+    const essaySamples = await readOptionalJson(
+      resolve(this.dataDir, "ai-essay-samples.json"),
+    );
+    this.essaySamples = new Map(Object.entries(essaySamples?.samples ?? {}));
     const materials = await readOptionalJson(
       resolve(this.dataDir, "study-materials.json"),
     );
@@ -148,6 +153,22 @@ export class ExamAssets {
     const aiExplanation =
       typeof ai?.content === "string" && ai.content.trim() ? ai.content : null;
     return { ...caseItem, aiExplanation };
+  }
+
+  // 论文 AI 参考范文：按题目 id 挂载，供阅读学习结构，不代表官方范文。
+  attachPaper(paper) {
+    if (!paper) return paper;
+    const sample = this.essaySamples.get(paper.id) ?? null;
+    const aiSample =
+      sample && typeof sample.content === "string" && sample.content.trim()
+        ? {
+            content: sample.content.trim(),
+            generatedAt: sample.generatedAt ?? null,
+            model: sample.model ?? null,
+            note: sample.note ?? "AI 参考范文（非官方），仅供学习论文结构与写法。",
+          }
+        : null;
+    return { ...paper, aiSample };
   }
 
   studyMaterials() {
