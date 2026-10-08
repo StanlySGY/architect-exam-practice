@@ -60,6 +60,39 @@ function assertText(value, label, { required = false, max = MAX_BACKUP_STRING_LE
   }
 }
 
+const QUESTION_REVIEW_STATES = new Set(["pending_review", "approved", "quarantined"]);
+const QUESTION_REVIEW_REASONS = Object.freeze({
+  NO_HUMAN_FACT_CHECK: "no_human_fact_check",
+  SOURCE_NODE_MISSING: "source_node_missing",
+  SOURCE_NODE_UNRESOLVED: "source_node_unresolved",
+  QUESTION_MISSING: "question_missing",
+  OPTIONS_INCOMPLETE: "options_incomplete",
+  OPTIONS_DUPLICATE: "options_duplicate",
+  CORRECT_ANSWER_INVALID: "correct_answer_invalid",
+  ANALYSIS_MISSING: "analysis_missing",
+  KNOWLEDGE_DETAIL_MISSING: "knowledge_detail_missing",
+});
+function isGeneratedQuestion(question) { return (question?.sourceType ?? "generated") === "generated"; }
+function reviewStatusOf(question) { if (!isGeneratedQuestion(question)) return null; return QUESTION_REVIEW_STATES.has(question.reviewStatus) ? question.reviewStatus : "pending_review"; }
+function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; return reviewStatusOf(question) === "approved" && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()); }
+function structureIssuesOf(question, sourceNodeResolved = null) {
+  const issues = [];
+  if (!String(question?.sourceNode ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.SOURCE_NODE_MISSING);
+  else if (sourceNodeResolved === false) issues.push(QUESTION_REVIEW_REASONS.SOURCE_NODE_UNRESOLVED);
+  if (!String(question?.question ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.QUESTION_MISSING);
+  const keys = ["A", "B", "C", "D"];
+  const values = keys.map((key) => String(question?.options?.[key] ?? "").trim());
+  if (values.some((value) => !value)) issues.push(QUESTION_REVIEW_REASONS.OPTIONS_INCOMPLETE);
+  else if (new Set(values).size !== values.length) issues.push(QUESTION_REVIEW_REASONS.OPTIONS_DUPLICATE);
+  if (!keys.includes(question?.correctAnswer)) issues.push(QUESTION_REVIEW_REASONS.CORRECT_ANSWER_INVALID);
+  if (!String(question?.analysis ?? "").trim() || question.analysis === "暂无解析") issues.push(QUESTION_REVIEW_REASONS.ANALYSIS_MISSING);
+  if (!String(question?.knowledgeDetail ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.KNOWLEDGE_DETAIL_MISSING);
+  return issues;
+}
+function reviewReasonLabel(reason) {
+  return { no_human_fact_check: "没有人工事实核验凭据", source_node_missing: "缺少来源导图节点", source_node_unresolved: "来源导图节点无法解析", question_missing: "题干为空", options_incomplete: "选项不完整", options_duplicate: "选项不唯一", correct_answer_invalid: "正确答案非法", analysis_missing: "解析为空或仅为占位文本", knowledge_detail_missing: "缺少知识点详解" }[reason] ?? reason;
+}
+
 function assertId(value, label) {
   assertText(value, label, { required: true, max: 256 });
 }
@@ -149,6 +182,12 @@ function validateBackupData(data) {
     if (question.sourceType !== undefined && !["generated", "real", "mock"].includes(question.sourceType)) {
       invalidBackup("中包含无效题目来源");
     }
+    if (question.reviewStatus !== undefined && !["pending_review", "approved", "quarantined"].includes(question.reviewStatus)) invalidBackup("中包含无效审校状态");
+    if (question.reviewReasons !== undefined && !Array.isArray(question.reviewReasons)) invalidBackup("中包含无效审校原因");
+    if (question.reviewedBy !== undefined) assertText(question.reviewedBy, "题目审校人", { max: 256 });
+    if (question.reviewEvidence !== undefined) assertText(question.reviewEvidence, "题目审校凭据", { max: 4_000 });
+    assertTime(question.reviewedAt, "题目审校时间");
+    assertTime(question.reviewAuditedAt, "题目审计时间");
     assertTime(question.createdAt, "题目创建时间");
   }
 
@@ -442,6 +481,13 @@ function resolveSourceNode(sourceNode, rawSourceNode) {
 
 export {
   IMPORTED_SOURCE_TYPES,
+  isGeneratedQuestion,
+  reviewStatusOf,
+  isQuestionEligibleForFormalStudy,
+  structureIssuesOf,
+  reviewReasonLabel,
+  QUESTION_REVIEW_REASONS,
+  QUESTION_REVIEW_STATES,
   isImported,
   keepImported,
   DIFFICULTIES,

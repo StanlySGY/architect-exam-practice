@@ -2551,13 +2551,19 @@ function renderContentHealth(data) {
   const coverage = data.examCoverage ?? {};
   const wiki = data.wiki ?? {};
   const issues = data.questionIssues ?? {};
+  const review = data.review ?? {};
   const trustRows = (data.answerTrust ?? []).map((item) =>
     element("div", { className: "health-line" }, [
       element("span", { text: item.label }),
       element("strong", { text: item.count }),
     ]),
   );
-  const incompleteRows = (coverage.incomplete ?? []).map((item) =>
+  const reviewRows = Object.entries(review.reasons ?? {}).map(([reason, count]) =>
+    element("div", { className: "health-line" }, [
+      element("span", { text: review.reasonLabels?.[reason] || reason }),
+      element("strong", { text: count }),
+    ]),
+  );  const incompleteRows = (coverage.incomplete ?? []).map((item) =>
     element("div", { className: "health-line health-line-wrap" }, [
       element("span", {
         text:
@@ -2600,6 +2606,9 @@ function renderContentHealth(data) {
         "问题题待处理",
         issues.unresolved ? "warning" : "",
       ),
+      healthSummaryNode(review.pending_review ?? 0, "AI 题待审校", review.pending_review ? "warning" : ""),
+      healthSummaryNode(review.approved ?? 0, "AI 题已批准"),
+      healthSummaryNode(review.quarantined ?? 0, "AI 题已隔离", review.quarantined ? "warning" : ""),
     ]),
     element("div", { className: "health-columns" }, [
       element("section", { className: "health-block" }, [
@@ -2630,6 +2639,10 @@ function renderContentHealth(data) {
             String(wiki.lintProblems ?? 0) +
             " 个自检问题",
         }),
+      ]),
+      element("section", { className: "health-block" }, [
+        element("h3", { text: "AI 题审校原因" }),
+        ...(reviewRows.length ? reviewRows : [element("p", { className: "muted", text: "暂无审校原因" })]),
       ]),
       element("section", { className: "health-block" }, [
         element("h3", { text: "真题套卷覆盖" }),

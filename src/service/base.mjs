@@ -8,6 +8,7 @@ import {
   sectionsOfChapter,
 } from "../mindmap.mjs";
 import { ExamAssets } from "../exam-assets.mjs";
+import { isQuestionEligibleForFormalStudy } from "./helpers.mjs";
 
 export class PracticeServiceBase {
   constructor({
@@ -60,7 +61,7 @@ export class PracticeServiceBase {
       const available = questions.filter(
         (question) =>
           question.chapter === chapter.id &&
-          !question.disabledAt &&
+          isQuestionEligibleForFormalStudy(question) &&
           (question.sourceType ?? "generated") === "generated",
       );
       return {
@@ -112,7 +113,7 @@ export class PracticeServiceBase {
     const counts = this.allQuestions().filter(
       (question) =>
         question.chapter === Number(chapterId) &&
-        !question.disabledAt &&
+        isQuestionEligibleForFormalStudy(question) &&
         (question.sourceType ?? "generated") === "generated",
     );
     return sectionsOfChapter(chapterNode, Number(chapterId)).map((section) => {

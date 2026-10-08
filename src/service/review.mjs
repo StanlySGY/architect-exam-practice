@@ -8,6 +8,7 @@ import {
 } from "../fsrs.mjs";
 import { MASTERED_STREAK } from "./sessions.mjs";
 import { SessionsDomain } from "./sessions.mjs";
+import { isQuestionEligibleForFormalStudy } from "./helpers.mjs";
 
 function studyDay(formatter, timestamp) {
   const parts = Object.fromEntries(
@@ -689,7 +690,7 @@ export class ReviewDomain extends SessionsDomain {
           !record.mastered &&
           !record.disabledByIssue &&
           Boolean(question) &&
-          !question.disabledAt &&
+          isQuestionEligibleForFormalStudy(question) &&
           Number.isFinite(dueAt) &&
           (!Number.isFinite(nowMs) || dueAt <= nowMs)
         );
@@ -735,8 +736,8 @@ export class ReviewDomain extends SessionsDomain {
     const questions = this.allQuestions(state);
     const generatedQuestions = questions.filter(
       (question) =>
-        (question.sourceType ?? "generated") === "generated" &&
-        !question.disabledAt,
+        isQuestionEligibleForFormalStudy(question) &&
+        (question.sourceType ?? "generated") === "generated",
     );
     const chapterStats = this.statistics().chapters;
     const activeWrongByChapter = new Map();

@@ -44,7 +44,7 @@ function essayDraft({ summary = 320, body = 2200 } = {}) {
 
 test("引用图但没有图数据时，练习题只标缺失且不泄露答案", async (t) => {
   const { service } = await fixture(t);
-  await service.addGeneratedQuestions({
+  const generated = await service.addGeneratedQuestions({
     chapter: 4,
     difficulty: "easy",
     source: "mindmap",
@@ -57,6 +57,16 @@ test("引用图但没有图数据时，练习题只标缺失且不泄露答案",
         knowledge_point: "架构分层",
       },
     ],
+  });
+  await service.store.update((state) => {
+    const question = state.generatedQuestions.find((item) => item.id === generated[0].id);
+    question.reviewStatus = "approved";
+    question.reviewReasons = [];
+    question.reviewedBy = "test-fixture-human";
+    question.reviewEvidence = "人工事实核验记录：测试";
+    question.reviewedAt = service.now();
+    question.knowledgeDetail = "测试知识详解";
+    return state;
   });
   const session = await service.createSession({
     chapter: 4,

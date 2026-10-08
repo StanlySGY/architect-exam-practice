@@ -14,6 +14,11 @@ import {
   keepImported,
   validateBackupData,
   isRecord,
+  isGeneratedQuestion,
+  reviewStatusOf,
+  structureIssuesOf,
+  reviewReasonLabel,
+  QUESTION_REVIEW_REASONS,
 } from "./helpers.mjs";
 import { BankDomain } from "./bank.mjs";
 
@@ -160,6 +165,66 @@ function importTargetId(stateItems, incoming, previous) {
 }
 
 export class DataDomain extends BankDomain {
+  async init() {
+    await super.init();
+    await this.auditGeneratedQuestionTrust();
+  }
+
+  sourceNodeResolves(question) {
+    const raw = String(question?.sourceNode ?? "").trim();
+    if (!raw || !this.mindMap) return false;
+    const parts = raw.split(" › ").map((item) => item.trim()).filter(Boolean);
+    if (!parts.length) return false;
+    let node = (this.mindMap.children ?? []).find((item) => item.text?.trim() === parts[0]);
+    if (!node && this.mindMap.text?.trim() === parts[0]) node = this.mindMap;
+    if (!node) return false;
+    for (const part of parts.slice(1)) {
+      node = (node.children ?? []).find((item) => item.text?.trim() === part);
+      if (!node) return false;
+    }
+    return true;
+  }
+
+  async auditGeneratedQuestionTrust() {
+    const now = this.now();
+    return this.store.update((state) => {
+      const generated = state.generatedQuestions.filter(isGeneratedQuestion);
+      const reasons = {};
+      let changed = 0;
+      let pendingReview = 0;
+      let quarantined = 0;
+      for (const question of generated) {
+        const issues = structureIssuesOf(question, this.sourceNodeResolves(question));
+        const hasHumanEvidence = Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim());
+        const status = issues.length ? "quarantined" : reviewStatusOf(question) === "approved" && hasHumanEvidence ? "approved" : "pending_review";
+        const reviewReasons = issues.length ? issues : status === "approved" ? [] : [QUESTION_REVIEW_REASONS.NO_HUMAN_FACT_CHECK];
+        if (question.reviewStatus !== status || JSON.stringify(question.reviewReasons ?? []) !== JSON.stringify(reviewReasons)) {
+          question.reviewStatus = status;
+          question.reviewReasons = reviewReasons;
+          question.reviewAuditedAt = now;
+          changed += 1;
+        }
+        if (status === "pending_review") pendingReview += 1;
+        if (status === "quarantined") quarantined += 1;
+        for (const reason of reviewReasons) reasons[reason] = (reasons[reason] ?? 0) + 1;
+      }
+      const approved = generated.filter((question) => reviewStatusOf(question) === "approved").length;
+      if (changed) this.appendAudit(state, "questions.review-audit", { generated: generated.length, changed, pendingReview, approved, quarantined, reasons, note: "确定性结构审计；没有创建人工事实核验凭据，也没有自动批准生成题。" });
+      return { generated: generated.length, changed, pendingReview, approved, quarantined, reasons };
+    });
+  }
+
+  questionReviewStats(state = this.store.snapshot()) {
+    const generated = (state.generatedQuestions ?? []).filter(isGeneratedQuestion);
+    const counts = { pending_review: 0, approved: 0, quarantined: 0 };
+    const reasons = {};
+    for (const question of generated) {
+      const status = reviewStatusOf(question);
+      counts[status] += 1;
+      for (const reason of question.reviewReasons ?? []) reasons[reason] = (reasons[reason] ?? 0) + 1;
+    }
+    return { ...counts, total: generated.length, reasons: Object.fromEntries(Object.entries(reasons).sort((a, b) => b[1] - a[1])), reasonLabels: Object.fromEntries(Object.keys(reasons).map((reason) => [reason, reviewReasonLabel(reason)])) };
+  }
   appendAudit(state, action, details = {}) {
     state.auditLog ??= [];
     state.auditLog.push({
@@ -477,6 +542,7 @@ export class DataDomain extends BankDomain {
       sources,
       answerTrust: [...answerTrust.values()],
       generatedQuality,
+      review: this.questionReviewStats(state),
       examCoverage: {
         totalPapers: catalog.length,
         incompletePapers: incomplete.length,

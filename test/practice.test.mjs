@@ -11,6 +11,57 @@ import { JsonStore, SQLiteStore } from "../src/store.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 
+
+test("AI 生成题默认 pending_review，且缺 knowledgeDetail 审计为 quarantined", async (t) => {
+  const { service } = await fixture(t);
+  const added = await service.addGeneratedQuestions({ chapter: 1, difficulty: "easy", source: "mindmap", questions: [{ question: "默认审校状态测试题", options: { A: "正确", B: "错误一", C: "错误二", D: "错误三" }, knowledge_point: "测试", correct_answer: "A", analysis: "测试解析", knowledge_detail: "测试详解", source_node: "第1章" }] });
+  assert.equal(added[0].reviewStatus, "pending_review");
+  assert.deepEqual(added[0].reviewReasons, ["no_human_fact_check"]);
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === added[0].id); q.knowledgeDetail = ""; return state; });
+  await service.auditGeneratedQuestionTrust();
+  const audited = service.store.snapshot().generatedQuestions.find((item) => item.id === added[0].id);
+  assert.equal(audited.reviewStatus, "quarantined");
+  assert.ok(audited.reviewReasons.includes("knowledge_detail_missing"));
+});
+
+test("AI 题审校状态控制正式学习资格，真题保持原语义", async (t) => {
+  const { service } = await fixture(t);
+  const added = await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const id = added[0].id;
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "pending_review"; q.reviewReasons = ["no_human_fact_check"]; return state; });
+  await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; return state; });
+  await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewedAt = service.now(); return state; });
+  const session = await service.createSession({ chapter: 7, difficulty: "easy", count: 1 });
+  assert.equal(session.questions[0].id, id);
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.disabledAt = service.now(); return state; });
+  await service.store.update((state) => { state.generatedQuestions.push({ id: "real-review-compat", sourceType: "real", sourceId: "real-review-compat", chapter: 7, difficulty: "easy", question: "真题兼容测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "真题解析", knowledgeDetail: "真题资料", sourceNode: null, createdAt: service.now() }); return state; });
+  assert.equal(service.allQuestions().find((item) => item.id === "real-review-compat").sourceType, "real");
+  assert.equal(service.contentHealth().sources.questions.real, 1);
+});
+
+test("老生成题缺审校状态向后兼容但不能自动 approved", async (t) => {
+  const { service } = await fixture(t);
+  await service.store.update((state) => { state.generatedQuestions.push({ id: "legacy-generated", sourceType: "generated", chapter: 8, difficulty: "easy", question: "老数据测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "解析", knowledgeDetail: "详解", sourceNode: "第8章", createdAt: service.now() }); return state; });
+  const question = service.store.snapshot().generatedQuestions.find((item) => item.id === "legacy-generated");
+  assert.equal(question.reviewStatus, undefined);
+  assert.equal(service.questionReviewStats().pending_review >= 1, true);
+  assert.notEqual(question.reviewStatus, "approved");
+  await assert.rejects(() => service.createSession({ chapter: 8, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
+});
+
+test("审校统计包含三种状态和原因计数", async (t) => {
+  const { service } = await fixture(t);
+  const added = await addQuestions(service, { chapter: 9, difficulty: "easy", count: 3 });
+  await service.store.update((state) => { const [p, q, a] = added.map((item) => state.generatedQuestions.find((question) => question.id === item.id)); p.reviewStatus = "pending_review"; p.reviewReasons = ["no_human_fact_check"]; q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; a.reviewStatus = "approved"; a.reviewReasons = []; a.reviewedBy = "human-reviewer"; a.reviewEvidence = "人工事实核验记录：测试"; a.reviewedAt = service.now(); return state; });
+  const stats = service.questionReviewStats();
+  assert.equal(stats.pending_review >= 1, true);
+  assert.equal(stats.quarantined >= 1, true);
+  assert.equal(stats.approved >= 1, true);
+  assert.equal(stats.reasons.no_human_fact_check >= 1, true);
+  assert.equal(stats.reasons.knowledge_detail_missing >= 1, true);
+});
 test("模型工作区支持多供应商并保留 API Key 掩码兼容", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "architect-model-config-test-"));
   const keys = [
@@ -310,7 +361,7 @@ async function addQuestions(
       knowledge_point: "适配器模式",
     },
   ];
-  return service.addGeneratedQuestions({
+  const added = await service.addGeneratedQuestions({
     chapter,
     section,
     difficulty,
@@ -331,10 +382,24 @@ async function addQuestions(
         question: `第 ${chapter} 章：${template.question}`,
         correct_answer: "A",
         analysis: "测试解析",
+        knowledge_detail: "测试知识点详解",
+        source_node: `第${chapter}章`,
       };
     }),
   });
-}
+  await service.store.update((state) => {
+    const ids = new Set(added.map((question) => question.id));
+    for (const question of state.generatedQuestions) {
+      if (!ids.has(question.id)) continue;
+      question.reviewStatus = "approved";
+      question.reviewReasons = [];
+      question.reviewedBy = "test-fixture-human";
+      question.reviewEvidence = "测试夹具中的人工事实核验凭据";
+      question.reviewedAt = service.now();
+    }
+    return added;
+  });
+  return added;}
 
 async function generatorWithFetch(t, fetchImplementation) {
   const { service } = await fixture(t);
@@ -1938,6 +2003,10 @@ test("内容质量摘要区分来源、答案信任、套卷缺题、Wiki 校对
     chapter: 4,
     difficulty: "easy",
     count: 1,
+  });
+  await service.store.update((state) => {
+    state.generatedQuestions.find((item) => item.chapter === 4).sourceNode = null;
+    return state;
   });
   await service.addWikiEntries({
     chapter: 1,

@@ -20,6 +20,7 @@ import {
   resolveSourceNode,
   isRecord,
   throwIfAborted,
+  isQuestionEligibleForFormalStudy,
 } from "./helpers.mjs";
 import { PracticeServiceBase } from "./base.mjs";
 
@@ -72,7 +73,7 @@ export class SessionsDomain extends PracticeServiceBase {
       this.allQuestions().filter(
         (question) =>
           question.chapter === chapterId &&
-          !question.disabledAt &&
+          isQuestionEligibleForFormalStudy(question) &&
           (question.sourceType ?? "generated") === "generated" &&
           (!sectionId || question.section === sectionId) &&
           (difficulty === "mixed" || question.difficulty === difficulty),
@@ -173,7 +174,7 @@ export class SessionsDomain extends PracticeServiceBase {
       const size = Math.max(1, Math.min(75, Number(count) || 75));
       const generated = this.allQuestions().filter(
         (question) =>
-          !question.disabledAt &&
+          isQuestionEligibleForFormalStudy(question) &&
           (question.sourceType ?? "generated") === "generated",
       );
       const candidates = generated.length
@@ -457,6 +458,8 @@ export class SessionsDomain extends PracticeServiceBase {
         correctAnswer: item.correct_answer,
         analysis: item.analysis?.trim() || "暂无解析",
         knowledgeDetail: item.knowledge_detail?.trim() || "",
+        reviewStatus: "pending_review",
+        reviewReasons: ["no_human_fact_check"],
         commonMistake: item.common_mistake?.trim() || "",
         memoryTip: item.memory_tip?.trim() || "",
         optionRationale: normalizeOptionRationale(item.option_rationale),
