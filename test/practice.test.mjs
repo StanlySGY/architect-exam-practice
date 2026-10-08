@@ -73,7 +73,9 @@ test("模型工作区支持多供应商并保留 API Key 掩码兼容", async (t
   assert.equal(process.env.ARCHITECT_LLM_MODEL, "deepseek-chat");
   assert.equal(config.publicWorkspace().providers[0].apiKey, "********1234");
   assert.equal(config.publicWorkspace().agents.length, 2);
-  assert.equal((await stat(join(directory, ".env"))).mode & 0o777, 0o600);
+  if (process.platform !== "win32") {
+    assert.equal((await stat(join(directory, ".env"))).mode & 0o777, 0o600);
+  }
 
   await config.saveWorkspace({
     defaultAgentId: "agent-deepseek",
@@ -1788,6 +1790,20 @@ test("学习计划按设定时区的自然日统计实际作答并计算连续�
     streak: 1,
     totalAnswered: 4,
   });
+});
+
+test("考试准备度聚合章节、题库覆盖、模拟考试与下一步行动", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-readiness-test-"));
+  t.after(() => rm(directory, { recursive: true, force: true }));
+  const store = new JsonStore(join(directory, "state.json"));
+  const service = new PracticeService({ store, root });
+  const readiness = service.examReadiness();
+  assert.equal(typeof readiness.score, "number");
+  assert.match(readiness.level, /起步|基础构建|稳步提升|冲刺/);
+  assert.ok(readiness.coverage.total >= 0);
+  assert.ok(Array.isArray(readiness.weakPoints));
+  assert.ok(Array.isArray(readiness.weakChapters));
+  assert.ok(Array.isArray(readiness.nextActions));
 });
 
 test("学习队列按恢复、到期复习、薄弱章节排序，并过滤不可执行错题", async (t) => {

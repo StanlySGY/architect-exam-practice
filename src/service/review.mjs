@@ -357,6 +357,90 @@ export class ReviewDomain extends SessionsDomain {
     };
   }
 
+  // 考试准备度：把现有学习统计转换成考试决策指标，而不是再造一套学习记录。
+  examReadiness() {
+    const state = this.store.snapshot();
+    const statistics = this.statistics();
+    const questions = this.allQuestions(state).filter((question) => !question.disabledAt);
+    const real = questions.filter((question) => question.sourceType === "real");
+    const generated = questions.filter((question) => (question.sourceType ?? "generated") === "generated");
+    const attemptedQuestions = new Set();
+    for (const attempt of state.attempts ?? []) {
+      for (const detail of attempt.details ?? []) {
+        if (detail.questionId) attemptedQuestions.add(detail.questionId);
+      }
+    }
+    const coverage = questions.length ? Math.round((attemptedQuestions.size / questions.length) * 100) : 0;
+    const accuracy = Number(statistics.summary.accuracy || 0);
+    const weakPoints = (statistics.weakKnowledgePoints ?? []).map((item) => ({
+      ...item,
+      risk: Math.min(100, Math.round(item.timesWrong * 12 + (item.questionCount ? 100 / item.questionCount : 40))),
+      action: "复习" + item.knowledgePoint + "并重新做错题",
+    }));
+    const weakChapters = (statistics.chapterMastery ?? [])
+      .filter((item) => item.total > 0)
+      .map((item) => ({
+        chapter: item.chapter,
+        title: item.title,
+        accuracy: item.accuracy,
+        activeWrong: item.active,
+        level: item.level,
+        risk: Math.max(0, Math.min(100, Math.round((100 - item.accuracy) * 0.7 + item.active * 4))),
+        action: "专项练习第 " + item.chapter + " 章",
+      }))
+      .sort((a, b) => b.risk - a.risk);
+    const chapterScore = weakChapters.length
+      ? Math.round(weakChapters.reduce((sum, item) => sum + item.accuracy, 0) / weakChapters.length)
+      : null;
+    const mockAttempts = (state.attempts ?? []).filter(
+      (attempt) => attempt.mode === "exam-mcq" && Number(attempt.total) > 0,
+    );
+    const mockAccuracy = mockAttempts.length
+      ? Math.round(
+          mockAttempts.reduce((sum, attempt) => sum + Number(attempt.percentage || 0), 0) /
+            mockAttempts.length,
+        )
+      : null;
+    const readinessScore = Math.round(
+      accuracy * 0.4 +
+      (chapterScore ?? accuracy) * 0.25 +
+      (mockAccuracy ?? accuracy) * 0.2 +
+      coverage * 0.15,
+    );
+    const level =
+      readinessScore >= 85 ? "冲刺" :
+      readinessScore >= 70 ? "稳步提升" :
+      readinessScore >= 55 ? "基础构建" : "起步";
+    const queue = this.studyQueue({ limit: 5 });
+    return {
+      level,
+      score: readinessScore,
+      disclaimer: "准备度是本地学习数据的训练指标，不是官方通过概率。",
+      coverage: {
+        attempted: attemptedQuestions.size,
+        total: questions.length,
+        percent: coverage,
+        realQuestions: real.length,
+        generatedQuestions: generated.length,
+      },
+      dimensions: {
+        overallAccuracy: accuracy,
+        chapterAccuracy: chapterScore,
+        mockAccuracy,
+        reviewDue: statistics.review?.due ?? 0,
+      },
+      weakPoints: weakPoints.slice(0, 8),
+      weakChapters: weakChapters.slice(0, 8),
+      nextActions: (queue.items ?? []).slice(0, 4).map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        kind: item.kind,
+        action: item.action,
+      })),
+    };
+  }
+
   // 学习计划：每日目标 + 今日进度 + 连续打卡天数。
   getStudyPlan() {
     const state = this.store.snapshot();

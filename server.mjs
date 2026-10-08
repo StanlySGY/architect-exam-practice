@@ -361,6 +361,9 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/statistics") {
     return sendJson(response, 200, practice.statistics());
   }
+  if (request.method === "GET" && pathname === "/api/exam-readiness") {
+    return sendJson(response, 200, practice.examReadiness());
+  }
   if (request.method === "GET" && pathname === "/api/study-plan") {
     return sendJson(response, 200, practice.getStudyPlan());
   }

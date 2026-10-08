@@ -2265,17 +2265,63 @@ function renderLearningInsights(data) {
 async function loadStatistics() {
   const load = beginLoad(
     "statistics",
-    ["#stats-summary", "#chapter-stats", "#practice-trend", "#weak-points", "#knowledge-mastery", "#review-stats", "#stats-heatmap", "#stats-memory", "#stats-taxonomy", "#stats-mastery"],
+    ["#stats-summary", "#chapter-stats", "#practice-trend", "#weak-points", "#knowledge-mastery", "#review-stats", "#stats-heatmap", "#stats-memory", "#stats-taxonomy", "#stats-mastery", "#readiness-body"],
     "正在加载学习统计…",
   );
   try {
-    const data = await api("/api/statistics");
+    const [data, readiness] = await Promise.all([
+      api("/api/statistics"),
+      api("/api/exam-readiness"),
+    ]);
     if (!load.isCurrent()) return;
     renderStatistics(data);
+    renderExamReadiness(readiness);
     load.finish();
   } catch (error) {
     load.fail(error, loadStatistics);
   }
+}
+
+function renderExamReadiness(data) {
+  const level = document.querySelector("#readiness-level");
+  const body = document.querySelector("#readiness-body");
+  if (!level || !body) return;
+  level.textContent = String(data.score) + "/100 · " + data.level;
+  const dimensions = [
+    ["综合正确率", data.dimensions?.overallAccuracy],
+    ["章节平均", data.dimensions?.chapterAccuracy],
+    ["模拟考试", data.dimensions?.mockAccuracy],
+    ["到期复习", data.dimensions?.reviewDue == null ? null : String(data.dimensions.reviewDue) + " 题"],
+  ];
+  const next = (data.nextActions ?? []).map((item) =>
+    element("div", { className: "study-queue-item" }, [
+      element("div", { className: "study-queue-item-copy" }, [
+        element("strong", { text: item.title }),
+        element("span", { text: item.description || "" }),
+      ]),
+      item.action ? studyQueueActionButton(item, "去做") : null,
+    ].filter(Boolean)),
+  );
+  const weak = (data.weakPoints ?? []).slice(0, 4).map((item) =>
+    element("span", { className: "taxonomy-chip gap", text: item.knowledgePoint + " · 风险 " + item.risk }),
+  );
+  body.replaceChildren(
+    element("div", { className: "summary-grid" }, dimensions.map(([label, value]) =>
+      wrongSummaryNode(value == null ? "—" : String(value) + (typeof value === "number" ? "%" : ""), label),
+    )),
+    element("p", {
+      className: "muted",
+      text: "题库覆盖 " + (data.coverage?.percent ?? 0) + "% · 已练 " +
+        (data.coverage?.attempted ?? 0) + "/" + (data.coverage?.total ?? 0) +
+        " · " + (data.disclaimer || ""),
+    }),
+    weak.length
+      ? element("div", { className: "taxonomy-strip" }, weak)
+      : element("p", { className: "muted", text: "暂时没有足够错题数据生成高风险知识点。" }),
+    element("div", { className: "study-queue-list" }, next.length
+      ? next
+      : [emptyMessage("今天没有额外安排", "保持当前 FSRS 复习节奏即可。")]),
+  );
 }
 
 function issueNode(issue) {
