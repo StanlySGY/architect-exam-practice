@@ -533,6 +533,7 @@ function switchView(view) {
   if (view === "home") {
     loadActiveSession();
     loadStudyQueue();
+    loadLearningPath();
   }
   if (view === "mock") loadMock();
   if (view === "wrong") loadWrong();
@@ -1073,6 +1074,53 @@ function setReviewActionState(due) {
   }
 }
 
+function renderLearningPath(data) {
+  const panel = $("#learning-path");
+  const body = $("#learning-body");
+  if (!panel || !body) return;
+  panel.hidden = !data.current;
+  $("#learning-position").textContent = data.current ? data.position : "体系已学完";
+  const bar = $("#learning-progress span");
+  if (bar) bar.style.width = Math.max(0, Math.min(100, Number(data.percent) || 0)) + "%";
+  if (!data.current) {
+    body.replaceChildren(element("p", { className: "muted", text: "第一轮系统学习已完成。接下来以巩固、案例、论文和模考为主。" }));
+    return;
+  }
+  const unit = data.current;
+  const startButton = element("button", { className: "primary", text: unit.status === "learning" ? "继续学习" : "开始学习", attrs: { type: "button" } });
+  startButton.addEventListener("click", async () => {
+    startButton.disabled = true;
+    try { renderLearningPath(await api("/api/learning/start", { method: "POST", body: JSON.stringify({ unitId: unit.id }) })); loadStudyQueue(); }
+    catch (error) { showToast(error.message, true); } finally { startButton.disabled = false; }
+  });
+  const completeButton = element("button", { className: "secondary", text: "学完并进入巩固", attrs: { type: "button" } });
+  completeButton.addEventListener("click", async () => {
+    completeButton.disabled = true;
+    try {
+      const next = await api("/api/learning/complete", { method: "POST", body: JSON.stringify({ unitId: unit.id, confidence: 2 }) });
+      renderLearningPath(next);
+      loadStudyQueue();
+      showToast("已记录学习完成，下一步做 5 题巩固。");
+      await runStudyQueueAction(unit.practiceAction);
+    } catch (error) { showToast(error.message, true); } finally { completeButton.disabled = false; }
+  });
+  body.replaceChildren(
+    element("div", { className: "learning-meta" }, [element("span", { text: "第 " + unit.chapter + " 章 · " + unit.chapterTitle }), element("span", { text: unit.sourceTitle })]),
+    element("div", { className: "learning-content" }, [
+      element("h3", { text: "核心知识" }), element("p", { text: unit.coreKnowledge }),
+      element("h3", { text: "考试关注点" }), element("p", { text: unit.examFocus }),
+      element("h3", { text: "易混淆点" }), element("p", { text: unit.commonConfusions }),
+      element("h3", { text: "学习检查" }), element("ul", {}, (unit.selfChecks ?? []).map((check) => element("li", { text: check }))),
+    ]),
+    element("div", { className: "learning-actions" }, [startButton, completeButton]),
+    element("p", { className: "muted", text: data.disclaimer }),
+  );
+}
+
+async function loadLearningPath() {
+  try { renderLearningPath(await api("/api/learning-plan")); } catch (error) { showToast(error.message, true); }
+}
+
 function studyQueueActionButton(item, label = "开始") {
   const button = element("button", {
     className: "primary",
@@ -1104,6 +1152,12 @@ async function runStudyQueueAction(action) {
   }
   if (action.type === "start-review") {
     await startReview(action.limit);
+    return;
+  }
+  if (action.type === "start-learning") {
+    switchView("home");
+    await loadLearningPath();
+    document.querySelector("#learning-path")?.scrollIntoView({ behavior: "smooth" });
     return;
   }
   if (action.type === "start-practice") {
@@ -2269,13 +2323,15 @@ async function loadStatistics() {
     "正在加载学习统计…",
   );
   try {
-    const [data, readiness] = await Promise.all([
+    const [data, readiness, learning] = await Promise.all([
       api("/api/statistics"),
       api("/api/exam-readiness"),
+      api("/api/learning-plan"),
     ]);
     if (!load.isCurrent()) return;
     renderStatistics(data);
     renderExamReadiness(readiness);
+    renderLearningPath(learning);
     load.finish();
   } catch (error) {
     load.fail(error, loadStatistics);

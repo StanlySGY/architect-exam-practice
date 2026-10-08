@@ -1806,6 +1806,51 @@ test("考试准备度聚合章节、题库覆盖、模拟考试与下一步行�
   assert.ok(Array.isArray(readiness.nextActions));
 });
 
+test("系统学习按思维导图建立单元、记录学习状态并衔接章节练习", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-learning-test-"));
+  const store = new JsonStore(join(directory, "state.json"));
+  t.after(async () => {
+    store.close();
+    await rm(directory, { recursive: true, force: true });
+  });
+  await store.init();
+  const service = new PracticeService({ store, root });
+  await service.init();  const plan = service.learningPlan();
+  assert.ok(plan.total > 0);
+  assert.equal(plan.completed, 0);
+  assert.equal(plan.current.status, "not-started");
+  assert.ok(plan.current.coreKnowledge);
+  assert.equal(plan.current.practiceAction.type, "start-practice");
+  await service.startLearning(plan.current.id);
+  assert.equal(service.learningPlan().current.status, "learning");
+  await service.completeLearning(plan.current.id, 3);
+  const next = service.learningPlan();
+  assert.equal(next.completed, 1);
+  assert.equal(next.consolidating, 1);  assert.notEqual(next.current?.id, plan.current.id);
+  const persisted = store.snapshot().learningProgress[plan.current.id];
+  assert.equal(persisted.status, "consolidating");
+  assert.equal(persisted.confidence, 3);
+});
+
+test("考试准备度覆盖率兼容历史题目 stats，避免 attempts.details 缺失导致显示 0", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-readiness-coverage-test-"));
+  const store = new JsonStore(join(directory, "state.json"));
+  t.after(async () => {
+    store.close();
+    await rm(directory, { recursive: true, force: true });
+  });
+  const service = new PracticeService({ store, root });
+  await store.init();
+  await store.update((state) => {
+    state.generatedQuestions = [
+      { id: "q1", chapter: 1, sourceType: "generated", question: "q1", stats: { seen: 1, correct: 1 } },
+      { id: "q2", chapter: 1, sourceType: "generated", question: "q2", stats: { seen: 2, correct: 2 } },
+    ];
+    state.attempts = [{ total: 2, unanswered: 0, details: [] }];
+  });
+  assert.equal(service.examReadiness().coverage.attempted, 2);  assert.equal(service.examReadiness().coverage.attempted, 2);
+});
+
 test("学习队列按恢复、到期复习、薄弱章节排序，并过滤不可执行错题", async (t) => {
   const { service, store } = await fixture(t);
   await addQuestions(service, { chapter: 4, difficulty: "easy", count: 2 });

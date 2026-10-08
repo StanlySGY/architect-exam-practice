@@ -11,6 +11,7 @@ const EMPTY_STATE = {
   wrongBook: {},
   questionIssues: {},
   settings: {},
+  learningProgress: {},
   caseQuestions: [],
   paperQuestions: [],
   wikiEntries: [],
@@ -44,6 +45,10 @@ function normalizeState(value) {
     settings:
       saved.settings && typeof saved.settings === "object"
         ? saved.settings
+        : {},
+    learningProgress:
+      saved.learningProgress && typeof saved.learningProgress === "object"
+        ? saved.learningProgress
         : {},
     caseQuestions: Array.isArray(saved.caseQuestions)
       ? saved.caseQuestions

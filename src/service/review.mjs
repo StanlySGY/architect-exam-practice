@@ -1,5 +1,6 @@
 // review 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
 import { addDays } from "../utils.mjs";
+import { findChapter } from "../mindmap.mjs";
 import {
   intervalFor,
   retrievability,
@@ -370,6 +371,9 @@ export class ReviewDomain extends SessionsDomain {
         if (detail.questionId) attemptedQuestions.add(detail.questionId);
       }
     }
+    for (const question of questions) {
+      if (Number(question.stats?.seen) > 0) attemptedQuestions.add(question.id);
+    }
     const coverage = questions.length ? Math.round((attemptedQuestions.size / questions.length) * 100) : 0;
     const accuracy = Number(statistics.summary.accuracy || 0);
     const weakPoints = (statistics.weakKnowledgePoints ?? []).map((item) => ({
@@ -439,6 +443,83 @@ export class ReviewDomain extends SessionsDomain {
         action: item.action,
       })),
     };
+  }
+
+  learningUnits() {
+    if (!this.mindMap) return [];
+    const units = [];
+    for (const chapter of this.chapters) {
+      const chapterNode = findChapter(this.mindMap, chapter.id);
+      for (const node of chapterNode?.children ?? []) {
+        const match = node.text.trim().match(/^(\d+\.\d+)\s*(.*)$/);
+        if (!match) continue;
+        const children = (node.children ?? []).map((child) => child.text.trim()).filter(Boolean);
+        units.push({ id: match[1], chapter: chapter.id, chapterTitle: chapter.title, title: match[2] || node.text.trim(), sourceTitle: node.text.trim(), details: node.details?.trim() || "", keyPoints: children.slice(0, 8), order: units.length });
+      }
+    }
+    return units;
+  }
+
+  learningUnit(unitId) {
+    return this.learningUnits().find((unit) => unit.id === String(unitId)) ?? null;
+  }
+
+  learningPlan() {
+    const state = this.store.snapshot();
+    const progress = state.learningProgress ?? {};
+    const units = this.learningUnits().map((unit) => {
+      const record = progress[unit.id] ?? {};
+      return { ...unit, status: record.status ?? "not-started", startedAt: record.startedAt ?? null, completedAt: record.completedAt ?? null, confidence: record.confidence ?? null };
+    });
+    const current = units.find((unit) => unit.status === "learning")
+      ?? units.find((unit) => !unit.completedAt)
+      ?? null;
+    const completed = units.filter((unit) => Boolean(unit.completedAt)).length;
+    const consolidating = units.filter((unit) => unit.status === "consolidating").length;
+    const currentIndex = current ? current.order + 1 : units.length;
+    return {
+      total: units.length,
+      completed,
+      consolidating,
+      percent: units.length ? Math.round((completed / units.length) * 100) : 0,
+      current: current ? {
+        ...current,
+        coreKnowledge: current.details || current.keyPoints.join("；") || "先建立本小节的概念框架。",
+        examFocus: "先掌握定义、核心机制、适用边界，再通过针对性题目验证理解。",
+        commonConfusions: current.keyPoints.length > 1 ? "重点区分：" + current.keyPoints.slice(0, 4).join("、") + "之间的关系、边界和适用场景。" : "重点关注定义、适用条件、优缺点以及与相邻概念的区别。",
+        selfChecks: [
+          "不用看资料，能否用自己的话解释“" + current.title + "”？",
+          "能否说出它解决什么问题、什么时候适用、什么时候不适用？",
+          "能否用一个实际系统例子说明它，而不是只背定义？",
+        ],
+        practiceAction: { type: "start-practice", chapter: current.chapter, section: current.id, difficulty: "mixed", count: 5 },
+      } : null,
+      position: current ? (currentIndex + "/" + units.length) : (units.length + "/" + units.length),
+      disclaimer: "学习进度表示你是否完成了系统学习单元，不等同于考试掌握度或官方通过概率。",
+    };
+  }
+
+  async startLearning(unitId) {
+    const unit = this.learningUnit(unitId);
+    if (!unit) throw Object.assign(new Error("学习单元不存在"), { status: 404 });
+    const now = this.now();
+    await this.store.update((state) => {
+      const previous = state.learningProgress[unit.id] ?? {};
+      state.learningProgress[unit.id] = { ...previous, status: previous.status === "mastered" ? "mastered" : "learning", startedAt: previous.startedAt ?? now, updatedAt: now };
+    });
+    return this.learningPlan();
+  }
+
+  async completeLearning(unitId, confidence = null) {
+    const unit = this.learningUnit(unitId);
+    if (!unit) throw Object.assign(new Error("学习单元不存在"), { status: 404 });
+    const now = this.now();
+    const normalizedConfidence = Number(confidence);
+    await this.store.update((state) => {
+      const previous = state.learningProgress[unit.id] ?? {};
+      state.learningProgress[unit.id] = { ...previous, status: "consolidating", startedAt: previous.startedAt ?? now, completedAt: now, updatedAt: now, confidence: Number.isFinite(normalizedConfidence) && normalizedConfidence >= 1 && normalizedConfidence <= 3 ? Math.round(normalizedConfidence) : null };
+    });
+    return this.learningPlan();
   }
 
   // 学习计划：每日目标 + 今日进度 + 连续打卡天数。
@@ -529,6 +610,18 @@ export class ReviewDomain extends SessionsDomain {
         chapter: session.chapter ?? null,
         section: session.section ?? null,
         total: session.questionIds?.length ?? 0,
+      });
+    }
+
+    const learning = this.learningPlan();
+    if (learning.current && activeSessions.length === 0) {
+      items.push({
+        id: "learning:" + learning.current.id,
+        kind: "learning",
+        priority: 0,
+        title: "学习 " + learning.current.id + " · " + learning.current.title,
+        description: learning.position + " · " + (learning.current.status === "learning" ? "继续学习" : "先学知识，再做 5 题巩固"),
+        action: { type: "start-learning", unitId: learning.current.id },
       });
     }
 

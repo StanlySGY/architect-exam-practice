@@ -364,6 +364,17 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/exam-readiness") {
     return sendJson(response, 200, practice.examReadiness());
   }
+  if (request.method === "GET" && pathname === "/api/learning-plan") {
+    return sendJson(response, 200, practice.learningPlan());
+  }
+  if (request.method === "POST" && pathname === "/api/learning/start") {
+    const body = await readJson(request);
+    return sendJson(response, 200, await practice.startLearning(body.unitId));
+  }
+  if (request.method === "POST" && pathname === "/api/learning/complete") {
+    const body = await readJson(request);
+    return sendJson(response, 200, await practice.completeLearning(body.unitId, body.confidence));
+  }
   if (request.method === "GET" && pathname === "/api/study-plan") {
     return sendJson(response, 200, practice.getStudyPlan());
   }

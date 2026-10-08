@@ -22,6 +22,7 @@ export class PracticeServiceBase {
     this.random = random;
     this.chapters = [];
     this.seedQuestions = [];
+    this.mindMap = null;
     this.assets = new ExamAssets({ root });
   }
 
@@ -37,6 +38,9 @@ export class PracticeServiceBase {
         cause: error,
       });
     }
+    this.mindMap = await readMindMap(
+      resolve(this.root, process.env.ARCHITECT_MINDMAP || "architect.mm"),
+    );
     await this.assets.load();
   }
 
