@@ -1,0 +1,12 @@
+{
+  "id": "restart-service",
+  "title": "重启本地练习服务",
+  "status": "completed",
+  "complexity": "S",
+  "risk": "low",
+  "domain": "ops",
+  "currentPhase": "completed",
+  "nextAction": "无",
+  "createdAt": "2026-10-08T06:46:24Z",
+  "branch": "main"
+}
