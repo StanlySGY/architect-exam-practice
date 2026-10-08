@@ -1534,10 +1534,10 @@ test("按小节生成题会保存从章节根开始的完整来源路径", async
       source_node: "冯·诺伊曼结构基础",
     }],
   });
-  await generator.generate({ chapter: 1, section: "1.1", difficulty: "easy", count: 1 });
+  await generator.generate({ chapter: 2, section: "2.1", difficulty: "easy", count: 1 });
   assert.equal(
     service.allQuestions()[0].sourceNode,
-    "第1章 绪论 › 1.1 系统架构概述 › 冯·诺伊曼结构基础",
+    "第2章 计算机系统基础知识 › 2.1 计算机系统概述 › 冯·诺伊曼结构基础",
   );
 });
 
@@ -1869,6 +1869,41 @@ test("考试准备度聚合章节、题库覆盖、模拟考试与下一步行�
   assert.ok(Array.isArray(readiness.weakPoints));
   assert.ok(Array.isArray(readiness.weakChapters));
   assert.ok(Array.isArray(readiness.nextActions));
+});
+
+test("系统学习单元按最深编号节点拆分并保留来源状态", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-learning-granularity-test-"));
+  const store = new JsonStore(join(directory, "state.json"));
+  t.after(async () => { store.close(); await rm(directory, { recursive: true, force: true }); });
+  await store.init();
+  const service = new PracticeService({ store, root });
+  await service.init();
+  const units = service.learningUnits();
+  assert.ok(units.some((unit) => unit.id === "1.1"));
+  assert.ok(units.every((unit) => unit.source?.type === "mindmap"));
+  assert.ok(units.every((unit) => ["verified", "partial", "missing"].includes(unit.contentStatus)));
+  const chapterOne = units.find((unit) => unit.id === "1.1");
+  assert.equal(chapterOne.contentStatus, "verified");
+  assert.equal(chapterOne.teaching.what.includes("基本组织"), true);
+});
+
+test("全部课程学习单元都有课程内容记录且字段完整", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-learning-coverage-test-"));
+  const store = new JsonStore(join(directory, "state.json"));
+  t.after(async () => { store.close(); await rm(directory, { recursive: true, force: true }); });
+  await store.init();
+  const service = new PracticeService({ store, root });
+  await service.init();
+  const units = service.learningUnits();
+  assert.ok(units.length >= 300);
+  const required = ["what", "why", "how", "confusions", "scenarios", "examples", "examFocus", "pitfalls"];
+  for (const unit of units) {
+    assert.ok(unit.contentSource?.type === "course-content", "missing course content: " + unit.id);
+    assert.ok(["verified", "partial", "missing"].includes(unit.contentSource.status), "invalid content status: " + unit.id);
+    for (const key of required) assert.ok(Object.prototype.hasOwnProperty.call(unit.teaching, key), unit.id + " missing " + key);
+  }
+  const verifiedCount = units.filter((unit) => unit.contentStatus === "verified").length;
+  assert.ok(verifiedCount >= 3, `expected at least 3 verified units, got ${verifiedCount}`);
 });
 
 test("系统学习按思维导图建立单元、记录学习状态并衔接章节练习", async (t) => {

@@ -367,9 +367,16 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/learning-plan") {
     return sendJson(response, 200, practice.learningPlan());
   }
+  if (request.method === "GET" && pathname === "/api/learning-reinforcement") {
+    return sendJson(response, 200, practice.learningReinforcement(url.searchParams.get("unitId"), url.searchParams.get("limit") || 5));
+  }
   if (request.method === "POST" && pathname === "/api/learning/start") {
     const body = await readJson(request);
     return sendJson(response, 200, await practice.startLearning(body.unitId));
+  }
+  if (request.method === "POST" && pathname === "/api/learning/check") {
+    const body = await readJson(request);
+    return sendJson(response, 200, await practice.recordLearningCheck(body.unitId, body.checkId, body.completed !== false));
   }
   if (request.method === "POST" && pathname === "/api/learning/complete") {
     const body = await readJson(request);

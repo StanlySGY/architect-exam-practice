@@ -1,4 +1,6 @@
 // review 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
+import { readFile } from "node:fs/promises";
+import { resolve } from "node:path";
 import { addDays } from "../utils.mjs";
 import { findChapter } from "../mindmap.mjs";
 import {
@@ -10,6 +12,90 @@ import { MASTERED_STREAK } from "./sessions.mjs";
 import { SessionsDomain } from "./sessions.mjs";
 import { isQuestionEligibleForFormalStudy } from "./helpers.mjs";
 
+const NUMBERED_NODE = /^(\d+(?:\.\d+)*)\s*(.*)$/;
+function parseLearningNode(node) {
+  const m = String(node?.text ?? "").trim().match(NUMBERED_NODE);
+  return m ? { id: m[1], title: m[2] || String(node.text).trim() } : null;
+}
+function collectLearningUnits(node, chapter, chapterTitle, parentId, units) {
+  const parsed = parseLearningNode(node);
+  if (!parsed) return;
+  const numbered = (node.children ?? []).filter((child) => parseLearningNode(child));
+  if (numbered.length) {
+    for (const child of numbered) collectLearningUnits(child, chapter, chapterTitle, parsed.id, units);
+    return;
+  }
+  const keyPoints = (node.children ?? []).filter((child) => !parseLearningNode(child)).map((child) => String(child.text ?? "").trim()).filter(Boolean).slice(0, 12);
+  const details = String(node.details ?? "").trim();
+  units.push({
+    id: parsed.id, chapter, chapterTitle, sectionId: parsed.id.split(".").slice(0, 2).join("."), parentId: parentId ?? null,
+    title: parsed.title, sourceTitle: String(node.text ?? "").trim(), details, keyPoints,
+    source: { type: "mindmap", path: "architect.mm", status: "needs-review" },
+    contentStatus: details || keyPoints.length ? "partial" : "missing",
+    teaching: { what: details || null, why: null, how: null, confusions: null, scenarios: null, examples: null, examFocus: null, pitfalls: null },
+    checks: [
+      { id: "explain", prompt: "不用看资料，能否用自己的话解释这个知识点？" },
+      { id: "use", prompt: "能否说出它解决什么问题、什么时候适用？" },
+      { id: "example", prompt: "能否给出一个实际系统中的例子？" },
+    ],
+    order: units.length,
+  });
+}
+function learningTeaching(unit) {
+  const t = unit.teaching ?? {};
+  return { what: t.what || unit.details || (unit.keyPoints.length ? unit.keyPoints.join("；") : null), why: t.why || null, how: t.how || null, confusions: t.confusions || null, scenarios: t.scenarios || null, examples: t.examples || null, examFocus: t.examFocus || null, pitfalls: t.pitfalls || null };
+}
+
+export function selectLearningReinforcementQuestions({ unit, questions, limit = 5 }) {
+  const max = Math.max(1, Math.min(20, Number(limit) || 5));
+  const title = String(unit?.title ?? "").trim();
+  const id = String(unit?.id ?? "").trim();
+  const sectionId = String(unit?.sectionId ?? id.split(".").slice(0, 2).join(".")).trim();
+  const chapter = Number(unit?.chapter);
+  const eligible = (questions ?? []).filter((question) => isQuestionEligibleForFormalStudy(question));
+  const scored = eligible.map((question) => {
+    const source = String(question.sourceNode ?? "").trim();
+    const kp = String(question.knowledgePoint ?? "").trim();
+    const qSection = String(question.section ?? "").trim();
+    const qChapter = Number(question.chapter);
+    let score = -1;
+    let selectionReason = "chapter";
+    if ((source && (source.includes(id) || source.includes(title))) || (kp && (kp === title || kp.includes(title) || title.includes(kp)))) {
+      score = 300; selectionReason = "direct";
+    } else if (qSection === sectionId || (source && source.includes(sectionId))) {
+      score = 200; selectionReason = "section";
+    } else if (qChapter === chapter) {
+      score = 100; selectionReason = "chapter";
+    }
+    return { question, score, selectionReason };
+  }).filter((item) => item.score >= 0).sort((a, b) => b.score - a.score || String(a.question.id).localeCompare(String(b.question.id)));
+  const seen = new Set();
+  const result = [];
+  for (const item of scored) {
+    if (seen.has(item.question.id)) continue;
+    seen.add(item.question.id);
+    result.push({ ...item.question, selectionReason: item.selectionReason });
+    if (result.length >= max) break;
+  }
+  return result;
+}
+
+function mergeLearningContent(unit, content) {
+  const authored = content?.units?.[unit.id];
+  if (!authored || typeof authored !== "object") return unit;
+  const teaching = {
+    ...unit.teaching,
+    ...Object.fromEntries(Object.entries(authored).filter(([key, value]) =>
+      key !== "status" && key !== "source" && value !== null && String(value).trim() !== "")),
+  };
+  return {
+    ...unit,
+    teaching,
+    contentStatus: authored.status === "verified" ? "verified" : unit.contentStatus,
+    contentSource: { type: "course-content", path: "data/learning-content.json", status: authored.status ?? "partial" },
+  };
+}
+
 function studyDay(formatter, timestamp) {
   const parts = Object.fromEntries(
     formatter.formatToParts(new Date(timestamp)).map(({ type, value }) => [type, value]),
@@ -18,6 +104,17 @@ function studyDay(formatter, timestamp) {
 }
 
 export class ReviewDomain extends SessionsDomain {
+  async init() {
+    await super.init();
+    try {
+      const raw = await readFile(resolve(this.root, "data/learning-content.json"), "utf8");
+      this.learningContent = JSON.parse(raw);
+    } catch (error) {
+      if (error.code === "ENOENT") this.learningContent = { units: {} };
+      else throw new Error("无法解析 data/learning-content.json: " + error.message, { cause: error });
+    }
+  }
+
   // limit 为 null 时返回全量记录（保持旧调用方兼容）；传入 limit 时按页切片。
   wrongQuestions({ limit = null, offset = 0 } = {}) {
     const state = this.store.snapshot();
@@ -451,14 +548,11 @@ export class ReviewDomain extends SessionsDomain {
     const units = [];
     for (const chapter of this.chapters) {
       const chapterNode = findChapter(this.mindMap, chapter.id);
-      for (const node of chapterNode?.children ?? []) {
-        const match = node.text.trim().match(/^(\d+\.\d+)\s*(.*)$/);
-        if (!match) continue;
-        const children = (node.children ?? []).map((child) => child.text.trim()).filter(Boolean);
-        units.push({ id: match[1], chapter: chapter.id, chapterTitle: chapter.title, title: match[2] || node.text.trim(), sourceTitle: node.text.trim(), details: node.details?.trim() || "", keyPoints: children.slice(0, 8), order: units.length });
+      for (const child of chapterNode?.children ?? []) {
+        if (parseLearningNode(child)) collectLearningUnits(child, chapter.id, chapter.title, null, units);
       }
     }
-    return units;
+    return units.map((unit, order) => ({ ...mergeLearningContent(unit, this.learningContent), order }));
   }
 
   learningUnit(unitId) {
@@ -470,7 +564,8 @@ export class ReviewDomain extends SessionsDomain {
     const progress = state.learningProgress ?? {};
     const units = this.learningUnits().map((unit) => {
       const record = progress[unit.id] ?? {};
-      return { ...unit, status: record.status ?? "not-started", startedAt: record.startedAt ?? null, completedAt: record.completedAt ?? null, confidence: record.confidence ?? null };
+      const checks = unit.checks.map((check) => ({ ...check, completed: Boolean(record.checks?.[check.id]) }));
+      return { ...unit, status: record.status ?? "not-started", startedAt: record.startedAt ?? null, completedAt: record.completedAt ?? null, confidence: record.confidence ?? null, readingCompletedAt: record.readingCompletedAt ?? null, checksCompletedAt: record.checksCompletedAt ?? null, checks };
     });
     const current = units.find((unit) => unit.status === "learning")
       ?? units.find((unit) => !unit.completedAt)
@@ -485,14 +580,15 @@ export class ReviewDomain extends SessionsDomain {
       percent: units.length ? Math.round((completed / units.length) * 100) : 0,
       current: current ? {
         ...current,
-        coreKnowledge: current.details || current.keyPoints.join("；") || "先建立本小节的概念框架。",
-        examFocus: "先掌握定义、核心机制、适用边界，再通过针对性题目验证理解。",
-        commonConfusions: current.keyPoints.length > 1 ? "重点区分：" + current.keyPoints.slice(0, 4).join("、") + "之间的关系、边界和适用场景。" : "重点关注定义、适用条件、优缺点以及与相邻概念的区别。",
-        selfChecks: [
-          "不用看资料，能否用自己的话解释“" + current.title + "”？",
-          "能否说出它解决什么问题、什么时候适用、什么时候不适用？",
-          "能否用一个实际系统例子说明它，而不是只背定义？",
-        ],
+        teaching: learningTeaching(current),
+        coreKnowledge: learningTeaching(current).what || "本知识点的教材内容尚未补齐。",
+        examFocus: learningTeaching(current).examFocus || "待补：根据教材与真题核验后填写。",
+        commonConfusions: learningTeaching(current).confusions || "待补：待补充相邻概念的区别、边界和易错点。",
+        selfChecks: current.checks,
+        checksCompleted: current.checks.filter((check) => check.completed).length,
+        checksTotal: current.checks.length,
+        contentStatus: current.contentStatus,
+        contentSource: current.contentSource ?? current.source,
         practiceAction: { type: "start-practice", chapter: current.chapter, section: current.id, difficulty: "mixed", count: 5 },
       } : null,
       position: current ? (currentIndex + "/" + units.length) : (units.length + "/" + units.length),
@@ -511,6 +607,14 @@ export class ReviewDomain extends SessionsDomain {
     return this.learningPlan();
   }
 
+  learningReinforcement(unitId, limit = 5) {
+    const unit = this.learningUnit(unitId);
+    if (!unit) throw Object.assign(new Error("学习单元不存在"), { status: 404 });
+    const state = this.store.snapshot();
+    const questions = selectLearningReinforcementQuestions({ unit, questions: this.allQuestions(state), limit });
+    return { unitId: unit.id, unitTitle: unit.title, count: questions.length, questions };
+  }
+
   async completeLearning(unitId, confidence = null) {
     const unit = this.learningUnit(unitId);
     if (!unit) throw Object.assign(new Error("学习单元不存在"), { status: 404 });
@@ -518,7 +622,22 @@ export class ReviewDomain extends SessionsDomain {
     const normalizedConfidence = Number(confidence);
     await this.store.update((state) => {
       const previous = state.learningProgress[unit.id] ?? {};
-      state.learningProgress[unit.id] = { ...previous, status: "consolidating", startedAt: previous.startedAt ?? now, completedAt: now, updatedAt: now, confidence: Number.isFinite(normalizedConfidence) && normalizedConfidence >= 1 && normalizedConfidence <= 3 ? Math.round(normalizedConfidence) : null };
+      state.learningProgress[unit.id] = { ...previous, status: "consolidating", startedAt: previous.startedAt ?? now, completedAt: now, readingCompletedAt: now, updatedAt: now, confidence: Number.isFinite(normalizedConfidence) && normalizedConfidence >= 1 && normalizedConfidence <= 3 ? Math.round(normalizedConfidence) : null };
+    });
+    return this.learningPlan();
+  }
+
+  async recordLearningCheck(unitId, checkId, completed = true) {
+    const unit = this.learningUnit(unitId);
+    if (!unit) throw Object.assign(new Error("学习单元不存在"), { status: 404 });
+    if (!unit.checks.some((check) => check.id === String(checkId))) throw Object.assign(new Error("学习检查项不存在"), { status: 400 });
+    const now = this.now();
+    await this.store.update((state) => {
+      const previous = state.learningProgress[unit.id] ?? {};
+      const checks = { ...(previous.checks ?? {}) };
+      if (completed) checks[String(checkId)] = true; else delete checks[String(checkId)];
+      const allCompleted = unit.checks.every((check) => checks[check.id]);
+      state.learningProgress[unit.id] = { ...previous, status: previous.status ?? "learning", startedAt: previous.startedAt ?? now, checks, checksCompletedAt: allCompleted ? (previous.checksCompletedAt ?? now) : null, updatedAt: now };
     });
     return this.learningPlan();
   }

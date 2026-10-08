@@ -1049,6 +1049,7 @@ async function loadActiveSession() {
     let scope = `第 ${data.session.chapter} 章`;
     if (data.session.section) scope += ` · ${data.session.section}`;
     if (data.session.mode === "review") scope = "错题回顾";
+    if (data.session.mode === "learning-reinforcement") scope = "知识点巩固";
     if (data.session.mode === "exam-mcq") scope = examSessionTitle(data.session);
     $("#resume-title").textContent = scope;
     if ($("#home-view")?.classList.contains("active")) loadStudyQueue();
@@ -1093,24 +1094,58 @@ function renderLearningPath(data) {
     try { renderLearningPath(await api("/api/learning/start", { method: "POST", body: JSON.stringify({ unitId: unit.id }) })); loadStudyQueue(); }
     catch (error) { showToast(error.message, true); } finally { startButton.disabled = false; }
   });
-  const completeButton = element("button", { className: "secondary", text: "学完并进入巩固", attrs: { type: "button" } });
+  const completeButton = element("button", { className: "secondary", text: "已阅读，进入5题巩固", attrs: { type: "button" } });
   completeButton.addEventListener("click", async () => {
     completeButton.disabled = true;
     try {
       const next = await api("/api/learning/complete", { method: "POST", body: JSON.stringify({ unitId: unit.id, confidence: 2 }) });
       renderLearningPath(next);
       loadStudyQueue();
-      showToast("已记录学习完成，下一步做 5 题巩固。");
-      await runStudyQueueAction(unit.practiceAction);
+      const reinforcement = await api(`/api/learning-reinforcement?unitId=${encodeURIComponent(unit.id)}&limit=5`);
+      if (!reinforcement.count) {
+        showToast("当前知识点还没有可用于正式巩固的已审校题目，请先补充或核验题库。", true);
+        return;
+      }
+      state.session = await api("/api/sessions", {
+        method: "POST",
+        body: JSON.stringify({
+          chapter: unit.chapter,
+          section: unit.sectionId,
+          difficulty: "mixed",
+          count: reinforcement.count,
+          questionIds: reinforcement.questions.map((question) => question.id),
+          mode: "learning-reinforcement",
+        }),
+      });
+      resetExamSaveState(state.session);
+      state.activeSession = null;
+      $("#resume-panel").hidden = true;
+      renderQuestions();
+      switchView("practice");
+      showToast(`已进入“${reinforcement.unitTitle}”知识点巩固：${reinforcement.count} 题。`);
     } catch (error) { showToast(error.message, true); } finally { completeButton.disabled = false; }
   });
   body.replaceChildren(
     element("div", { className: "learning-meta" }, [element("span", { text: "第 " + unit.chapter + " 章 · " + unit.chapterTitle }), element("span", { text: unit.sourceTitle })]),
     element("div", { className: "learning-content" }, [
-      element("h3", { text: "核心知识" }), element("p", { text: unit.coreKnowledge }),
+      element("h3", { text: "这节先学什么" }), element("p", { text: unit.coreKnowledge }),
+      element("h3", { text: "为什么 / 怎么工作" }), element("p", { text: unit.teaching?.why || unit.teaching?.how || "待补：这里将补充问题背景与核心机制。" }),
+      element("h3", { text: "场景与例子" }), element("p", { text: unit.teaching?.scenarios || unit.teaching?.examples || "待补：这里将补充应用场景与实际系统例子。" }),
       element("h3", { text: "考试关注点" }), element("p", { text: unit.examFocus }),
-      element("h3", { text: "易混淆点" }), element("p", { text: unit.commonConfusions }),
-      element("h3", { text: "学习检查" }), element("ul", {}, (unit.selfChecks ?? []).map((check) => element("li", { text: check }))),
+      element("h3", { text: "易混淆 / 常见陷阱" }), element("p", { text: (unit.teaching?.confusions || unit.commonConfusions) + (unit.teaching?.pitfalls ? "；" + unit.teaching.pitfalls : "") }),
+      element("h3", { text: "学习检查（只记录自检，不等于掌握）" }),
+      element("ul", {}, (unit.selfChecks ?? []).map((check) => {
+        const checkbox = element("input", { attrs: { type: "checkbox" } });
+        checkbox.checked = Boolean(check.completed);
+        checkbox.addEventListener("change", async () => {
+          checkbox.disabled = true;
+          try { renderLearningPath(await api("/api/learning/check", { method: "POST", body: JSON.stringify({ unitId: unit.id, checkId: check.id, completed: checkbox.checked }) })); }
+          catch (error) { checkbox.checked = !checkbox.checked; showToast(error.message, true); }
+          finally { checkbox.disabled = false; }
+        });
+        return element("li", {}, [checkbox, element("span", { text: " " + check.prompt })]);
+      })),
+      element("p", { className: "muted", text: "内容状态：" + (unit.contentStatus === "verified" ? "已核验课程内容" : unit.contentStatus === "partial" ? "已有部分内容，仍需教材核验/补全" : "待补") }),
     ]),
     element("div", { className: "learning-actions" }, [startButton, completeButton]),
     element("p", { className: "muted", text: data.disclaimer }),

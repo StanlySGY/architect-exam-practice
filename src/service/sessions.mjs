@@ -48,6 +48,8 @@ export class SessionsDomain extends PracticeServiceBase {
     section = "all",
     difficulty = "mixed",
     count = 10,
+    questionIds = null,
+    mode = "practice",
   }) {
     const chapterId = Number(chapter);
     const chapterNode = await this.mindMapChapterNode(chapterId);
@@ -69,33 +71,48 @@ export class SessionsDomain extends PracticeServiceBase {
       throw Object.assign(new Error("章节不存在"), { status: 400 });
     if (!DIFFICULTIES.has(difficulty))
       throw Object.assign(new Error("难度参数无效"), { status: 400 });
-    const candidates = uniqueAgainst(
-      this.allQuestions().filter(
-        (question) =>
-          question.chapter === chapterId &&
-          isQuestionEligibleForFormalStudy(question) &&
-          (question.sourceType ?? "generated") === "generated" &&
-          (!sectionId || question.section === sectionId) &&
-          (difficulty === "mixed" || question.difficulty === difficulty),
-      ),
-      [],
-    );
-    if (!candidates.length) {
-      throw Object.assign(
-        new Error("该章节和难度暂无题目，请先使用 Agent 生成"),
-        { status: 409, code: "QUESTION_BANK_EMPTY" },
+    const requestedIds = Array.isArray(questionIds)
+      ? [...new Set(questionIds.map((id) => String(id ?? "").trim()).filter(Boolean))].slice(0, 30)
+      : null;
+    let selected;
+    if (requestedIds) {
+      const byId = new Map(
+        this.allQuestions()
+          .filter((question) => isQuestionEligibleForFormalStudy(question))
+          .map((question) => [String(question.id), question]),
       );
+      selected = requestedIds.map((id) => byId.get(id)).filter(Boolean);
+      if (!selected.length) {
+        throw Object.assign(new Error("指定的巩固题目没有可用于正式练习的题目"), {
+          status: 409,
+          code: "REINFORCEMENT_QUESTIONS_EMPTY",
+        });
+      }
+    } else {
+      const candidates = uniqueAgainst(
+        this.allQuestions().filter(
+          (question) =>
+            question.chapter === chapterId &&
+            isQuestionEligibleForFormalStudy(question) &&
+            (question.sourceType ?? "generated") === "generated" &&
+            (!sectionId || question.section === sectionId) &&
+            (difficulty === "mixed" || question.difficulty === difficulty),
+        ),
+        [],
+      );
+      if (!candidates.length) {
+        throw Object.assign(
+          new Error("该章节和难度暂无题目，请先使用 Agent 生成"),
+          { status: 409, code: "QUESTION_BANK_EMPTY" },
+        );
+      }
+      selected = sample(candidates, Math.min(size, candidates.length), this.random);
     }
-    const selected = sample(
-      candidates,
-      Math.min(size, candidates.length),
-      this.random,
-    );
     return this.saveSession({
       chapter: chapterId,
       section: sectionId,
       difficulty,
-      mode: "practice",
+      mode,
       questions: selected,
     });
   }

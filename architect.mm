@@ -78,7 +78,6 @@
 <node TEXT="第1章 绪论" POSITION="bottom_or_right" ID="ID_425221825" CREATED="1787038363386" MODIFIED="1787038363390" AI_EDITS="true"><richcontent TYPE="DETAILS">
 <html>
   <head>
-    
   </head>
   <body>
     <p>
@@ -98,18 +97,6 @@
     </p>
   </body>
 </html></richcontent>
-<node TEXT="冯·诺伊曼结构基础" ID="ID_380094684" CREATED="1787038363451" MODIFIED="1787038363451" AI_EDITS="true"><richcontent TYPE="DETAILS">
-<html>
-  <head>
-    
-  </head>
-  <body>
-    <p>
-      EDVAC 思想把计算机组织为运算器、控制器、存储器、输入和输出五部分；采用二进制和存储程序，使指令可自动连续执行。
-    </p>
-  </body>
-</html></richcontent>
-</node>
 <node TEXT="架构定义（IEEE 1471-2000）" ID="ID_1002630903" CREATED="1787038363451" MODIFIED="1787038363451" AI_EDITS="true"><richcontent TYPE="DETAILS">
 <html>
   <head>
@@ -1208,6 +1195,28 @@
 <html>
   <head>
     
+  </head>
+  <body>
+    <p>
+      计算机系统由硬件、软件组成；网络把地理分散且独立的计算机和通信设备连接起来，实现数据交换、资源共享和信息传递。
+    </p>
+  </body>
+</html></richcontent>
+<node TEXT="冯·诺伊曼结构基础" ID="ID_380094684" CREATED="1787038363451" MODIFIED="1787038363451" AI_EDITS="true"><richcontent TYPE="DETAILS">
+<html>
+  <head>
+
+  </head>
+  <body>
+    <p>
+      EDVAC 思想把计算机组织为运算器、控制器、存储器、输入和输出五部分；采用二进制和存储程序，使指令可自动连续执行。
+    </p>
+  </body>
+</html></richcontent>
+</node><richcontent TYPE="DETAILS">
+<html>
+  <head>
+
   </head>
   <body>
     <p>
