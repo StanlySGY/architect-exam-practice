@@ -8,6 +8,7 @@
     "start": "NODE_USE_ENV_PROXY=1 node server.mjs",
     "dev": "NODE_USE_ENV_PROXY=1 node --watch server.mjs",
     "test": "node --test",
+    "audit:bank-traceability": "node scripts/audit-bank-traceability.mjs",
     "lint": "find server.mjs src test scripts public -type f \\( -name '*.mjs' -o -name '*.js' \\) -print0 | xargs -0 -n1 node --check"
   },
   "engines": {
