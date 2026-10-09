@@ -130,3 +130,9 @@
 - 新增只读命令 `npm run audit:learning-content`，汇总学习单元状态和 `why/how/confusions/scenarios/examFocus/pitfalls` 的全文重复组，帮助后续按主题分批修订；重复扫描仅比较规范化后的全文，不判断事实正确性。当前扫描仍发现 `why` 267 个单元、`how` 232 个单元、`confusions` 252 个单元落在全文重复组中，说明下一步应优先审查这些章节级重复内容，而不是宣称学习资料已全部个性化。
 - 按该审计结果，先对第6章中重复使用章节级通用表述的 11 个单元重写 why/how/confusions，并新增测试确保这 11 个单元在三字段内不再全文重复。其余章节的重复正文仍未全部修订，不能据此宣称 309 个单元均已个性化或事实核验。
 - 随后对第4章 23 个安全基础单元的 why/how/confusions 做了主题化修订，并增加回归测试。再次扫描后，`why` 全文重复组覆盖单元数从 267 降至 233，`how` 从 232 降至 198，`confusions` 从 252 降至 218；其他章节的重复仍然显著，继续按主题分批处理。
+
+## 本轮：第7、8章架构学习内容去模板化
+
+- 对第7章 26 个、第8章 6 个学习单元进行定向扫描，替换已识别的章节级通用 why/how/confusions，并修复 8 个单元中通用占位式练习情境与易错检查。
+- 增加回归测试：要求这 32 个单元的 why/how/confusions 非空且全文互异，并检查已识别模板短语不再出现在 why/how/confusions/examples/pitfalls 中。
+- ATAM 概述记录了 Carnegie Mellon University Software Engineering Institute 的原始资料链接；这不等同于对所有架构知识点或考试答案的权威核验。其他内容保持原状态，未经证据核对的结论不得标记为 verified。

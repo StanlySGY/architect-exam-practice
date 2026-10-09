@@ -37,3 +37,6 @@
 2. 新生成的内容保持原有 status；批量补写不会把 partial 升级为 verified。
 3. 教学情境帮助练习迁移思路，不替代教材原例、真题或人工事实核验。
 4. verified 不等于用户掌握，掌握仍由阅读、自检、练习、错题与 FSRS 判断。
+
+- 第7章架构设计与第8章架构评估本轮修订了 32 个单元：替换章节级重复的 why/how/confusions，修复 8 个单元中通用占位式情境和易错检查；新增回归测试防止这些已识别模板复发。修订仍保留原核验状态，不代表整章内容已经由教材逐项证实。
+- 第8章涉及 ATAM 的方法概述可对照 Carnegie Mellon University Software Engineering Institute 的原始资料：<https://www.sei.cmu.edu/library/the-architecture-tradeoff-analysis-method/>。该来源支持 ATAM 用于分析多种质量属性之间的架构权衡；本项目其余标准编号、考试大纲和教材特定表述仍需分别回查对应权威资料。

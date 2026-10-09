@@ -121,3 +121,21 @@ test('全量补强不篡改原有事实核验状态', () => {
   assert.equal(statuses.partial, 306);
   assert.equal(content.coverage.selfCheckEnrichedRecords, 309);
 });
+
+test('第7、8章清除已识别的章节级通用模板', () => {
+  const ids = units.map(([id]) => id).filter((id) => id.startsWith('7.') || id.startsWith('8.'));
+  assert.equal(ids.length, 32);
+  for (const id of ids) {
+    const unit = content.units[id];
+    for (const field of ['why', 'how', 'confusions']) {
+      assert.ok(String(unit[field] ?? '').trim(), );
+    }
+    for (const field of ['why', 'how', 'confusions', 'examples', 'pitfalls']) {
+      assert.doesNotMatch(String(unit[field] ?? ''), /本章把基础技术提升到系统架构层面|架构最终要用质量属性和评估方法验证|围绕质量场景学习：|练习情境（课程化说明|本知识点易错检查：/, );
+    }
+  }
+  for (const field of ['why', 'how', 'confusions']) {
+    const values = ids.map((id) => String(content.units[id][field]).trim());
+    assert.equal(new Set(values).size, ids.length, );
+  }
+});
