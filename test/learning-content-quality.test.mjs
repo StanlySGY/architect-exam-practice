@@ -147,3 +147,11 @@ test('309个学习单元的 why/how/confusions 不再复用完全相同的全文
     assert.equal(new Set(values).size, units.length, field + ' must not have duplicate full text');
   }
 });
+
+test('学习内容不以“以教材案例为准”代替案例正文', () => {
+  for (const [id, unit] of units) {
+    for (const field of ['examples', 'scenarios']) {
+      assert.doesNotMatch(String(unit[field] ?? ''), /以教材嵌入式系统架构案例为准|以教材第17章网络案例为准/, );
+    }
+  }
+});
