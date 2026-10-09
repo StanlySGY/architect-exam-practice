@@ -1,5 +1,5 @@
 // bank 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
-import { isImported, normalizeComparableText, validateOptions } from "./helpers.mjs";
+import { QUESTION_REVIEW_REASONS, isImported, normalizeComparableText, validateOptions } from "./helpers.mjs";
 import { ReviewDomain } from "./review.mjs";
 
 // 题目难度诊断标签：基于题目自身作答统计（至少 5 次作答才判定）。
@@ -138,6 +138,13 @@ export class BankDomain extends ReviewDomain {
       Object.assign(question, patch);
       question.revision = (question.revision ?? 1) + 1;
       question.editedAt = this.now();
+      // Any manual edit invalidates prior fact-check approval: the old evidence
+      // refers to the previous question revision and must not authorize this one.
+      question.reviewStatus = "pending_review";
+      question.reviewReasons = [QUESTION_REVIEW_REASONS.NO_HUMAN_FACT_CHECK];
+      delete question.reviewedBy;
+      delete question.reviewEvidence;
+      delete question.reviewedAt;
       return {
         questionId,
         revision: question.revision,

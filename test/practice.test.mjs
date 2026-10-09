@@ -35,6 +35,14 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewedAt = service.now(); return state; });
   const session = await service.createSession({ chapter: 7, difficulty: "easy", count: 1 });
   assert.equal(session.questions[0].id, id);
+  await service.updateQuestion({ questionId: id, updates: { correctAnswer: "B" } });
+  const edited = service.store.snapshot().generatedQuestions.find((item) => item.id === id);
+  assert.equal(edited.reviewStatus, "pending_review");
+  assert.deepEqual(edited.reviewReasons, ["no_human_fact_check"]);
+  assert.equal(edited.reviewedBy, undefined);
+  assert.equal(edited.reviewEvidence, undefined);
+  assert.equal(edited.reviewedAt, undefined);
+  await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.disabledAt = service.now(); return state; });
   await service.store.update((state) => { state.generatedQuestions.push({ id: "real-review-compat", sourceType: "real", sourceId: "real-review-compat", chapter: 7, difficulty: "easy", question: "真题兼容测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "真题解析", knowledgeDetail: "真题资料", sourceNode: null, createdAt: service.now() }); return state; });
   assert.equal(service.allQuestions().find((item) => item.id === "real-review-compat").sourceType, "real");
