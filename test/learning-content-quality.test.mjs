@@ -47,6 +47,24 @@ test('章节总览与目录主题一致，且核验状态与来源状态不冲�
   }
 });
 
+test('第1章已核验单元的教学字段必须与各自主题对应', () => {
+  const architectureBasics = content.units['1.1'];
+  assert.match(architectureBasics.selfChecks[0], /基本组织.*元素之间的关系.*系统环境/);
+  assert.match(architectureBasics.selfChecks[1], /分层架构.*事件驱动架构/);
+  assert.doesNotMatch(architectureBasics.selfChecks.join(' '), /学习时先区分|请用“从系统边界/);
+  const architectRole = content.units['1.2'];
+  assert.match(architectRole.how, /职责|任务/);
+  assert.match(architectRole.confusions, /项目经理/);
+  assert.match(architectRole.examFocus, /非功能需求/);
+  assert.doesNotMatch(architectRole.how, /系统边界→关键元素|建模→场景→权衡/);
+
+  const architectGrowth = content.units['1.3'];
+  assert.match(architectGrowth.what, /领导者.*开发者.*系统综合者/);
+  assert.match(architectGrowth.how, /工程师.*架构设计师/);
+  assert.match(architectGrowth.examFocus, /六种角色特质/);
+  assert.doesNotMatch(architectGrowth.how, /系统边界→关键元素|本知识点：1\.3/);
+});
+
 test('全量补强不篡改原有事实核验状态', () => {
   const statuses = units.reduce((acc, [, unit]) => (acc[unit.status] = (acc[unit.status] || 0) + 1, acc), {});
   assert.equal(statuses.verified, 3);
