@@ -8,13 +8,21 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
 });
 test('current learning course has 309 units and preserves its review states',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,309); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,306); assert.equal(report.unitsWithClaimLevelEvidence,9); assert.equal(report.unitsMissingEvidence,300); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,309); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,306); assert.equal(report.unitsWithClaimLevelEvidence,15); assert.equal(report.unitsMissingEvidence,294); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];
   assert.equal(unit.status,"partial",id);
+  assert.ok(unit.evidence?.some(e=>e.url===unit.source.path && e.supportedClaim && e.scope && e.reviewedOn && e.reviewStatus),id);
+ }
+});
+
+test('SEI architecture evaluation and reliability units carry bounded source evidence and remain partial',()=>{
+ for (const id of ['8.1.1','8.1.2','8.2.1','8.3','9.1.1','9.1.2']) {
+  const unit=content.units[id];
+  assert.equal(unit.status,'partial',id);
   assert.ok(unit.evidence?.some(e=>e.url===unit.source.path && e.supportedClaim && e.scope && e.reviewedOn && e.reviewStatus),id);
  }
 });
