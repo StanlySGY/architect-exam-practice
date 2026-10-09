@@ -9212,18 +9212,18 @@
     },
     "17.3.1": {
       "status": "partial",
-      "what": "通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。",
-      "why": "理解「通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "网络与信息系统韧性应结合故障检测、替代资源、恢复流程和业务连续性计划，降低单点故障或区域性中断对服务的影响。",
+      "why": "设备或链路冗余若共享电源、机房、运营商或控制面，仍可能被同一故障同时击穿；恢复能力还取决于数据、人员、流程和验证。",
+      "how": "识别关键业务和依赖，定义恢复优先级、RTO/RPO及故障场景；设计独立故障域与替代资源，定期演练切换、备份恢复和回切，并记录实际结果。",
+      "confusions": "高可用、容灾和备份并不相同；冗余不能替代恢复演练，RTO/RPO也不能仅凭架构图推定，必须结合业务要求和测试证据确定。",
       "scenarios": "情境练习（非教材原例）：围绕“通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://csrc.nist.gov/Topics/Security-and-Privacy/security-programs-and-operations/contingency-planning",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -9248,6 +9248,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“通过冗余、快速收敛、故障检测、负载均衡和容灾降低单点故障影响。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC — Contingency Planning",
+          "url": "https://csrc.nist.gov/Topics/Security-and-Privacy/security-programs-and-operations/contingency-planning",
+          "sourceAuthority": "National Institute of Standards and Technology",
+          "supportedClaim": "NIST describes information-system contingency planning as coordinated plans, procedures, and technical measures for recovering systems, operations, and data after disruption, including alternate equipment, processing, or locations as appropriate.",
+          "scope": "Supports recovery planning and alternate recovery approaches; does not prescribe a universal redundancy design or guarantee a particular recovery time without system-specific analysis.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "17.3.2": {
@@ -10198,18 +10209,18 @@
     },
     "18.5.2": {
       "status": "partial",
-      "what": "确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。",
-      "why": "理解「确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "身份认证通过验证主体对已绑定认证器的控制，建立其对数字身份的控制证明；认证保证等级应依据系统风险和所需置信度选择。",
+      "why": "只验证用户名或单一凭据未必能抵御钓鱼、凭据盗用或账户接管；认证强度应与业务风险、账户影响和威胁模型相匹配。",
+      "how": "明确身份绑定与认证目标，按风险选择认证保证等级和认证器组合；同时管理注册、恢复、丢失、撤销、重新认证和异常监测流程。",
+      "confusions": "认证是验证对认证器的控制，不等于授权；多因素要求取决于目标保证等级和标准要求，生物特征也不能脱离合适的认证器单独作为完整认证方案。",
       "scenarios": "情境练习（非教材原例）：围绕“确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://csrc.nist.gov/pubs/sp/800/63/B/4/final",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -10234,6 +10245,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“确认实体身份和消息来源，包括口令、多因素、生物特征、证书、数字签名和挑战应答。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-63B-4 — Digital Identity Guidelines: Authentication and Authenticator Management",
+          "url": "https://csrc.nist.gov/pubs/sp/800/63/B/4/final",
+          "sourceAuthority": "National Institute of Standards and Technology",
+          "supportedClaim": "SP 800-63B-4 provides technical requirements for authentication and authenticator assurance levels for subjects accessing digital services over networks.",
+          "scope": "Supports digital authentication and assurance-level framing; does not imply that one factor type is sufficient for every risk level or that digital authentication proves real-world identity without appropriate identity proofing.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.5.3": {
@@ -10289,18 +10311,18 @@
     },
     "18.5.4": {
       "status": "partial",
-      "what": "通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。",
-      "why": "理解「通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "保密性是保护信息不被未授权访问或披露，涵盖存储、处理和传输过程中的信息保护；加密是常用手段之一，但必须与身份、授权和密钥管理配合。",
+      "why": "仅对链路加密不能防止已获授权但权限过大的账户读取数据，也不能自动保护终端、备份或密钥；需按数据生命周期设计控制。",
+      "how": "按敏感度分类数据，确定访问主体和最小权限；根据风险保护静态数据和传输数据，管理密钥与备份，并通过日志、配置检查和测试验证控制。",
+      "confusions": "保密性关注未授权披露，不等同于完整性或可用性；加密不能替代访问控制、密钥保护和终端安全。",
       "scenarios": "情境练习（非教材原例）：围绕“通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://csrc.nist.gov/glossary/term/confidentiality",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -10325,22 +10347,33 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“通过加密、密钥管理、隧道、访问控制和脱敏防止未授权披露。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary — Confidentiality",
+          "url": "https://csrc.nist.gov/glossary/term/confidentiality",
+          "sourceAuthority": "National Institute of Standards and Technology",
+          "supportedClaim": "NIST defines confidentiality as preserving authorized restrictions on access and disclosure, including means for protecting personal privacy and proprietary information.",
+          "scope": "Supports the confidentiality objective and unauthorized-disclosure framing; does not prescribe one specific encryption algorithm or claim encryption alone is sufficient.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.5.5": {
       "status": "partial",
-      "what": "通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。",
-      "why": "理解「通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "完整性保护信息及系统免受未授权修改或破坏，并关注数据的准确性、完整性及适用时的真实性和可追责性；具体机制需根据威胁和数据流程组合。",
+      "why": "哈希校验可发现部分变更，但若攻击者能同时替换数据与未受保护的摘要，单独使用哈希并不能证明来源可信；权限、认证、审计和受保护的校验值同样重要。",
+      "how": "定义允许的写入主体和变更路径；根据需要使用受保护的校验值、MAC、数字签名、事务约束和审计记录，并测试未授权修改、重放及恢复场景。",
+      "confusions": "完整性不只是“文件没有变化”，还涉及是否发生未经授权的改变；哈希、MAC、签名和事务约束解决的问题不同，不能不加条件地互相替代。",
       "scenarios": "情境练习（非教材原例）：围绕“通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://csrc.nist.gov/glossary/term/information_security",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -10365,6 +10398,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“通过哈希、MAC、数字签名、版本、校验、审计和事务防止未授权修改。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary — Information Security",
+          "url": "https://csrc.nist.gov/glossary/term/information_security",
+          "sourceAuthority": "National Institute of Standards and Technology",
+          "supportedClaim": "NIST defines information security in terms of protecting information and information systems from unauthorized access, use, disclosure, disruption, modification, or destruction to provide confidentiality, integrity, and availability.",
+          "scope": "Supports the broad security objectives and the need to address unauthorized modification/destruction; does not establish that any single hash or signature automatically ensures data integrity in every workflow.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.5.6": {
