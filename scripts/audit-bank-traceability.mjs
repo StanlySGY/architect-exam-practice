@@ -1,6 +1,6 @@
 import { existsSync } from "node:fs";
 import { readFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const normalize = (value) =>
@@ -92,28 +92,38 @@ export function auditBank(bank, { sourcePath = null } = {}) {
 
 export function auditSourcePaths(bank, sourceRoot) {
   const result = {};
+  const resolvedRoot = resolve(sourceRoot);
+  const pathIsInsideRoot = (sourceFile) => {
+    const absolutePath = resolve(resolvedRoot, sourceFile);
+    const rel = relative(resolvedRoot, absolutePath);
+    return rel === "" || (!isAbsolute(rel) && rel !== ".." && !rel.startsWith(".." + sep));
+  };
   for (const kind of ["choices", "cases", "essays"]) {
     const items = Array.isArray(bank?.[kind]) ? bank[kind] : [];
     const withSource = items.filter((item) => String(item.sourceFile ?? "").trim());
     const remoteUrls = withSource.filter((item) => /^https?:\/\//i.test(String(item.sourceFile)));
     const localPaths = withSource.filter((item) => !/^https?:\/\//i.test(String(item.sourceFile)));
     const uniqueLocalPaths = [...new Set(localPaths.map((item) => item.sourceFile))];
-    const unresolvedRecords = localPaths.filter((item) => !existsSync(resolve(sourceRoot, item.sourceFile)));
-    const unresolvedPaths = uniqueLocalPaths.filter((sourceFile) => !existsSync(resolve(sourceRoot, sourceFile)));
+    const escapingRecords = localPaths.filter((item) => !pathIsInsideRoot(item.sourceFile));
+    const escapingPaths = uniqueLocalPaths.filter((sourceFile) => !pathIsInsideRoot(sourceFile));
+    const unresolvedRecords = localPaths.filter((item) => pathIsInsideRoot(item.sourceFile) && !existsSync(resolve(resolvedRoot, item.sourceFile)));
+    const unresolvedPaths = uniqueLocalPaths.filter((sourceFile) => pathIsInsideRoot(sourceFile) && !existsSync(resolve(resolvedRoot, sourceFile)));
     result[kind] = {
       records: items.length,
       recordsWithSourceFile: withSource.length,
       remoteUrlRecords: remoteUrls.length,
       localPathRecords: localPaths.length,
       uniqueLocalPaths: uniqueLocalPaths.length,
+      pathTraversalRecords: escapingRecords.length,
+      pathTraversalUniquePaths: escapingPaths.length,
+      pathTraversalPathExamples: escapingPaths.slice(0, 10),
       unresolvedLocalPathRecords: unresolvedRecords.length,
       unresolvedUniqueLocalPaths: unresolvedPaths.length,
       unresolvedPathExamples: unresolvedPaths.slice(0, 10),
     };
   }
   return result;
-}
-async function main() {
+}async function main() {
   const sourcePath = process.argv[2]
     ? resolve(process.cwd(), process.argv[2])
     : resolve(import.meta.dirname, "../../architect-exam-bank/data/bank.json");
@@ -124,6 +134,9 @@ async function main() {
   const report = auditBank(bank, { sourcePath });
   report.sourceRoot = sourceRoot;
   report.sourceFilePathResolution = auditSourcePaths(bank, sourceRoot);
+  if (Object.values(report.sourceFilePathResolution).some((section) => section.pathTraversalRecords > 0)) {
+    report.warnings.push("发现试图解析到 sourceRoot 之外的 sourceFile 路径；这些路径不会被算作已解析来源，请人工检查路径前缀。");
+  }
   if (Object.values(report.sourceFilePathResolution).some((section) => section.unresolvedLocalPathRecords > 0)) {
     report.warnings.push("部分 sourceFile 路径无法在当前 sourceRoot 下解析；它们可能是上游仓库相对路径，或源文件未随当前仓库提供。路径标记本身不证明源文件可访问。");
   }

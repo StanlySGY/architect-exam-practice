@@ -24,22 +24,25 @@ test("只读题库审计区分结构完整、出处缺失和重复题干候选",
   assert.ok(report.warnings.some((warning) => warning.includes("非官方整理")));
 });
 
-test("来源路径审计区分远程 URL、可解析文件和未解析的本地路径", () => {
+test("来源路径审计区分远程 URL、可解析文件、未解析路径和越界路径", () => {
   const root = resolve(import.meta.dirname, "..");
   const report = auditSourcePaths({
     choices: [
       { sourceFile: "package.json" },
       { sourceFile: "data/no-such-source.md" },
       { sourceFile: "https://example.com/source.md" },
+      { sourceFile: "../architect-exam-bank/data/bank.json" },
       {},
     ],
     cases: [],
     essays: [],
   }, root);
-  assert.equal(report.choices.records, 4);
-  assert.equal(report.choices.recordsWithSourceFile, 3);
+  assert.equal(report.choices.records, 5);
+  assert.equal(report.choices.recordsWithSourceFile, 4);
   assert.equal(report.choices.remoteUrlRecords, 1);
-  assert.equal(report.choices.localPathRecords, 2);
+  assert.equal(report.choices.localPathRecords, 3);
+  assert.equal(report.choices.pathTraversalRecords, 1);
+  assert.equal(report.choices.pathTraversalUniquePaths, 1);
   assert.equal(report.choices.unresolvedLocalPathRecords, 1);
   assert.equal(report.choices.unresolvedUniqueLocalPaths, 1);
 });
