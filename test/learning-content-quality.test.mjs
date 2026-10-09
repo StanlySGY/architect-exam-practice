@@ -27,6 +27,14 @@ test('how/confusions 不包含批量补写的通用模板尾句', () => {
     }
   }
 });
+test('数据库设计基础单元的 why/how/confusions 按各自主题区分', () => {
+  const ids = ['6.1.2','6.1.3','6.2.1','6.2.2','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4'];
+  for (const field of ['why', 'how', 'confusions']) {
+    const values = ids.map((id) => content.units[id]?.[field]);
+    assert.ok(values.every((value) => typeof value === 'string' && value.trim()), `${field} must remain present`);
+    assert.equal(new Set(values).size, ids.length, `${field} should be topic-specific across audited database units`);
+  }
+});
 
 test('高价值单元的例子与陷阱包含足够的知识点说明', () => {
   for (const id of highValue) {
