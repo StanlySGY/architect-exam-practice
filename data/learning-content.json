@@ -3098,18 +3098,18 @@
     },
     "7.1.1": {
       "status": "partial",
-      "what": "软件架构关注软件系统的基本组织、组成元素及其关系，以及指导设计和演化的原则。",
-      "why": "架构把需求转化为稳定的系统结构，是后续开发、评审和演化的基础。",
-      "how": "识别架构元素及关系，再结合环境、约束和质量目标理解架构决策，最后用视图或模型表达。",
-      "confusions": "架构不等同于某一种架构风格；风格是可复用的结构组织方式。",
+      "what": "软件架构关注系统的基本组织、元素及关系和指导设计、演化的原则；架构描述则是表达该架构的工件，两者不能简单等同。",
+      "why": "把架构本身与架构文档混为一谈，会误以为画出一张图就完整表达了架构，也容易忽略涉众关注点、视角和设计理由。",
+      "how": "先明确系统边界、涉众及其关注点，再选择相应视角和模型表达结构、行为、部署等信息；同时记录跨视图的约束、假设和设计理由。",
+      "confusions": "ISO/IEC/IEEE 42010 规定架构描述的结构表达要求，但不指定唯一架构方法、建模工具或文件格式；架构文档也不等于系统本身。",
       "scenarios": "复杂系统设计、质量属性权衡、架构评审和长期演化。",
       "examples": "例如一个订单系统可以按职责组织为表示、业务处理和数据访问等部分，也可以在异步场景中通过事件驱动协作；这些具体组织方式帮助理解架构元素、关系以及设计原则如何共同形成系统的基本组织。",
       "examFocus": "重点掌握架构的基本组织、组成元素、元素之间的关系以及指导设计和演化的原则，并能区分架构、详细设计和具体技术实现。",
       "pitfalls": "不要把“模块怎么分”当成架构的全部；架构还涉及元素之间的关系、系统所处环境以及指导设计和演化的原则。也不要把某个框架、语言或部署平台直接等同于架构。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://www.iso.org/standard/74393.html",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3134,6 +3134,17 @@
       "selfChecks": [
         "软件架构除了“模块怎么分”还需要描述什么？为什么环境、关系和原则也属于架构理解的一部分？",
         "当两个方案功能都能实现时，你会从哪些架构目标和约束出发比较它们？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022 — Architecture description",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE International Standard",
+          "supportedClaim": "ISO/IEC/IEEE 42010:2022 specifies requirements for the structure and expression of architecture descriptions and distinguishes an architecture from the description that expresses it.",
+          "scope": "Supports the distinction between an architecture and its description, plus requirements for architecture-description structure and viewpoints; it does not prescribe one architecture method or guarantee system quality.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "7.1.2": {
@@ -3251,18 +3262,18 @@
     },
     "7.2.2": {
       "status": "partial",
-      "what": "架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。",
-      "why": "本单元聚焦「架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。」。理解它的价值，关键是把架构概念与实际决策联系起来：它会影响哪些构件、接口、依赖或演化选择，以及这些选择对涉众和质量目标有什么后果。",
-      "how": "以「架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。」为对象，先写出参与者/构件及各自职责，再标注交互、依赖和约束；用一个符合该主题的业务场景检验结构是否成立，并记录选择该方案的理由、代价及不适用条件。",
-      "confusions": "不要把「架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。」与具体产品、工具或单一实现混为一谈。作答时区分概念定义、它约束或支持的架构决策，以及实际方案的适用前提；同一技术是否合适仍需结合需求、质量目标和运行约束判断。",
+      "what": "架构描述需要把系统结构及其关系表达给相关涉众；视角规定如何针对一类关注点组织描述，视图则是按某个视角形成的架构表达。架构决策、约束和风险等信息应与相关视图保持可追溯。",
+      "why": "如果术语混用或视图没有对应涉众关注点，架构文档可能看似完整却不能支持设计评审、实现和维护。",
+      "how": "列出涉众与关注点，定义视角的约定和模型种类，为每个视图注明覆盖范围、元素关系及其依据；将关键决策和风险链接到受影响的视图。",
+      "confusions": "视角是规定如何构造视图的约定，视图是架构在该约定下的表达；架构描述标准并不要求每个项目采用完全相同的视图清单。",
       "scenarios": "情境练习（非教材原例）：围绕“架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "评审微服务方案时，写清架构驱动因素和关键决策，再标出服务构件、接口连接、部署视图、主要风险，以及对延迟和一致性的敏感点，评审才可聚焦可验证问题。",
       "examFocus": "复习重点：围绕“架构驱动因素、构件、连接件、视图、视角、模式、架构决策、风险、敏感点和权衡点。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
       "pitfalls": "构件、连接件、视图、决策、风险和权衡点不能只是孤立术语，应形成可追踪关系。敏感点也不只是性能热点，而是对某个质量属性影响显著的决策或属性。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://www.iso.org/standard/74393.html",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3281,6 +3292,17 @@
       "selfChecks": [
         "架构描述中如何关联驱动因素、构件、连接件、决策和风险？",
         "为什么敏感点和权衡点必须结合具体质量属性分析？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022 — Architecture description",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE International Standard",
+          "supportedClaim": "The standard identifies architecture-description concepts including stakeholders, concerns, viewpoints, views, model kinds, and architecture-description frameworks/languages, and specifies requirements for their use.",
+          "scope": "Supports the architecture-description vocabulary and relationships at a high level; does not validate the course-specific enumeration as an exhaustive list of all architecture concepts.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "7.2.3": {
@@ -3402,18 +3424,18 @@
     },
     "7.2.6": {
       "status": "partial",
-      "what": "使用多个架构视图描述系统，使不同涉众获得与其关注点相关的信息。",
-      "why": "复杂系统无法通过单一图表完整表达；面向涉众和关注点组织视图，有助于分析职责、交互、部署和风险。",
-      "how": "先识别涉众及其决策问题，再为每个问题选择合适的架构视图：例如逻辑视图解释职责和依赖，运行视图解释交互与并发，部署视图解释软件到基础设施的映射；随后检查各视图对组件、接口和约束的描述是否一致。",
-      "confusions": "视图是从某个关注点呈现架构的表达，视角则规定构造和解释一类视图的约定；图是具体表达载体，不等同于架构本身。不要机械套用固定数量的视图，应由涉众、风险和沟通目的决定。",
+      "what": "采用多个架构视图，是为了表达系统中同时存在的不同结构，并分别满足开发、部署、运行、安全等涉众关注点；还需补充适用于多个视图的约束与设计理由。",
+      "why": "单一图示难以同时表达模块依赖、运行交互和部署拓扑；按关注点选择视图可减少信息过载，也避免重要结构被遗漏。",
+      "how": "先识别涉众及其关注点，再选择逻辑视图表达职责与依赖、运行视图表达交互行为、部署视图表达节点与网络拓扑；为每个视图说明元素、关系、接口和假设，并记录跨视图约束与设计理由。",
+      "confusions": "视图与视角不能混用：视角是规定如何构造视图的约定，视图是架构在该约定下的表达；不是视图越多越好，也不存在适用于所有系统的唯一固定视图集合。图形本身不充分，必要时还要说明接口、行为、约束和理由。",
       "scenarios": "对订单系统，开发团队需要逻辑视图理解订单、支付和库存职责；运维团队需要部署视图定位节点与依赖；排障时需要运行视图追踪请求和消息。三个视图都必须对服务名称、接口和关键约束保持一致。",
       "examples": "同一订单服务的逻辑视图描述职责和依赖，运行视图展示请求与消息流，部署视图标出服务、数据库和网络边界；接口和服务标识应在三种视图中保持一致。",
       "examFocus": "回答多视图题时，明确视图服务的涉众/关注点、表达的架构元素、与其他视图的关系，以及如何维护跨视图一致性；不要仅罗列图名。",
       "pitfalls": "多视图不是把同一张图换几种画法，也不是视图越多越好；每个视图都应有明确关注点，并且不同视图对构件、接口、部署和约束的描述必须一致。视图是架构的表达，不等同于架构本身。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://www.sei.cmu.edu/library/views-and-beyond-collection/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3432,6 +3454,17 @@
       "selfChecks": [
         "逻辑视图、运行视图和部署视图分别帮助回答什么问题？",
         "多个视图之间为什么必须保持构件、接口和约束的一致？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CMU SEI — Views and Beyond Collection",
+          "url": "https://www.sei.cmu.edu/library/views-and-beyond-collection/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute",
+          "supportedClaim": "The Views and Beyond approach organizes architecture documentation around relevant views, each showing system elements and their relationships, supplemented by information that applies across views.",
+          "scope": "Supports the role of views and cross-view information in architecture documentation; does not imply that a fixed set of views fits every system.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "7.2.7": {
@@ -5406,18 +5439,18 @@
     },
     "10.7.1": {
       "status": "partial",
-      "what": "记录架构设计方案及其决策来源，使维护者理解为什么这样设计。",
-      "why": "理解「记录架构设计方案及其决策来源，使维护者理解为什么这样设计。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「记录架构设计方案及其决策来源，使维护者理解为什么这样设计。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「记录架构设计方案及其决策来源，使维护者理解为什么这样设计。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "架构决策记录（ADR）应说明重要决策的背景、选择内容及其后果，帮助团队理解架构为何如此设计，并在后续评审和演化中追溯原始理由。",
+      "why": "只记录最终方案而不记录背景和权衡，后续维护者容易重复讨论、误判当时约束，或在修改时无意破坏关键质量属性。",
+      "how": "为架构上重要的选择记录上下文、考虑过的替代方案、决策、后果、状态和负责人；接受后保留历史，重大变化通过新记录替代旧决策。",
+      "confusions": "ADR 不是完整架构说明，也不代替设计分析；不是所有琐碎实现细节都需要单独 ADR，重点是对结构、质量属性、依赖或接口有显著影响的选择。",
       "scenarios": "情境练习（非教材原例）：围绕“记录架构设计方案及其决策来源，使维护者理解为什么这样设计。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「记录架构设计方案及其决策来源，使维护者理解为什么这样设计。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“记录架构设计方案及其决策来源，使维护者理解为什么这样设计。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「记录架构设计方案及其决策来源，使维护者理解为什么这样设计。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/adr-process.html",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -5436,6 +5469,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“记录架构设计方案及其决策来源，使维护者理解为什么这样设计。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“记录架构设计方案及其决策来源，使维护者理解为什么这样设计。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "AWS Prescriptive Guidance — Architectural decision record process",
+          "url": "https://docs.aws.amazon.com/prescriptive-guidance/latest/architectural-decision-records/adr-process.html",
+          "sourceAuthority": "Amazon Web Services Prescriptive Guidance",
+          "supportedClaim": "An architectural decision record captures a significant architectural choice, its context, the decision, and its consequences; the collection of records forms a decision log.",
+          "scope": "Supports the purpose and minimum contents of ADRs; the specific project may adapt its template and lifecycle while preserving decision traceability.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "10.7.2": {
@@ -9117,18 +9161,18 @@
     },
     "17.2.5": {
       "status": "partial",
-      "what": "SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。",
-      "why": "理解「SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "软件定义网络（SDN）的核心是将控制功能与转发功能解耦，使网络控制可以通过软件编程；控制逻辑可集中管理多个转发设备，并对上层应用提供抽象。",
+      "why": "解耦有助于自动化配置和统一策略，但也会引入控制器可用性、控制通道安全、状态一致性和规模扩展等架构问题。",
+      "how": "分别识别控制平面、数据/转发平面和南北向接口；明确控制器高可用、设备失联行为、权限边界、遥测和回滚策略，再以故障注入和容量测试验证。",
+      "confusions": "逻辑集中不必然意味着单个物理控制器；SDN 不会自动保证高可用、安全或性能，仍需具体设计控制器冗余与失效处理。",
       "scenarios": "情境练习（非教材原例）：围绕“SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://opennetworking.org/sdn-definition/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -9153,6 +9197,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“SDN将控制平面与数据转发平面分离，通过集中或逻辑集中控制器以编程方式管理网络。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Open Networking Foundation — Software-Defined Networking Definition",
+          "url": "https://opennetworking.org/sdn-definition/",
+          "sourceAuthority": "Open Networking Foundation",
+          "supportedClaim": "SDN separates the network control plane from the forwarding plane, enabling programmable control; controllers may manage multiple devices with logically centralized control.",
+          "scope": "Supports the core SDN separation and programmability concept; does not mean every deployment uses one physical controller or eliminates distributed forwarding.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "17.3.1": {
@@ -9717,18 +9772,18 @@
     },
     "18.2.2": {
       "status": "partial",
-      "what": "Bell-LaPadula模型主要用于机密性控制，通过安全级别和访问规则限制信息向不允许的方向流动。",
-      "why": "安全模型把抽象的安全目标转化为可分析的访问控制规则。",
-      "how": "识别主体、客体和安全级别，再判断访问关系及信息流动限制，并与其他模型比较。",
-      "confusions": "Bell-LaPadula重点是机密性；Biba主要关注完整性。",
+      "what": "Bell–LaPadula 模型主要用于多级安全场景下的机密性控制，经典规则概括为“不可向上读、不可向下写”（no read up、no write down），以限制高密级信息向低密级对象泄露。",
+      "why": "仅按用户身份授权可能无法表达不同密级之间的信息流约束；安全标签与规则可以对跨级读取和写入施加系统性限制。",
+      "how": "为主体和客体定义安全级别，依据主体许可级别与客体密级检查读取和写入操作；同时明确模型假设、例外路径以及与其他访问控制机制的组合方式。",
+      "confusions": "该模型核心是机密性，不是通用数据完整性模型；仅实施两条规则也不能自动解决侧信道、错误配置、身份管理或所有现实系统安全问题。",
       "scenarios": "在包含不同安全级别信息的环境中，分析主体身份、客体级别、访问请求和允许的信息流方向；比较机密性控制与完整性控制的目标差异，并核对所采用模型的具体规则。",
       "examples": "例如在多级安全环境中比较两个模型：Bell-LaPadula用于表达机密性控制，而Biba用于表达完整性控制；做题时先判断题干要保护的目标，再选择对应模型。",
       "examFocus": "机密性、完整性与不同安全模型的目标区分。",
       "pitfalls": "最常见错误是把Bell-LaPadula与Biba的目标混淆：前者重点是机密性，后者重点是完整性；不能因为都涉及安全级别和访问规则就混用其结论。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://www.cl.cam.ac.uk/teaching/1819/SWSecEng/2019-sse-all-1up.pdf",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -9757,22 +9812,33 @@
       "selfChecks": [
         "Bell-LaPadula主要保护什么安全目标？它与Biba最容易混淆的地方是什么？",
         "请用“识别主体、客体和安全级别，再判断访问关系及信息流动限制，并与其他模型比较”分析“Bell-LaPadula模型主要用于机密性控制，通过安全级别和访问规则限制信息向不允许的方向流动。”：列出关键步骤，并说明怎样识别“Bell-LaPadula重点是机密性”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "University of Cambridge — Software Security Engineering lecture notes: Bell–LaPadula model",
+          "url": "https://www.cl.cam.ac.uk/teaching/1819/SWSecEng/2019-sse-all-1up.pdf",
+          "sourceAuthority": "University of Cambridge course material",
+          "supportedClaim": "The Bell–LaPadula confidentiality model includes the simple-security property (no read up) and the star-property (no write down).",
+          "scope": "Supports the two canonical rules and confidentiality objective in the lecture notes; real systems require additional policies and mechanisms beyond this model.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.2.3": {
       "status": "partial",
-      "what": "以保护完整性为核心，限制低完整性信息污染高完整性对象。",
-      "why": "理解「以保护完整性为核心，限制低完整性信息污染高完整性对象。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「以保护完整性为核心，限制低完整性信息污染高完整性对象。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「以保护完整性为核心，限制低完整性信息污染高完整性对象。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "Biba 模型以完整性保护为核心，严格完整性规则常概括为“不可向下读、不可向上写”，限制低完整性信息污染高完整性数据。",
+      "why": "高完整性数据如果未经控制地吸收低可信输入，可能导致错误决策或关键记录被污染；信息流规则可用于分析此类风险。",
+      "how": "给主体和客体标注完整性级别，明确哪些读取和写入会跨越完整性边界，再结合实际业务定义可信输入、校验、审计和例外处理。",
+      "confusions": "Biba 与 Bell–LaPadula 的关注目标不同：前者强调完整性，后者强调机密性；“不可向下读、不可向上写”是严格模型的典型规则，不应不加说明地套用于所有变体。",
       "scenarios": "情境练习（非教材原例）：围绕“以保护完整性为核心，限制低完整性信息污染高完整性对象。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「以保护完整性为核心，限制低完整性信息污染高完整性对象。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“以保护完整性为核心，限制低完整性信息污染高完整性对象。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「以保护完整性为核心，限制低完整性信息污染高完整性对象。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://www.cl.cam.ac.uk/teaching/1819/SWSecEng/2019-sse-all-1up.pdf",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -9797,6 +9863,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“以保护完整性为核心，限制低完整性信息污染高完整性对象。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“以保护完整性为核心，限制低完整性信息污染高完整性对象。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "University of Cambridge — Software Security Engineering lecture notes: integrity models",
+          "url": "https://www.cl.cam.ac.uk/teaching/1819/SWSecEng/2019-sse-all-1up.pdf",
+          "sourceAuthority": "University of Cambridge course material",
+          "supportedClaim": "The lecture notes distinguish confidentiality-oriented Bell–LaPadula from integrity-oriented models including Biba; Biba reverses the canonical information-flow direction constraints.",
+          "scope": "Supports the purpose distinction between confidentiality and integrity and the canonical Biba direction rules at an introductory level; variations and relaxed forms of the model are not exhaustively covered.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.2.4": {
@@ -10161,18 +10238,18 @@
     },
     "18.5.3": {
       "status": "partial",
-      "what": "依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。",
-      "why": "理解「依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "属性访问控制（ABAC）根据主体、客体、请求操作以及适用时的环境属性，结合策略、规则或关系决定是否允许访问。",
+      "why": "只按固定角色可能难以表达资源属性、操作类型和环境条件共同决定的细粒度授权需求；属性策略可以表达更丰富的上下文规则。",
+      "how": "明确主体、客体、操作和环境属性的来源与可信度；编写可审计的授权策略，定义默认拒绝、冲突处理和策略变更流程，并测试允许、拒绝及边界场景。",
+      "confusions": "ABAC 不是简单地给用户添加更多角色；属性质量、策略复杂度、评估性能和错误配置都会影响安全，属性存在并不意味着请求自动获准。",
       "scenarios": "情境练习（非教材原例）：围绕“依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "authoritative-reference",
+        "path": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -10197,6 +10274,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“依据主体、客体、权限、环境和策略决定允许或拒绝，支持自主、强制、基于角色和属性控制。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-162 — Guide to Attribute Based Access Control (ABAC) Definition and Considerations",
+          "url": "https://csrc.nist.gov/pubs/sp/800/162/upd2/final",
+          "sourceAuthority": "National Institute of Standards and Technology",
+          "supportedClaim": "ABAC authorization evaluates attributes associated with the subject, object, requested operation and, where applicable, environment conditions against policy, rules, or relationships.",
+          "scope": "Supports the definition and key inputs of ABAC authorization; it does not claim ABAC is always superior to RBAC or that attributes alone guarantee correct policy enforcement.",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "18.5.4": {
