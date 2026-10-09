@@ -24,16 +24,22 @@ test("只读题库审计区分结构完整、出处缺失和重复题干候选",
   assert.ok(report.warnings.some((warning) => warning.includes("非官方整理")));
 });
 
-test("来源路径审计区分文件路径字段和当前仓库中可解析的文件", () => {
+test("来源路径审计区分远程 URL、可解析文件和未解析的本地路径", () => {
   const root = resolve(import.meta.dirname, "..");
   const report = auditSourcePaths({
-    choices: [{ sourceFile: "package.json" }, { sourceFile: "data/no-such-source.md" }, {}],
+    choices: [
+      { sourceFile: "package.json" },
+      { sourceFile: "data/no-such-source.md" },
+      { sourceFile: "https://example.com/source.md" },
+      {},
+    ],
     cases: [],
     essays: [],
   }, root);
-  assert.equal(report.choices.records, 3);
-  assert.equal(report.choices.recordsWithSourceFile, 2);
-  assert.equal(report.choices.uniqueSourcePaths, 2);
-  assert.equal(report.choices.unresolvedRecords, 1);
-  assert.equal(report.choices.unresolvedUniquePaths, 1);
+  assert.equal(report.choices.records, 4);
+  assert.equal(report.choices.recordsWithSourceFile, 3);
+  assert.equal(report.choices.remoteUrlRecords, 1);
+  assert.equal(report.choices.localPathRecords, 2);
+  assert.equal(report.choices.unresolvedLocalPathRecords, 1);
+  assert.equal(report.choices.unresolvedUniqueLocalPaths, 1);
 });

@@ -94,22 +94,25 @@ export function auditSourcePaths(bank, sourceRoot) {
   const result = {};
   for (const kind of ["choices", "cases", "essays"]) {
     const items = Array.isArray(bank?.[kind]) ? bank[kind] : [];
-    const withPath = items.filter((item) => String(item.sourceFile ?? "").trim());
-    const uniquePaths = [...new Set(withPath.map((item) => item.sourceFile))];
-    const unresolvedRecords = withPath.filter((item) => !existsSync(resolve(sourceRoot, item.sourceFile)));
-    const unresolvedPaths = uniquePaths.filter((sourceFile) => !existsSync(resolve(sourceRoot, sourceFile)));
+    const withSource = items.filter((item) => String(item.sourceFile ?? "").trim());
+    const remoteUrls = withSource.filter((item) => /^https?:\/\//i.test(String(item.sourceFile)));
+    const localPaths = withSource.filter((item) => !/^https?:\/\//i.test(String(item.sourceFile)));
+    const uniqueLocalPaths = [...new Set(localPaths.map((item) => item.sourceFile))];
+    const unresolvedRecords = localPaths.filter((item) => !existsSync(resolve(sourceRoot, item.sourceFile)));
+    const unresolvedPaths = uniqueLocalPaths.filter((sourceFile) => !existsSync(resolve(sourceRoot, sourceFile)));
     result[kind] = {
       records: items.length,
-      recordsWithSourceFile: withPath.length,
-      uniqueSourcePaths: uniquePaths.length,
-      unresolvedRecords: unresolvedRecords.length,
-      unresolvedUniquePaths: unresolvedPaths.length,
+      recordsWithSourceFile: withSource.length,
+      remoteUrlRecords: remoteUrls.length,
+      localPathRecords: localPaths.length,
+      uniqueLocalPaths: uniqueLocalPaths.length,
+      unresolvedLocalPathRecords: unresolvedRecords.length,
+      unresolvedUniqueLocalPaths: unresolvedPaths.length,
       unresolvedPathExamples: unresolvedPaths.slice(0, 10),
     };
   }
   return result;
 }
-
 async function main() {
   const sourcePath = process.argv[2]
     ? resolve(process.cwd(), process.argv[2])
@@ -121,7 +124,7 @@ async function main() {
   const report = auditBank(bank, { sourcePath });
   report.sourceRoot = sourceRoot;
   report.sourceFilePathResolution = auditSourcePaths(bank, sourceRoot);
-  if (Object.values(report.sourceFilePathResolution).some((section) => section.unresolvedRecords > 0)) {
+  if (Object.values(report.sourceFilePathResolution).some((section) => section.unresolvedLocalPathRecords > 0)) {
     report.warnings.push("部分 sourceFile 路径无法在当前 sourceRoot 下解析；它们可能是上游仓库相对路径，或源文件未随当前仓库提供。路径标记本身不证明源文件可访问。");
   }
   process.stdout.write(JSON.stringify(report, null, 2) + "\n");
