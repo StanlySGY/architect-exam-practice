@@ -24,3 +24,22 @@ test('18个章节导读核心教学字段按章节主题定制并保持待核验
   assert.match(content.units['14'].how, /云原生/);
   assert.match(content.units['18'].confusions, /防护强度/);
 });
+
+test('全量学习单元不再残留已识别的批量模板尾句', () => {
+  const known = [
+    '与本知识点直接相邻的概念至少做一次对照',
+    '先用教材或项目已有案例定位',
+    '围绕“定义/核心机制—关键词—与相邻概念的区别—适用场景—限制与权衡”形成题目识别卡',
+    '本知识点：'
+  ];
+  let counts = Object.fromEntries(known.map((text) => [text, 0]));
+  for (const [id, unit] of Object.entries(content.units)) {
+    for (const field of ['how', 'confusions', 'scenarios', 'examFocus']) {
+      const value = String(unit[field] || '');
+      for (const template of known) {
+        if (value.includes(template)) counts[template]++;
+      }
+    }
+  }
+  assert.deepEqual(counts, Object.fromEntries(known.map((text) => [text, 0])));
+});
