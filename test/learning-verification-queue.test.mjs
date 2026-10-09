@@ -8,7 +8,7 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
 });
 test('current learning course has 309 units and preserves its review states',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,309); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,306); assert.equal(report.unitsWithClaimLevelEvidence,44); assert.equal(report.unitsMissingEvidence,265); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,309); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,306); assert.equal(report.unitsWithClaimLevelEvidence,51); assert.equal(report.unitsMissingEvidence,258); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -47,6 +47,15 @@ test('authentication, confidentiality, integrity and recovery concepts have boun
 
 test("OWASP application security and big-data architecture units have bounded evidence and remain partial",()=>{
  for (const id of ["18.7.1","18.7.2","18.7.3","19.1","19.2.1","19.2.2","19.3.1","19.3.2","19.3.3","19.3.6","19.4.1","19.5"]) {
+  const unit=content.units[id];
+  assert.equal(unit.status,"partial",id);
+  assert.ok(unit.evidence?.some(e=>e.url===unit.source.path && e.supportedClaim && e.scope && e.reviewedOn && e.reviewStatus),id);
+ }
+});
+
+
+test("NIST risk, security evaluation, data integrity, e-commerce and OT security units have bounded evidence",()=>{
+ for (const id of ["18.3.2","18.3.3","18.5.1","18.6.1","18.6.2","18.8.1","18.8.2"]) {
   const unit=content.units[id];
   assert.equal(unit.status,"partial",id);
   assert.ok(unit.evidence?.some(e=>e.url===unit.source.path && e.supportedClaim && e.scope && e.reviewedOn && e.reviewStatus),id);
