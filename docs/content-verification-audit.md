@@ -16,7 +16,7 @@
 - 所有 309 个单元均有 `source` 字段，但来源基本指向项目自己的 `architect.mm`。这属于可追踪的项目内部来源，不自动等同于教材原文或独立权威来源。
 - 18 个纯数字 ID 的章节总览单元（1–18）存在明显错配：例如“第1章 绪论”的 `what` 原先是“变更收益应覆盖设计、实现、测试、迁移和维护成本”，第4章原先写了通信技术发展，第5章原先写了 5G 特征，第6章原先写架构演化。它们与 `data/chapters.json` 的章节主题不匹配。
 - 已将这 18 个章节总览改为与官方目录主题相符的导读，清除误导性的错配内容；这些导读只用于导航，不是教材逐段摘要，全部保持 `partial`，来源标记为 `data/chapters.json` / `needs-review`。
-- 发现单元 `7.1.1` 的 `status` 为 `verified`，但其 `source.status` 仍为 `needs-review`。这是核验状态自相矛盾；已将单元状态降为 `partial`，并将 `contentSource.status` 同步降为 `needs-review`，不凭当前记录升级为已核验。
+- 发现单元 `7.1.1` 的 `status` 曾为 `verified`，但其课程内容来源 `contentSource.status` 为 `verified` 以外的待核验状态，且原始思维导图来源字段也未形成一致证据链。已将单元状态与 `contentSource.status` 同步为 `needs-review`，不凭当前记录升级为已核验。
 - 本轮不会把其他 partial 批量升级为 verified。要进一步核验，必须把证据定位到具体单元/命题（教材章节或页码、标准条款、权威资料链接、人工复核人和复核结论）。
 
 ## 外部题库结构审计
