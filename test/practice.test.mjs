@@ -32,7 +32,7 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; return state; });
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
-  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewedAt = service.now(); return state; });
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewedAt = service.now(); q.reviewedRevision = q.revision ?? 1; return state; });
   const session = await service.createSession({ chapter: 7, difficulty: "easy", count: 1 });
   assert.equal(session.questions[0].id, id);
   await service.updateQuestion({ questionId: id, updates: { correctAnswer: "B" } });
@@ -42,11 +42,31 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   assert.equal(edited.reviewedBy, undefined);
   assert.equal(edited.reviewEvidence, undefined);
   assert.equal(edited.reviewedAt, undefined);
+  assert.equal(edited.reviewedRevision, undefined);
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.disabledAt = service.now(); return state; });
   await service.store.update((state) => { state.generatedQuestions.push({ id: "real-review-compat", sourceType: "real", sourceId: "real-review-compat", chapter: 7, difficulty: "easy", question: "真题兼容测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "真题解析", knowledgeDetail: "真题资料", sourceNode: null, createdAt: service.now() }); return state; });
   assert.equal(service.allQuestions().find((item) => item.id === "real-review-compat").sourceType, "real");
   assert.equal(service.contentHealth().sources.questions.real, 1);
+});
+
+test("审校凭据必须绑定当前题目版本", async (t) => {
+  const { service } = await fixture(t);
+  const added = await addQuestions(service, { chapter: 8, difficulty: "easy", count: 1 });
+  await service.store.update((state) => {
+    const question = state.generatedQuestions.find((item) => item.id === added[0].id);
+    question.reviewStatus = "approved";
+    question.reviewReasons = [];
+    question.reviewedBy = "human-reviewer";
+    question.reviewEvidence = "人工事实核验记录：测试";
+    question.reviewedAt = service.now();
+    question.reviewedRevision = (question.revision ?? 1) - 1;
+    return state;
+  });
+  await service.auditGeneratedQuestionTrust();
+  const question = service.store.snapshot().generatedQuestions.find((item) => item.id === added[0].id);
+  assert.notEqual(question.reviewStatus, "approved");
+  await assert.rejects(() => service.createSession({ chapter: 8, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
 });
 
 test("缺少有效审校时间的题目不能沿用 approved 状态", async (t) => {
@@ -73,7 +93,7 @@ test("老生成题缺审校状态向后兼容但不能自动 approved", async (t
 test("审校统计包含三种状态和原因计数", async (t) => {
   const { service } = await fixture(t);
   const added = await addQuestions(service, { chapter: 9, difficulty: "easy", count: 3 });
-  await service.store.update((state) => { const [p, q, a] = added.map((item) => state.generatedQuestions.find((question) => question.id === item.id)); p.reviewStatus = "pending_review"; p.reviewReasons = ["no_human_fact_check"]; q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; a.reviewStatus = "approved"; a.reviewReasons = []; a.reviewedBy = "human-reviewer"; a.reviewEvidence = "人工事实核验记录：测试"; a.reviewedAt = service.now(); return state; });
+  await service.store.update((state) => { const [p, q, a] = added.map((item) => state.generatedQuestions.find((question) => question.id === item.id)); p.reviewStatus = "pending_review"; p.reviewReasons = ["no_human_fact_check"]; q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; a.reviewStatus = "approved"; a.reviewReasons = []; a.reviewedBy = "human-reviewer"; a.reviewEvidence = "人工事实核验记录：测试"; a.reviewedAt = service.now(); a.reviewedRevision = a.revision ?? 1; return state; });
   const stats = service.questionReviewStats();
   assert.equal(stats.pending_review >= 1, true);
   assert.equal(stats.quarantined >= 1, true);
@@ -415,6 +435,7 @@ async function addQuestions(
       question.reviewedBy = "test-fixture-human";
       question.reviewEvidence = "测试夹具中的人工事实核验凭据";
       question.reviewedAt = service.now();
+      question.reviewedRevision = question.revision ?? 1;
     }
     return added;
   });

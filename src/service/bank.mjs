@@ -145,6 +145,7 @@ export class BankDomain extends ReviewDomain {
       delete question.reviewedBy;
       delete question.reviewEvidence;
       delete question.reviewedAt;
+      delete question.reviewedRevision;
       return {
         questionId,
         revision: question.revision,

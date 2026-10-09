@@ -65,6 +65,7 @@ test("引用图但没有图数据时，练习题只标缺失且不泄露答案",
     question.reviewedBy = "test-fixture-human";
     question.reviewEvidence = "人工事实核验记录：测试";
     question.reviewedAt = service.now();
+    question.reviewedRevision = question.revision ?? 1;
     question.knowledgeDetail = "测试知识详解";
     return state;
   });

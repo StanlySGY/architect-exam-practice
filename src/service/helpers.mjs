@@ -74,7 +74,7 @@ const QUESTION_REVIEW_REASONS = Object.freeze({
 });
 function isGeneratedQuestion(question) { return (question?.sourceType ?? "generated") === "generated"; }
 function reviewStatusOf(question) { if (!isGeneratedQuestion(question)) return null; return QUESTION_REVIEW_STATES.has(question.reviewStatus) ? question.reviewStatus : "pending_review"; }
-function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; return reviewStatusOf(question) === "approved" && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt)); }
+function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; const currentRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1; return reviewStatusOf(question) === "approved" && Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));}
 function structureIssuesOf(question, sourceNodeResolved = null) {
   const issues = [];
   if (!String(question?.sourceNode ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.SOURCE_NODE_MISSING);
@@ -187,6 +187,7 @@ function validateBackupData(data) {
     if (question.reviewedBy !== undefined) assertText(question.reviewedBy, "题目审校人", { max: 256 });
     if (question.reviewEvidence !== undefined) assertText(question.reviewEvidence, "题目审校凭据", { max: 4_000 });
     assertTime(question.reviewedAt, "题目审校时间");
+    if (question.reviewedRevision !== undefined && (!Number.isInteger(question.reviewedRevision) || question.reviewedRevision < 1)) invalidBackup("中包含无效审校版本");
     assertTime(question.reviewAuditedAt, "题目审计时间");
     assertTime(question.createdAt, "题目创建时间");
   }

@@ -10,6 +10,8 @@ function approved(id, extra = {}) {
     reviewedBy: "human-reviewer",
     reviewEvidence: "教材核验：测试",
     reviewedAt: "2026-10-09T00:00:00.000Z",
+    revision: 1,
+    reviewedRevision: 1,
     chapter: 7,
     section: "7.1",
     sourceNode: "7.1 软件架构基础",
