@@ -1,5 +1,5 @@
 // bank 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
-import { QUESTION_REVIEW_REASONS, isImported, normalizeComparableText, validateOptions, structureIssuesOf } from "./helpers.mjs";
+import { QUESTION_REVIEW_REASONS, isImported, isPlaceholderReviewText, normalizeComparableText, validateOptions, structureIssuesOf } from "./helpers.mjs";
 import { ReviewDomain } from "./review.mjs";
 
 // 题目难度诊断标签：基于题目自身作答统计（至少 5 次作答才判定）。
@@ -164,8 +164,8 @@ export class BankDomain extends ReviewDomain {
     const validFields = new Set(["question", "options", "correctAnswer", "analysis", "knowledgeDetail"]);
     if (typeof reviewer !== "string" || !reviewer.trim() || reviewer.trim().length > 256) throw Object.assign(new Error("请填写有效的审校人"), { status: 400 });
     if (!allowedTypes.has(evidenceType) || evidenceType === "manual_note") throw Object.assign(new Error("正式批准必须选择可追溯的教材、官方原卷、官方标准或可靠二手来源"), { status: 400 });
-    if (typeof evidenceReference !== "string" || !evidenceReference.trim() || evidenceReference.trim().length > 2000) throw Object.assign(new Error("请填写来源定位：URL，或书名/版本/页码/条款"), { status: 400 });
-    if (typeof evidenceNote !== "string" || !evidenceNote.trim() || evidenceNote.trim().length > 4000) throw Object.assign(new Error("请填写核验结论或依据摘要"), { status: 400 });
+    if (typeof evidenceReference !== "string" || isPlaceholderReviewText(evidenceReference) || evidenceReference.trim().length > 2000) throw Object.assign(new Error("请填写真实来源定位：URL，或书名/版本/页码/条款；不能使用待补充等占位内容"), { status: 400 });
+    if (typeof evidenceNote !== "string" || isPlaceholderReviewText(evidenceNote) || evidenceNote.trim().length > 4000) throw Object.assign(new Error("请填写具体核验结论或依据摘要，不能使用待核验等占位内容"), { status: 400 });
     if (fields.some((field) => !validFields.has(field)) || !requiredFields.every((field) => fields.includes(field))) throw Object.assign(new Error("必须明确核验题干、选项、正确答案和解析；知识详解可另行勾选"), { status: 400 });
     return this.store.update((state) => {
       const question = this.questionMap(state).get(questionId);

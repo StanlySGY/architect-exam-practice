@@ -63,9 +63,15 @@ function assertText(value, label, { required = false, max = MAX_BACKUP_STRING_LE
 const QUESTION_REVIEW_STATES = new Set(["pending_review", "approved", "quarantined"]);
 const REVIEW_EVIDENCE_TYPES = new Set(["official_exam", "official_standard", "textbook", "secondary_source", "manual_note"]);
 const REQUIRED_REVIEWED_FIELDS = ["question", "options", "correctAnswer", "analysis"];
+function isPlaceholderReviewText(value) {
+  const text = String(value ?? "").trim().toLowerCase().replace(/[。.!！\s]+$/u, "");
+  if (!text) return true;
+  if (["无", "未知", "n/a", "na", "none", "null", "todo", "tbd", "test", "xxx"].includes(text)) return true;
+  return /^(?:暂无|待补充|待核验|待确认|待填写|待完善|示例|placeholder)/iu.test(text);
+}
 function hasTraceableReviewEvidence(question) {
   const fields = Array.isArray(question?.reviewedFields) ? question.reviewedFields : [];
-  return REVIEW_EVIDENCE_TYPES.has(question?.reviewEvidenceType) && question.reviewEvidenceType !== "manual_note" && Boolean(String(question.reviewEvidenceReference ?? "").trim()) && REQUIRED_REVIEWED_FIELDS.every((field) => fields.includes(field));
+  return REVIEW_EVIDENCE_TYPES.has(question?.reviewEvidenceType) && question.reviewEvidenceType !== "manual_note" && !isPlaceholderReviewText(question.reviewEvidenceReference) && !isPlaceholderReviewText(question.reviewEvidence) && REQUIRED_REVIEWED_FIELDS.every((field) => fields.includes(field));
 }
 const QUESTION_REVIEW_REASONS = Object.freeze({
   NO_HUMAN_FACT_CHECK: "no_human_fact_check",
@@ -494,6 +500,7 @@ export {
   isGeneratedQuestion,
   reviewStatusOf,
   isQuestionEligibleForFormalStudy,
+  isPlaceholderReviewText,
   structureIssuesOf,
   reviewReasonLabel,
   QUESTION_REVIEW_REASONS,

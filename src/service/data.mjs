@@ -15,6 +15,7 @@ import {
   validateBackupData,
   isRecord,
   isGeneratedQuestion,
+  isPlaceholderReviewText,
   reviewStatusOf,
   structureIssuesOf,
   reviewReasonLabel,
@@ -197,7 +198,7 @@ export class DataDomain extends BankDomain {
         const issues = structureIssuesOf(question, this.sourceNodeResolves(question));
         const currentRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1;
         const fields = Array.isArray(question.reviewedFields) ? question.reviewedFields : [];
-        const hasTraceableEvidence = ["official_exam", "official_standard", "textbook", "secondary_source"].includes(question.reviewEvidenceType) && Boolean(String(question.reviewEvidenceReference ?? "").trim()) && ["question", "options", "correctAnswer", "analysis"].every((field) => fields.includes(field));
+        const hasTraceableEvidence = ["official_exam", "official_standard", "textbook", "secondary_source"].includes(question.reviewEvidenceType) && !isPlaceholderReviewText(question.reviewEvidenceReference) && !isPlaceholderReviewText(question.reviewEvidence) && ["question", "options", "correctAnswer", "analysis"].every((field) => fields.includes(field));
         const hasHumanEvidence = hasTraceableEvidence && Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));
         const status = issues.length ? "quarantined" : reviewStatusOf(question) === "approved" && hasHumanEvidence ? "approved" : "pending_review";
         const reviewReasons = issues.length ? issues : status === "approved" ? [] : [QUESTION_REVIEW_REASONS.NO_HUMAN_FACT_CHECK];
