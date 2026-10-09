@@ -145,10 +145,17 @@ function answerTrustFor(item) {
 
 function answerTrustNode(item) {
   const trust = answerTrustFor(item);
-  return element("div", { className: `source-trust source-trust-${trust.code}` }, [
+  const children = [
     element("strong", { text: `答案来源：${trust.label}` }),
     element("span", { text: trust.note }),
-  ]);
+  ];
+  if (isImportedItem(item)) {
+    children.push(element("span", {
+      className: "source-file-reference",
+      text: item.sourceFile ? `来源路径标记（需在源资料库定位）：${item.sourceFile}` : "来源路径标记：未记录",
+    }));
+  }
+  return element("div", { className: `source-trust source-trust-${trust.code}` }, children);
 }
 
 function isImportedItem(item) {
