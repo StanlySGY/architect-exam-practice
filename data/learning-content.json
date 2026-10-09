@@ -3206,18 +3206,18 @@
     },
     "7.2.1": {
       "status": "partial",
-      "what": "架构设计需综合功能需求、质量属性、约束、已有资产、技术和组织因素；采用迭代、风险驱动和视图化表达。",
-      "why": "架构设计的关键不是挑选流行技术，而是把业务目标和质量属性转化为结构、机制和决策，并在现实约束下控制风险。",
-      "how": "先列出架构驱动因素：功能需求、质量属性、外部约束、已有系统与组织能力；再比较候选架构风格/模式如何满足这些驱动因素，明确关键决策、风险和牺牲；最后用原型、评审或场景分析验证高风险假设。",
-      "confusions": "架构设计过程不是先挑一种流行风格再寻找用途；架构风格/模式提供组织结构或协作方式，具体技术产品是实现手段。功能正确也不代表质量属性达标，质量目标必须转化为可分析或可验证的场景。",
+      "what": "架构设计应综合功能需求、质量属性需求和外部约束，围绕关键架构驱动因素选择策略并迭代分解，而不是先选技术栈再寻找理由。",
+      "why": "功能可实现并不代表方案满足性能、安全、可用性或可修改性要求；明确架构驱动因素有助于让关键设计选择可追溯。",
+      "how": "先汇总功能需求、质量属性场景和约束，明确架构驱动因素；再选取需要分解的系统元素、选择设计概念、分配职责并定义接口，最后检查要求并递归细化。",
+      "confusions": "架构驱动因素不只有功能需求，还包括质量属性和约束；ADD 是系统化设计方法，不是固定的架构风格或自动生成最优方案的算法。",
       "scenarios": "支付系统需要低延迟、可审计、可恢复，但团队规模和既有平台有限。架构设计先明确这些驱动因素的优先级，再比较同步调用、异步事件和模块化部署的取舍，并通过支付超时、重复消息和依赖故障场景验证设计。",
       "examples": "若支付链路要求低延迟和可审计，团队又受既有消息平台限制，应记录同步/异步方案对时延、重试、顺序和故障恢复的影响，并用超时与重复事件测试验证关键假设。",
       "examFocus": "架构设计题应从驱动因素出发，识别关键质量属性和约束，说明候选方案、决策理由、风险与权衡，并指出如何验证；避免只写架构风格名称而不解释它为何满足需求。",
       "pitfalls": "不要只按技术新颖程度选方案；功能、质量属性、遗留资产、组织能力和交付限制可能冲突。决策应说明优先级与牺牲，而不是声称一个方案各方面都最好。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "sei-report",
+        "path": "https://www.sei.cmu.edu/library/attribute-driven-design-method-collection/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3236,6 +3236,17 @@
       "selfChecks": [
         "架构设计需要综合哪些需求和现实约束？",
         "当性能、成本、交付周期和团队能力冲突时，为什么要显式记录权衡？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CMU SEI — Attribute-Driven Design Method Collection",
+          "url": "https://www.sei.cmu.edu/library/attribute-driven-design-method-collection/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute",
+          "supportedClaim": "ADD 以功能需求、质量属性需求和约束为输入，递归分解系统，并选择满足架构驱动因素的设计概念、策略和模式。",
+          "scope": "支持架构设计应由功能需求、质量属性和约束共同驱动，以及 ADD 的迭代分解思路；不证明任何单一架构方案必然最优。",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "7.2.2": {
@@ -3308,10 +3319,10 @@
     },
     "7.2.4": {
       "status": "partial",
-      "what": "体系结构需求把业务需求和质量属性等约束转化为对架构有直接影响的需求。",
-      "why": "没有明确的架构需求，设计容易退化为技术堆砌。",
-      "how": "识别功能、质量属性、约束和优先级，建立需求与架构决策的追踪关系。",
-      "confusions": "功能需求回答做什么，质量属性约束回答做到什么程度以及在什么条件下做到。",
+      "what": "体系结构需求将功能需求、质量属性需求和约束中对整体结构有显著影响的部分转化为架构驱动因素，指导架构决策和后续验证。",
+      "why": "若需求没有转化为架构层面的驱动因素，设计容易遗漏关键约束，也难以说明某个模式为何适合当前系统。",
+      "how": "为每项架构驱动因素关联来源、优先级、验收场景和约束；记录对应架构决策及其理由，再检查实现与测试是否覆盖该要求。",
+      "confusions": "不是所有需求都要求改变整体架构；是否为架构驱动因素应结合质量属性、系统约束和影响范围判断，不能只凭需求措辞决定。",
       "scenarios": "架构需求进入设计后，可用于比较候选方案、检查质量属性约束是否得到满足，并在架构评审时追踪需求、决策与验证证据。",
       "examples": "订单系统的业务需求是“支持下单与查询”；架构需求还需说明促销峰值期间的响应目标、支付处理的可靠性要求、订单数据的一致性边界、审计留痕和既有支付平台接口等约束。每条需求都应能追踪到架构决策及后续验证方法。",
       "examFocus": "题目出现性能、可靠性、安全、可维护性等目标时，应把它们视为架构决策约束。",
@@ -3321,9 +3332,9 @@
         "架构需求如何追踪到架构决策和后续验证？"
       ],
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "sei-report",
+        "path": "https://www.sei.cmu.edu/library/attribute-driven-design-add-version-20/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3342,7 +3353,18 @@
       "contentSource": {
         "type": "course-content",
         "status": "partial"
-      }
+      },
+      "evidence": [
+        {
+          "sourceTitle": "CMU SEI — Attribute-Driven Design (ADD), Version 2.0",
+          "url": "https://www.sei.cmu.edu/library/attribute-driven-design-add-version-20/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute",
+          "supportedClaim": "ADD 将架构设计建立在质量属性需求之上，通过递归分解系统元素并应用架构策略和模式来满足驱动需求。",
+          "scope": "支持质量属性需求影响架构设计和递归设计方法的核心说明；不支持未经场景分析的具体性能保证或模式选择结论。",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
+      ]
     },
     "7.2.5": {
       "status": "partial",
@@ -3414,18 +3436,18 @@
     },
     "7.2.7": {
       "status": "partial",
-      "what": "架构评审由相关涉众检查架构决策、需求符合性和主要风险，形成问题、决策与后续验证记录。",
-      "why": "架构阶段的关键风险往往会扩散到后续开发和运行；尽早评审可以暴露不一致假设、质量属性缺口和实施风险。",
-      "how": "评审前把质量目标和关键决策转成可讨论的问题；评审中用具体场景、模型、原型或测试证据检查可行性、风险和约束；评审后记录发现、严重度、责任人、处理期限及验证证据，未关闭项需跟踪。",
-      "confusions": "架构评审不只是检查文档格式，也不保证系统没有风险；评审发现是风险识别与决策输入，仍需由责任人整改并通过后续验证。参与者应覆盖相关技术角色和受影响的业务/运维/安全关注点。",
+      "what": "架构评审应让相关涉众依据需求、关键决策、视图及风险检查架构说明是否充分、前后一致且可用于决策，并记录问题和后续验证事项。",
+      "why": "架构文档可能存在缺失视图、未说明的假设或与涉众关注点不一致的问题；结构化评审有助于尽早发现这些缺口。",
+      "how": "先明确评审目的和参与者，再按涉众关切检查架构视图、需求映射、决策理由和未决风险；对每个问题记录责任人、验证证据与关闭条件。",
+      "confusions": "文档评审不等于证明系统已满足所有质量目标；发现文档完整性问题与验证架构运行表现是不同工作，必要时仍需分析、原型或测试。",
       "scenarios": "评审一个异步订单架构时，要求团队展示重复消息、消费者宕机、支付超时和补偿流程的处理证据；把未验证的假设、影响范围、责任人和后续验证条件记录下来，而不是只对图纸打勾。",
       "examples": "对异步订单方案进行评审时，检查重复投递、消费失败、支付超时和补偿路径是否有设计与测试证据；未解决的风险要附上影响、责任人、期限和复核条件。",
       "examFocus": "重点辨识架构评审的目标、参与角色、评审依据、风险/问题记录和后续跟踪；遇到题目问“评审通过”时，不要推断为风险消失或质量目标已由实际运行证明。",
       "pitfalls": "评审不能只检查图是否规范或术语是否齐全；要用具体场景检验质量属性、风险和决策。评审通过也不代表风险消失，未解决问题应记录责任人、证据和后续验证方式。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "sei-report",
+        "path": "https://www.sei.cmu.edu/library/a-structured-approach-for-reviewing-architecture-documentation/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -3444,6 +3466,17 @@
       "selfChecks": [
         "架构评审应围绕哪些证据和场景，而不只是检查图形？",
         "评审发现风险暂时无法解决时，应如何记录和跟踪？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CMU SEI — A Structured Approach for Reviewing Architecture Documentation",
+          "url": "https://www.sei.cmu.edu/library/a-structured-approach-for-reviewing-architecture-documentation/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute",
+          "supportedClaim": "架构文档评审应以相关涉众及其工作需要为中心，通过有引导的结构化审查发现文档中的缺口和弱点。",
+          "scope": "支持涉众参与和结构化文档评审的价值；该资料明确不是完整的架构评估框架，不能替代技术验证或风险分析。",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "7.2.8": {
@@ -4328,7 +4361,7 @@
         {
           "sourceTitle": "NASA Technical Reports Server — Software Reliability Estimation and Prediction",
           "url": "https://ntrs.nasa.gov/api/citations/19950005501/downloads/19950005501.pdf",
-          "sourceAuthority": "NIST CSRC glossary / NASA Technical Reports Server",
+          "sourceAuthority": "NASA Technical Reports Server; Johnson Space Center Technical Memorandum NASA-TM-104799 (1994)",
           "supportedClaim": "NASA 软件可靠性资料将软件可靠性描述为程序在指定环境和指定时间内无故障运行的概率，并讨论失效强度、下一次失效时间等表达方式。",
           "scope": "支持可靠性定义和若干常见度量的存在；具体公式、单位、模型假设及适用条件必须依据对应方法单独核验。",
           "reviewStatus": "source-supports-core-claim",
@@ -4440,7 +4473,7 @@
     },
     "9.2.1": {
       "status": "partial",
-      "what": "软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。",
+      "what": "软件可靠性评估会结合规定的运行条件与失效相关数据；定量分析可用于估计无故障运行概率和失效率。",
       "why": "理解「软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
       "how": "围绕「软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
       "confusions": "辨析「软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
@@ -4449,9 +4482,9 @@
       "examFocus": "复习重点：围绕“软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "nasa-technical-report",
+        "path": "https://ntrs.nasa.gov/citations/19950005501",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -4470,6 +4503,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“软件质量、开发过程、运行环境、输入分布、缺陷数量和排错活动共同影响可靠性。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Technical Reports Server — Software analysis handbook: Software complexity analysis and software reliability estimation and prediction",
+          "url": "https://ntrs.nasa.gov/citations/19950005501",
+          "sourceAuthority": "NASA Technical Reports Server; Johnson Space Center Technical Memorandum NASA-TM-104799 (1994)",
+          "supportedClaim": "软件可靠性分析可作为定量分析过程，用于评估程序无故障运行的概率，并分析失效率与可靠性相关的设计权衡。",
+          "scope": "仅支持软件可靠性分析的定量用途和无故障运行概率/失效率相关表述；不支持本单元未列出的具体因素清单、可靠性模型公式或通用阈值。",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "9.2.2": {
@@ -8658,18 +8702,18 @@
     },
     "16.3.2": {
       "status": "partial",
-      "what": "ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。",
-      "why": "理解「ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "嵌入式系统的架构设计可采用 ADD 思路，以功能需求、质量属性场景和硬件/环境约束为输入，逐层分解系统并选择架构策略。",
+      "why": "嵌入式系统常受实时性、资源、功耗和硬件接口约束；若只按功能分解而忽略这些质量目标，方案可能在集成或运行时失败。",
+      "how": "明确实时性、资源预算、功耗、环境和安全约束；将关键目标写成场景，选择架构元素与策略，分配职责和接口，并通过测量、分析或试验验证关键假设。",
+      "confusions": "ADD 的方法框架不能代替硬件测量、实时性分析或安全验证；通用架构策略的效果仍取决于具体处理器、操作系统、负载和环境。",
       "scenarios": "情境练习（非教材原例）：围绕“ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。案例应用：结合本单元的主题，明确题干约束、方案选择依据、主要代价和可验证结果。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
       "source": {
-        "type": "mindmap",
-        "path": "architect.mm",
-        "status": "needs-review"
+        "type": "sei-report",
+        "path": "https://www.sei.cmu.edu/library/attribute-driven-design-method-collection/",
+        "status": "claim-supported"
       },
       "prerequisites": [
         "先掌握父级知识点及同层核心概念"
@@ -8694,6 +8738,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“ADD（Attribute-Driven Design）以质量属性场景和功能需求为输入，逐层分解架构并做出可追踪的设计决策。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CMU SEI — Attribute-Driven Design Method Collection",
+          "url": "https://www.sei.cmu.edu/library/attribute-driven-design-method-collection/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute",
+          "supportedClaim": "ADD 可用于信息系统和嵌入式系统等领域；它以功能需求、质量属性需求和约束为输入，按架构驱动因素递归分解设计。",
+          "scope": "支持 ADD 可应用于嵌入式系统以及以质量属性驱动设计的原则；不支持特定嵌入式平台的实时性或功耗保证。",
+          "reviewStatus": "source-supports-core-claim",
+          "reviewedOn": "2026-10-09"
+        }
       ]
     },
     "16.3.3": {
