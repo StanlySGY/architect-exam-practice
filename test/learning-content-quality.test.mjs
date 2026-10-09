@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const content = JSON.parse(fs.readFileSync(new URL('../data/learning-content.json', import.meta.url), 'utf8'));
-const highValue = ['1.2','1.3','2.1','2.4','2.5','5.1','5.2','5.4','6.1.4','6.2.3','7.1.1','7.3.1','8.1.1','9.1.1','10.1.1','14.1','15.1','18.2.1','18.2.2','19.1'];
+const highValue = ['1.2','1.3','2.1','2.4','2.5','5.1','5.2','5.4','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.2.3','6.3.2','6.3.3','7.1.1','7.2.4','7.2.6','7.3.1','7.3.2','7.3.6','8.1.1','9.1.1','10.1.1','14.1','15.1','18.2.1','18.2.2','19.1'];
 
 test('高价值学习单元的例子和陷阱应具体到知识点', () => {
   const examples = highValue.map(id => content.units[id]?.examples);
