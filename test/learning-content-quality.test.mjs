@@ -16,6 +16,17 @@ test('309个学习单元的例子、陷阱不重复且自检题完整', () => {
   assert.equal(new Set(units.map(([, u]) => u.examples)).size, units.length, 'examples must be unique per learning unit');
   assert.equal(new Set(units.map(([, u]) => u.pitfalls)).size, units.length, 'pitfalls must be unique per learning unit');
 });
+test('how/confusions 不包含批量补写的通用模板尾句', () => {
+  const forbiddenTails = [
+    '学习时请把上述机制与本单元的适用条件、关键约束和代价对应起来；涉及精确结论时回查来源。',
+    '辨析时围绕本单元的核心概念与适用条件，明确相邻术语的区别；缺乏证据的结论保留待核验。',
+  ];
+  for (const [id, unit] of units) {
+    for (const field of ['how', 'confusions']) {
+      assert.ok(!forbiddenTails.some((tail) => String(unit[field] ?? '').endsWith(tail)), `${id}.${field} still contains a generic template tail`);
+    }
+  }
+});
 
 test('高价值单元的例子与陷阱包含足够的知识点说明', () => {
   for (const id of highValue) {
