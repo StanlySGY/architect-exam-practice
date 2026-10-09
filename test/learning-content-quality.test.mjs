@@ -35,6 +35,14 @@ test('数据库设计基础单元的 why/how/confusions 按各自主题区分', 
     assert.equal(new Set(values).size, ids.length, `${field} should be topic-specific across audited database units`);
   }
 });
+test('信息安全基础单元的 why/how/confusions 按安全主题区分', () => {
+  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2'];
+  for (const field of ['why', 'how', 'confusions']) {
+    const values = ids.map((id) => content.units[id]?.[field]);
+    assert.ok(values.every((value) => typeof value === 'string' && value.trim()), `${field} must remain present`);
+    assert.equal(new Set(values).size, ids.length, `${field} should be topic-specific across audited security units`);
+  }
+});
 
 test('高价值单元的例子与陷阱包含足够的知识点说明', () => {
   for (const id of highValue) {
