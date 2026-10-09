@@ -58,6 +58,29 @@ test('第1章已核验单元的教学字段必须与各自主题对应', () => {
   assert.match(architectRole.examFocus, /非功能需求/);
   assert.doesNotMatch(architectRole.how, /系统边界→关键元素|建模→场景→权衡/);
 
+  for (const id of ['6.3.1', '6.5.1', '6.5.2', '7.2.1', '7.2.6', '7.2.7']) {
+    const unit = content.units[id];
+    for (const field of ['how', 'confusions', 'scenarios', 'examFocus']) {
+      assert.ok(!['本知识点：6.', '本知识点：7.', '先用教材或项目已有案例定位', '每个架构知识点都问五个问题', '与本知识点直接相邻的概念至少做一次对照', '围绕“定义/核心机制'].some(template => unit[field].includes(template)), `${id}.${field} still contains generic template text`);
+    }
+    assert.ok(unit.examples.length > 20, `${id}.examples should be substantive`);  }
+
+  const databaseTypes = content.units['6.5.1'];
+  assert.match(databaseTypes.how, /键值模型.*文档模型.*图模型/);
+  assert.match(databaseTypes.confusions, /列式.*宽列/);
+  assert.match(databaseTypes.examFocus, /访问模式/);
+
+  const architectureDrivers = content.units['7.2.1'];
+  assert.match(architectureDrivers.how, /架构驱动因素/);
+  assert.match(architectureDrivers.scenarios, /支付超时/);
+
+  const architectureViews = content.units['7.2.6'];
+  assert.match(architectureViews.how, /涉众.*逻辑视图.*运行视图.*部署视图/);
+  assert.match(architectureViews.confusions, /视图.*视角/);
+
+  const architectureReview = content.units['7.2.7'];
+  assert.match(architectureReview.how, /责任人.*验证证据/);
+  assert.match(architectureReview.examFocus, /风险消失/);
   const architectGrowth = content.units['1.3'];
   assert.match(architectGrowth.what, /领导者.*开发者.*系统综合者/);
   assert.match(architectGrowth.how, /工程师.*架构设计师/);
