@@ -10,7 +10,8 @@
     "test": "node --test",
     "audit:bank-traceability": "node scripts/audit-bank-traceability.mjs",
     "lint": "find server.mjs src test scripts public -type f \\( -name '*.mjs' -o -name '*.js' \\) -print0 | xargs -0 -n1 node --check",
-    "audit:learning-content": "node scripts/audit-learning-content.mjs"
+    "audit:learning-content": "node scripts/audit-learning-content.mjs",
+    "audit:verification-queue": "node scripts/audit-learning-verification-queue.mjs"
   },
   "engines": {
     "node": ">=22.15"
