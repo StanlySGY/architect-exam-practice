@@ -40,3 +40,5 @@
 
 - 第7章架构设计与第8章架构评估本轮修订了 32 个单元：替换章节级重复的 why/how/confusions，修复 8 个单元中通用占位式情境和易错检查；新增回归测试防止这些已识别模板复发。修订仍保留原核验状态，不代表整章内容已经由教材逐项证实。
 - 第8章涉及 ATAM 的方法概述可对照 Carnegie Mellon University Software Engineering Institute 的原始资料：<https://www.sei.cmu.edu/library/the-architecture-tradeoff-analysis-method/>。该来源支持 ATAM 用于分析多种质量属性之间的架构权衡；本项目其余标准编号、考试大纲和教材特定表述仍需分别回查对应权威资料。
+
+- 最新全量重复审计已将 why、how、confusions、scenarios、examFocus、pitfalls 六类字段的全文重复组降为 0。对剩余重复字段生成的主题化提示以各单元 what、examples 和 pitfalls 为上下文；这是去模板化和学习提示改进，不等于逐条事实核验。309 个单元的核验状态仍为 3 verified、306 partial。

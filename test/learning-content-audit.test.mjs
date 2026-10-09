@@ -20,11 +20,12 @@ test("学习内容审计能报告全文重复而不把重复误判为事实错�
   assert.match(report.note, /不判断事实正确性/);
 });
 
-test("309个单元的当前审计报告保留重复正文线索且无已知模板尾句残留", () => {
+test("309个单元的当前审计报告确认六类字段无全文重复且无已知模板尾句残留", () => {
   const report = auditLearningContent(content);
   assert.equal(report.unitCount, 309);
-  assert.ok(report.duplicateFields.how.groups > 0);
-  assert.ok(report.duplicateFields.confusions.groups > 0);
+  assert.equal(report.duplicateFields.how.groups, 0);
+  assert.equal(report.duplicateFields.confusions.groups, 0);
   assert.equal(report.knownTemplateTailOccurrences.how.count, 0);
   assert.equal(report.knownTemplateTailOccurrences.confusions.count, 0);
+  for (const field of ["why", "how", "confusions", "scenarios", "examFocus", "pitfalls"]) assert.equal(report.duplicateFields[field].groups, 0, field + " should have no full-text duplicates");
 });

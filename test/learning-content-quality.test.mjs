@@ -139,3 +139,11 @@ test('第7、8章清除已识别的章节级通用模板', () => {
     assert.equal(new Set(values).size, ids.length, );
   }
 });
+
+test('309个学习单元的 why/how/confusions 不再复用完全相同的全文', () => {
+  for (const field of ['why', 'how', 'confusions']) {
+    const values = units.map(([id, unit]) => String(unit[field] ?? '').trim());
+    assert.ok(values.every(Boolean), field + ' must remain present');
+    assert.equal(new Set(values).size, units.length, field + ' must not have duplicate full text');
+  }
+});
