@@ -64,6 +64,11 @@ test("选择题映射保留考期题号并规范化答案", () => {
       paper: "综合知识",
       questionNo: "12",
       sourceFile: "2025-2.md",
+      sourceUrl: "https://example.org/official-paper",
+      sourcePage: "第12页",
+      sourceReference: "第12题",
+      sourceCitation: "题干与选项核对记录",
+      sourceLocation: "综合知识试卷第12题",
     },
     "2026-04-01T08:00:00.000Z",
   );
@@ -73,6 +78,12 @@ test("选择题映射保留考期题号并规范化答案", () => {
   assert.equal(mapped.correctAnswer, "A");
   assert.equal(mapped.questionNo, 12);
   assert.equal(mapped.knowledgePoint, "分层架构");
+  assert.equal(mapped.sourceUrl, "https://example.org/official-paper");
+  assert.equal(mapped.sourcePage, "第12页");
+  assert.equal(mapped.sourceReference, "第12题");
+  assert.equal(mapped.sourceCitation, "题干与选项核对记录");
+  assert.equal(mapped.sourceLocation, "综合知识试卷第12题");
+  assert.equal(mapped.answerTrust, "third-party", "有出处定位字段不自动等于答案已核验");
 });
 
 test("案例空描述回退到标题，子题默认分值总和严格为25分", () => {

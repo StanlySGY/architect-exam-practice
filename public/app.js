@@ -150,9 +150,22 @@ function answerTrustNode(item) {
     element("span", { text: trust.note }),
   ];
   if (isImportedItem(item)) {
+    const preciseReferences = [
+      item.sourceUrl ? "URL：" + item.sourceUrl : null,
+      item.sourcePage ? "页码：" + item.sourcePage : null,
+      item.sourceReference ? "条款/题号：" + item.sourceReference : null,
+      item.sourceCitation ? "引文定位：" + item.sourceCitation : null,
+      item.sourceLocation ? "具体位置：" + item.sourceLocation : null,
+    ].filter(Boolean);
+    if (preciseReferences.length) {
+      children.push(element("span", {
+        className: "source-file-reference",
+        text: "题目级出处：" + preciseReferences.join("；"),
+      }));
+    }
     children.push(element("span", {
       className: "source-file-reference",
-      text: item.sourceFile ? `来源路径标记（需在源资料库定位）：${item.sourceFile}` : "来源路径标记：未记录",
+      text: item.sourceFile ? "来源路径标记（需在源资料库定位）：" + item.sourceFile : "来源路径标记：未记录",
     }));
   }
   return element("div", { className: `source-trust source-trust-${trust.code}` }, children);

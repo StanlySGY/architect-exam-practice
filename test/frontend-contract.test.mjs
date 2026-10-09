@@ -104,7 +104,10 @@ test("首页学习队列和内容质量概览使用只读 API，并禁用零到�
 
 test("题库编辑器提供带来源定位和核验范围的人工审校入口", () => {
   assert.match(html, /id="bank-review-submit"/);
-  assert.match(app, /来源路径标记（需在源资料库定位）：\$\{item\.sourceFile\}/);
+  assert.match(app, /来源路径标记（需在源资料库定位）：" \+ item\.sourceFile/);
+  assert.match(app, /题目级出处：" \+ preciseReferences\.join/);
+  assert.match(app, /item\.sourceUrl/);
+  assert.match(app, /item\.sourcePage/);
   assert.match(app, /来源路径标记：未记录/);
   assert.match(app, /evidenceReference: draft\.reference\.value/);
   assert.match(app, /reviewedFields/);

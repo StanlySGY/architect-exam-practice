@@ -17,6 +17,7 @@ test("只读题库审计区分结构完整、出处缺失和重复题干候选",
   assert.equal(report.choices.missingSourceFile, 0);
   assert.equal(report.choices.missingPreciseSourceReference, 2);
   assert.equal(report.choices.answerTrustMetadataComplete, 0);
+  assert.equal(report.choices.missingPreciseSourceReference, 2, "路径字段不能替代题目级精确出处");
   assert.equal(report.choices.repeatedMockStemGroupsAcrossPapers, 1);
   assert.equal(report.choices.exactSameStemAndOptionsGroupsAcrossPapers, 0);
   assert.equal(report.cases.answerSourceMissing, 1);
