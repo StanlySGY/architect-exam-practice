@@ -66,6 +66,9 @@ test("引用图但没有图数据时，练习题只标缺失且不泄露答案",
     question.reviewEvidence = "人工事实核验记录：测试";
     question.reviewedAt = service.now();
     question.reviewedRevision = question.revision ?? 1;
+    question.reviewEvidenceType = "textbook";
+    question.reviewEvidenceReference = "测试教材，第 1 章，第 1 页";
+    question.reviewedFields = ["question", "options", "correctAnswer", "analysis"];
     question.knowledgeDetail = "测试知识详解";
     return state;
   });

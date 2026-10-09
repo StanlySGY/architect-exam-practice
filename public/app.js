@@ -2041,7 +2041,34 @@ function openBankQuestionEditor(question) {
       element("label", {}, [`选项 ${key}`, optionInputs[key]]),
     ),
     element("label", {}, ["解析", analysis]),
+    element("h3", { text: "人工审校记录" }),
+    element("p", { className: "muted", text: "批准前必须填写可定位的来源，并明确核验题干、选项、正确答案和解析。此记录表示审校人声明，不代表系统已独立证实来源权威性。" }),
+    ...(() => {
+      const reviewer = element("input", { attrs: { type: "text", maxlength: "256", placeholder: "审校人" } });
+      const evidenceType = element("select");
+      evidenceType.append(element("option", { text: "请选择证据类型", attrs: { value: "" } }));
+      for (const [value, label] of [["official_exam", "官方原卷/官方答案"], ["official_standard", "官方标准/规范"], ["textbook", "教材/参考书"], ["secondary_source", "可靠二手来源"], ["manual_note", "仅人工备注（不能批准）"]]) { const option = element("option", { text: label, attrs: { value } }); evidenceType.append(option); }
+      const reference = element("input", { attrs: { type: "text", maxlength: "2000", placeholder: "来源 URL，或书名/版本/页码/条款" } });
+      const note = element("textarea", { attrs: { rows: "3", maxlength: "4000", placeholder: "核验结论、答案依据及争议说明" } });
+      const scope = Object.fromEntries([["question", "题干"], ["options", "选项"], ["correctAnswer", "正确答案"], ["analysis", "解析"], ["knowledgeDetail", "知识详解"]].map(([value, label]) => { const input = element("input", { attrs: { type: "checkbox", value } }); return [value, { input, label }]; }));
+      form.reviewDraft = { reviewer, evidenceType, reference, note, scope };
+      return [element("label", {}, ["审校人", reviewer]), element("label", {}, ["证据类型", evidenceType]), element("label", {}, ["来源定位", reference]), element("label", {}, ["核验摘要", note]), element("fieldset", { className: "review-scope" }, [element("legend", { text: "核验范围" }), ...Object.values(scope).map(({ input, label }) => element("label", {}, [input, label]))])];
+    })(),
   );
+  const reviewButton = $("#bank-review-submit");
+  reviewButton.hidden = isImportedItem(question);
+  reviewButton.disabled = isImportedItem(question);
+  reviewButton.title = "记录来源与核验范围；不会自动验证来源本身";
+  reviewButton.onclick = async () => {
+    const draft = form.reviewDraft;
+    const editedOptions = Object.fromEntries(Object.entries(optionInputs).map(([key, input]) => [key, input.value.trim()]));
+    const hasUnsavedEdits = stem.value.trim() !== question.question || Object.keys(editedOptions).some((key) => editedOptions[key] !== String(question.options?.[key] ?? "").trim()) || correct.value !== question.correctAnswer || analysis.value.trim() !== String(question.analysis ?? "").trim() || knowledge.value.trim() !== String(question.knowledgePoint ?? "").trim();
+    if (hasUnsavedEdits) { showToast("题目内容有未保存修改，请先保存，再重新打开题目记录审校", true); return; }
+    try {
+      await api(`/api/questions/${encodeURIComponent(question.id)}/review`, { method: "POST", body: JSON.stringify({ reviewer: draft.reviewer.value, evidenceType: draft.evidenceType.value, evidenceReference: draft.reference.value, evidenceNote: draft.note.value, reviewedFields: Object.entries(draft.scope).filter(([, item]) => item.input.checked).map(([value]) => value) }) });
+      dialog.close(); showToast("审校记录已保存；来源权威性仍需人工判断"); await refreshQuestionBank();
+    } catch (error) { showToast(error.message, true); }
+  };
   dialog.showModal();
   $("#bank-edit-cancel").onclick = () => dialog.close();
   $("#bank-edit-save").onclick = async () => {

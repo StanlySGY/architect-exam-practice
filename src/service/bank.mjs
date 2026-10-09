@@ -1,5 +1,5 @@
 // bank 领域方法（拆分自原 questions.mjs，经继承链组装回 PracticeService）。
-import { QUESTION_REVIEW_REASONS, isImported, normalizeComparableText, validateOptions } from "./helpers.mjs";
+import { QUESTION_REVIEW_REASONS, isImported, normalizeComparableText, validateOptions, structureIssuesOf } from "./helpers.mjs";
 import { ReviewDomain } from "./review.mjs";
 
 // 题目难度诊断标签：基于题目自身作答统计（至少 5 次作答才判定）。
@@ -146,11 +146,45 @@ export class BankDomain extends ReviewDomain {
       delete question.reviewEvidence;
       delete question.reviewedAt;
       delete question.reviewedRevision;
+      delete question.reviewEvidenceType;
+      delete question.reviewEvidenceReference;
+      delete question.reviewedFields;
       return {
         questionId,
         revision: question.revision,
         updatedFields: Object.keys(patch),
       };
+    });
+  }
+
+  async reviewQuestion({ questionId, reviewer, evidenceType, evidenceReference, evidenceNote, reviewedFields }) {
+    const allowedTypes = new Set(["official_exam", "official_standard", "textbook", "secondary_source", "manual_note"]);
+    const requiredFields = ["question", "options", "correctAnswer", "analysis"];
+    const fields = Array.isArray(reviewedFields) ? [...new Set(reviewedFields)] : [];
+    const validFields = new Set(["question", "options", "correctAnswer", "analysis", "knowledgeDetail"]);
+    if (typeof reviewer !== "string" || !reviewer.trim() || reviewer.trim().length > 256) throw Object.assign(new Error("请填写有效的审校人"), { status: 400 });
+    if (!allowedTypes.has(evidenceType) || evidenceType === "manual_note") throw Object.assign(new Error("正式批准必须选择可追溯的教材、官方原卷、官方标准或可靠二手来源"), { status: 400 });
+    if (typeof evidenceReference !== "string" || !evidenceReference.trim() || evidenceReference.trim().length > 2000) throw Object.assign(new Error("请填写来源定位：URL，或书名/版本/页码/条款"), { status: 400 });
+    if (typeof evidenceNote !== "string" || !evidenceNote.trim() || evidenceNote.trim().length > 4000) throw Object.assign(new Error("请填写核验结论或依据摘要"), { status: 400 });
+    if (fields.some((field) => !validFields.has(field)) || !requiredFields.every((field) => fields.includes(field))) throw Object.assign(new Error("必须明确核验题干、选项、正确答案和解析；知识详解可另行勾选"), { status: 400 });
+    return this.store.update((state) => {
+      const question = this.questionMap(state).get(questionId);
+      if (!question) throw Object.assign(new Error("题目不存在"), { status: 404 });
+      if (isImported(question)) throw Object.assign(new Error("导入的真题/模拟题不适用生成题审校流程"), { status: 409, code: "IMPORTED_QUESTION_READONLY" });
+      if ((question.sourceType ?? "generated") !== "generated") throw Object.assign(new Error("仅支持审校 AI 生成题"), { status: 409 });
+      const structureIssues = structureIssuesOf(question, this.sourceNodeResolves(question));
+      if (structureIssues.length) throw Object.assign(new Error(`题目结构仍有问题，不能批准：${structureIssues.join("、")}`), { status: 409, code: "QUESTION_NOT_REVIEWABLE" });
+      question.reviewStatus = "approved";
+      question.reviewReasons = [];
+      question.reviewedBy = reviewer.trim();
+      question.reviewEvidenceType = evidenceType;
+      question.reviewEvidenceReference = evidenceReference.trim();
+      question.reviewEvidence = evidenceNote.trim();
+      question.reviewedFields = fields;
+      question.reviewedAt = this.now();
+      question.reviewedRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1;
+      this.appendAudit(state, "questions.human-review", { questionId, revision: question.reviewedRevision, reviewer: question.reviewedBy, evidenceType, reviewedFields: fields, note: "记录了人工审校声明；系统不独立验证来源权威性或答案正确性。" });
+      return { questionId, reviewStatus: question.reviewStatus, reviewedRevision: question.reviewedRevision, reviewedFields: fields };
     });
   }
 

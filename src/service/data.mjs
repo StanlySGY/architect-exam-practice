@@ -196,7 +196,9 @@ export class DataDomain extends BankDomain {
       for (const question of generated) {
         const issues = structureIssuesOf(question, this.sourceNodeResolves(question));
         const currentRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1;
-        const hasHumanEvidence = Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));
+        const fields = Array.isArray(question.reviewedFields) ? question.reviewedFields : [];
+        const hasTraceableEvidence = ["official_exam", "official_standard", "textbook", "secondary_source"].includes(question.reviewEvidenceType) && Boolean(String(question.reviewEvidenceReference ?? "").trim()) && ["question", "options", "correctAnswer", "analysis"].every((field) => fields.includes(field));
+        const hasHumanEvidence = hasTraceableEvidence && Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));
         const status = issues.length ? "quarantined" : reviewStatusOf(question) === "approved" && hasHumanEvidence ? "approved" : "pending_review";
         const reviewReasons = issues.length ? issues : status === "approved" ? [] : [QUESTION_REVIEW_REASONS.NO_HUMAN_FACT_CHECK];
         if (question.reviewStatus !== status || JSON.stringify(question.reviewReasons ?? []) !== JSON.stringify(reviewReasons)) {

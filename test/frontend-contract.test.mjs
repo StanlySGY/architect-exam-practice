@@ -101,3 +101,11 @@ test("首页学习队列和内容质量概览使用只读 API，并禁用零到�
   assert.match(html, /id="start-review"[^>]*disabled/);
   assert.match(html, /id="review-all"[^>]*disabled/);
 });
+
+test("题库编辑器提供带来源定位和核验范围的人工审校入口", () => {
+  assert.match(html, /id="bank-review-submit"/);
+  assert.match(app, /evidenceReference: draft\.reference\.value/);
+  assert.match(app, /reviewedFields/);
+  assert.match(app, /\/api\/questions\/\$\{encodeURIComponent\(question\.id\)\}\/review/);
+  assert.match(app, /来源权威性仍需人工判断/);
+});

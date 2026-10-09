@@ -61,6 +61,12 @@ function assertText(value, label, { required = false, max = MAX_BACKUP_STRING_LE
 }
 
 const QUESTION_REVIEW_STATES = new Set(["pending_review", "approved", "quarantined"]);
+const REVIEW_EVIDENCE_TYPES = new Set(["official_exam", "official_standard", "textbook", "secondary_source", "manual_note"]);
+const REQUIRED_REVIEWED_FIELDS = ["question", "options", "correctAnswer", "analysis"];
+function hasTraceableReviewEvidence(question) {
+  const fields = Array.isArray(question?.reviewedFields) ? question.reviewedFields : [];
+  return REVIEW_EVIDENCE_TYPES.has(question?.reviewEvidenceType) && question.reviewEvidenceType !== "manual_note" && Boolean(String(question.reviewEvidenceReference ?? "").trim()) && REQUIRED_REVIEWED_FIELDS.every((field) => fields.includes(field));
+}
 const QUESTION_REVIEW_REASONS = Object.freeze({
   NO_HUMAN_FACT_CHECK: "no_human_fact_check",
   SOURCE_NODE_MISSING: "source_node_missing",
@@ -74,7 +80,7 @@ const QUESTION_REVIEW_REASONS = Object.freeze({
 });
 function isGeneratedQuestion(question) { return (question?.sourceType ?? "generated") === "generated"; }
 function reviewStatusOf(question) { if (!isGeneratedQuestion(question)) return null; return QUESTION_REVIEW_STATES.has(question.reviewStatus) ? question.reviewStatus : "pending_review"; }
-function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; const currentRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1; return reviewStatusOf(question) === "approved" && Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));}
+function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; const currentRevision = Number.isInteger(question.revision) && question.revision > 0 ? question.revision : 1; return reviewStatusOf(question) === "approved" && Number.isInteger(question.reviewedRevision) && question.reviewedRevision === currentRevision && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt)) && hasTraceableReviewEvidence(question);}
 function structureIssuesOf(question, sourceNodeResolved = null) {
   const issues = [];
   if (!String(question?.sourceNode ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.SOURCE_NODE_MISSING);
@@ -186,6 +192,9 @@ function validateBackupData(data) {
     if (question.reviewReasons !== undefined && !Array.isArray(question.reviewReasons)) invalidBackup("中包含无效审校原因");
     if (question.reviewedBy !== undefined) assertText(question.reviewedBy, "题目审校人", { max: 256 });
     if (question.reviewEvidence !== undefined) assertText(question.reviewEvidence, "题目审校凭据", { max: 4_000 });
+    if (question.reviewEvidenceType !== undefined && !REVIEW_EVIDENCE_TYPES.has(question.reviewEvidenceType)) invalidBackup("中包含无效审校证据类型");
+    if (question.reviewEvidenceReference !== undefined) assertText(question.reviewEvidenceReference, "题目审校来源", { max: 2_000 });
+    if (question.reviewedFields !== undefined && (!Array.isArray(question.reviewedFields) || question.reviewedFields.some((field) => !["question", "options", "correctAnswer", "analysis", "knowledgeDetail"].includes(field)))) invalidBackup("中包含无效审校字段范围");
     assertTime(question.reviewedAt, "题目审校时间");
     if (question.reviewedRevision !== undefined && (!Number.isInteger(question.reviewedRevision) || question.reviewedRevision < 1)) invalidBackup("中包含无效审校版本");
     assertTime(question.reviewAuditedAt, "题目审计时间");

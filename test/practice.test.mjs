@@ -28,11 +28,12 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   const { service } = await fixture(t);
   const added = await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
   const id = added[0].id;
+  await service.store.update((state) => { state.generatedQuestions.find((item) => item.id === id).sourceNode = "第7章 系统架构设计基础知识"; return state; });
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "pending_review"; q.reviewReasons = ["no_human_fact_check"]; return state; });
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; return state; });
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
-  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewedAt = service.now(); q.reviewedRevision = q.revision ?? 1; return state; });
+  await service.reviewQuestion({ questionId: id, reviewer: "human-reviewer", evidenceType: "textbook", evidenceReference: "测试教材，第 1 章，第 1 页", evidenceNote: "人工事实核验记录：测试", reviewedFields: ["question", "options", "correctAnswer", "analysis"] });
   const session = await service.createSession({ chapter: 7, difficulty: "easy", count: 1 });
   assert.equal(session.questions[0].id, id);
   await service.updateQuestion({ questionId: id, updates: { correctAnswer: "B" } });
@@ -43,11 +44,34 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   assert.equal(edited.reviewEvidence, undefined);
   assert.equal(edited.reviewedAt, undefined);
   assert.equal(edited.reviewedRevision, undefined);
+  assert.equal(edited.reviewEvidenceType, undefined);
+  assert.equal(edited.reviewEvidenceReference, undefined);
+  assert.equal(edited.reviewedFields, undefined);
   await assert.rejects(() => service.createSession({ chapter: 7, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
   await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === id); q.disabledAt = service.now(); return state; });
   await service.store.update((state) => { state.generatedQuestions.push({ id: "real-review-compat", sourceType: "real", sourceId: "real-review-compat", chapter: 7, difficulty: "easy", question: "真题兼容测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "真题解析", knowledgeDetail: "真题资料", sourceNode: null, createdAt: service.now() }); return state; });
   assert.equal(service.allQuestions().find((item) => item.id === "real-review-compat").sourceType, "real");
   assert.equal(service.contentHealth().sources.questions.real, 1);
+});
+
+test("人工审校入口拒绝缺来源、仅备注或核验范围不完整的批准", async (t) => {
+  const { service } = await fixture(t);
+  const added = await addQuestions(service, { chapter: 8, difficulty: "easy", count: 1 });
+  const common = { questionId: added[0].id, reviewer: "reviewer", evidenceType: "textbook", evidenceReference: "测试教材，第 1 章，第 1 页", evidenceNote: "核验答案与解析", reviewedFields: ["question", "options", "correctAnswer", "analysis"] };
+  await service.store.update((state) => { state.generatedQuestions.find((item) => item.id === added[0].id).sourceNode = "第8章 系统质量属性与架构评估"; return state; });
+  await service.store.update((state) => { state.generatedQuestions.find((item) => item.id === added[0].id).knowledgeDetail = ""; return state; });
+  await assert.rejects(() => service.reviewQuestion(common), /题目结构仍有问题/);
+  await service.store.update((state) => { state.generatedQuestions.find((item) => item.id === added[0].id).knowledgeDetail = "恢复后的知识点详解"; return state; });
+  await assert.rejects(() => service.reviewQuestion({ ...common, evidenceReference: "" }), /来源定位/);
+  await assert.rejects(() => service.reviewQuestion({ ...common, evidenceType: "manual_note" }), /可追溯/);
+  await assert.rejects(() => service.reviewQuestion({ ...common, reviewedFields: ["question", "correctAnswer"] }), /必须明确核验/);
+  const approved = await service.reviewQuestion(common);
+  assert.equal(approved.reviewStatus, "approved");
+  assert.equal(approved.reviewedRevision, 1);
+  const question = service.store.snapshot().generatedQuestions.find((item) => item.id === added[0].id);
+  assert.equal(question.reviewEvidenceReference, common.evidenceReference);
+  assert.deepEqual(question.reviewedFields, common.reviewedFields);
+  assert.ok(service.auditLog().some((entry) => entry.action === "questions.human-review" && entry.questionId === added[0].id));
 });
 
 test("审校凭据必须绑定当前题目版本", async (t) => {
@@ -61,6 +85,9 @@ test("审校凭据必须绑定当前题目版本", async (t) => {
     question.reviewEvidence = "人工事实核验记录：测试";
     question.reviewedAt = service.now();
     question.reviewedRevision = (question.revision ?? 1) - 1;
+    question.reviewEvidenceType = "textbook";
+    question.reviewEvidenceReference = "测试教材，第 1 章，第 1 页";
+    question.reviewedFields = ["question", "options", "correctAnswer", "analysis"];
     return state;
   });
   await service.auditGeneratedQuestionTrust();
@@ -68,11 +95,10 @@ test("审校凭据必须绑定当前题目版本", async (t) => {
   assert.notEqual(question.reviewStatus, "approved");
   await assert.rejects(() => service.createSession({ chapter: 8, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
 });
-
 test("缺少有效审校时间的题目不能沿用 approved 状态", async (t) => {
   const { service } = await fixture(t);
   const added = await addQuestions(service, { chapter: 8, difficulty: "easy", count: 1 });
-  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === added[0].id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; delete q.reviewedAt; return state; });
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === added[0].id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; q.reviewEvidenceType = "textbook"; q.reviewEvidenceReference = "测试教材，第 1 章，第 1 页"; q.reviewedFields = ["question", "options", "correctAnswer", "analysis"]; q.reviewedRevision = q.revision ?? 1; delete q.reviewedAt; return state; });
   await service.auditGeneratedQuestionTrust();
   const question = service.store.snapshot().generatedQuestions.find((item) => item.id === added[0].id);
   assert.notEqual(question.reviewStatus, "approved");
@@ -93,7 +119,7 @@ test("老生成题缺审校状态向后兼容但不能自动 approved", async (t
 test("审校统计包含三种状态和原因计数", async (t) => {
   const { service } = await fixture(t);
   const added = await addQuestions(service, { chapter: 9, difficulty: "easy", count: 3 });
-  await service.store.update((state) => { const [p, q, a] = added.map((item) => state.generatedQuestions.find((question) => question.id === item.id)); p.reviewStatus = "pending_review"; p.reviewReasons = ["no_human_fact_check"]; q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; a.reviewStatus = "approved"; a.reviewReasons = []; a.reviewedBy = "human-reviewer"; a.reviewEvidence = "人工事实核验记录：测试"; a.reviewedAt = service.now(); a.reviewedRevision = a.revision ?? 1; return state; });
+  await service.store.update((state) => { const [p, q, a] = added.map((item) => state.generatedQuestions.find((question) => question.id === item.id)); p.reviewStatus = "pending_review"; p.reviewReasons = ["no_human_fact_check"]; q.reviewStatus = "quarantined"; q.reviewReasons = ["knowledge_detail_missing"]; a.reviewStatus = "approved"; a.reviewReasons = []; a.reviewedBy = "human-reviewer"; a.reviewEvidence = "人工事实核验记录：测试"; a.reviewedAt = service.now(); a.reviewedRevision = a.revision ?? 1; a.reviewEvidenceType = "textbook"; a.reviewEvidenceReference = "测试教材，第 1 章，第 1 页"; a.reviewedFields = ["question", "options", "correctAnswer", "analysis"]; return state; });
   const stats = service.questionReviewStats();
   assert.equal(stats.pending_review >= 1, true);
   assert.equal(stats.quarantined >= 1, true);
@@ -436,6 +462,9 @@ async function addQuestions(
       question.reviewEvidence = "测试夹具中的人工事实核验凭据";
       question.reviewedAt = service.now();
       question.reviewedRevision = question.revision ?? 1;
+      question.reviewEvidenceType = "textbook";
+      question.reviewEvidenceReference = "测试教材，第 1 章，第 1 页";
+      question.reviewedFields = ["question", "options", "correctAnswer", "analysis"];
     }
     return added;
   });

@@ -496,6 +496,11 @@ async function route(request, response) {
       }),
     );
   }
+  const questionReviewMatch = pathname.match(/^\/api\/questions\/([^/]+)\/review$/);
+  if (request.method === "POST" && questionReviewMatch) {
+    const body = await readJson(request);
+    return sendJson(response, 200, await practice.reviewQuestion({ questionId: decodeURIComponent(questionReviewMatch[1]), ...body }));
+  }
   if (request.method === "GET" && pathname === "/api/llm-usage") {
     return sendJson(response, 200, practice.llmUsageSummary());
   }
