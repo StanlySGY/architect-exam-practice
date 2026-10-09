@@ -140,9 +140,12 @@ export function mapChoice(raw, createdAt) {
 
 export function mapCase(raw, createdAt) {
   const subQuestions = Array.isArray(raw.subQuestions) ? raw.subQuestions : [];
-  const defaultPoints = subQuestions.length
-    ? Math.max(1, Math.round(25 / subQuestions.length))
+  const basePoints = subQuestions.length
+    ? Math.floor(25 / subQuestions.length)
     : 25;
+  const remainderPoints = subQuestions.length
+    ? 25 - basePoints * subQuestions.length
+    : 0;
   const title = String(raw.title ?? "").trim();
   const scenario = String(raw.description ?? "").trim() || title;
   const answerTrust = answerTrustOf(raw);
@@ -159,7 +162,7 @@ export function mapCase(raw, createdAt) {
     questions: subQuestions.map((item, index) => ({
       id: String(item.question_label || index + 1),
       text: String(item.prompt ?? item.text ?? "").trim(),
-      points: Number(item.points) || defaultPoints,
+      points: Number(item.points) || basePoints + (index < remainderPoints ? 1 : 0),
       referenceAnswer: String(item.reference_answer ?? item.referenceAnswer ?? "").trim(),
     })),
     term: raw.term || null,

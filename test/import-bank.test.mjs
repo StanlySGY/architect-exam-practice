@@ -75,7 +75,7 @@ test("选择题映射保留考期题号并规范化答案", () => {
   assert.equal(mapped.knowledgePoint, "分层架构");
 });
 
-test("案例空描述回退到标题，子题默认均分 25 分", () => {
+test("案例空描述回退到标题，子题默认分值总和严格为25分", () => {
   const mapped = mapCase(
     {
       id: "case-2025-1",
@@ -94,8 +94,23 @@ test("案例空描述回退到标题，子题默认均分 25 分", () => {
   assert.equal(mapped.scenario, "某电商系统改造");
   assert.equal(mapped.questions.length, 2);
   assert.equal(mapped.questions[0].id, "问题1");
-  assert.equal(mapped.questions[0].points, 13);
-  assert.equal(mapped.questions[1].points, 13);
+  assert.deepEqual(mapped.questions.map((question) => question.points), [13, 12]);
+  assert.equal(mapped.questions.reduce((sum, question) => sum + question.points, 0), 25);
+});
+
+test("案例子题默认分值在不同题数下都合计25分", () => {
+  for (const count of [1, 2, 3, 4, 6, 7]) {
+    const mapped = mapCase({
+      id: "case-points-" + count,
+      title: "分值分配测试",
+      subQuestions: Array.from({ length: count }, (_, index) => ({
+        question_label: String(index + 1),
+        prompt: "子题" + (index + 1),
+      })),
+    });
+    assert.equal(mapped.questions.reduce((sum, question) => sum + question.points, 0), 25, "count=" + count);
+    assert.ok(mapped.questions.every((question) => Number.isInteger(question.points) && question.points >= 1));
+  }
 });
 
 test("论文写作要点字符串会拆成条目", () => {
