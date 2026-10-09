@@ -74,7 +74,7 @@ const QUESTION_REVIEW_REASONS = Object.freeze({
 });
 function isGeneratedQuestion(question) { return (question?.sourceType ?? "generated") === "generated"; }
 function reviewStatusOf(question) { if (!isGeneratedQuestion(question)) return null; return QUESTION_REVIEW_STATES.has(question.reviewStatus) ? question.reviewStatus : "pending_review"; }
-function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; return reviewStatusOf(question) === "approved" && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()); }
+function isQuestionEligibleForFormalStudy(question) { if (!question || question.disabledAt) return false; if (!isGeneratedQuestion(question)) return true; return reviewStatusOf(question) === "approved" && Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt)); }
 function structureIssuesOf(question, sourceNodeResolved = null) {
   const issues = [];
   if (!String(question?.sourceNode ?? "").trim()) issues.push(QUESTION_REVIEW_REASONS.SOURCE_NODE_MISSING);

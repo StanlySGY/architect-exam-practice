@@ -49,6 +49,17 @@ test("AI 题审校状态控制正式学习资格，真题保持原语义", async
   assert.equal(service.contentHealth().sources.questions.real, 1);
 });
 
+test("缺少有效审校时间的题目不能沿用 approved 状态", async (t) => {
+  const { service } = await fixture(t);
+  const added = await addQuestions(service, { chapter: 8, difficulty: "easy", count: 1 });
+  await service.store.update((state) => { const q = state.generatedQuestions.find((item) => item.id === added[0].id); q.reviewStatus = "approved"; q.reviewReasons = []; q.reviewedBy = "human-reviewer"; q.reviewEvidence = "人工事实核验记录：测试"; delete q.reviewedAt; return state; });
+  await service.auditGeneratedQuestionTrust();
+  const question = service.store.snapshot().generatedQuestions.find((item) => item.id === added[0].id);
+  assert.notEqual(question.reviewStatus, "approved");
+  assert.ok(["pending_review", "quarantined"].includes(question.reviewStatus));
+  await assert.rejects(() => service.createSession({ chapter: 8, difficulty: "easy", count: 1 }), /没有可用的练习题|该章节和难度暂无题目/);
+});
+
 test("老生成题缺审校状态向后兼容但不能自动 approved", async (t) => {
   const { service } = await fixture(t);
   await service.store.update((state) => { state.generatedQuestions.push({ id: "legacy-generated", sourceType: "generated", chapter: 8, difficulty: "easy", question: "老数据测试题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "解析", knowledgeDetail: "详解", sourceNode: "第8章", createdAt: service.now() }); return state; });

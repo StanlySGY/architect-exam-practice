@@ -195,7 +195,7 @@ export class DataDomain extends BankDomain {
       let quarantined = 0;
       for (const question of generated) {
         const issues = structureIssuesOf(question, this.sourceNodeResolves(question));
-        const hasHumanEvidence = Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim());
+        const hasHumanEvidence = Boolean(String(question.reviewedBy ?? "").trim()) && Boolean(String(question.reviewEvidence ?? "").trim()) && Boolean(String(question.reviewedAt ?? "").trim()) && Number.isFinite(Date.parse(question.reviewedAt));
         const status = issues.length ? "quarantined" : reviewStatusOf(question) === "approved" && hasHumanEvidence ? "approved" : "pending_review";
         const reviewReasons = issues.length ? issues : status === "approved" ? [] : [QUESTION_REVIEW_REASONS.NO_HUMAN_FACT_CHECK];
         if (question.reviewStatus !== status || JSON.stringify(question.reviewReasons ?? []) !== JSON.stringify(reviewReasons)) {
