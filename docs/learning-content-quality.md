@@ -42,3 +42,4 @@
 - 第8章涉及 ATAM 的方法概述可对照 Carnegie Mellon University Software Engineering Institute 的原始资料：<https://www.sei.cmu.edu/library/the-architecture-tradeoff-analysis-method/>。该来源支持 ATAM 用于分析多种质量属性之间的架构权衡；本项目其余标准编号、考试大纲和教材特定表述仍需分别回查对应权威资料。
 
 - 最新全量重复审计已将 why、how、confusions、scenarios、examFocus、pitfalls 六类字段的全文重复组降为 0。对剩余重复字段生成的主题化提示以各单元 what、examples 和 pitfalls 为上下文；这是去模板化和学习提示改进，不等于逐条事实核验。309 个单元的核验状态仍为 3 verified、306 partial。
+- 继续清理旧课程化模板：替换 221 处 examples 占位情境、221 处 pitfalls 通用易错提示、193 处 how 模板和 193 处 confusions 模板；这些是主题化学习练习，不作为教材事实证据。只读审计器现会检查这些已知模板标记，防止回归。

@@ -141,3 +141,9 @@
 
 - 最新只读扫描显示，309 个单元的 why、how、confusions、scenarios、examFocus、pitfalls 六类字段均为 0 个全文重复组；已对原有重复字段按各单元 what、examples 与 pitfalls 做主题化学习提示重写。
 - 这些批量修订是学习脚手架，不作为教材事实、标准条文或答案正确性的证据；所有核验状态保持不变（306 partial、3 verified）。后续仍需以可靠来源逐项核对知识结论，并审查生成的教学提示是否适合具体单元。
+
+## 本轮：清理旧课程化占位情境与通用易错提示
+
+- 扩展只读审计器，除全文重复外，还扫描已知通用模板标记，覆盖 why/how/confusions/examples/pitfalls/scenarios/examFocus。
+- 修订了旧模板残留：examples 221 处、pitfalls 221 处、how 193 处、confusions 193 处；替换内容是围绕各单元 what 的练习脚手架，不作为教材事实或答案依据。
+- 新增回归测试要求六类字段全文重复组为零，并要求已识别的通用模板标记为零。自动审计通过仍不代表知识结论全部准确；306 个单元继续保持 partial，只有原有 3 个 verified 状态未改变。

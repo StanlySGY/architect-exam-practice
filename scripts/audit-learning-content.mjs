@@ -34,6 +34,22 @@ export function auditLearningContent(content) {
   for (const [field, tail] of Object.entries(knownTemplateTails)) {
     templateTailOccurrences[field] = units.filter(([, unit]) => String(unit?.[field] ?? "").trimEnd().endsWith(tail)).map(([id]) => id);
   }
+  const genericMarkers = [
+    "练习情境（课程化说明",
+    "本知识点易错检查：",
+    "完成一次分析：先用自己的话界定概念",
+    "重点回看本单元易错提示",
+  ];
+  const genericMarkerOccurrences = {};
+  for (const marker of genericMarkers) {
+    const matches = [];
+    for (const [id, unit] of units) {
+      for (const field of ["why", "how", "confusions", "examples", "pitfalls", "scenarios", "examFocus"]) {
+        if (String(unit?.[field] ?? "").includes(marker)) matches.push({ id, field });
+      }
+    }
+    genericMarkerOccurrences[marker] = { count: matches.length, matches: matches.slice(0, 50) };
+  }
   const statuses = {};
   for (const [, unit] of units) statuses[unit.status ?? "(missing)"] = (statuses[unit.status ?? "(missing)"] ?? 0) + 1;
   return {
@@ -43,6 +59,7 @@ export function auditLearningContent(content) {
     statusDistribution: statuses,
     duplicateFields,
     knownTemplateTailOccurrences: Object.fromEntries(Object.entries(templateTailOccurrences).map(([field, ids]) => [field, { count: ids.length, unitIds: ids.slice(0, 30) }])),
+    knownGenericTemplateMarkers: genericMarkerOccurrences,
     note: "重复检测只按规范化后的全文完全一致识别；不同措辞可能仍重复表达同一知识点。报告不判断事实正确性，不修改源数据。",
   };
 }

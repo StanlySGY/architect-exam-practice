@@ -28,4 +28,5 @@ test("309个单元的当前审计报告确认六类字段无全文重复且无�
   assert.equal(report.knownTemplateTailOccurrences.how.count, 0);
   assert.equal(report.knownTemplateTailOccurrences.confusions.count, 0);
   for (const field of ["why", "how", "confusions", "scenarios", "examFocus", "pitfalls"]) assert.equal(report.duplicateFields[field].groups, 0, field + " should have no full-text duplicates");
+  for (const marker of Object.values(report.knownGenericTemplateMarkers)) assert.equal(marker.count, 0, "known generic template marker should be absent");
 });
