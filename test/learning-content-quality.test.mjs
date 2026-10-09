@@ -27,9 +27,24 @@ test('高价值单元的例子与陷阱包含足够的知识点说明', () => {
   }
 });
 
+test('章节总览与目录主题一致，且核验状态与来源状态不冲突', () => {
+  const chapters = JSON.parse(fs.readFileSync(new URL('../data/chapters.json', import.meta.url), 'utf8'));
+  for (const chapter of chapters) {
+    const unit = content.units[String(chapter.id)];
+    if (!unit) continue;
+    assert.equal(unit.chapterTitle, chapter.title, 'chapter title mismatch: ' + chapter.id);
+    assert.equal(unit.status, 'partial', 'chapter overview must not imply full fact verification: ' + chapter.id);
+    assert.equal(unit.source?.path, 'data/chapters.json', 'chapter overview source missing: ' + chapter.id);
+    assert.equal(unit.source?.status, 'needs-review', 'chapter overview source status mismatch: ' + chapter.id);
+  }
+  for (const [id, unit] of units) {
+    if (unit.status === 'verified') assert.equal(unit.source?.status, 'verified', 'verified status needs verified source: ' + id);
+    if (unit.contentSource?.status === 'verified') assert.equal(unit.status, 'verified', 'verified contentSource needs verified unit: ' + id);
+  }
+});
+
 test('全量补强不篡改原有事实核验状态', () => {
-  const statuses = units.reduce((acc, [, unit]) => (acc[unit.status] = (acc[unit.status] || 0) + 1, acc), {});
-  assert.equal(statuses.verified, 4);
-  assert.equal(statuses.partial, 305);
+  const statuses = units.reduce((acc, [, unit]) => (acc[unit.status] = (acc[unit.status] || 0) + 1, acc), {});  assert.equal(statuses.verified, 3);
+  assert.equal(statuses.partial, 306);
   assert.equal(content.coverage.selfCheckEnrichedRecords, 309);
 });
