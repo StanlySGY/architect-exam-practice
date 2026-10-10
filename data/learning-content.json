@@ -1755,6 +1755,15 @@
       "examples": "自拟练习（非教材原例）：设想一个与「使用不同的公钥和私钥；公钥可公开，私钥必须保密，难以由公钥推导私钥。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“使用不同的公钥和私钥；公钥可公开，私钥必须保密，难以由公钥推导私钥。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「使用不同的公钥和私钥；公钥可公开，私钥必须保密，难以由公钥推导私钥。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/glossary/term/public_key_cryptography",
+          "supportedClaim": "NIST defines public-key cryptography as using related public/private keys and states that deriving the private key from the public key is computationally infeasible.",
+          "scope": "Supports the core asymmetric-key relationship only; it does not verify the entire learning unit, textbook-specific wording, or any exam answer.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
+      ],
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -1823,6 +1832,15 @@
       "examples": "自拟练习（非教材原例）：设想一个与「核心问题不是保密公钥，而是可信地确认“公钥属于谁”。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
       "examFocus": "复习重点：围绕“核心问题不是保密公钥，而是可信地确认“公钥属于谁”。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
       "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「核心问题不是保密公钥，而是可信地确认“公钥属于谁”。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/glossary/term/public_key_certificate",
+          "supportedClaim": "NIST defines a public-key certificate as binding an entity's identity to its public key through a certificate signed by a trusted party.",
+          "scope": "Supports the identity-to-public-key binding concept only; it does not establish that every certificate is valid or trusted in every context, nor verify the entire learning unit.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
+      ],
       "source": {
         "type": "mindmap",
         "path": "architect.mm",

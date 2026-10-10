@@ -505,3 +505,10 @@
 - 现改为分别报告 `missing`、`placeholder-only`、`locator-text-present-needs-validation`、`url-present-not-verified`。这只是来源定位字段的初筛，不检查 URL 是否可访问、不判断来源权威性，也不证明它支持命中的具体命题。
 - 已更新 JSON/Markdown 队列生成器及测试；重新生成 `docs/audits/answer-risk-review-queue.json` 与 `.md`。本次风险候选仍为 161 条，分类仍是人工复核队列，不代表已完成事实核验。
 - 审计脚本只读取相邻仓库 `../architect-exam-bank/data/bank.json`；生成文件仅写入当前项目，没有修改外部题库。
+
+## 本轮新增：两条公钥密码核心命题的一手来源证据（2026-10-10）
+
+- 学习单元 `4.4.3`：NIST CSRC 术语表将公钥密码定义为使用相关联的公钥与私钥，并说明从公钥推导私钥在计算上不可行。来源：https://csrc.nist.gov/glossary/term/public_key_cryptography。证据范围仅覆盖非对称密钥对的核心关系，不证明整节教材措辞或任何真题答案。
+- 学习单元 `4.5.2`：NIST CSRC 术语表说明公钥证书将实体身份与公钥绑定，并由可信方签名。来源：https://csrc.nist.gov/glossary/term/public_key_certificate。证据范围仅覆盖身份—公钥绑定概念，不意味着任意证书在所有用途和时间范围内都可信。
+- 两条证据均记录到 `data/learning-content.json` 的命题级 `evidence` 字段，并由回归测试检查来源 URL、范围说明与复核日期。两个单元仍保持 `partial`，因为单条证据不足以核验整单元的所有教学内容。
+- 当前 324 个学习单元中，具备至少一条有效命题级证据的单元从 81 增至 83；仍缺证据的单元从 243 降至 241。状态分布仍为 3 `verified`、321 `partial`，没有新增 `verified`。
