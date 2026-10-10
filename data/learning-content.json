@@ -3716,6 +3716,15 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "url": "https://insights.sei.cmu.edu/documents/232/1994_019_001_30085.pdf",
+          "supportedClaim": "The SEI discussion of software architecture identifies pipe-and-filter as a recognized architectural style and describes architectural styles as system-level organizational choices.",
+          "scope": "Supports pipe-and-filter as a recognized style only; detailed runtime semantics, performance, ordering and failure behavior depend on the actual design.",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.3.3": {
@@ -3784,6 +3793,15 @@
       "selfChecks": [
         "以中央数据存储为核心的架构有哪些优势和代价？",
         "为什么共享数据库可能形成模式耦合和运行瓶颈？"
+      ],
+      "evidence": [
+        {
+          "url": "https://insights.sei.cmu.edu/documents/232/1994_019_001_30085.pdf",
+          "supportedClaim": "The SEI discussion identifies data-centered systems, including transactional database systems, as a recognized family of software architectural styles.",
+          "scope": "Supports data-centered organization as a recognized style only; it does not prove that every such system uses one physical centralized database or has a single point of failure.",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.3.5": {
@@ -3852,6 +3870,15 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "url": "https://insights.sei.cmu.edu/documents/232/1994_019_001_30085.pdf",
+          "supportedClaim": "The SEI discussion identifies event systems in which objects broadcast events through a request broker as a recognized architectural style.",
+          "scope": "Supports event-based interaction as a recognized style only; delivery guarantees, ordering, coupling and synchronous/asynchronous behavior depend on the concrete event infrastructure.",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.4.1": {

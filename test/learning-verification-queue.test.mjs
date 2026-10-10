@@ -8,7 +8,7 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,87); assert.equal(report.unitsMissingEvidence,237); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,90); assert.equal(report.unitsMissingEvidence,234); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -97,4 +97,9 @@ test("symmetric cryptography, vulnerability assessment and architecture-style cl
 test("cryptography and port-discovery concepts have bounded NIST evidence",()=>{
  const cases=[["4.4.1","https://csrc.nist.gov/glossary/term/cryptography"],["4.4.1","https://csrc.nist.gov/glossary/term/cryptanalysis"],["4.7.4","https://csrc.nist.gov/pubs/sp/800/115/final"]];
  for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewedOn&&e.reviewStatus),id+" "+url);}
+});
+
+test("dataflow, data-centered and event-based architecture styles have scoped SEI evidence",()=>{
+ const cases=[["7.3.2","pipe-and-filter"],["7.3.4","data-centered systems"],["7.3.6","event systems"]];
+ for(const [id,claim] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url==="https://insights.sei.cmu.edu/documents/232/1994_019_001_30085.pdf"&&e.supportedClaim&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus),id);}
 });
