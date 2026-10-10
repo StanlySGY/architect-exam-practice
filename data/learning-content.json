@@ -1709,6 +1709,22 @@
       "selfChecks": [
         "请不用照抄原文，解释“密码学包括设计密码体制的密码编码学和研究破译的密码分析学。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“密码学包括设计密码体制的密码编码学和研究破译的密码分析学。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/glossary/term/cryptography",
+          "supportedClaim": "NIST CSRC defines cryptography as a discipline involving principles, means and methods for information security, including confidentiality, data integrity, source authentication and non-repudiation.",
+          "scope": "Supports the broad role of cryptography only; it does not validate textbook-specific taxonomies or every cryptographic primitive.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        },
+        {
+          "url": "https://csrc.nist.gov/glossary/term/cryptanalysis",
+          "supportedClaim": "NIST CSRC defines cryptanalysis as studying or performing techniques intended to defeat cryptographic protection, including finding weaknesses in algorithms or implementations.",
+          "scope": "Supports the core meaning of cryptanalysis only; it does not imply that every analysis succeeds or that cryptanalysis is limited to one attack method.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
       ]
     },
     "4.4.2": {
@@ -1743,6 +1759,15 @@
       "selfChecks": [
         "请不用照抄原文，解释“加密密钥与解密密钥相同或可直接相互推导；速度快、适合大批量数据，但密钥分配和管理困难。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“加密密钥与解密密钥相同或可直接相互推导；速度快、适合大批量数据，但密钥分配和管理困难。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/glossary/term/symmetric_key_algorithm",
+          "supportedClaim": "NIST defines a symmetric-key algorithm as using the same secret key for an operation and its complement, such as encryption and decryption.",
+          "scope": "Supports the shared-key mechanism only; it does not establish a universal performance advantage, suitability for every bulk-data workload, or the full key-distribution discussion.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
       ]
     },
     "4.4.3": {
@@ -2145,6 +2170,15 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过探测目标端口响应判断开放服务和操作系统特征，是攻击前信息收集手段。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“通过探测目标端口响应判断开放服务和操作系统特征，是攻击前信息收集手段。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/pubs/sp/800/115/final",
+          "supportedClaim": "NIST SP 800-115 describes target-identification and analysis techniques that can identify systems, ports, services and potential vulnerabilities as part of technical security assessment.",
+          "scope": "Supports port/service discovery as an assessment and information-gathering technique; it does not establish that every scan identifies an operating system accurately or that scanning alone proves exploitability.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-bounded-claim"
+        }
       ]
     },
     "4.7.5": {
@@ -2213,6 +2247,15 @@
       "selfChecks": [
         "请不用照抄原文，解释“检查信息系统中可能被利用的漏洞，评估攻击可能性，为修复和安全方案提供依据。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“检查信息系统中可能被利用的漏洞，评估攻击可能性，为修复和安全方案提供依据。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "url": "https://csrc.nist.gov/glossary/term/vulnerability_assessment",
+          "supportedClaim": "NIST's glossary defines vulnerability assessment as a systematic examination to determine the adequacy of security measures and identify security deficiencies, providing data for evaluating proposed measures and checking them after implementation.",
+          "scope": "Supports the purpose of vulnerability assessment only; the exact workflow, exploitability likelihood and remediation priority must be established by the chosen assessment method and environment.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
       ]
     },
     "4.8.1": {
@@ -3630,6 +3673,15 @@
       "selfChecks": [
         "架构风格和具体系统架构实例有什么区别？为什么同一系统可能组合不同风格？",
         "看到一个具体产品名称时，你会用什么问题判断它是在描述技术实现，还是在描述架构风格？"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.sei.cmu.edu/documents/1119/1994_005_001_16331.pdf",
+          "supportedClaim": "The SEI introduction to software architecture describes an architecture in terms of computational components and connectors, and an architectural style as a family of systems organized by component/connector vocabulary and combination constraints.",
+          "scope": "Supports the component, connector and style/constraint concepts only; it does not validate every taxonomy or exam-specific phrasing in the learning unit.",
+          "reviewedOn": "2026-10-10",
+          "reviewStatus": "source-supports-core-claim"
+        }
       ]
     },
     "7.3.2": {

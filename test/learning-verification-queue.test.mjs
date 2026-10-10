@@ -8,7 +8,7 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,83); assert.equal(report.unitsMissingEvidence,241); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,87); assert.equal(report.unitsMissingEvidence,237); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -78,4 +78,23 @@ test("NIST source evidence supports only the public-key and certificate-binding 
  assert.equal(certificate.status,"partial");
  assert.ok(publicKey.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_cryptography" && e.reviewStatus==="source-supports-core-claim" && e.scope.includes("does not verify the entire learning unit")));
  assert.ok(certificate.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_certificate" && e.reviewStatus==="source-supports-core-claim" && e.scope.includes("does not establish that every certificate is valid")));
+});
+
+
+test("symmetric cryptography, vulnerability assessment and architecture-style claims have scoped primary-source evidence",()=>{
+ const cases=[
+  ["4.4.2","https://csrc.nist.gov/glossary/term/symmetric_key_algorithm","shared-key mechanism only"],
+  ["7.3.1","https://www.sei.cmu.edu/documents/1119/1994_005_001_16331.pdf","component, connector and style/constraint concepts only"],
+  ["4.7.6","https://csrc.nist.gov/glossary/term/vulnerability_assessment","purpose of vulnerability assessment only"]
+ ];
+ for(const [id,url,scope] of cases){
+  const unit=content.units[id];
+  assert.equal(unit.status,"partial",id);
+  assert.ok(unit.evidence?.some(e=>e.url===url && e.reviewStatus==="source-supports-core-claim" && e.scope.includes(scope)),id);
+ }
+});
+
+test("cryptography and port-discovery concepts have bounded NIST evidence",()=>{
+ const cases=[["4.4.1","https://csrc.nist.gov/glossary/term/cryptography"],["4.4.1","https://csrc.nist.gov/glossary/term/cryptanalysis"],["4.7.4","https://csrc.nist.gov/pubs/sp/800/115/final"]];
+ for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewedOn&&e.reviewStatus),id+" "+url);}
 });
