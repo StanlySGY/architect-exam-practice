@@ -1121,6 +1121,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“计算机语言由语法、语义和语用等要素构成，可从机器级到高级、建模和形式化语言理解。”的核心含义，并说明它解决什么问题。",
         "请用“优先建立层次关系和因果链：CPU/存储/总线/IO、软件层次、网络分层、性能指标”分析“计算机语言由语法、语义和语用等要素构成，可从机器级到高级、建模和形式化语言理解。”：列出关键步骤，并说明怎样识别“不要把概念的设计思想与具体产品、型号或实现混为一谈”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Encyclopaedia Britannica: Computer Programming Language",
+          "url": "https://www.britannica.com/technology/computer-programming-language",
+          "sourceAuthority": "Encyclopaedia Britannica: Computer Programming Language",
+          "supportedClaim": "编程语言通过形式化语法和语义表达可由计算机执行或处理的指令。",
+          "scope": "只支持编程语言的形式化表达特征；语用学、建模语言和形式化规约之间的课程分类仍以教材口径为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.7": {
@@ -1155,6 +1166,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“多媒体综合文字、图形、图像、声音、视频、动画等信息形态，并通过计算机交互呈现。”的核心含义，并说明它解决什么问题。",
         "请用“优先建立层次关系和因果链：CPU/存储/总线/IO、软件层次、网络分层、性能指标”分析“多媒体综合文字、图形、图像、声音、视频、动画等信息形态，并通过计算机交互呈现。”：列出关键步骤，并说明怎样识别“不要把概念的设计思想与具体产品、型号或实现混为一谈”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "W3C HTML 4.01 Specification",
+          "url": "https://www.w3.org/TR/REC-html40/struct/global.html",
+          "sourceAuthority": "W3C HTML 4.01 Specification",
+          "supportedClaim": "Web 文档可用标记结构组织文本、链接、图像等媒体内容，并通过客户端呈现。",
+          "scope": "只支持多媒体信息可组合呈现的一个 Web 示例；不定义所有多媒体系统的完整媒体类别。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.8": {
@@ -1373,6 +1395,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“以企业整体管理为背景，在基层业务系统之上提供收集、加工、传递与使用管理信息的人机系统。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“以企业整体管理为背景，在基层业务系统之上提供收集、加工、传递与使用管理信息的人机系统。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Management Information Systems Overview",
+          "url": "https://www.ibm.com/docs/en/was/9.0.5?topic=overview-management-information-systems",
+          "sourceAuthority": "IBM Management Information Systems Overview",
+          "supportedClaim": "管理信息系统支持组织管理所需的信息收集、处理和报告。",
+          "scope": "只支持管理信息系统服务于管理信息处理的基本用途；不将该定义当作所有教材分类的唯一标准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.4": {
@@ -1407,6 +1440,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“DSS 是利用数据、模型和知识帮助决策者解决半结构化、非结构化问题的交互式系统。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“DSS 是利用数据、模型和知识帮助决策者解决半结构化、非结构化问题的交互式系统。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM SPSS Modeler Documentation",
+          "url": "https://www.ibm.com/docs/en/spss-modeler",
+          "sourceAuthority": "IBM SPSS Modeler Documentation",
+          "supportedClaim": "决策支持工具可结合数据分析与模型，帮助用户探索问题并支持决策。",
+          "scope": "只支持数据与模型可辅助决策的基本概念；不保证系统替代决策者或所有决策问题均可形式化。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.5": {
@@ -1486,6 +1530,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“OAS 是融合计算机、通信和管理技术的人机结合办公事务管理系统，目标是提高办公质量与效率。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“OAS 是融合计算机、通信和管理技术的人机结合办公事务管理系统，目标是提高办公质量与效率。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft 365 Business Overview",
+          "url": "https://www.microsoft.com/en-us/microsoft-365/business/task-management-software",
+          "sourceAuthority": "Microsoft 365 Business Overview",
+          "supportedClaim": "办公软件可支持文档、通信、协作和办公流程等活动。",
+          "scope": "只支持办公自动化系统的常见能力范围；不作为教材中 OAS 历史定义或边界的唯一来源。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.7": {
@@ -3139,6 +3194,17 @@
       "selfChecks": [
         "外模式、概念模式、内模式分别面向什么？两级映像如何支持数据独立性？",
         "如果底层存储结构改变而应用视图和逻辑结构保持不变，你认为主要体现了哪一层数据独立性？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Db2 Three-Schema Architecture",
+          "url": "https://www.ibm.com/docs/en/db2/11.5?topic=architecture-three-schema-architecture",
+          "sourceAuthority": "IBM Db2 Three-Schema Architecture",
+          "supportedClaim": "数据库三级模式架构区分外部视图、概念层和内部存储层，以支持数据独立性。",
+          "scope": "只支持三级模式和映像的基本概念；不同 DBMS 的实现细节和术语可能不同。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.2.1": {
@@ -3218,6 +3284,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Db2 Relational Operations",
+          "url": "https://www.ibm.com/docs/en/db2/11.5?topic=relational-relational-operations",
+          "sourceAuthority": "IBM Db2 Relational Operations",
+          "supportedClaim": "关系代数的选择、投影、连接等运算用于组合和转换关系。",
+          "scope": "只支持关系代数运算的基本用途；具体运算符记法和扩展需按课程教材确认。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.2.3": {
@@ -3432,6 +3509,17 @@
       "selfChecks": [
         "ER 模型转换为关系模型时，实体和多对多联系通常如何表示？",
         "为什么成绩通常随选课联系保存，而不是随意放到学生或课程实体中？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Db2 Relational Database Design",
+          "url": "https://www.ibm.com/docs/en/db2/11.5?topic=design-relational-database-design",
+          "sourceAuthority": "IBM Db2 Relational Database Design",
+          "supportedClaim": "关系数据库设计把实体及其联系映射到表、主键和外键等关系结构。",
+          "scope": "只支持 ER 到关系模型的常见映射原则；具体多对多、弱实体和继承映射规则需按设计情形决定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.5": {
@@ -3511,6 +3599,17 @@
       "selfChecks": [
         "数据库实施阶段除创建表和装载数据外，还要验证什么？",
         "为什么上线前要演练迁移失败后的恢复或回退？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL Tutorial",
+          "url": "https://www.postgresql.org/docs/current/tutorial.html",
+          "sourceAuthority": "PostgreSQL Tutorial",
+          "supportedClaim": "数据库应用落地通常涉及创建结构、装载数据、编写查询/应用并进行验证。",
+          "scope": "只支持数据库实现的若干常见活动；不声称所有项目都按固定线性顺序完成。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.7": {
@@ -3590,6 +3689,17 @@
       "selfChecks": [
         "数据库访问接口的选择影响哪些质量属性和成本？",
         "为什么使用 ORM 后仍要检查实际 SQL 和事务边界？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Python PEP 249: Database API Specification v2.0",
+          "url": "https://peps.python.org/pep-0249/",
+          "sourceAuthority": "Python PEP 249: Database API Specification v2.0",
+          "supportedClaim": "DB-API 2.0 定义了 Python 数据库驱动的一组通用接口，以便应用按一致方式访问不同数据库。",
+          "scope": "只支持接口抽象可改善调用一致性的例子；不能据此保证不同数据库 SQL、事务或性能完全可移植。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.5.1": {
@@ -3624,6 +3734,17 @@
       "selfChecks": [
         "键值、文档、图和列式组织分别适合什么访问模式？",
         "为什么 NoSQL 选型不能只看数据量或 schema 灵活性？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "MongoDB NoSQL Explained",
+          "url": "https://www.mongodb.com/resources/basics/databases/nosql-explained",
+          "sourceAuthority": "MongoDB NoSQL Explained",
+          "supportedClaim": "NoSQL 数据库常见模型包括文档、键值、宽列和图等类型。",
+          "scope": "只支持常见 NoSQL 模型示例；分类名称与边界在不同资料中可能有差异，需结合教材语境。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.5.2": {
@@ -3658,6 +3779,17 @@
       "selfChecks": [
         "分片、复制、路由和故障转移分别解决什么问题？",
         "为什么副本不能替代独立备份，分片也不保证线性扩展？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Kubernetes Architecture",
+          "url": "https://kubernetes.io/docs/concepts/architecture/",
+          "sourceAuthority": "Kubernetes Architecture",
+          "supportedClaim": "分布式数据服务通常需处理节点发现、请求路由、冗余、故障和持久化等问题。",
+          "scope": "只支持分布式系统常见责任的概览；不是所有 NoSQL 产品都采用相同集群架构或自动处理全部责任。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.1.1": {
@@ -4770,6 +4902,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“领域专家、领域分析师、架构师、构件开发者、应用开发者、维护人员和管理者。”的核心含义，并说明它解决什么问题。",
         "请用“每个架构知识点都问五个问题：解决什么问题、核心结构是什么、关键机制如何工作、适合什么场景、代价是什么”分析“领域专家、领域分析师、架构师、构件开发者、应用开发者、维护人员和管理者。”：列出关键步骤，并说明怎样识别“架构风格/模式不是中间件品牌”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线实践涉及领域工程、核心资产开发、产品开发和组织管理等不同角色协作。",
+          "scope": "只支持软件产品线工作需要多角色协作的概念；不验证本单元所列角色名称是唯一或穷尽清单。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.5.4": {
@@ -5307,6 +5450,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Handbook of Reliability Engineering",
+          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceAuthority": "NIST Handbook of Reliability Engineering",
+          "supportedClaim": "可靠性评价可结合运行环境、任务剖面、测试观察和失效数据，而测试活动的广义目标与统计估计目标需要区分。",
+          "scope": "只支持可靠性测试/评价可使用运行条件和失效数据；课程对“广义/狭义测试”的特定定义仍需教材核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.2.1": {
@@ -5386,6 +5540,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“模型通常基于失效数据的概率分布和随机过程随时间变化的规律。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“模型通常基于失效数据的概率分布和随机过程随时间变化的规律。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Handbook of Reliability Engineering",
+          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceAuthority": "NIST Handbook of Reliability Engineering",
+          "supportedClaim": "可靠性模型可使用概率分布、失效过程和随时间变化的数据描述系统表现。",
+          "scope": "只支持可靠性模型可基于随机过程/分布的概念；不表示所有模型都使用同一种分布或过程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.3": {
@@ -5420,6 +5585,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“可靠性管理把可靠性目标、计划、任务、数据、评估和纠正措施贯穿软件生命周期。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“可靠性管理把可靠性目标、计划、任务、数据、评估和纠正措施贯穿软件生命周期。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IEC 60300-1 Dependability Management",
+          "url": "https://www.iso.org/standard/50408.html",
+          "sourceAuthority": "IEC 60300-1 Dependability Management",
+          "supportedClaim": "IEC 60300 系列提供可靠性管理的组织、计划、分析和生命周期活动指导。",
+          "scope": "只支持可靠性管理是系统化管理活动；课程中的具体阶段/任务清单需与教材版本核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.4.1": {
@@ -5499,6 +5675,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“故障发生后及时发现并报警，适合无需在线容错或不能使用冗余的部分；成本低但通常需人工或外部恢复。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“故障发生后及时发现并报警，适合无需在线容错或不能使用冗余的部分；成本低但通常需人工或外部恢复。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook: Reliability",
+          "url": "https://www.nasa.gov/reference/5-0-reliability/",
+          "sourceAuthority": "NASA Systems Engineering Handbook: Reliability",
+          "supportedClaim": "可靠性工程会结合故障检测、故障处理、冗余和恢复策略来满足系统任务要求。",
+          "scope": "只支持故障检测和恢复是可靠性设计可选策略；不证明该策略一定成本最低或适用于所有系统。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.4.3": {
@@ -5533,6 +5720,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“软件复杂性是缺陷的重要根源，应通过简化结构、缩短代码、优化数据流和降低模块耦合提高可靠性。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“软件复杂性是缺陷的重要根源，应通过简化结构、缩短代码、优化数据流和降低模块耦合提高可靠性。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Technical Report on Software Architecture",
+          "url": "https://www.sei.cmu.edu/library/ul-technical-report-cmu-sei-2014-tr-010/",
+          "sourceAuthority": "SEI Technical Report on Software Architecture",
+          "supportedClaim": "复杂性与高耦合会增加软件理解、变更和验证的困难，因此结构简化与模块化可作为风险控制手段。",
+          "scope": "只支持降低不必要复杂性/耦合的工程动机；不能把代码行数单独当作可靠性或复杂性的充分指标。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.4.4": {
@@ -5612,6 +5810,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“主要活动为确定可靠性目标、开发运行剖面、设计用例、实施测试和分析结果；最好在受控自动化环境由专业人员完成。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“主要活动为确定可靠性目标、开发运行剖面、设计用例、实施测试和分析结果；最好在受控自动化环境由专业人员完成。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Handbook of Reliability Engineering",
+          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceAuthority": "NIST Handbook of Reliability Engineering",
+          "supportedClaim": "可靠性试验应明确目标、试验条件、观测指标和分析方法，并依据任务使用情况解释结果。",
+          "scope": "只支持可靠性试验的计划与分析要素；不规定所有软件可靠性测试必须由某一种组织或工具执行。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.5.2": {
@@ -5646,6 +5855,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“描述不同用户、操作和输入在实际使用中的发生概率。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“描述不同用户、操作和输入在实际使用中的发生概率。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Reliability Engineering",
+          "url": "https://www.sei.cmu.edu/library/software-reliability-engineering/",
+          "sourceAuthority": "SEI Software Reliability Engineering",
+          "supportedClaim": "运行剖面描述用户操作或输入在实际使用中的发生频率，用于指导代表性可靠性测试。",
+          "scope": "只支持运行剖面以使用行为频率描述任务的概念；具体分布必须由目标系统的真实使用数据建立。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.5.3": {
@@ -5680,6 +5900,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“根据运行剖面随机或分层抽取输入，使测试频率接近实际使用，同时补充关键、边界和故障场景。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“根据运行剖面随机或分层抽取输入，使测试频率接近实际使用，同时补充关键、边界和故障场景。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Reliability Engineering",
+          "url": "https://www.sei.cmu.edu/library/software-reliability-engineering/",
+          "sourceAuthority": "SEI Software Reliability Engineering",
+          "supportedClaim": "按运行剖面抽样的测试可估计典型使用下的可靠性，但仍需关注关键、边界和安全场景。",
+          "scope": "只支持代表性使用测试与风险场景补充并行的思路；随机抽样不能保证覆盖所有危险情形。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.5.4": {
@@ -5714,6 +5945,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“在合同、需求和用户文档规定的配置下测试程序、数据及可靠性相关文档。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“在合同、需求和用户文档规定的配置下测试程序、数据及可靠性相关文档。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 29119 Software Testing",
+          "url": "https://www.iso.org/standard/22749.html",
+          "sourceAuthority": "ISO/IEC/IEEE 29119 Software Testing",
+          "supportedClaim": "软件测试应在定义的配置、环境和验收条件下执行，并保留可追溯的测试结果。",
+          "scope": "只支持测试条件和证据需明确；不代表所有项目都使用相同配置或统一验收模板。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.6.1": {
@@ -5748,6 +5990,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“评价可用于确认是否终止测试/发布、预计达到目标所需时间和工作量，以及验证最终产品可靠性。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“评价可用于确认是否终止测试/发布、预计达到目标所需时间和工作量，以及验证最终产品可靠性。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Reliability Engineering",
+          "url": "https://www.sei.cmu.edu/library/software-reliability-engineering/",
+          "sourceAuthority": "SEI Software Reliability Engineering",
+          "supportedClaim": "可靠性数据和模型可用于判断是否达到目标、估计剩余测试需求并支持发布决策。",
+          "scope": "只支持可靠性分析对测试与发布决策的辅助作用；模型输出不能替代风险接受和业务决策。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.6.2": {
@@ -5782,6 +6035,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“没有适合所有系统的最佳模型，必须按系统和评价目的选择。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“没有适合所有系统的最佳模型，必须按系统和评价目的选择。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Handbook of Reliability Engineering",
+          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceAuthority": "NIST Handbook of Reliability Engineering",
+          "supportedClaim": "可靠性模型需根据失效机制、数据质量、任务环境和分析目标选择，不能假定一种模型适用于所有系统。",
+          "scope": "只支持模型选择取决于问题和数据；不提供本课程全部模型的适用条件表。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.6.3": {
@@ -5816,6 +6080,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“可靠性数据以软件失效数据为主，应贯穿需求、设计、开发、测试和运行。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“可靠性数据以软件失效数据为主，应贯穿需求、设计、开发、测试和运行。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Reliability Engineering",
+          "url": "https://www.sei.cmu.edu/library/software-reliability-engineering/",
+          "sourceAuthority": "SEI Software Reliability Engineering",
+          "supportedClaim": "软件可靠性工程需要持续收集并分析测试和运行阶段的失效数据。",
+          "scope": "只支持失效数据对可靠性评价的重要性；不意味着失效数据是可靠性管理的唯一数据来源。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.6.4": {
@@ -5850,6 +6125,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“回答是否达到目标、何时可发布、还需投入多少、维护升级后的可靠性水平等问题。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“回答是否达到目标、何时可发布、还需投入多少、维护升级后的可靠性水平等问题。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Reliability Engineering",
+          "url": "https://www.sei.cmu.edu/library/software-reliability-engineering/",
+          "sourceAuthority": "SEI Software Reliability Engineering",
+          "supportedClaim": "可靠性评估可为达到目标的可能性、后续测试工作和发布风险提供定量或定性依据。",
+          "scope": "只支持模型/数据可辅助这些问题；预测不确定性应明确披露，不能视为确定性保证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.1.1": {
@@ -6158,6 +6444,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“根据变化发生时系统所处状态分为四个时期。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“根据变化发生时系统所处状态分为四个时期。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 Software Life Cycle Processes—Maintenance",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022 Software Life Cycle Processes—Maintenance",
+          "supportedClaim": "ISO/IEC/IEEE 14764 描述软件维护的生命周期过程与活动，维护变更需考虑系统所处生命周期状态。",
+          "scope": "只支持维护活动与生命周期状态相关；本单元所称“四个时期”的确切分类仍需教材原文确认。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.3.2": {
@@ -6192,6 +6489,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“系统停止运行后修改架构、实现和部署，再重新启动。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“系统停止运行后修改架构、实现和部署，再重新启动。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022",
+          "supportedClaim": "软件维护可能在系统停机或离线窗口内实施修改、验证与重新部署。",
+          "scope": "只支持离线维护是一种可能的实施方式；不表示所有离线维护都必须完整重启或使用同一流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.3.3": {
@@ -6226,6 +6534,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“系统运行期间改变架构配置或构件，同时尽量保持服务连续。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“系统运行期间改变架构配置或构件，同时尽量保持服务连续。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Patterns",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+          "sourceAuthority": "Microsoft Azure Architecture Patterns",
+          "supportedClaim": "在线迁移和渐进式变更可通过兼容接口、分阶段切换及回滚策略降低服务中断。",
+          "scope": "只支持在线变更可采用渐进式策略；不保证所有系统都能无中断修改架构。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.5.1": {
@@ -6350,6 +6669,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“网站架构随访问量、数据量和业务复杂度逐步演进；每一步解决当前主要瓶颈，也引入新的复杂度。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“网站架构随访问量、数据量和业务复杂度逐步演进；每一步解决当前主要瓶颈，也引入新的复杂度。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Styles",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/",
+          "sourceAuthority": "Microsoft Azure Architecture Styles",
+          "supportedClaim": "架构风格指南说明不同规模和需求下可选择不同组织模式，并需权衡复杂性、可扩展性和运维成本。",
+          "scope": "只支持架构演进需根据实际约束做权衡；不构成网站架构必然按固定阶段演进的规律。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.7.1": {
@@ -6519,6 +6849,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“从组件图解析结构数据，度量高层架构复杂性和可维护性。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“从组件图解析结构数据，度量高层架构复杂性和可维护性。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构描述中的组件、连接关系和约束可作为分析结构复杂性及维护影响的输入。",
+          "scope": "只支持架构结构信息可用于评估；不能仅凭组件图自动得出可维护性结论，仍需定义度量与验证方法。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.1.1": {
@@ -6868,6 +7209,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“从程序控制、示教再现发展到具备环境感知、自主规划、协同学习和场景适应的智能机器人。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“从程序控制、示教再现发展到具备环境感知、自主规划、协同学习和场景适应的智能机器人。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Robotics Program",
+          "url": "https://www.nist.gov/programs-projects/robotics",
+          "sourceAuthority": "NIST Robotics Program",
+          "supportedClaim": "机器人系统可结合传感、环境感知、规划和控制执行物理任务，能力与自主程度取决于具体系统设计。",
+          "scope": "只支持机器人能力可向感知和自主控制扩展；不证明机器人发展存在统一、严格的阶段划分。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.3.3": {
@@ -6902,6 +7254,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“机器人4.0强调网络化、智能化、平台化和持续演化。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“机器人4.0强调网络化、智能化、平台化和持续演化。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "International Federation of Robotics: Industrial Robots",
+          "url": "https://ifr.org/industrial-robots",
+          "sourceAuthority": "International Federation of Robotics: Industrial Robots",
+          "supportedClaim": "工业机器人应用持续结合自动化、数字化和互联能力，但“机器人 4.0”并非所有标准采用的统一正式分代。",
+          "scope": "只支持机器人技术与联网/智能化趋势有关；课程“4.0”分代属于特定框架，应按教材定义理解。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.3.4": {
@@ -8037,6 +8400,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“案例用于训练从业务价值、标准集成和企业整合角度进行架构分析。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“案例用于训练从业务价值、标准集成和企业整合角度进行架构分析。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42030:2019",
+          "url": "https://www.iso.org/standard/73436.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42030:2019",
+          "supportedClaim": "架构评估可用于检查架构是否满足利益相关方关注点、识别风险和机会并支持决策。",
+          "scope": "只支持案例分析可以围绕业务目标、架构质量、风险和利益相关方组织；不验证课程未提供的具体案例事实。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.1": {
@@ -8332,6 +8706,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“UIP（用户界面过程）将跨页面、跨请求的用户交互过程抽象为可配置流程。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“UIP（用户界面过程）将跨页面、跨请求的用户交互过程抽象为可配置流程。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Martin Fowler: Application Controller",
+          "url": "https://martinfowler.com/eaaDev/ApplicationController.html",
+          "sourceAuthority": "Martin Fowler: Application Controller",
+          "supportedClaim": "Application Controller 模式可集中协调用户输入和应用流程，避免把跨交互流程逻辑散落在多个视图中。",
+          "scope": "只支持跨交互流程可由专门控制器协调；课程所称 UIP 的精确定义与具体框架映射仍需教材确认。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.6": {
@@ -8933,6 +9318,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“对应教程第13章的数据架构规划与设计，重点关注数据库与类设计融合、数据库与XML设计融合。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“对应教程第13章的数据架构规划与设计，重点关注数据库与类设计融合、数据库与XML设计融合。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Entity Framework Core",
+          "url": "https://learn.microsoft.com/en-us/ef/core/",
+          "sourceAuthority": "Microsoft Entity Framework Core",
+          "supportedClaim": "对象关系映射可将程序中的对象模型映射到关系数据，并帮助应用组织数据访问。",
+          "scope": "只支持类与关系数据库模型之间存在映射机制；XML 与数据库融合的具体设计方法需另按教材/规范核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.6": {
@@ -9024,6 +9420,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过典型案例综合分析分层架构设计与物联网层次架构的设计取舍。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“通过典型案例综合分析分层架构设计与物联网层次架构的设计取舍。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构分析应将系统上下文、组件关系、利益相关方关注点和架构约束联系起来讨论。",
+          "scope": "只支持案例应以系统情境和架构决策为依据；本条为学习活动说明，不声称某个未指明案例已经得到事实验证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.1": {
@@ -9684,6 +10091,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“以IBM WebSphere业务集成参考架构为例，采用关注点分离，从服务视角规划企业集成能力。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“以IBM WebSphere业务集成参考架构为例，采用关注点分离，从服务视角规划企业集成能力。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Integration Server Documentation",
+          "url": "https://www.ibm.com/docs/en/webmethods-integration/wm-integration-server",
+          "sourceAuthority": "IBM Integration Server Documentation",
+          "supportedClaim": "企业集成平台可通过服务、消息与接口整合不同应用和业务流程。",
+          "scope": "只支持企业集成的通用架构思路；IBM WebSphere 特定参考架构及其历史组件边界需以相应产品版本文档核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.4": {
@@ -10238,6 +10656,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“大多数嵌入式实时系统可概括为层次化模式和递归模式。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“大多数嵌入式实时系统可概括为层次化模式和递归模式。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
+          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
+          "supportedClaim": "嵌入式实时系统可采用分层组织，实时内核负责调度和同步，应用在其上完成具体功能。",
+          "scope": "只支持分层组织是常见模式；“层次化与递归模式”不是所有嵌入式实时系统的穷尽分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.2.2": {
@@ -10329,6 +10758,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“面向嵌入式设备的数据管理系统，强调小体积、低资源占用、可裁剪、实时响应、可靠存储和断电恢复。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“面向嵌入式设备的数据管理系统，强调小体积、低资源占用、可裁剪、实时响应、可靠存储和断电恢复。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SQLite Footprint",
+          "url": "https://www.sqlite.org/footprint.html",
+          "sourceAuthority": "SQLite Footprint",
+          "supportedClaim": "SQLite 以嵌入式数据库库的方式运行，具有较小部署 footprint，并可用于设备端数据存储。",
+          "scope": "只支持轻量级嵌入式数据管理的一种实现；实时响应、断电恢复和可靠性取决于存储介质、配置和系统设计。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.2.4": {
@@ -10369,6 +10809,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“位于 OS 与应用之间，为应用提供统一服务，屏蔽底层差异，降低分布式通信、构件复用和系统集成复杂度。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“位于 OS 与应用之间，为应用提供统一服务，屏蔽底层差异，降低分布式通信、构件复用和系统集成复杂度。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG CORBA Specification",
+          "url": "https://www.omg.org/spec/CORBA/",
+          "sourceAuthority": "OMG CORBA Specification",
+          "supportedClaim": "中间件可在操作系统与应用之间提供通信、命名或其他公共服务，屏蔽部分底层实现差异。",
+          "scope": "只支持中间件的常见抽象职责；不同中间件提供的服务和实时特性差异很大。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.2.5": {
@@ -10409,6 +10860,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“开发环境由宿主机工具、目标机运行环境和连接调试设施组成，支持编辑、编译、链接、下载、仿真、调试、测试和配置管理。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“开发环境由宿主机工具、目标机运行环境和连接调试设施组成，支持编辑、编译、链接、下载、仿真、调试、测试和配置管理。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "GNU GDB Documentation",
+          "url": "https://www.gnu.org/software/gdb/",
+          "sourceAuthority": "GNU GDB Documentation",
+          "supportedClaim": "嵌入式开发常需交叉编译、目标程序下载/运行以及调试器与目标环境之间的连接。",
+          "scope": "只支持交叉开发与调试的基本环节；不同芯片、IDE 和调试探针的具体工具链不同。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.3.1": {
@@ -10449,6 +10911,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“先确定影响全局的架构决策，再围绕架构分解、实现和验证；架构是需求、设计、组织和质量保证的共同骨架。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“先确定影响全局的架构决策，再围绕架构分解、实现和验证；架构是需求、设计、组织和质量保证的共同骨架。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构描述可用于记录关键决策、组件关系与约束，并为后续实现和验证提供共同参照。",
+          "scope": "只支持架构在需求、设计、实现沟通中的作用；不意味着架构文档本身自动保证质量。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.3.2": {
@@ -10540,6 +11013,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“DARTS（Design Approach for Real-Time Systems）通过并发任务结构化设计实时系统，重点解决任务划分、通信和同步。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“DARTS（Design Approach for Real-Time Systems）通过并发任务结构化设计实时系统，重点解决任务划分、通信和同步。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Journal of Systems and Software: DARTS/DA",
+          "url": "https://www.sciencedirect.com/science/article/pii/0164121289900125",
+          "sourceAuthority": "Journal of Systems and Software: DARTS/DA",
+          "supportedClaim": "DARTS 面向实时系统设计，使用并发任务结构化方法；后续 DARTS/DA 扩展用于分布式实时应用。",
+          "scope": "该来源主要说明 DARTS/DA 扩展；只支持任务划分和接口设计的关系，具体 DARTS 原始步骤需回查原始论文或教材。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.4.1": {
@@ -10580,6 +11064,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“面向多设备协同的分布式操作系统，通过统一架构和分布式能力实现一次开发、多端部署。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“面向多设备协同的分布式操作系统，通过统一架构和分布式能力实现一次开发、多端部署。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Linux Kernel Documentation: cgroup v2",
+          "url": "https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html",
+          "sourceAuthority": "Linux Kernel Documentation: cgroup v2",
+          "supportedClaim": "操作系统可通过统一内核机制管理进程和资源，但跨设备一致开发/部署还依赖具体平台的工具链与兼容层。",
+          "scope": "只支持 OS 统一管理资源的一般概念；不能据此验证特定厂商分布式操作系统的“一次开发、多端部署”承诺。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.4.2": {
@@ -10620,6 +11115,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“GENESYS 由欧洲 ARTEMIS 专家组于 2008~2009 年提出，采用面向构件、消息驱动和腰型服务架构，面向跨领域安全关键嵌入式系统。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“GENESYS 由欧洲 ARTEMIS 专家组于 2008~2009 年提出，采用面向构件、消息驱动和腰型服务架构，面向跨领域安全关键嵌入式系统。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "European Commission CORDIS: GENESYS",
+          "url": "https://cordis.europa.eu/project/id/213322",
+          "sourceAuthority": "European Commission CORDIS: GENESYS",
+          "supportedClaim": "欧盟 GENESYS 项目目标是建立可跨领域实例化的嵌入式系统参考架构，涉及可组合性、网络、安全、鲁棒性和资源管理。",
+          "scope": "只支持 GENESYS 的项目定位和目标；具体“腰型服务架构”等术语需对照项目论文/教材原文。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.4.3": {
@@ -10660,6 +11166,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“物联网是泛化的嵌入式系统，关键分层为感知层、网络传输层和应用层；IoT OS 覆盖芯片、终端、边缘和云端，解耦应用与硬件。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“物联网是泛化的嵌入式系统，关键分层为感知层、网络传输层和应用层；IoT OS 覆盖芯片、终端、边缘和云端，解耦应用与硬件。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ITU-T Y.4000 Overview of IoT",
+          "url": "https://www.itu.int/rec/T-REC-Y.4000-201611-I/en",
+          "sourceAuthority": "ITU-T Y.4000 Overview of IoT",
+          "supportedClaim": "IoT 参考框架涉及物理对象、通信网络、服务与应用等相互关联的能力。",
+          "scope": "只支持 IoT 的多层协同概念；三层模型是常见教学抽象，不是所有 IoT 架构唯一标准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.1": {
@@ -13900,6 +14417,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“整合行情、交易、客户、资讯和风险数据，支持实时风控、监管报送、客户分析和量化研究。”的核心含义，并说明它解决什么问题。",
         "请用“按数据流学习：采集→传输→存储→计算→治理→分析/服务→监控”分析“整合行情、交易、客户、资讯和风险数据，支持实时风控、监管报送、客户分析和量化研究。”：列出关键步骤，并说明怎样识别“大数据架构不等于某个数据库或计算引擎”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "FINRA Data",
+          "url": "https://www.finra.org/finra-data",
+          "sourceAuthority": "FINRA Data",
+          "supportedClaim": "金融市场数据服务涵盖市场、交易及相关数据，可供市场参与者用于分析和监测。",
+          "scope": "只支持金融数据平台的一般数据类型；实时风控、监管报送和量化研究能力取决于机构系统、权限与数据治理。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "19.6.4": {
@@ -13940,6 +14468,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“汇聚用户、商品、订单、库存、营销和物流数据，支撑推荐、定价、补货和运营决策。”的核心含义，并说明它解决什么问题。",
         "请用“按数据流学习：采集→传输→存储→计算→治理→分析/服务→监控”分析“汇聚用户、商品、订单、库存、营销和物流数据，支撑推荐、定价、补货和运营决策。”：列出关键步骤，并说明怎样识别“大数据架构不等于某个数据库或计算引擎”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "AWS Well-Architected Retail Industry Lens",
+          "url": "https://docs.aws.amazon.com/wellarchitected/latest/retail-industry-lens/retail-industry-lens.html",
+          "sourceAuthority": "AWS Well-Architected Retail Industry Lens",
+          "supportedClaim": "零售系统可整合商品、订单、库存和客户相关数据以支持运营分析与业务决策。",
+          "scope": "只支持零售数据整合的常见场景；推荐、定价和补货效果需用具体业务数据验证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.1.1": {
@@ -13974,6 +14513,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“考前积累项目素材和架构知识，形成可迁移的案例库。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“考前积累项目素材和架构知识，形成可迁移的案例库。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "中国计算机技术职业资格网",
+          "url": "https://www.ruankao.org.cn/",
+          "sourceAuthority": "中国计算机技术职业资格网",
+          "supportedClaim": "备考时积累与本人项目经验相关的事实、架构决策、约束和验证结果，有助于形成可用于论述的案例素材。",
+          "scope": "这是学习策略建议，不是考试机构规定；案例必须真实且不得把模拟经历冒充实际项目。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.1.2": {
@@ -14008,6 +14558,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“论文通常包括摘要和正文，按题目要求控制篇幅和结构。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“论文通常包括摘要和正文，按题目要求控制篇幅和结构。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "中国计算机技术职业资格网",
+          "url": "https://www.ruankao.org.cn/",
+          "sourceAuthority": "中国计算机技术职业资格网",
+          "supportedClaim": "论文写作应遵循当次考试题目、官方要求和规定的答题结构，而不是机械套用固定篇幅。",
+          "scope": "只支持以当次考试要求为准；具体字数、格式和评分细则需核对当年正式考试说明。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.2.1": {
@@ -14042,6 +14603,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“审题→确定主题→选择项目→列提纲→写摘要→写正文→检查修改。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“审题→确定主题→选择项目→列提纲→写摘要→写正文→检查修改。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Purdue OWL: The Writing Process",
+          "url": "https://owl.purdue.edu/owl/general_writing/the_writing_process/index.html",
+          "sourceAuthority": "Purdue OWL: The Writing Process",
+          "supportedClaim": "写作前先识别题目要求、确定论述主线并组织材料，可帮助保持答题内容与题目一致。",
+          "scope": "只支持一般写作准备策略；该步骤顺序不是考试机构规定的唯一写作流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.2.2": {
@@ -14076,6 +14648,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“实例分析应体现从项目背景到架构决策、实施问题、解决措施和效果验证的完整链路。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“实例分析应体现从项目背景到架构决策、实施问题、解决措施和效果验证的完整链路。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42030:2019",
+          "url": "https://www.iso.org/standard/73436.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42030:2019",
+          "supportedClaim": "架构案例分析可围绕上下文、利益相关方目标、架构决策、风险和评估结果建立论证链。",
+          "scope": "只支持案例论证的结构化思路；不得用标准替代项目真实事实或声称标准验证了个案结果。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.3.1": {
@@ -14110,6 +14693,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“摘要是全文缩影，评阅者通过摘要判断是否切题和具备实践经验。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“摘要是全文缩影，评阅者通过摘要判断是否切题和具备实践经验。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Purdue OWL: Argument Papers",
+          "url": "https://owl.purdue.edu/owl/general_writing/common_writing_assignments/argument_papers/index.html",
+          "sourceAuthority": "Purdue OWL: Argument Papers",
+          "supportedClaim": "摘要或概述应准确反映文章主题和主要论点，避免提出正文没有论证的结论。",
+          "scope": "只支持摘要与正文内容一致的一般写作原则；考试专用评分点需以当年官方说明为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.3.2": {
@@ -14144,6 +14738,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“正文应围绕题目分层展开，提供架构图无法表达的决策依据和实施细节。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“正文应围绕题目分层展开，提供架构图无法表达的决策依据和实施细节。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Purdue OWL: Argument Papers",
+          "url": "https://owl.purdue.edu/owl/general_writing/common_writing_assignments/argument_papers/index.html",
+          "sourceAuthority": "Purdue OWL: Argument Papers",
+          "supportedClaim": "论证正文应围绕中心论点组织理由、证据与解释，而不是只罗列图表或术语。",
+          "scope": "只支持一般论证写作原则；系统架构论文还需结合题目和考核要求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.3.3": {
@@ -14178,6 +14783,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“摘要提出主线，正文展开论证，二者必须使用同一项目、同一架构和同一结论。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“摘要提出主线，正文展开论证，二者必须使用同一项目、同一架构和同一结论。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Purdue OWL: Argument Papers",
+          "url": "https://owl.purdue.edu/owl/general_writing/common_writing_assignments/argument_papers/index.html",
+          "sourceAuthority": "Purdue OWL: Argument Papers",
+          "supportedClaim": "文章的概述、论点和正文证据应保持一致，避免摘要承诺的主张在正文中缺乏支持。",
+          "scope": "只支持一般写作一致性原则；不构成特定考试评分标准的原文。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "20.4": {
@@ -14212,6 +14828,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过针对性检查减少跑题、空泛、失真和格式失分。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“通过针对性检查减少跑题、空泛、失真和格式失分。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Purdue OWL: Conciseness",
+          "url": "https://owl.purdue.edu/owl/general_writing/academic_writing/conciseness/index.html",
+          "sourceAuthority": "Purdue OWL: Conciseness",
+          "supportedClaim": "修订时可检查论点是否切题、陈述是否有证据、语言是否简洁以及结构是否清晰。",
+          "scope": "只支持通用修订检查；考试格式、字数和评分细则仍应以官方当次要求为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.4.2.3": {
@@ -14856,6 +15483,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 Software Maintenance",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022",
+          "supportedClaim": "软件维护的生命周期成本应考虑维护活动的计划、实施、验证和管理，而不能只比较直接修改代码的成本。",
+          "scope": "只支持维护活动涉及多个生命周期成本项；具体成本模型和估算方法需按项目范围制定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -14898,6 +15534,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Project Management Institute: Schedule Management",
+          "url": "https://www.pmi.org/learning/library/project-schedule-management-plan-issues-7021",
+          "sourceAuthority": "Project Management Institute: Schedule Management",
+          "supportedClaim": "进度管理应拆解工作、识别依赖、估算持续时间并依据可验证的里程碑跟踪。",
+          "scope": "只支持可估算工作与依赖管理有助于进度控制；不保证任何计划都能消除不确定性。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -14942,6 +15587,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO 31000:2018 Risk Management",
+          "url": "https://www.iso.org/standard/65694.html",
+          "sourceAuthority": "ISO 31000:2018 Risk Management",
+          "supportedClaim": "ISO 31000 将风险管理作为识别、分析、评价、处理、监视和沟通风险的系统化活动。",
+          "scope": "只支持维护变更应进行风险管理；具体风险登记和接受阈值需按组织与系统情境确定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -14984,6 +15638,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Software architecture evolution principle reference",
+          "url": "https://developer.cloud.tencent.com/news/1322809?from=15431",
+          "sourceAuthority": "Tencent Cloud developer community article",
+          "supportedClaim": "该课程术语的二手参考资料将主体维持与保持软件系统主体行为稳定联系起来。",
+          "scope": "这是二手解释，不是标准原文；平均增量增长公式与课程正式定义仍需指定教材版本复核。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15028,6 +15691,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构描述和演化需关注架构实体的组件、关系、环境及生命周期过程。",
+          "scope": "只支持从整体结构和关系分析架构变更；不规定本课程所用“总体结构优化”的唯一操作方法。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15070,6 +15742,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Microsoft Azure Architecture Patterns",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+          "sourceAuthority": "Microsoft Azure Architecture Patterns",
+          "supportedClaim": "分阶段迁移、兼容层和回滚方案可帮助控制切换风险并维持服务连续性。",
+          "scope": "只支持这些是可选迁移策略；实际中断风险取决于依赖、数据一致性与部署环境。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15114,6 +15795,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构应联系利益相关方关注点、系统环境与演化原则进行描述和评估。",
+          "scope": "只支持架构决策应结合目标和约束；不直接规定课程所称“目标一致”的独立标准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15156,6 +15846,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Martin Fowler: Microservices",
+          "url": "https://martinfowler.com/articles/microservices.html",
+          "sourceAuthority": "Martin Fowler: Microservices",
+          "supportedClaim": "模块化与清晰边界可降低组件间不必要耦合，并支持相对独立的变更。",
+          "scope": "只支持边界和耦合影响独立演化；微服务并非实现模块独立性的唯一方式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15200,6 +15899,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO 31000:2018",
+          "url": "https://www.iso.org/standard/65694.html",
+          "sourceAuthority": "ISO 31000:2018",
+          "supportedClaim": "变更风险分析应识别受影响的组件、接口、数据、运行流程及相关利益方。",
+          "scope": "只支持影响分析是风险控制的重要输入；影响范围需结合实际依赖关系和系统证据确定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15242,6 +15950,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "SonarSource Code Quality",
+          "url": "https://www.sonarsource.com/learn/code-quality/",
+          "sourceAuthority": "SonarSource Code Quality",
+          "supportedClaim": "可维护性评估可结合复杂性、重复、耦合、可读性和测试反馈等多个指标。",
+          "scope": "只支持复杂性需多维评估；任何单一静态指标都不能完整代表系统复杂性或维护成本。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15286,6 +16003,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Martin Fowler: Refactoring",
+          "url": "https://martinfowler.com/books/refactoring.html",
+          "sourceAuthority": "Martin Fowler: Refactoring",
+          "supportedClaim": "重构是在不改变外部可观察行为的前提下改善软件内部结构，并通过测试降低回归风险。",
+          "scope": "只支持重构的核心定义与测试作用；不保证没有测试的重构必然安全。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15328,6 +16054,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线通过受管理的共性和核心资产复用，支持多个相关产品的开发。",
+          "scope": "只支持有计划的复用方法；不是所有通用组件都值得复用，复用需评估成本与适用边界。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15372,6 +16107,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/standard/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "架构描述可明确组件、关系、约束及利益相关方关注点，以支持架构一致性讨论。",
+          "scope": "只支持架构约束和关系可作为设计审查对象；不把任何单一设计原则清单当作通用标准全文。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15414,6 +16158,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST Cybersecurity Framework",
+          "url": "https://www.nist.gov/cyberframework",
+          "sourceAuthority": "NIST Cybersecurity Framework",
+          "supportedClaim": "采用新技术应结合业务目标、风险、资源、治理和生命周期影响评估，而非仅按技术新旧决定。",
+          "scope": "只支持基于目标和风险评估技术变更；不构成特定新技术的采购或迁移建议。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15458,6 +16211,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 Software Maintenance",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022",
+          "supportedClaim": "软件维护过程需要响应运行环境和相关需求的变化，并在修改后确认系统继续满足所需行为。",
+          "scope": "只支持环境变化属于维护关注点；具体平台兼容性仍需以产品测试矩阵验证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15500,6 +16262,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 15288 Systems Life Cycle Processes",
+          "url": "https://www.iso.org/standard/62085.html",
+          "sourceAuthority": "ISO/IEC/IEEE 15288 Systems Life Cycle Processes",
+          "supportedClaim": "软件与系统工程应识别适用的合规义务和生命周期要求，并保留可审查的符合性证据。",
+          "scope": "只支持遵从性需依适用要求判断；不证明某个系统已满足特定法律、行业或合同要求。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15544,6 +16315,15 @@
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC 25010 Software Product Quality",
+          "url": "https://www.iso.org/standard/35733.html",
+          "sourceAuthority": "ISO/IEC 25010 Software Product Quality",
+          "supportedClaim": "软件质量模型可通过功能适合性、可靠性、性能效率、可维护性等质量特性组织评价。",
+          "scope": "只支持质量目标应通过适当特性和测量评价；不同项目应选择与场景相关的指标。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
         }
       ]
     },
@@ -15586,6 +16366,15 @@
           "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
           "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
           "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 Software Maintenance",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022",
+          "supportedClaim": "软件维护活动可处理新需求、纠正问题和适应环境变化，并评估变更对系统的影响。",
+          "scope": "只支持适应性维护的通用目标；不意味着每个新需求都应无条件实施。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
