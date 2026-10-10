@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,235); assert.equal(report.unitsMissingEvidence,89); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,242); assert.equal(report.unitsMissingEvidence,82); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -249,3 +249,6 @@ test('business logic, data access and IoT architecture evidence is scoped',()=>{
 
 
 test('operating systems, ERP, digital government, Internet protocols and security controls have scoped evidence',()=>{const cases=[['2.3','https://csrc.nist.gov/glossary/term/os'],['3.2','https://csrc.nist.gov/glossary/term/information_system'],['3.5','https://www.ibm.com/think/topics/artificial-intelligence-types'],['3.7','https://www.sap.com/resources/what-is-erp'],['3.8','https://www.oecd.org/en/topics/digital-government.html'],['17.1','https://www.rfc-editor.org/rfc/rfc1122.html'],['18.3.1','https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final']];for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});
+
+
+test('AI technology families, digital twins, cloud and big-data architecture have scoped evidence',()=>{const cases=[['11.2.3','https://www.ibm.com/think/topics/artificial-intelligence-types'],['11.5.1','https://www.nist.gov/publications/framework-digital-twin-manufacturing'],['11.5.2','https://www.nist.gov/publications/framework-digital-twin-manufacturing'],['11.5.3','https://www.nist.gov/publications/manufacturing-digital-twin-standards'],['11.5.4','https://www.nist.gov/digital-twins'],['11.6.1','https://csrc.nist.gov/glossary/term/cloud_computing'],['11.6.2','https://www.nist.gov/publications/nist-big-data-interoperability-framework-volume-6-big-data-reference-architecture']];for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});

@@ -6778,6 +6778,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“关键技术覆盖语言、视觉、知识、交互、机器人和学习。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“关键技术覆盖语言、视觉、知识、交互、机器人和学习。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Types of Artificial Intelligence",
+          "url": "https://www.ibm.com/think/topics/artificial-intelligence-types",
+          "sourceAuthority": "IBM Types of Artificial Intelligence",
+          "supportedClaim": "IBM 的 AI 技术概览分别讨论语言、视觉、机器人和专家系统等不同应用/技术方向。",
+          "scope": "只支持 AI 技术涉及多种能力领域的概览；不证明本单元列举的类别构成唯一、互斥或完整的技术分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.3.1": {
@@ -7218,6 +7229,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“从产品全生命周期数字模型、虚拟样机发展到实时数据驱动的数字孪生，再扩展到车间、城市和复杂系统。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“从产品全生命周期数字模型、虚拟样机发展到实时数据驱动的数字孪生，再扩展到车间、城市和复杂系统。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Framework for a Digital Twin in Manufacturing",
+          "url": "https://www.nist.gov/publications/framework-digital-twin-manufacturing",
+          "sourceAuthority": "NIST Framework for a Digital Twin in Manufacturing",
+          "supportedClaim": "NIST 数字孪生框架讨论制造场景中数字孪生的概念、应用范围和实现框架。",
+          "scope": "只支持数字孪生在制造领域的框架化发展；不证明数字孪生按单一、固定阶段线性演进。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.5.2": {
@@ -7252,6 +7274,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“数字孪生由物理实体、虚拟实体、连接、数据和服务组成。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“数字孪生由物理实体、虚拟实体、连接、数据和服务组成。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Framework for a Digital Twin in Manufacturing",
+          "url": "https://www.nist.gov/publications/framework-digital-twin-manufacturing",
+          "sourceAuthority": "NIST Framework for a Digital Twin in Manufacturing",
+          "supportedClaim": "NIST 数字孪生研究讨论物理对象、数字表示、数据连接和特定用途等关键组成概念。",
+          "scope": "只支持数字孪生需关联物理对象、模型与数据的核心思想；具体标准中的正式组成项应以 ISO 23247 原文为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.5.3": {
@@ -7286,6 +7319,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“建模、仿真及数据、连接和平台技术共同支撑数字孪生。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“建模、仿真及数据、连接和平台技术共同支撑数字孪生。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Manufacturing Digital Twin Standards",
+          "url": "https://www.nist.gov/publications/manufacturing-digital-twin-standards",
+          "sourceAuthority": "NIST Manufacturing Digital Twin Standards",
+          "supportedClaim": "NIST 将传感器、IoT、云计算、机器学习和 AI 等技术列为制造数字孪生发展的相关使能技术。",
+          "scope": "只支持多种技术可共同支撑数字孪生；不表示每个数字孪生实现都必须包含清单中的全部技术。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.5.4": {
@@ -7320,6 +7364,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“数字孪生应用于制造、产业、城市和战场等领域。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“数字孪生应用于制造、产业、城市和战场等领域。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Digital Twins",
+          "url": "https://www.nist.gov/digital-twins",
+          "sourceAuthority": "NIST Digital Twins",
+          "supportedClaim": "NIST 数字孪生研究列举制造系统等应用，涉及监测、诊断、预测、优化和维护支持。",
+          "scope": "只支持制造等领域存在数字孪生应用；不据此确认课程列举的所有行业案例都具备相同成熟度或收益。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.6.1": {
@@ -7354,6 +7409,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过网络以服务方式提供可配置计算资源池，支持快速申请、弹性伸缩、按量使用和自动化管理。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“通过网络以服务方式提供可配置计算资源池，支持快速申请、弹性伸缩、按量使用和自动化管理。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Cloud Computing Glossary / SP 800-145",
+          "url": "https://csrc.nist.gov/glossary/term/cloud_computing",
+          "sourceAuthority": "NIST Cloud Computing Glossary / SP 800-145",
+          "supportedClaim": "NIST SP 800-145 将云计算定义为通过网络按需访问共享、可配置计算资源池，并可快速配置和释放资源。",
+          "scope": "只支持云计算定义中的按需访问、共享资源池与快速配置特征；不保证所有云服务都具备相同自动化和计费方式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.6.2": {
@@ -7388,6 +7454,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“大数据关注无法用传统工具在可接受时间内采集、存储、管理和分析的数据集合及其价值。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“大数据关注无法用传统工具在可接受时间内采集、存储、管理和分析的数据集合及其价值。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Big Data Interoperability Framework Volume 6",
+          "url": "https://www.nist.gov/publications/nist-big-data-interoperability-framework-volume-6-big-data-reference-architecture",
+          "sourceAuthority": "NIST Big Data Interoperability Framework Volume 6",
+          "supportedClaim": "NIST 大数据参考架构将数据提供者、消费者、应用提供者、系统协调与安全/隐私等角色和组件纳入架构模型。",
+          "scope": "只支持大数据系统的参考架构与角色划分；不建立单一、永久适用的“大数据量”数值阈值。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.1.1": {
