@@ -5453,11 +5453,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST Handbook of Reliability Engineering",
-          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceTitle": "NIST CSRC Reliability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
           "sourceAuthority": "NIST Handbook of Reliability Engineering",
-          "supportedClaim": "可靠性评价可结合运行环境、任务剖面、测试观察和失效数据，而测试活动的广义目标与统计估计目标需要区分。",
-          "scope": "只支持可靠性测试/评价可使用运行条件和失效数据；课程对“广义/狭义测试”的特定定义仍需教材核对。",
+          "supportedClaim": "NIST provides a bounded definition of reliability as a system property under stated conditions; reliability evaluation must be interpreted against its intended operating context.",
+          "scope": "只支持可靠性核心术语；不支持广义/狭义测试的教材分类、特定概率分布或模型选择结论，仍需核对指定教材。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -5543,11 +5543,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST Handbook of Reliability Engineering",
-          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceTitle": "NIST CSRC Reliability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
           "sourceAuthority": "NIST Handbook of Reliability Engineering",
-          "supportedClaim": "可靠性模型可使用概率分布、失效过程和随时间变化的数据描述系统表现。",
-          "scope": "只支持可靠性模型可基于随机过程/分布的概念；不表示所有模型都使用同一种分布或过程。",
+          "supportedClaim": "NIST provides a bounded definition of reliability as a system property under stated conditions; reliability evaluation must be interpreted against its intended operating context.",
+          "scope": "只支持可靠性核心术语；不支持广义/狭义测试的教材分类、特定概率分布或模型选择结论，仍需核对指定教材。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -5678,11 +5678,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NASA Systems Engineering Handbook: Reliability",
-          "url": "https://www.nasa.gov/reference/5-0-reliability/",
+          "sourceTitle": "NIST CSRC Fault Tolerance Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/fault_tolerance",
           "sourceAuthority": "NASA Systems Engineering Handbook: Reliability",
-          "supportedClaim": "可靠性工程会结合故障检测、故障处理、冗余和恢复策略来满足系统任务要求。",
-          "scope": "只支持故障检测和恢复是可靠性设计可选策略；不证明该策略一定成本最低或适用于所有系统。",
+          "supportedClaim": "NIST defines fault tolerance as the ability of a system to continue operating when one or more components fail.",
+          "scope": "只支持故障容错的核心含义；不证明故障检测、报警、冗余配置或恢复策略的成本和适用性，也不保证冗余本身能避免共同原因故障。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -5768,11 +5768,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST CSRC Redundancy Glossary",
-          "url": "https://csrc.nist.gov/glossary/term/redundancy",
+          "sourceTitle": "NIST CSRC Fault Tolerance Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/fault_tolerance",
           "sourceAuthority": "NIST CSRC Redundancy Glossary",
-          "supportedClaim": "冗余通过提供额外组件或资源，为故障后的继续运行或恢复创造条件。",
-          "scope": "只支持冗余作为可靠性设计手段之一；不证明冗余本身足以避免共同原因故障或故障转移失败。",
+          "supportedClaim": "NIST defines fault tolerance as the ability of a system to continue operating when one or more components fail.",
+          "scope": "只支持故障容错的核心含义；不证明故障检测、报警、冗余配置或恢复策略的成本和适用性，也不保证冗余本身能避免共同原因故障。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -5813,11 +5813,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST Handbook of Reliability Engineering",
-          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceTitle": "NIST CSRC Reliability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
           "sourceAuthority": "NIST Handbook of Reliability Engineering",
-          "supportedClaim": "可靠性试验应明确目标、试验条件、观测指标和分析方法，并依据任务使用情况解释结果。",
-          "scope": "只支持可靠性试验的计划与分析要素；不规定所有软件可靠性测试必须由某一种组织或工具执行。",
+          "supportedClaim": "NIST provides a bounded definition of reliability as a system property under stated conditions; reliability evaluation must be interpreted against its intended operating context.",
+          "scope": "只支持可靠性核心术语；不支持广义/狭义测试的教材分类、特定概率分布或模型选择结论，仍需核对指定教材。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -6038,11 +6038,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST Handbook of Reliability Engineering",
-          "url": "https://www.nist.gov/publications/handbook-reliability-engineering",
+          "sourceTitle": "NIST CSRC Reliability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
           "sourceAuthority": "NIST Handbook of Reliability Engineering",
-          "supportedClaim": "可靠性模型需根据失效机制、数据质量、任务环境和分析目标选择，不能假定一种模型适用于所有系统。",
-          "scope": "只支持模型选择取决于问题和数据；不提供本课程全部模型的适用条件表。",
+          "supportedClaim": "NIST provides a bounded definition of reliability as a system property under stated conditions; reliability evaluation must be interpreted against its intended operating context.",
+          "scope": "只支持可靠性核心术语；不支持广义/狭义测试的教材分类、特定概率分布或模型选择结论，仍需核对指定教材。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -7168,7 +7168,7 @@
       "evidence": [
         {
           "sourceTitle": "NIST Robotics Program",
-          "url": "https://www.nist.gov/programs-projects/robotics",
+          "url": "https://www.nist.gov/robotics",
           "sourceAuthority": "NIST Robotics Program",
           "supportedClaim": "NIST 机器人研究覆盖制造和自动化场景，机器人系统需要将感知、规划或控制与物理动作结合。",
           "scope": "只支持机器人可通过感知/控制参与实际任务的核心概念；不把所有机器人都限制为机械臂或都赋予同等自主性。",
@@ -7213,7 +7213,7 @@
       "evidence": [
         {
           "sourceTitle": "NIST Robotics Program",
-          "url": "https://www.nist.gov/programs-projects/robotics",
+          "url": "https://www.nist.gov/robotics",
           "sourceAuthority": "NIST Robotics Program",
           "supportedClaim": "机器人系统可结合传感、环境感知、规划和控制执行物理任务，能力与自主程度取决于具体系统设计。",
           "scope": "只支持机器人能力可向感知和自主控制扩展；不证明机器人发展存在统一、严格的阶段划分。",
@@ -8710,7 +8710,7 @@
       "evidence": [
         {
           "sourceTitle": "Martin Fowler: Application Controller",
-          "url": "https://martinfowler.com/eaaDev/ApplicationController.html",
+          "url": "https://martinfowler.com/eaaCatalog/applicationController.html",
           "sourceAuthority": "Martin Fowler: Application Controller",
           "supportedClaim": "Application Controller 模式可集中协调用户输入和应用流程，避免把跨交互流程逻辑散落在多个视图中。",
           "scope": "只支持跨交互流程可由专门控制器协调；课程所称 UIP 的精确定义与具体框架映射仍需教材确认。",
@@ -9479,7 +9479,7 @@
       "evidence": [
         {
           "sourceTitle": "CNCF Cloud Native Glossary",
-          "url": "https://glossary.cncf.io/cloud-native/",
+          "url": "https://glossary.cncf.io/cloud-native-tech/",
           "sourceAuthority": "CNCF Cloud Native Glossary",
           "supportedClaim": "CNCF 将云原生描述为利用容器、服务网格、微服务、不可变基础设施和声明式 API 等技术构建和运行可扩展应用的方法。",
           "scope": "支持云原生不只是把应用搬到云上的概念边界；列举技术并不表示每个云原生系统都必须使用全部技术。",
@@ -9530,7 +9530,7 @@
       "evidence": [
         {
           "sourceTitle": "CNCF Cloud Native Glossary",
-          "url": "https://glossary.cncf.io/cloud-native/",
+          "url": "https://glossary.cncf.io/cloud-native-tech/",
           "sourceAuthority": "CNCF Cloud Native Glossary",
           "supportedClaim": "CNCF 将云原生描述为使用容器、微服务、声明式 API 等技术构建和运行可扩展应用的方法。",
           "scope": "只支持云原生相关技术与目标的概念关系；不表示每个云原生应用必须同时采用列出的全部技术。",
@@ -9581,7 +9581,7 @@
       "evidence": [
         {
           "sourceTitle": "CNCF Cloud Native Glossary",
-          "url": "https://glossary.cncf.io/cloud-native/",
+          "url": "https://glossary.cncf.io/cloud-native-tech/",
           "sourceAuthority": "CNCF Cloud Native Glossary",
           "supportedClaim": "CNCF 将云原生与自动化、弹性以及可扩展应用的构建和运行方式联系起来。",
           "scope": "只支持云原生设计关注弹性和自动化的概念；不把这些目标理解为部署到云平台后自动实现。",
@@ -9683,7 +9683,7 @@
       "evidence": [
         {
           "sourceTitle": "CNCF Cloud Native Glossary",
-          "url": "https://glossary.cncf.io/cloud-native/",
+          "url": "https://glossary.cncf.io/cloud-native-tech/",
           "sourceAuthority": "CNCF Cloud Native Glossary",
           "supportedClaim": "云原生定义涵盖构建和运行应用的技术与方法，而非单纯选择某个托管位置。",
           "scope": "只支持云原生不应被简化为单一部署位置的概念；不证明每种迁移项目必然产生复杂性，具体结果取决于设计与治理。",
@@ -9938,7 +9938,7 @@
       "evidence": [
         {
           "sourceTitle": "CNCF Cloud Native Glossary",
-          "url": "https://glossary.cncf.io/cloud-native/",
+          "url": "https://glossary.cncf.io/cloud-native-tech/",
           "sourceAuthority": "CNCF Cloud Native Glossary",
           "supportedClaim": "CNCF 将云原生视为围绕弹性、自动化和可扩展应用构建/运行的一组技术与实践。",
           "scope": "只支持云原生架构需要综合技术和运行实践；不证明某个案例必须采用固定的业务拆分或平台组合。",
@@ -10506,11 +10506,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST CSRC Embedded System Glossary",
-          "url": "https://csrc.nist.gov/glossary/term/embedded_system",
+          "sourceTitle": "NASA Software Engineering Handbook terminology",
+          "url": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=AppendixA",
           "sourceAuthority": "NIST CSRC Embedded System Glossary",
-          "supportedClaim": "嵌入式系统是为执行特定功能而设计、嵌入更大系统或设备中的计算系统。",
-          "scope": "只支持嵌入式系统的用途/嵌入关系定义；资源、实时性、功耗和安全约束需按具体系统单独判断。",
+          "supportedClaim": "NASA software-engineering terminology defines an embedded computer system as part of a larger system that performs some of that larger system’s requirements.",
+          "scope": "只支持嵌入式计算系统与更大系统的组成关系；不证明所有设备都采用同一处理器、总线、看门狗、I/O 结构或实时约束。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -10557,11 +10557,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "NIST CSRC Embedded System Glossary",
-          "url": "https://csrc.nist.gov/glossary/term/embedded_system",
+          "sourceTitle": "NASA Software Engineering Handbook terminology",
+          "url": "https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=AppendixA",
           "sourceAuthority": "NIST CSRC Embedded System Glossary",
-          "supportedClaim": "嵌入式系统作为更大设备或系统的一部分执行特定功能。",
-          "scope": "只支持嵌入式计算的系统定位；不证明所有嵌入式设备都具有同一套处理器、总线、看门狗或 I/O 组件。",
+          "supportedClaim": "NASA software-engineering terminology defines an embedded computer system as part of a larger system that performs some of that larger system’s requirements.",
+          "scope": "只支持嵌入式计算系统与更大系统的组成关系；不证明所有设备都采用同一处理器、总线、看门狗、I/O 结构或实时约束。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
@@ -10608,8 +10608,8 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
-          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceTitle": "FreeRTOS Kernel Fundamentals (AWS documentation)",
+          "url": "https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html",
           "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
           "supportedClaim": "RTOS 内核提供任务调度、同步和时间相关的基础机制，以支持实时应用。",
           "scope": "只支持 RTOS 内核在嵌入式软件中的基础作用；不规定所有嵌入式系统都必须采用 RTOS 或固定四层结构。",
@@ -10659,8 +10659,8 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
-          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceTitle": "FreeRTOS Kernel Fundamentals (AWS documentation)",
+          "url": "https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html",
           "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
           "supportedClaim": "嵌入式实时系统可采用分层组织，实时内核负责调度和同步，应用在其上完成具体功能。",
           "scope": "只支持分层组织是常见模式；“层次化与递归模式”不是所有嵌入式实时系统的穷尽分类。",
@@ -10710,8 +10710,8 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
-          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceTitle": "FreeRTOS Kernel Fundamentals (AWS documentation)",
+          "url": "https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html",
           "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
           "supportedClaim": "RTOS 内核提供任务调度、同步和时间相关基础机制，支持嵌入式应用协调并发任务。",
           "scope": "只支持实时操作系统的内核基础职责；不证明所有嵌入式 OS 都采用相同组件划分或必须内置所有协议栈。",
@@ -13326,7 +13326,7 @@
       "pitfalls": "登录成功不意味着可以访问任意订单；前端价格和状态不可作为可信来源，关键业务状态应由服务端规则控制。 本证据仅支持范围说明中的命题，不替代完整标准、威胁建模或现场验证。",
       "source": {
         "type": "external-reference",
-        "path": "https://owasp.org/www-project-api-security/",
+        "path": "https://api-security.owasp.org/",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -13353,16 +13353,16 @@
         "请不用照抄原文，解释“围绕用户、商品、订单、支付、库存和物流设计身份、交易、数据和运营安全。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“围绕用户、商品、订单、支付、库存和物流设计身份、交易、数据和运营安全。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
       ],
-      "sourceEvidence": "OWASP API Security Project；OWASP API Security列举常见API风险；它不替代支付行业规范、隐私法律、威胁建模或具体业务的完整审计。 https://owasp.org/www-project-api-security/",
+      "sourceEvidence": "OWASP API Security Project；OWASP API Security列举常见API风险；它不替代支付行业规范、隐私法律、威胁建模或具体业务的完整审计。 https://api-security.owasp.org/",
       "contentSource": {
         "type": "external-reference",
         "status": "partial",
-        "evidence": "OWASP API Security Project；OWASP API Security列举常见API风险；它不替代支付行业规范、隐私法律、威胁建模或具体业务的完整审计。 https://owasp.org/www-project-api-security/"
+        "evidence": "OWASP API Security Project；OWASP API Security列举常见API风险；它不替代支付行业规范、隐私法律、威胁建模或具体业务的完整审计。 https://api-security.owasp.org/"
       },
       "evidence": [
         {
           "sourceTitle": "OWASP API Security Project",
-          "url": "https://owasp.org/www-project-api-security/",
+          "url": "https://api-security.owasp.org/",
           "sourceAuthority": "OWASP API Security guidance",
           "supportedClaim": "电商业务安全需要围绕对象级授权、身份认证、业务流程、资源消耗和敏感业务流等风险设计控制，而非只保护登录入口。",
           "scope": "OWASP API Security列举常见API风险；它不替代支付行业规范、隐私法律、威胁建模或具体业务的完整审计。",
@@ -14471,11 +14471,11 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "AWS Well-Architected Retail Industry Lens",
-          "url": "https://docs.aws.amazon.com/wellarchitected/latest/retail-industry-lens/retail-industry-lens.html",
+          "sourceTitle": "AWS Retail Data Analytics & Insights",
+          "url": "https://aws.amazon.com/retail/advanced-data-insights/",
           "sourceAuthority": "AWS Well-Architected Retail Industry Lens",
-          "supportedClaim": "零售系统可整合商品、订单、库存和客户相关数据以支持运营分析与业务决策。",
-          "scope": "只支持零售数据整合的常见场景；推荐、定价和补货效果需用具体业务数据验证。",
+          "supportedClaim": "AWS describes retail data analytics as integrating sales data, customer traits and product information to support merchandising decisions and customer insights.",
+          "scope": "只支持零售数据整合与分析的常见场景；不证明特定推荐、定价、补货算法的效果，也不覆盖订单/库存系统的具体实现。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
