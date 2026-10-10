@@ -23,13 +23,13 @@ export function renderAnswerRiskMarkdown(report) {
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(item);
   }
-  const lines = ['# 题库答案风险候选复核队列', '', '- 报告版本：' + report.reportVersion, '- 只读：' + report.readOnly, '- 扫描记录：选择题 ' + report.counts.choices + '，案例题 ' + report.counts.cases + '，论文题 ' + report.counts.essays, '- 风险候选：' + report.counts.findings, '', '> 本报告由关键词规则生成，所有命中均为人工复核候选，不代表题目、答案或解析错误；未命中也不代表内容正确。只有可追溯的来源证据才能支持事实性修订。', '', '## 初步分流（启发式，非自动判错）', '', '| 分类 | 数量 |', '|---|---:|'];
+  const lines = ['# 题库答案风险候选复核队列', '', '- 报告版本：' + report.reportVersion, '- 只读：' + report.readOnly, '- 扫描记录：选择题 ' + report.counts.choices + '，案例题 ' + report.counts.cases + '，论文题 ' + report.counts.essays, '- 风险候选：' + report.counts.findings, '', '> 本报告由关键词规则生成，所有命中均为人工复核候选，不代表题目、答案或解析错误；未命中也不代表内容正确。只有可追溯的来源证据才能支持事实性修订。来源定位状态不是核验结论；URL/文本存在不代表来源权威或支持命题。', '', '## 初步分流（启发式，非自动判错）', '', '| 分类 | 数量 |', '|---|---:|'];
   for (const [key, count] of Object.entries(triageCounts)) lines.push('| ' + key + ' | ' + count + ' |');
   lines.push('', '## 原始规则计数', '', '| 规则 | 命中数 |', '|---|---:|');
   for (const [rule, count] of Object.entries(report.ruleCounts)) lines.push('| ' + rule + ' | ' + count + ' |');
   for (const [group, items] of groups) {
     lines.push('', '## ' + group + '（' + items.length + ' 条）', '');
-    for (const item of items) lines.push('### ' + item.item.id, '', '- 位置：' + [item.item.term, item.item.paper, item.item.field].filter(Boolean).join(' / '), '- 命中：' + item.matchedText, '- 精确来源字段存在：' + item.hasPreciseSource, '- 复核建议：' + item.guidance, '- 上下文：' + item.context, '');
+    for (const item of items) lines.push('### ' + item.item.id, '', '- 位置：' + [item.item.term, item.item.paper, item.item.field].filter(Boolean).join(' / '), '- 命中：' + item.matchedText, '- 来源定位字段状态：' + item.sourceLocatorAssessment, '- 复核建议：' + item.guidance, '- 上下文：' + item.context, '');
   }
   return { markdown: lines.join('\n'), triageCounts, report: { ...report, findings: report.findings.map((item) => ({ ...item, triageCategory: triage(item) })), triageCounts } };
 }

@@ -15,6 +15,14 @@ function textFields(bank) {
   return rows;
 }
 
+function assessSourceLocator(values) {
+  const present = values.map((value) => String(value ?? "").trim()).filter(Boolean);
+  const meaningful = present.filter((value) => !/^(?:n\/?a|none|待补充来源|待核验|待补充|无|暂无|未知|不详|tbd|todo|placeholder)$/iu.test(value));
+  if (meaningful.some((value) => /^https?:\/\//iu.test(value))) return { hasSourceLocator: true, sourceLocatorAssessment: "url-present-not-verified" };
+  if (meaningful.length) return { hasSourceLocator: true, sourceLocatorAssessment: "locator-text-present-needs-validation" };
+  return { hasSourceLocator: false, sourceLocatorAssessment: present.length ? "placeholder-only" : "missing" };
+}
+
 export function auditAnswerRisk(bank) {
   const rows = textFields(bank);
   const findings = [];
@@ -24,9 +32,10 @@ export function auditAnswerRisk(bank) {
     if (!match) continue;
     ruleCounts[rule.code] += 1;
     const index = match.index;
-    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match[0], context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match[0].length + 120)).replace(/\s+/g, " ").trim(), hasPreciseSource: row.sources.some((value) => String(value ?? "").trim()), answerSource: row.answerSource, guidance: rule.guidance });
+    const sourceLocator = assessSourceLocator(row.sources);
+    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match[0], context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match[0].length + 120)).replace(/\s+/g, " ").trim(), ...sourceLocator, answerSource: row.answerSource, guidance: rule.guidance });
   }
-  return { reportVersion: 1, readOnly: true, counts: { choices: (bank?.choices ?? []).length, cases: (bank?.cases ?? []).length, essays: (bank?.essays ?? []).length, scannedTextFields: rows.length, findings: findings.length }, ruleCounts, note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。脚本不修改题库。", findings };
+  return { reportVersion: 2, readOnly: true, counts: { choices: (bank?.choices ?? []).length, cases: (bank?.cases ?? []).length, essays: (bank?.essays ?? []).length, scannedTextFields: rows.length, findings: findings.length }, ruleCounts, note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。脚本不修改题库。", findings };
 }
 
 async function main() {

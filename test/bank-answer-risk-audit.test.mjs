@@ -21,8 +21,16 @@ test("答案风险审计会标记量化与绝对化断言，但只生成只读�
   assert.equal(report.findings.some((item) => item.item.id === "q2"), false);
 });
 
-test("答案风险审计可识别带有题目级出处的候选但不自动判定为已核验", () => {
-  const report = auditAnswerRisk({ choices: [{ id: "q1", analysis: "延迟为10-50ms。", sourceUrl: "https://example.com" }] });
-  assert.equal(report.findings[0].hasPreciseSource, true);
-  assert.match(report.note, /不代表答案错误/);
+test("答案风险审计区分来源字段存在与来源事实核验", () => {
+  const withUrl = auditAnswerRisk({ choices: [{ id: "q1", analysis: "延迟为10-50ms。", sourceUrl: "https://example.com" }] });
+  assert.equal(withUrl.reportVersion, 2);
+  assert.equal(withUrl.findings[0].hasSourceLocator, true);
+  assert.equal(withUrl.findings[0].sourceLocatorAssessment, "url-present-not-verified");
+  const withPlaceholder = auditAnswerRisk({ choices: [{ id: "q2", analysis: "延迟为10-50ms。", sourceCitation: "待核验" }] });
+  assert.equal(withPlaceholder.findings[0].hasSourceLocator, false);
+  assert.equal(withPlaceholder.findings[0].sourceLocatorAssessment, "placeholder-only");
+  const withoutSource = auditAnswerRisk({ choices: [{ id: "q3", analysis: "延迟为10-50ms。" }] });
+  assert.equal(withoutSource.findings[0].sourceLocatorAssessment, "missing");
+  assert.match(withUrl.note, /不代表答案错误/);
+  assert.match(withUrl.note, /不证明来源可访问、权威/);
 });

@@ -17,5 +17,7 @@ test('答案风险报告按复核类型分流，保留原始候选并声明不�
   assert.equal(rendered.triageCounts['technical-number-or-calculation-review'], 1);
   assert.equal(rendered.triageCounts['exam-prediction-needs-source'], 1);
   assert.match(rendered.markdown, /不代表题目、答案或解析错误/);
+  assert.match(rendered.markdown, /来源定位状态不是核验结论/);
+  assert.match(rendered.markdown, /来源定位字段状态：missing/);
   assert.equal(rendered.report.findings.some((item) => item.triageCategory === 'exam-prediction-needs-source'), true);
 });

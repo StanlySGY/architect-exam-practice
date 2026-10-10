@@ -1,5 +1,5 @@
 {
-  "reportVersion": 1,
+  "reportVersion": 2,
   "readOnly": true,
   "counts": {
     "choices": 1947,
@@ -12,7 +12,7 @@
     "unsupported-quantified-claim": 151,
     "absolute-or-exam-trend-claim": 10
   },
-  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。脚本不修改题库。",
+  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。脚本不修改题库。",
   "findings": [
     {
       "rule": "unsupported-quantified-claim",
@@ -27,7 +27,8 @@
       },
       "matchedText": "2倍",
       "context": "量子比特（qubit）的本质特征是量子叠加态——可以同时处于0和1的叠加状态，直到被测量时才坍缩为确定的0或1。经典比特只能是0或1。此外，量子比特之间可以产生量子纠缠（关联），运算加速不是简单的2倍关系。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -45,7 +46,8 @@
       },
       "matchedText": "15分钟",
       "context": "FaaS的特点是按需执行、自动扩缩容、按调用计费。A错误：生命周期由平台自动管理；C错误：通常有执行时间限制（如AWS Lambda 15分钟）；D错误：FaaS支持多种事件触发源。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -63,7 +65,8 @@
       },
       "matchedText": "完全不",
       "context": "SDP（软件定义边界）遵循\"先认证后连接\"原则：默认隐藏所有服务和端口（对未认证用户完全不可见），只有通过身份认证和授权的用户才能获得对特定服务的访问权限。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -81,7 +84,8 @@
       },
       "matchedText": "4GB",
       "context": "主存4GB = 2^32，地址32位。Cache行大小128B = 2^7，偏移7位。Cache数据区8KB = 2^13，行数 = 2^13/2^7 = 2^6 = 64行。直接映射行索引6位。Tag = 32 - 6 - 7 = 19位。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -99,7 +103,8 @@
       },
       "matchedText": "0.1%",
       "context": "LoRA的核心思想是冻结原始模型参数，在每层添加可训练的低秩矩阵（两个小矩阵A和B的乘积），大幅减少可训练参数数（通常只有原模型的0.1%-1%）。这使得单卡GPU即可微调大模型。变体包括QLoRA（结合量化）。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -117,7 +122,8 @@
       },
       "matchedText": "256MB",
       "context": "主存256MB=2^28字节，Cache 512KB=2^19字节，块大小64字节=2^6字节。Cache共有2^19/2^6=2^13个块。直接映射方式下，主存地址28位=标记位+Cache块号(13位)+块内偏移(6位)。标记位=28-13-6=9位",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -135,7 +141,8 @@
       },
       "matchedText": "100%",
       "context": "WBS分解应适度而非越细越好。WBS最低层称为工作包（A正确），遵循100%规则（B正确），每个元素分配唯一责任人（C正确）。过度分解（D不正确）会导致管理成本增加、资源浪费，应分解到可以准确估算成本和工期的层级即可。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -153,7 +160,8 @@
       },
       "matchedText": "99.9%",
       "context": "稳态可用性 = MTBF/(MTBF+MTTR) = 999/(999+1) = 99.9%。注意MTBF = MTTF + MTTR，此处MTBF已包含修复时间。但题目给出的是MTBF，所以直接计算。实际上更精确的是A = MTTF/(MTTF+MTTR)。如果MTBF≈MTTF（当MTTR远小于MTTF时），则A ≈ 999/",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -171,7 +179,8 @@
       },
       "matchedText": "每年必考",
       "context": "上更精确的是A = MTTF/(MTTF+MTTR)。如果MTBF≈MTTF（当MTTR远小于MTTF时），则A ≈ 999/1000 = 99.9%。 押题理由: MTTF/MTTR/MTBF几乎每年必考1题，2024上半年考了MTTD，预计2026继续出可靠性计算。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "exam-prediction-needs-source"
@@ -189,7 +198,8 @@
       },
       "matchedText": "2025-2026年",
       "context": "G = 检索（Retrieval）+ 增强（Augmented）+ 生成（Generation）。先从外部知识库检索相关文档，将其拼接到提示词中作为上下文，再由LLM生成回答。 押题理由: RAG是2025-2026年AI落地最热门的技术方案，预计2026首次入考。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -207,7 +217,8 @@
       },
       "matchedText": "1%",
       "context": "LoRA冻结预训练模型权重，在每个目标层旁边注入低秩矩阵（A和B），只训练A和B的参数（通常不到原模型参数的1%）。训练后可将LoRA矩阵合并回原始权重。 押题理由: LoRA是2025-2026年最流行的高效微调技术，是大模型实际应用的必备知识。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -225,7 +236,8 @@
       },
       "matchedText": "2025-2026年",
       "context": "raft模型自回归生成多个候选Token，然后大模型一次性并行验证这些Token，接受正确的、拒绝错误的。可以在不损失质量的情况下加速推理。 押题理由: 推理加速是大模型工程化的核心挑战，投机解码是2025-2026年热门优化技术。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -243,7 +255,8 @@
       },
       "matchedText": "20ms",
       "context": "时间片轮转调度中，5个进程轮流执行，每个进程获得20ms的时间片。一轮总耗时为5×20=100ms，每个进程在100ms内获得1个时间片即20ms的CPU时间。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -261,7 +274,8 @@
       },
       "matchedText": "2.5秒",
       "context": "执行时间 = 时钟周期数 / 主频 = 6×10⁹ / 2.4×10⁹ = 2.5秒。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -279,7 +293,8 @@
       },
       "matchedText": "99%",
       "context": "稳态可用性 = MTTF / (MTTF + MTTR) = 990 / (990 + 10) = 990/1000 = 99%。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -297,7 +312,8 @@
       },
       "matchedText": "3600秒",
       "context": "吞吐率 = 事务数 / 时间 = 36000 / 3600秒 = 10 TPS（Transactions Per Second）。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -315,7 +331,8 @@
       },
       "matchedText": "4GB",
       "context": "地址4字节，则每个索引块可存储4KB/4B=1024个地址。二级索引：一级索引块指向1024个二级索引块，每个二级索引块指向1024个数据块。最大文件=1024×1024×4KB=1024²×4KB=4GB。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -333,7 +350,8 @@
       },
       "matchedText": "一定会",
       "context": "责任链模式的优点是将请求的发送者和接收者解耦，请求沿着责任链传递直到某个处理者处理它。但不保证请求一定会被处理（如果链上所有处理者都不处理则请求被丢弃）。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -351,7 +369,8 @@
       },
       "matchedText": "1分钟",
       "context": "M/M/1队列中，平均响应时间（逗留时间）W=1/(μ-λ)=1/(5-4)=1分钟。其中平均等待时间Wq=λ/[μ(μ-λ)]=4/[5×1]=0.8分钟，平均服务时间=1/μ=0.2分钟。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -369,7 +388,8 @@
       },
       "matchedText": "5倍",
       "context": "mdahl定律：加速比S=1/[(1-f)+f/N]，其中f为可并行化比例，N为处理器数量。当N→∞时，S=1/(1-f)=1/(1-0.8)=1/0.2=5。因此即使使用无限多处理器，加速比也不超过5倍。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -387,7 +407,8 @@
       },
       "matchedText": "99.99%",
       "context": "99.99%可用性意味着0.01%的不可用时间。每年=365.25×24×60≈525960分钟。最大不可用时间=525960×0.0001≈52.6分钟。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -405,7 +426,8 @@
       },
       "matchedText": "90%",
       "context": "系统性能曲线通常分为：轻载区（负载低，响应时间平稳）→重载区/拐点附近（负载增加到一定程度，响应时间开始急剧上升）→过载区（超过最大承载能力，响应时间极长或服务拒绝）。负载达到90%时响应时间从200ms急增到800ms（4倍），说明处于拐点附近的重载区。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -423,7 +445,8 @@
       },
       "matchedText": "300GB",
       "context": "位示图用二进制的一位表示一个盘块的使用情况。字长32位，磁盘容量300GB，物理块4MB。物理块数=300×1024/4=76800个，位示图大小=76800/32=2400个字。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -441,7 +464,8 @@
       },
       "matchedText": "64%",
       "context": "总营收=25000×2500=6250万，可变成本比例=4000/6250=64%，税率16%。设盈亏平衡时销量X台：250万+X×2500×64%+X×2500×16%=X×2500，即250万=X×2500×(1-64%-16%)=X×2500×20%=500X，解得X=5000台。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -459,7 +483,8 @@
       },
       "matchedText": "完全避免",
       "context": "耦合程度从低到高：无直接耦合→数据耦合→标记耦合→控制耦合→外部耦合→公共耦合→内容耦合。设计原则是追求低耦合，应尽量使用数据耦合（最低），完全避免内容耦合（最高）。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -477,7 +502,8 @@
       },
       "matchedText": "30秒",
       "context": "可用性（Availability）是指系统在需要时能够正常工作的能力，通常用正常运行时间占总时间的比例来衡量。系统能在30秒内恢复连接并正常工作，体现了高可用性。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -495,7 +521,8 @@
       },
       "matchedText": "220ms",
       "context": "多道批处理允许CPU与I/O设备并行工作。P1在t=0开始，t=40时进行I/O，此时P2到达并开始计算；P1的I/O完成后继续计算。通过合理安排并行执行，最短完成时间为220ms。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -513,7 +540,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -531,7 +559,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -549,7 +578,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -567,7 +597,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -585,7 +616,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -603,7 +635,8 @@
       },
       "matchedText": "99%",
       "context": "第二空选择C选项。 “系统采用双机热备，主备机必须实时监测对方状态，以便完成系统的实时切换”描述的是可用性，一般采用的架构设计策略：冗余、心跳线。第三空选择A选项，第四空选择C选项。 “系统应能够防止99%的黑客攻击”描述的是安全性，一般采用的架构设计策略：追踪审计、抵抗攻击、检测攻击和从攻击中恢复，本题有一定争议，黑客攻击指的是网络攻击，网络攻击需要先检测再采取相应的防范手段，其中A强调了检测，防范方向未指明，而D选项仅有权限控制又抵御不了",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -621,7 +654,8 @@
       },
       "matchedText": "36小时",
       "context": "设施即服务（Infrastructure as a Service，IaaS）是指消费者通过Internet 可以从完善的计算机基础设施获得服务，如《纽约时报》就使用成百上千台AmazonEC2实例在36小时内处理TB级的文档数据。如果没有EC2，《纽约时报》处理这些数据将要花费数天或者数月的时间。 综上，图中①、②、③应为应用层、平台层、基础设施层，答案选择B选项。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -639,7 +673,8 @@
       },
       "matchedText": "200毫秒",
       "context": "参考答案 | 需求编号 | 质量属性 | 分析说明 | |---------|---------|---------| | （a） | 性能 | 200毫秒内完成评估并返回，关注响应时间 | | （b） | 可修改性 | 规则热更新、无需重启、2小时内上线，体现系统可修改能力 | | （c） | 可用性 | 5秒内自动故障切换，确保服务不中断 | | （d） | 安全性 | 审计日志完整记录决",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -657,7 +692,8 @@
       },
       "matchedText": "不影响业务",
       "context": "身份证号、银行卡号等字段进行实时解密以供风控模型评估，则解密操作会增加10-50ms的延迟；若采用更强的加密算法，延迟会进一步增加。 平衡策略： 1. 分层加密策略：对传输中的数据采用TLS加密（不影响业务延迟），对存储层采用字段级加密；风控引擎内部的实时处理使用脱敏后的数据（如哈希化的用户标识），无需实时解密原始敏感字段。 2. 硬件加速：使用支持AES-NI指令集的服务器或专用加密卡，将加密/解密操作卸载到硬件层，将加密延迟控制在1-5m",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -675,7 +711,8 @@
       },
       "matchedText": "200毫秒",
       "context": "景进行进一步分析。 9. 报告结果：汇总所有发现，输出分析报告，包括架构风险列表、敏感点、权衡点等。 （2）需求（a）与需求（e）的权衡分析 权衡点：性能与安全性之间的权衡。 - 需求（a）要求200毫秒内完成风险评估并返回结果，对系统延迟要求极高。 - 需求（e）要求采用数据脱敏和字段级加密，而加密/解密操作（尤其是字段级加密）会引入额外的计算开销和延迟，可能影响200ms的响应时间目标。 具体矛盾：每次交易请求处理时，若需对身份证号、",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -693,7 +730,8 @@
       },
       "matchedText": "不影响业务",
       "context": "身份证号、银行卡号等字段进行实时解密以供风控模型评估，则解密操作会增加10-50ms的延迟；若采用更强的加密算法，延迟会进一步增加。 平衡策略： 1. 分层加密策略：对传输中的数据采用TLS加密（不影响业务延迟），对存储层采用字段级加密；风控引擎内部的实时处理使用脱敏后的数据（如哈希化的用户标识），无需实时解密原始敏感字段。 2. 硬件加速：使用支持AES-NI指令集的服务器或专用加密卡，将加密/解密操作卸载到硬件层，将加密延迟控制在1-5m",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -711,7 +749,8 @@
       },
       "matchedText": "80%",
       "context": "rs_0 ~ orders_63） - 路由规则：库 = user_id % 16，表 = (user_id / 16) % 64 选择user_id作为分片键的理由： 1. 查询模式匹配：电商系统80%以上的订单查询场景是\"用户查询自己的订单\"，以user_id分片可保证这类查询只落到单个分片，避免跨库查询。 2. 数据均匀分布：用户ID通常是连续递增的，取模后可均匀分布到各分片。 3. 避免热点：相比按shop_id分片（大商家数据量远",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -729,7 +768,8 @@
       },
       "matchedText": "1秒",
       "context": "P场景使用 3. 数据同步机制： - MySQL → Canal（Binlog采集）→ Kafka（消息缓冲）→ Elasticsearch / ClickHouse - 同步延迟通常在1秒以内（最终一致性） 4. 解决的核心问题： - 在线查询走Elasticsearch，不再直接查询MySQL，消除查询对写入的影响 - 批量统计走ClickHouse，完全与在线业务隔离，不影响MySQL性能 - MyS",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -747,7 +787,8 @@
       },
       "matchedText": "24小时",
       "context": "或SET key value NX EX timeout），以message_id为key设置去重标记： - 设置成功：首次消费，处理消息 - 设置失败：重复消费，跳过处理 - 设置合理的过期时间（如24小时），防止Redis内存无限增长 方案三：业务状态机 利用业务本身的状态流转实现幂等。例如订单状态从\"待支付→已支付\"，在更新前检查当前状态： ``sql UPDATE orders SET status = 'PAID' WHERE o",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -765,7 +806,8 @@
       },
       "matchedText": "24小时",
       "context": "或SET key value NX EX timeout），以message_id为key设置去重标记： - 设置成功：首次消费，处理消息 - 设置失败：重复消费，跳过处理 - 设置合理的过期时间（如24小时），防止Redis内存无限增长 方案三：业务状态机 利用业务本身的状态流转实现幂等。例如订单状态从\"待支付→已支付\"，在更新前检查当前状态： ``sql UPDATE orders SET status = 'PAID' WHERE o",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -783,7 +825,8 @@
       },
       "matchedText": "20ms",
       "context": "程并行发送 | | 同步发送模式延迟高 | 使用异步发送（回调模式），提高吞吐量 | | 消息批量小、发送频率高 | 增大batch.size（如64KB→256KB），增大linger.ms（如0→20ms），让消息在缓冲区积累后批量发送 | | 消息压缩未启用 | 启用压缩（compression.type=lz4），减少网络传输量，lz4压缩速度快且压缩率较好 | Broker端瓶颈与优化 | 瓶颈 | 优化策略 | |------|",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -801,7 +844,8 @@
       },
       "matchedText": "30分钟",
       "context": "端服务的网络端口 | | 日志审计中心 | 记录所有访问行为和授权决策，支持事后审计和合规检查 | ### 问题2 参考答案 （1）持续验证的实现机制 1. 会话生命周期管理：缩短会话有效期（如30分钟），到期后重新验证身份。关键操作（如审批、签章）要求二次认证。 2. 设备状态持续监控：通过终端安全Agent定期（如每5分钟）上报设备安全状态（操作系统补丁、防病毒更新、磁盘加密状态），设备状态下降时自动降低权限。 3. 用户行为分析（U",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -819,7 +863,8 @@
       },
       "matchedText": "考试趋势",
       "context": "erify）、SDP、微隔离 - ABAC访问控制：基于属性的访问控制模型，与RBAC的对比 - 持续验证机制：UEBA、设备信任评估、动态授权 - 安全架构设计：身份认证、授权、审计的完整体系 - 考试趋势：零信任安全是近年来安全架构的热点方向 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "exam-prediction-needs-source"
@@ -837,7 +882,8 @@
       },
       "matchedText": "30分钟",
       "context": "参考答案 （1）持续验证的实现机制 1. 会话生命周期管理：缩短会话有效期（如30分钟），到期后重新验证身份。关键操作（如审批、签章）要求二次认证。 2. 设备状态持续监控：通过终端安全Agent定期（如每5分钟）上报设备安全状态（操作系统补丁、防病毒更新、磁盘加密状态），设备状态下降时自动降低权限。 3. 用户行为分析（U",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -855,7 +901,8 @@
       },
       "matchedText": "考试趋势",
       "context": "erify）、SDP、微隔离 - ABAC访问控制：基于属性的访问控制模型，与RBAC的对比 - 持续验证机制：UEBA、设备信任评估、动态授权 - 安全架构设计：身份认证、授权、审计的完整体系 - 考试趋势：零信任安全是近年来安全架构的热点方向 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "exam-prediction-needs-source"
@@ -873,7 +920,8 @@
       },
       "matchedText": "考试趋势",
       "context": "erify）、SDP、微隔离 - ABAC访问控制：基于属性的访问控制模型，与RBAC的对比 - 持续验证机制：UEBA、设备信任评估、动态授权 - 安全架构设计：身份认证、授权、审计的完整体系 - 考试趋势：零信任安全是近年来安全架构的热点方向 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "exam-prediction-needs-source"
@@ -891,7 +939,8 @@
       },
       "matchedText": "3秒",
       "context": "参考答案 需求质量属性分析： | 需求编号 | 质量属性 | 说明 | |---------|---------|------| | （a） | 性能 | 3秒内返回跨院就诊记录，关注响应时间 | | （b） | 互操作性 | 支持HL7 FHIR标准接口，实现异构系统数据对接 | | （c） | 安全性 | SM4加密、授权访问控制，保障数据安全 | | （d） | 可用性 | 30秒内故障切换",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -909,7 +958,8 @@
       },
       "matchedText": "30秒",
       "context": "LB）按地域/权重将用户流量分配到就近的数据中心 （2）四维度对比 | 维度 | 主备模式 | 多活模式 | |------|---------|---------| | 可用性 | 故障切换需要30秒-数分钟（DNS生效+数据库切换）；切换期间有短暂不可用 | 任一中心故障，其他中心自动承接流量，秒级切换；可用性更高 | | 数据一致性 | 主从复制延迟可控（半同步模式下接近0延迟）；一致性保障较好 | 双向复制存在冲突风险（两中心同时",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -927,7 +977,8 @@
       },
       "matchedText": "50%",
       "context": "▼ [打开] ` | 状态 | 说明 | |------|------| | 关闭（Closed） | 正常状态，请求正常转发到目标服务。统计失败率，当失败率超过阈值（如50%），切换到打开状态 | | 打开（Open） | 熔断状态，所有请求立即失败返回（快速失败），不再调用目标服务。经过超时时间（如30秒）后，自动进入半开状态 | | 半开（Half-Open） | 探测状态，允许少量探测请求通过。若探测请求",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -945,7 +996,8 @@
       },
       "matchedText": "50%",
       "context": "▼ [打开] ` | 状态 | 说明 | |------|------| | 关闭（Closed） | 正常状态，请求正常转发到目标服务。统计失败率，当失败率超过阈值（如50%），切换到打开状态 | | 打开（Open） | 熔断状态，所有请求立即失败返回（快速失败），不再调用目标服务。经过超时时间（如30秒）后，自动进入半开状态 | | 半开（Half-Open） | 探测状态，允许少量探测请求通过。若探测请求",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -963,7 +1015,8 @@
       },
       "matchedText": "50%",
       "context": "▼ [打开] ` | 状态 | 说明 | |------|------| | 关闭（Closed） | 正常状态，请求正常转发到目标服务。统计失败率，当失败率超过阈值（如50%），切换到打开状态 | | 打开（Open） | 熔断状态，所有请求立即失败返回（快速失败），不再调用目标服务。经过超时时间（如30秒）后，自动进入半开状态 | | 半开（Half-Open） | 探测状态，允许少量探测请求通过。若探测请求",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -981,7 +1034,8 @@
       },
       "matchedText": "30秒",
       "context": "果回调Orchestrator ### 问题2 参考答案 （1）Agent故障检测与恢复策略 | 机制 | 实现方式 | |------|---------| | 心跳检测 | 每个Agent每30秒向Orchestrator发送心跳消息；连续3次未收到心跳（90秒）判定Agent故障 | | 任务超时检测 | Orchestrator为每个子任务设置超时时间（如编码任务5分钟），超时未返回结果视为任务失败 | | 健康检查 | Age",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -999,7 +1053,8 @@
       },
       "matchedText": "30秒",
       "context": "参考答案 （1）Agent故障检测与恢复策略 | 机制 | 实现方式 | |------|---------| | 心跳检测 | 每个Agent每30秒向Orchestrator发送心跳消息；连续3次未收到心跳（90秒）判定Agent故障 | | 任务超时检测 | Orchestrator为每个子任务设置超时时间（如编码任务5分钟），超时未返回结果视为任务失败 | | 健康检查 | Age",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1017,7 +1072,8 @@
       },
       "matchedText": "1分钟",
       "context": "/畸形数据、数值范围校验（如温度-50~500°C）、时间戳校正、单位标准化 - 异常检测： - 阈值检测：单指标超过预设上下限（如温度>85°C） - 变化率检测：指标在短时间内剧烈变化（如1分钟内振动值增长200%） - 统计检测：基于滑动窗口的均值和标准差，偏离3σ以上视为异常 （2）滑动窗口聚合统计 `java // Flink滑动窗口：5分钟窗口，1分钟滑动步长 dataStream .keyBy(record",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1035,7 +1091,8 @@
       },
       "matchedText": "1分钟",
       "context": "/畸形数据、数值范围校验（如温度-50~500°C）、时间戳校正、单位标准化 - 异常检测： - 阈值检测：单指标超过预设上下限（如温度>85°C） - 变化率检测：指标在短时间内剧烈变化（如1分钟内振动值增长200%） - 统计检测：基于滑动窗口的均值和标准差，偏离3σ以上视为异常 （2）滑动窗口聚合统计 `java // Flink滑动窗口：5分钟窗口，1分钟滑动步长 dataStream .keyBy(record",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1053,7 +1110,8 @@
       },
       "matchedText": "80%",
       "context": "灰度上线 | （3）预测结果的应用场景 1. 设备健康度看板：每台设备显示实时健康度评分（0-100分），低于阈值（如60分）标记为\"需关注\" 2. 维护工单自动生成：预测某设备7天内故障概率>80%，自动创建维护工单并排期 3. 备件预采购：根据预测的故障类型提前准备备件，减少停机等待时间 4. 生产排程优化：预测某设备即将故障时，将生产任务调度到健康设备上 预测性维护 vs 定期维护 vs 事后维护 | 维度 | 事后维护 |",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1071,7 +1129,8 @@
       },
       "matchedText": "10分钟",
       "context": "│ │ │ │ └───┘ └─────┘ └───────┘ └──────┘ └────┘ ` 应对百万级并发的架构策略： 1. 试卷预加载：考试开始前10分钟，通过CDN预分发加密的试卷数据到客户端缓存，考试开始时仅需下发解密密钥（极小数据量），避免开始瞬间的流量洪峰 2. 多级缓存：Redis集群缓存试卷数据、考试配置；本地缓存（Caffeine）缓存高频访问数据 3. 分区隔离：按地区或考试",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1089,7 +1148,8 @@
       },
       "matchedText": "5秒",
       "context": "参考答案 OJ安全沙箱架构 （1）核心安全限制 | 限制类型 | 具体措施 | |---------|---------| | 时间限制 | 每次代码执行限制CPU时间（如5秒）和Wall时间（如10秒），超时强制终止 | | 内存限制 | 限制进程内存使用（如256MB），超过限制OOM Kill | | 文件系统限制 | 只读挂载系统文件，禁止写入（除临时目录）；禁止访问 /proc, /sys, /dev",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1107,7 +1167,8 @@
       },
       "matchedText": "85%",
       "context": "| 措施 | 说明 | |------|------| | 答案相似度检测 | 考试结束后，对所有考生的主观题答案进行文本相似度分析（如SimHash、TF-IDF余弦相似度），相似度超过阈值（如85%）标记为可疑 | | 答题行为分析 | 分析答题时间模式（如选择题5秒内完成、编程题复制粘贴痕迹）、答题顺序异常（正确率与时间不匹配）等行为特征 | | IP关联分析 | 检测同一IP/网段下的多个考生，分析是否存在集体作弊 | 平衡防作",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1125,7 +1186,8 @@
       },
       "matchedText": "10秒",
       "context": "质量属性分析（14分） #### 1.1 全部需求的质量属性识别 | 需求 | 对应质量属性 | 说明 | |------|------------|------| | (a) 10秒内完成规划 | 性能 (Performance) | 响应时间约束 | | (b) 5秒更新GPS数据 | 性能 (Performance) | 实时性要求 | | (c) 10秒故障切换 | 可用性 (Availability) | 容错",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1143,7 +1205,8 @@
       },
       "matchedText": "5秒",
       "context": "业务 - 业务流程简单明确的系统 - 查询操作较多、写操作较少的系统 #### 2.2 两种方案在需求(b)和(k)上的优劣分析（4分） ##### 需求(b)：实时处理5000辆车GPS数据（每5秒更新一次） | 对比维度 | 方案A：事件驱动 | 方案B：微服务API | |--------|---------------|-----------------| | 处理吞吐量 | 高（★★★★★）- 异步非阻塞，消息队列天然支持高",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1161,7 +1224,8 @@
       },
       "matchedText": "1小时",
       "context": "c JOIN products p WHERE ... 场景3：事务测试 - BEGIN; INSERT; UPDATE; COMMIT; 场景4：并发测试 - 100/500/2000并发连接，持续1小时 场景5：批量操作 - INSERT 10M rows in 5 minutes ` 目标： 国产DB性能应达到Oracle的 ≥ 80%，关键业务 ≥ 95% ##### 3. 数据一致性和事务ACID保证 关键评估点： - 事务隔",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1179,7 +1243,8 @@
       },
       "matchedText": "90%",
       "context": "要多少人天 | 工程量少=高分 | RICE评分公式： `` RICE Score = (Reach × Impact × Confidence) / Effort 示例： 服务A：(100×3×90%) / 10 = 27分（优先级高） 服务B：(50×5×50%) / 20 = 6.25分（优先级低） ` 第一批拆分候选： 1. 推荐：登录认证服务 - Reach: 100（所有用户都要登录） - Impact: 3（",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1197,7 +1262,8 @@
       },
       "matchedText": "5%",
       "context": "审批与测试 ├→ 业务审批（保险产品经理） ├→ 自动化测试（预设的测试用例） ├→ 灰度环境测试（复现生产场景） └→ 获批后发布 3. 灰度发布 ├→ 第一阶段：5%流量使用新规则 ├→ 第二阶段：监控指标（保费计算差异、客户投诉） ├→ 第三阶段：50%流量 └→ 第四阶段：100%流量 4. 监控与回退 ├→ 监控关键指标：保费均值、方差、异常率 ├→ 如果检测到问题",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1215,7 +1281,8 @@
       },
       "matchedText": "100ms",
       "context": "rame df = spark.readStream() .format(\"kafka\") .load() result = mlModel.predict(df) // 100ms内返回 离线回填： DataFrame hist = spark.read() .format(\"delta\") // 使用Delta Lake格式 .load(\"/feature_store\")",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1233,7 +1300,8 @@
       },
       "matchedText": "10ms",
       "context": "├─ 获取单个特征：GET /features/{user_id}/{feature_name} ├─ 批量获取：POST /features/batch ├─ 响应时间：p50 < 10ms, p99 < 50ms └─ 缓存策略：二级缓存 L1: 本地内存（热数据） L2: Redis（全量） ` 一致性检查流程： ` 离线计算完成后： 1. 对比离线vs实时特征值 SELECT",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1251,7 +1319,8 @@
       },
       "matchedText": "3倍",
       "context": "│ └─ 规则：访问频次异常时↑风险 │ ├─ 来源2：交易金额 │ ├─ 源：trade表.amount │ ├─ 转换：求和、归一化 │ └─ 规则：超过用户历史平均3倍时↑风险 │ └─ 来源3：设备信息 ├─ 源：第三方设备指纹库 ├─ 转换：匹配黑名单、风险评分 └─ 规则：命中黑名单时↑风险 血缘分析优势： - 追踪：fraud_score为什么高？→ 找到所",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1269,7 +1338,8 @@
       },
       "matchedText": "280GB",
       "context": "#### 1. 模型量化（Quantization） 原理： 将高精度参数（Float32）降低到低精度（Int8/Int4），减少显存占用和计算量 `` 原始：70B模型 × 4字节/参数 = 280GB显存需求（单卡A100仅80GB） INT8：70B模型 × 1字节/参数 = 70GB显存 INT4：70B模型 × 0.5字节/参数 = 35GB显存 性能对比： ┌──────────┬──────────┬────────┬───",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1287,7 +1357,8 @@
       },
       "matchedText": "100ms",
       "context": "def route_request(request): # 根据请求特征决定路由 if request.latency_requirement == 'LOW': # < 100ms # 路由到小模型集群（7B，低延迟） return route_to('llm_7b_cluster') elif request.latency_requirement == 'MEDI",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1305,7 +1376,8 @@
       },
       "matchedText": "20%",
       "context": "多租户资源隔离与QoS（7分） #### 3.1 GPU共享与资源隔离 `` 隔离方案对比： 方案1: 单租户独占GPU 优：隔离完美、性能可预测 劣：资源浪费（GPU利用率20%） 方案2: 时间分片 (Time-Sharing) GPU1: 每10ms切换一个租户 优：简单实现 劣：上下文切换开销大、延迟高 方案3: GPU虚拟化 (GPU Sharing via MPS/MIG) 使用GPU",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1323,7 +1395,8 @@
       },
       "matchedText": "16ms",
       "context": "次跨越Bridge - iOS/Android不一致 ` 性能对比： ` 场景：快速滚动列表（1000个条目） Flutter: 帧生成：Skia → GPU → 60fps稳定 帧时间：16ms以内 React Native: 帧生成：JS → Bridge → Native → GPU 加上Bridge通信开销： - 序列化数据：1ms - Bridge传输：1-2ms - Native处理：5",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1341,7 +1414,8 @@
       },
       "matchedText": "5分钟",
       "context": "├→ YES: 下载JS Bundle ├→ 解压到本地存储 └→ 下次重启时加载新Bundle 优势： - 无需AppStore审核 - 5分钟内修复bug 劣势： - 仅限JavaScript层 - 无法修改原生代码 使用： CodePush.sync({ deploymentKey: \"YOUR_DEPLOYMENT_KEY\", updateDialog: true",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1359,7 +1433,8 @@
       },
       "matchedText": "5分钟",
       "context": "├→ YES: 下载JS Bundle ├→ 解压到本地存储 └→ 下次重启时加载新Bundle 优势： - 无需AppStore审核 - 5分钟内修复bug 劣势： - 仅限JavaScript层 - 无法修改原生代码 使用： CodePush.sync({ deploymentKey: \"YOUR_DEPLOYMENT_KEY\", updateDialog: true",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1377,7 +1452,8 @@
       },
       "matchedText": "500ms",
       "context": "（14分） | 需求编号 | 质量属性 | 分析说明 | |---------|---------|---------| | （a） | 性能 | 500ms内确认响应，关注响应时间 | | （b） | 性能 | 5000家供应商并发、每秒2万请求，关注吞吐量和并发能力 | | （c） | 可用性 | 30秒内主备切换、数据零丢失，关注故障检测和恢复 | | （d） | 安全性 | 端到端加密、",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1395,7 +1471,8 @@
       },
       "matchedText": "5%",
       "context": "数/Schema数限制 | ★★★★☆ 可通过分库分表扩展，但分表策略复杂 | ### 【问题2】（8分） 推荐方案：分级混合方案（A+C组合） 具体策略： 1. 大租户（用户数>1000，约占5%）→ 方案A（独立数据库） - 理由：大租户数据量大、查询复杂，独立数据库避免影响其他租户；大租户通常付费更高，可承担独立资源成本；独立数据库便于定制化需求和独立备份恢复 2. 中小租户（用户数≤1000，约占95%）→ 方案C（共",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1413,7 +1490,8 @@
       },
       "matchedText": "5%",
       "context": "（8分） 推荐方案：分级混合方案（A+C组合） 具体策略： 1. 大租户（用户数>1000，约占5%）→ 方案A（独立数据库） - 理由：大租户数据量大、查询复杂，独立数据库避免影响其他租户；大租户通常付费更高，可承担独立资源成本；独立数据库便于定制化需求和独立备份恢复 2. 中小租户（用户数≤1000，约占95%）→ 方案C（共",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1431,7 +1509,8 @@
       },
       "matchedText": "2秒",
       "context": "拒绝 - 预期效果：防止单个租户耗尽数据库连接资源，确保其他租户的正常访问不受影响 措施2：慢查询识别与优化 - 实现原理：①建立自动化慢查询监控（MySQL slow_query_log），对超过2秒的查询自动告警 ②针对大租户的复杂报表查询，建立物化视图（Materialized View）或预计算汇总表，将实时聚合查询转化为简单的表查询 ③对跨项目工时统计等复杂查询，建立覆盖索引（tenant_id + project_id + c",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1449,7 +1528,8 @@
       },
       "matchedText": "1-10秒",
       "context": "加载函数代码→加载依赖包→初始化连接（数据库、缓存等）→执行函数 3. 运行时依赖：如Java/Python等需要加载大量类库和框架的运行时，冷启动时间更长 对系统性能的影响： - 冷启动延迟通常为1-10秒（取决于运行时语言和包大小），远超正常请求的毫秒级响应 - 在流量突增时（如上课时段开始），大量冷启动请求导致首批用户体验严重下降 - 对实时互动场景（如直播答题）的影响尤为严重，5-8秒延迟使互动体验不可接受 ### 【问题2】（9分）",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1467,7 +1547,8 @@
       },
       "matchedText": "100倍",
       "context": "化策略 | 实现方式 | |---------|---------| | 边缘预处理降频 | 高频数据（1000Hz振动）在边缘节点进行FFT频谱分析，仅上传特征值（频率峰值、RMS值），将数据量降低100倍以上。原始高频数据仅在本地存储供事后分析 | | 流式计算实时处理 | 使用Apache Flink/Kafka Streams进行流式处理，采集数据进入消息队列后立即处理，避免批处理的等待延迟。处理链路：传感器→MQTT→Kafka→Fl",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1485,7 +1566,8 @@
       },
       "matchedText": "100倍",
       "context": "化策略 | 实现方式 | |---------|---------| | 边缘预处理降频 | 高频数据（1000Hz振动）在边缘节点进行FFT频谱分析，仅上传特征值（频率峰值、RMS值），将数据量降低100倍以上。原始高频数据仅在本地存储供事后分析 | | 流式计算实时处理 | 使用Apache Flink/Kafka Streams进行流式处理，采集数据进入消息队列后立即处理，避免批处理的等待延迟。处理链路：传感器→MQTT→Kafka→Fl",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1503,7 +1585,8 @@
       },
       "matchedText": "3秒",
       "context": "（14分） | 需求编号 | 质量属性 | 分析说明 | |---------|---------|---------| | （a） | 性能 | 3秒端到端处理时间，关注响应时间 | | （b） | 安全性 | PCI-DSS合规、敏感数据加密 | | （c） | 性能 | 5000TPS常规、2万TPS峰值弹性扩展，关注吞吐量 | | （d） | 可用性 | 数据中心故障60秒切换、R",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1521,7 +1604,8 @@
       },
       "matchedText": "100-300ms",
       "context": "| ★★★★☆ 需设计补偿逻辑和幂等性，状态机管理复杂 | 推荐方案：分层一致性策略（Saga为主 + 局部强一致性） 理由： 1. 多活架构决定了全局2PC不可行：三个数据中心的跨洲网络延迟高达100-300ms，2PC的同步阻塞会导致单笔交易延迟远超3秒的SLA要求，且协调者成为跨数据中心的单点瓶颈 2. 核心交易链路采用Saga编排模式：一笔跨境支付拆分为：汇率锁定→合规审查→发送方扣款→清算路由→接收方入账，每步为独立本地事务，失败时逆序补偿",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1539,7 +1623,8 @@
       },
       "matchedText": "2小时",
       "context": "的shardIndex只处理属于自己分片的数据子集 4. 结果汇总：所有分片执行完成后，调度中心汇总各分片的执行结果 \"月末账单结算\"分片优化示例： 原方案：单节点串行处理100万商户的账单，耗时2小时。 分片优化方案： 1. 设置分片数=10（对应10个执行器节点） 2. 分片策略：按商户ID对10取模（merchantId % 10） 3. 每个执行器处理约10万商户的账单 4. 10个执行器并行执行，理论耗时降至12分钟左右（2小",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1557,7 +1642,8 @@
       },
       "matchedText": "2小时",
       "context": "的shardIndex只处理属于自己分片的数据子集 4. 结果汇总：所有分片执行完成后，调度中心汇总各分片的执行结果 \"月末账单结算\"分片优化示例： 原方案：单节点串行处理100万商户的账单，耗时2小时。 分片优化方案： 1. 设置分片数=10（对应10个执行器节点） 2. 分片策略：按商户ID对10取模（merchantId % 10） 3. 每个执行器处理约10万商户的账单 4. 10个执行器并行执行，理论耗时降至12分钟左右（2小",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1575,7 +1661,8 @@
       },
       "matchedText": "2小时",
       "context": "的shardIndex只处理属于自己分片的数据子集 4. 结果汇总：所有分片执行完成后，调度中心汇总各分片的执行结果 \"月末账单结算\"分片优化示例： 原方案：单节点串行处理100万商户的账单，耗时2小时。 分片优化方案： 1. 设置分片数=10（对应10个执行器节点） 2. 分片策略：按商户ID对10取模（merchantId % 10） 3. 每个执行器处理约10万商户的账单 4. 10个执行器并行执行，理论耗时降至12分钟左右（2小",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1593,7 +1680,8 @@
       },
       "matchedText": "0.5-2ms",
       "context": "【问题2】（9分） 担忧1：Sidecar延迟问题 | 解决措施 | 实现方式 | |---------|---------| | 量化延迟开销 | Envoy Sidecar单跳额外延迟通常在0.5-2ms（取决于CPU性能和请求大小），对绝大多数业务（响应时间>50ms）影响可忽略。先做基准测试量化实际影响 | | Envoy性能调优 | ①启用连接池（Connection Pooling），避免频繁建立TCP连接 ②调整并发连接数和工作线",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1611,7 +1699,8 @@
       },
       "matchedText": "0.5-2ms",
       "context": "（9分） 担忧1：Sidecar延迟问题 | 解决措施 | 实现方式 | |---------|---------| | 量化延迟开销 | Envoy Sidecar单跳额外延迟通常在0.5-2ms（取决于CPU性能和请求大小），对绝大多数业务（响应时间>50ms）影响可忽略。先做基准测试量化实际影响 | | Envoy性能调优 | ①启用连接池（Connection Pooling），避免频繁建立TCP连接 ②调整并发连接数和工作线",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1629,7 +1718,8 @@
       },
       "matchedText": "10%",
       "context": "（8分） Istio灰度发布实现思路： 假设要将商品服务（product-service）从v1灰度到v2，按用户比例10%的流量导入v2。 步骤1：部署v2版本 在Kubernetes中同时部署product-service的v1和v2两个Deployment，通过app标签关联同一个Service，通过version标签区分版本。 步骤2：定义Dest",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1647,7 +1737,8 @@
       },
       "matchedText": "15%",
       "context": ": \"已完成！Q1销售报告已生成并发送给销售总监张三 (zhangsan@company.com)。报告要点：Q1总销售额1.2亿元， 同比增长15%...\" `` ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1665,7 +1756,8 @@
       },
       "matchedText": "20ms",
       "context": "制动预警等） ④离线时缓存消息，网络恢复后补传 | | 边缘节点层（MEC） | ①部署在运营商基站侧/路侧单元旁，提供超低延迟的本地计算能力 ②本地MQTT Broker转发区域内V2V消息（延迟<20ms）③区域路况实时聚合和分发 ④紧急事件检测和广播（如前方事故预警）⑤云端不可达时的本地降级服务 | | 云端平台层 | ①全局车辆管理和设备影子（Device Shadow）维护 ②海量遥测数据接收、存储和分析 ③OTA升级编排和版本管理",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1683,7 +1775,8 @@
       },
       "matchedText": "20ms",
       "context": "- 控制指令使用QoS 2（确保必达） - 推荐MQTT Broker：EMQX（支持百万级连接） 2. V2V直连通信：C-V2X/DSRC协议 - 理由：紧急制动预警要求端到端<20ms，必须通过无线直连通信（不经过云端） - C-V2X（Cellular V2X）基于5G NR-V2X，延迟更低且覆盖更广 3. 云端内部消息流转：AMQP或Kafka - 理由：云端内部系统间通信需要复杂路由和高可靠性 K",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1701,7 +1794,8 @@
       },
       "matchedText": "100MB",
       "context": "（8分） 车端离线缓存机制： 1. 在T-Box中维护一个持久化消息队列（基于SQLite或LevelDB），容量为100MB 2. 网络断开时，所有待上报消息写入本地队列，按优先级排序存储 3. 队列满时，淘汰低优先级的旧消息（如过期遥测数据），保留高优先级消息（如故障码、控制指令回执） 4. 每条消息记录：消息ID（UUID）、优先级、创建时间、QoS等级、重",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1719,7 +1813,8 @@
       },
       "matchedText": "30秒",
       "context": "（14分） | 需求编号 | 质量属性 | 分析说明 | |---------|---------|---------| | （a） | 性能 | 30秒内完成分析并返回，关注响应时间 | | （b） | 可用性 | AI模型不可用时自动切换到备用模型，体现容错 | | （c） | 可用性 | 故障自动切换到灾备中心，保证服务不中断 | | （d） | 安全性 | 数据加密存储和传输，符合安",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1737,7 +1832,8 @@
       },
       "matchedText": "30秒",
       "context": "辅助诊断 | | 环境 | 正常工作负载条件下 | | 制品 | AI影像分析引擎模块 | | 响应 | 系统完成影像分析，生成并返回初步诊断结果 | | 响应度量 | 从影像上传完成到诊断结果返回≤30秒 | 需求（d）安全性场景： | 要素 | 描述 | |------|------| | 刺激源 | 外部攻击者/内部未授权人员 | | 刺激 | 试图截取或访问患者影像数据和诊断报告 | | 环境 | 系统正常运行，数据在存储或传输中",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1755,7 +1851,8 @@
       },
       "matchedText": "3秒",
       "context": "持事后追溯和审计 | | （d） | 可用性 | — | AI推理服务不可用时自动降级为规则引擎模式，保证服务不中断，属于容错/降级设计 | | （e） | 性能 | — | AI推理延迟P99不超过3秒，关注响应时间指标 | | （f） | 安全性 | 完整性 | 防范Prompt注入攻击，防止攻击者篡改/操纵大模型的推理结果，属于数据和推理结果的完整性保护 | | （g） | 安全性 | 机密性 | 模型权重加密存储、授权加载，防止模型",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1773,7 +1870,8 @@
       },
       "matchedText": "10%",
       "context": "-|------|------| | 头部采样（Head-based Sampling） | 在请求入口处（如API网关）决定是否采样，整个Trace要么全部采集，要么全部丢弃。常用概率采样（如采样率10%） | 实现简单，资源开销可控 | 可能丢失重要的错误或慢请求Trace | | 尾部采样（Tail-based Sampling） | 等整个Trace完成后，根据Trace的特征（如是否包含错误、延迟是否超过阈值）再决定是否保留 | 能",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1791,7 +1889,8 @@
       },
       "matchedText": "10%",
       "context": "-|------|------| | 头部采样（Head-based Sampling） | 在请求入口处（如API网关）决定是否采样，整个Trace要么全部采集，要么全部丢弃。常用概率采样（如采样率10%） | 实现简单，资源开销可控 | 可能丢失重要的错误或慢请求Trace | | 尾部采样（Tail-based Sampling） | 等整个Trace完成后，根据Trace的特征（如是否包含错误、延迟是否超过阈值）再决定是否保留 | 能",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1809,7 +1908,8 @@
       },
       "matchedText": "5分钟",
       "context": "立阈值，当大规模级联故障发生时，上下游服务同时触发告警，产生\"告警风暴\"。基于RCA的智能告警方案的核心思路是：先抑制告警风暴，再定位根因，只发送根因告警。 工作流程： 1. 告警聚合：短时间内（如5分钟窗口）爆发的多条告警进行聚合，按时间关联性和服务调用关系分组 2. 拓扑关联：基于服务调用拓扑图（Service Dependency Graph），分析告警之间的因果关系。如果上游服务A告警，且A的下游服务B、C、D也同时告警，则B、C、",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1827,7 +1927,8 @@
       },
       "matchedText": "15秒",
       "context": "- (1) 性能 - (2) 可修改性 - (3) (e) — 平台主站点宕机后15秒内发现错误并启用备用系统 → 可用性 - (4) (j) — 正常负载下0.5秒内响应用户界面操作请求 → 性能 - (5) (h) — 对用户所有操作过程进行详细记录便于审计 → 安全性 - (6) (i) — 界面风格的修改需要在3人·",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1845,7 +1946,8 @@
       },
       "matchedText": "15秒",
       "context": "- (1) 性能 - (2) 可修改性 - (3) (e) — 平台主站点宕机后15秒内发现错误并启用备用系统 → 可用性 - (4) (j) — 正常负载下0.5秒内响应用户界面操作请求 → 性能 - (5) (h) — 对用户所有操作过程进行详细记录便于审计 → 安全性 - (6) (i) — 界面风格的修改需要在3人·",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1863,7 +1965,8 @@
       },
       "matchedText": "1秒",
       "context": "Redis重启时通过重新执行AOF文件中的命令来恢复数据。支持三种同步策略：always（每次写）、everysec（每秒）、no（操作系统决定）。 - 适用场景：对数据完整性要求高的场景，最多只丢失1秒数据（everysec策略）。 - 缺点：AOF文件体积较大，恢复速度比RDB慢。 综合建议：生产环境通常同时开启RDB和AOF，利用RDB进行快速恢复，AOF保证数据完整性。 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1881,7 +1984,8 @@
       },
       "matchedText": "90%",
       "context": "案及详解 | | CSDN - rzleilei | https://blog.csdn.net/rzleilei/article/details/139214710 | 2024上半年真题-复原程度90% | | CSDN - m0_61635017 | https://blog.csdn.net/m0_61635017/article/details/139476803 | 2024年5月案例真题完整版 | | CSDN - Nanki_",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1899,7 +2003,8 @@
       },
       "matchedText": "1分钟",
       "context": "参考答案: | 需求编号 | 质量属性 | 分析说明 | |---------|---------|---------| | （1） | 性能 | 1分钟内分配资源并启动，关注响应时间与吞吐 | | （2） | 可用性 | 数据库故障自动切换，确保服务不间断 | | （3） | 可用性 | 训练任务迁移，体现高可用容错设计 | | （4） | 可用性 | 故障时仍可运行并上报，体现容错、降级",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -1917,7 +2022,8 @@
       },
       "matchedText": "1秒",
       "context": "nd Only File）持久化 记录所有写命令（文本格式追加到文件appendonly.aof）。 | 维度 | 说明 | |------|------| | 优点 | ①数据安全性高（最多丢失1秒数据，若配置everysec）；②可读性强（日志文件可人工修复或分析） | | 缺点 | ①文件体积大，恢复速度慢（需重放所有命令）；②长期运行后文件膨胀，需定期执行BGREWRITEAOF重写优化 | 对比总结： | 对比维度 | R",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -1935,7 +2041,8 @@
       },
       "matchedText": "1秒",
       "context": "----|-----|-----| | 磁盘更新频率 | 低（按配置的时间间隔生成快照） | 高（每次写操作或每秒追加） | | 数据安全 | 较低（可能丢失最后一次快照后的数据） | 较高（最多丢失1秒数据，everysec策略） | | 数据一致性 | 较差（快照间隔内的数据可能丢失） | 较好（记录所有写操作，可重放恢复） | | 重启性能 | 快（直接加载二进制快照文件） | 慢（需重放所有写命令） | | 数据文件大小 | 小（二",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1953,7 +2060,8 @@
       },
       "matchedText": "完全不",
       "context": "SDN/博客园回忆版本） > 数据来源: CSDN博主phmatthaus、cui_yonghua等考后回忆整理 > 验证状态: ⚠️ 回忆版，已通过多个博主交叉验证 > 说明: 此批次内容与批次一完全不同，为不同考试批次的题目 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
       "triageCategory": "absolute-language-needs-context"
@@ -1971,7 +2079,8 @@
       },
       "matchedText": "2秒",
       "context": "通道 | | 环境 | 刺激发生时系统所处状态 | 正常负载运行、高并发峰值 | | 响应 | 系统对刺激的反应 | 完成数据加密、拒绝非法请求 | | 响应度量 | 对响应的量化衡量 | 加密延迟≤2秒、可用性≥99.9% |",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -1989,7 +2098,8 @@
       },
       "matchedText": "40%",
       "context": "参考答案: 性能影响：AES-256密钥256位，14轮加密（AES-128为10轮），计算量约比AES-128慢40%；吞吐量下降；端到端延迟增加。 安全性提升：2^256密钥空间暴力破解不可行；14轮加密抗差分/线性攻击更强；抗量子计算有效安全强度128位。 平衡策略：①硬件加速（AES-NI指令集）；②分层加密（高敏感AES-256，普通AES-1",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2007,7 +2117,8 @@
       },
       "matchedText": "5秒",
       "context": "属性是进行架构设计的重要步骤。根据对相关质量属性的定义和含义，其中“支持不同模型的自动转换。在初始需求中定义的机器性能条件下，对于一个包含50个对象的设计模型，将其转换为相应代码框架时所消耗时间不超过5秒”，这描述的是系统的性能属性；“能够连续运行的时间不小于240小时，意外退出后能够在10秒之内自动重启”描述的则是系统的可用性；“支持用户通过配置界面依据自己的喜好修改界面风格，包括颜色、布局、代码高亮方式等，配置完成后无须重启环境”描述的",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2025,7 +2136,8 @@
       },
       "matchedText": "0.5秒",
       "context": "高级管理员、数据管理员和数据维护员等三类（系统功能需求)； (b) 系统应该具备完善的安全防护措施，能够对黑客的攻击行为进行检测与防御（描述了安全性质量属性)； (c) 正常负载情况下，系统必须在0.5秒内对用户的查询请求进行响应（描述性能质量属性)； (d) 对查询请求处理时间的要求将影响系统的数据传输协议和处理过程的设计（一个质量属性会对多个设计决策造成影响，是敏感点）； (e) 系统的用户名不能为中文，要求必须以字母开头，长度不少",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2043,7 +2155,8 @@
       },
       "matchedText": "3秒",
       "context": "属于文化需求类别；“系统需要支持当前主流的标准和服务，特别是通信协议和平台接口”和“系统具有故障诊断和快速恢复能力”分别对应于可移植性需求和维护性需求，属于操作性需求类别；“用户操作的响应时间应不大于3秒，竞拍板块不大于1秒”和“系统需要支持不低于2GB的数据缓存”分别对应于速度需求和容量需求，属于性能需求类别；“用户密码需要加密传输”和“用户操作停滞时间超过一定时限需要重新登录验证”分别对应于加密/认证需求和访问控制需求，属于安全性需求。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2061,7 +2174,8 @@
       },
       "matchedText": "0.5秒",
       "context": "。根据对相关质量属性的定义和含义，其中“系统应该具备完善的安全防护措施，能够对黑客的攻击行为进行检测与防御”和“系统应对用户信息数据库的所有操作都进行完整记录”对应安全性；“在正常负载情况下，系统应在0.5秒内对用户的商品查询请求进行响应”和“系统在展示商品的实时视频时，需要保证视频画面具有1024X768像素的分辨率，40帧/秒的速率”对应系统的性能；“系统主站点断电后，应在5秒内将请求重定向到备用站点”和“当系统发生网络失效后，需要在15秒",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2079,7 +2193,8 @@
       },
       "matchedText": "24小时",
       "context": "备的并发请求，(2)系统应能够实时识别车牌，识别时间应小于1s，(6)独立事务操作响应时间应小于3s，描述的是系统的性能属性；(5)可抵御常见SQL注入攻击，描述的是系统的安全性属性；(3)系统应7×24小时工作，(7)系统在故障情况下，应在1小时内恢复，描述的是系统的可用性属性；(4)具有友好的用户界面，(8)新用户学习使用系统的时间少于1小时，描述的是系统的易用性属性。 #### 补充解析：问题2 三层架构是为了符合“高内聚、低耦合”的",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2097,7 +2212,8 @@
       },
       "matchedText": "5倍",
       "context": "目背景：某大型电商平台，日活用户500万+，原有单体架构无法支撑业务快速迭代 - 主要工作：担任系统架构师，负责微服务架构总体设计和技术选型 - 核心成果：完成从单体到微服务的架构演进，系统吞吐量提升5倍，发布周期从月级缩短到天级 正文第一章：项目概述（400-500字） - 项目背景：电商业务快速增长，单体应用面临发布频繁冲突、扩展瓶颈、技术债累积 - 团队规模：8个开发小组、50+开发人员 - 个人职责：架构设计、技术选型、拆分方案制",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2115,7 +2231,8 @@
       },
       "matchedText": "92%",
       "context": "- 项目背景：某金融机构智能客服与知识问答系统，服务3万+内部员工和百万+客户 - 主要工作：担任系统架构师，负责大模型应用架构的整体设计 - 核心成果：构建RAG+Agent混合架构，问答准确率达92%，平均响应时间<3秒 正文第一章：项目概述（400-500字） - 业务需求：智能客服自动应答、内部知识库问答、合规文档审查 - 技术挑战：金融领域专业性强、合规要求高、数据安全要求严格 - 个人职责：架构设计、模型选型评估、RAG系统设",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2133,7 +2250,8 @@
       },
       "matchedText": "24小时",
       "context": "监控告警：多维度监控（基础设施、应用、业务），分级告警 ### 范文提纲（2500字框架） 摘要（200-300字） - 项目背景：某省级医疗信息平台，连接200+医院，关系患者生命安全，要求7×24小时不间断运行 - 主要工作：担任系统架构师，负责可靠性架构设计 - 核心成果：系统可用性达到99.99%（年停机时间<52.6分钟），零重大故障 正文第一章：项目概述（400-500字） - 项目背景：省级医疗健康信息平台，承载挂号、电子病",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2151,7 +2269,8 @@
       },
       "matchedText": "10倍",
       "context": "00字框架） 摘要（200-300字） - 项目背景：某物联网平台，连接10万+设备，日均处理5亿+事件消息 - 主要工作：担任架构师，负责事件驱动架构的整体设计 - 核心成果：系统日处理事件量提升10倍，响应延迟降低80% 正文第一章：项目概述（400-500字） - 项目背景：工业物联网平台，设备状态采集、告警处理、数据分析 - 原有痛点：同步调用链过长、系统耦合严重、峰值处理能力不足 - 个人职责：EDA架构设计、消息中间件选型、事",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2169,7 +2288,8 @@
       },
       "matchedText": "72%",
       "context": "200-300字） - 项目背景：某大型商业银行数据治理平台建设，管理3000+数据表、500+数据接口 - 主要工作：担任数据架构师，负责数据治理架构的整体设计与实施 - 核心成果：数据质量合格率从72%提升至95%，通过DCMM三级认证 正文第一章：项目概述（400-500字） - 项目背景：银行数字化转型，数据孤岛严重、数据质量参差不齐、合规压力大 - 治理目标：统一数据标准、提升数据质量、保障数据安全、挖掘数据价值 - 个人职责：数",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2187,7 +2307,8 @@
       },
       "matchedText": "40%",
       "context": "0-300字） - 项目背景：某科技公司智能软件开发辅助平台，利用多Agent协作完成需求分析、代码生成、测试 - 主要工作：担任架构师，负责多Agent系统的整体架构设计 - 核心成果：开发效率提升40%，代码缺陷率降低30% 正文第一章：项目概述（400-500字） - 项目背景：软件开发效率瓶颈，希望用AI辅助开发全流程 - 多Agent设计理念：模拟软件团队（产品经理Agent、架构师Agent、开发Agent、测试Agent） -",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2205,7 +2326,8 @@
       },
       "matchedText": "10倍",
       "context": "- 项目背景：某保险公司核心业务系统云原生迁移，原有单体Java应用迁移到K8s平台 - 主要工作：担任云原生架构师，负责迁移策略制定和架构设计 - 核心成果：18个月完成迁移，系统弹性扩展能力提升10倍，运维效率提升5倍 正文第一章：项目概述（400-500字） - 项目背景：传统单体应用部署在物理服务器，扩展困难、发布周期长（月级） - 迁移驱动力：业务快速发展、弹性伸缩需求、降低运维成本 - 个人职责：制定迁移策略、设计云原生架构、",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2223,7 +2345,8 @@
       },
       "matchedText": "99.99%",
       "context": "某个组件、数据等） - 响应（Response）：系统对刺激的反应（处理请求、记录攻击、降级服务等） - 响应度量（Response Measure）：可量化的响应指标（延迟<2s、可用性99.99%等） 3. 质量属性间的权衡关系 - 性能 vs 安全性：加密增加计算开销，降低性能 - 性能 vs 可修改性：高度优化的代码往往难以修改 - 安全性 vs 易用性：严格的安全措施可能降低用户体验 - 可用性 vs",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2241,7 +2364,8 @@
       },
       "matchedText": "88%",
       "context": "摘要（200-300字） - 项目背景：某大型律所智能法律知识问答系统，包含10万+法律文书、法规条文、案例判决 - 主要工作：担任架构师，负责RAG系统的整体架构设计 - 核心成果：问答准确率达88%，法律依据引用准确率95%，日均服务1000+律师咨询 正文第一章：项目概述（400-500字） - 项目背景：法律知识库庞大、更新频繁，律师需要快速查找法律依据 - 技术挑战：法律文书格式多样、术语专业、准确性要求极高 - 个人职责：R",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2259,7 +2383,8 @@
       },
       "matchedText": "99.99%",
       "context": "- 项目背景：某互联网金融平台，日交易量1000万+笔，涉及账户余额、交易流水等核心数据的一致性保障 - 主要工作：担任架构师，负责分布式一致性方案设计 - 核心成果：实现交易数据零差错，系统可用性99.99% 正文第一章：项目概述（400-500字） - 项目背景：互联网金融平台，用户规模5000万+，微服务架构，MySQL分库分表 - 一致性挑战：跨库事务、缓存与数据库一致性、多副本数据同步 - 个人职责：一致性方案设计、分布式事务选型、灾",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2277,7 +2402,8 @@
       },
       "matchedText": "40%",
       "context": "配置中心 - 遇到的问题：过度抽象导致性能下降、接口变更的兼容性 - 解决方案：性能热点优化、接口版本管理、变更影响分析工具 - 效果：需求变更响应周期从2周缩短到3天、缺陷率降低40% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2295,7 +2421,8 @@
       },
       "matchedText": "60%",
       "context": "）： - 选型依据：业务特征分析（事件驱动、波峰波谷明显） - 落地挑战：冷启动优化、状态管理、团队技能转型 - 解决方案：预热策略、状态外部化、渐进式迁移 - 效果：成本降低60%、运维人力减少、发布频率提升5倍 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2313,7 +2440,8 @@
       },
       "matchedText": "4倍",
       "context": "化、动态批处理、KV Cache优化 - 遇到的问题：GPU利用率低、长尾延迟、显存溢出 - 解决方案：请求队列优化、PagedAttention、多级缓存 - 效果：推理吞吐量提升4倍、P99延迟降低60%、GPU利用率从30%提升到85% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2331,7 +2459,8 @@
       },
       "matchedText": "30秒",
       "context": "- 技术实现：数据实时同步、自动故障切换、灾备演练体系 - 遇到的问题：数据同步延迟、脑裂风险、演练影响生产 - 解决方案：半同步复制、仲裁机制、灰度演练 - 效果：RTO < 30秒、RPO = 0、年可用性99.99%、通过等保三级 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2349,7 +2478,8 @@
       },
       "matchedText": "5倍",
       "context": "- 基于业务领域重新聚合服务，遵循\"两个披萨\"团队原则 - 引入Saga模式处理分布式事务 - 通过API网关和适配层实现新老系统互联 - 实施效果：系统吞吐量提升5倍、部署频率从月级到日级、故障影响范围缩小80% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2367,7 +2497,8 @@
       },
       "matchedText": "70%",
       "context": "协议 → 应用代理网关适配 - 员工抵触多因素认证 → 渐进推行+无感认证（设备信任） - 微隔离策略过严导致业务中断 → 观察模式先行，逐步收紧 - 实施效果：安全事件减少70%、VPN相关投诉下降90%、等保2.0合规达标 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2385,7 +2516,8 @@
       },
       "matchedText": "10倍",
       "context": "- 长链路推理成本高 → 模型级联（简单任务用小模型，复杂任务用大模型） - 工具调用安全风险 → 沙箱隔离 + 权限分级 + 审计日志 - 实施效果： - 文档处理效率提升10倍 - 数据报表生成从小时级缩短到分钟级 - IT运维工单自动处理率达到60% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2403,7 +2535,8 @@
       },
       "matchedText": "92%",
       "context": "- 仿真模型与实际偏差大 → 数据驱动的模型持续校准机制 - 海量时序数据存储压力 → 时序数据库 + 冷热数据分层 + 数据降采样 - 实施效果： - 设备故障预测准确率92%，非计划停机减少60% - 生产工艺优化周期从2周缩短到2天 - 新员工培训时间缩短50%（AR辅助运维指导） - 年度维护成本降低35% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2421,7 +2554,8 @@
       },
       "matchedText": "15%",
       "context": "建模，数据不出本地 - 方案：纵向联邦学习+TEE混合架构 - 挑战：通信效率、模型精度损失、参与方信任 - 解决：压缩通信、安全聚合协议、第三方审计 - 效果：欺诈识别率提升15%，数据合规零风险 ### 评分标准 | 评分项 | 分值 | 要求 | |--------|------|------| | 项目背景 | 10分 | 项目真实可信，角色清晰 | | 技术论述 | 25分 | 至少3种技术路线的详细阐述",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2439,7 +2573,8 @@
       },
       "matchedText": "99.95%",
       "context": "杀者模式+防腐层 - 实施过程：分3个阶段（外围服务→核心服务→数据库拆分） - 挑战：数据库拆分困难、分布式事务、团队技能转型 - 效果：发布频率从月级提升到周级，系统可用性提升到99.95% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2457,7 +2592,8 @@
       },
       "matchedText": "100ms",
       "context": "200字）： - 需求：工业缺陷检测系统，融合高清图像+X光+超声波 - 技术选型：视觉编码器用ResNet/ViT，融合用Cross-Attention - 挑战：推理延迟高（需<100ms）、GPU资源紧张、标注成本高 - 解决：模型量化INT8、TensorRT加速、半监督学习减少标注 - 效果：缺陷检出率98.5%，误检率<1%，单次推理<50ms ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2475,7 +2611,8 @@
       },
       "matchedText": "60%",
       "context": "，维护困难 - 问题：修改一处影响全局、缺乏测试、文档缺失 - 改进：引入分层架构重构、建立自动化测试体系、代码质量度量 - 效果：平均缺陷修复时间从5天降到1天，变更引入缺陷率降低60%",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2493,7 +2630,8 @@
       },
       "matchedText": "55%",
       "context": "- 解决：梯度裁剪+混合精度训练稳定性优化、算子融合+Flash Attention提升利用率、异步Checkpoint + InfiniBand RDMA加速 - 效果：GPU MFU达到55%+，日均训练Token数达到100B+，MTBF>48小时 ### 评分标准 | 评分项 | 分值 | 要求 | |--------|------|------| | 项目背景 | 10分 | 项目真实可信，角色清晰，涉及大模型训练场景",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2511,7 +2649,8 @@
       },
       "matchedText": "60%",
       "context": "型）、跨域数据标准不统一、数据产品的质量如何保障 - 解决：渐进式推行（先2个域试点）、建立联邦治理委员会、自动化数据质量门禁 - 效果：数据需求交付周期从3个月降至2周，数据质量达标率从60%提升到95% ### 评分标准 | 评分项 | 分值 | 要求 | |--------|------|------| | 项目背景 | 10分 | 项目涉及大规模数据治理场景 | | 技术论述 | 25分 | 四大原则阐述完整，与传统架",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2529,7 +2668,8 @@
       },
       "matchedText": "99.9%",
       "context": "程核心原则（Principles of Chaos Engineering） | 原则 | 说明 | |------|------| | 建立稳态假设 | 定义系统的\"正常\"行为基线（如请求成功率>99.9%、P99延迟<500ms），实验的目标是验证故障注入后系统是否能维持稳态 | | 模拟真实世界事件 | 故障注入应模拟真实可能发生的场景：服务器宕机、网络分区、磁盘满、CPU过载、依赖服务超时等 | | 在生产环境中运行实验 | 理想情况下",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2547,7 +2687,8 @@
       },
       "matchedText": "15-30%",
       "context": "ebLogic上 - 方案：分4个阶段迁移（评估→试点→外围→核心） - 挑战：Oracle存储过程向达梦迁移（语法差异200+处）、Java应用在ARM架构下的JNI库兼容问题、性能下降15-30%的调优 - 解决：DTS迁移工具+人工适配脚本、Native库交叉编译+容器化隔离、JVM参数调优+数据库索引优化 - 效果：完成全部系统迁移，核心业务性能达到原系统的95%+，通过等保三级认证 ### 评分标准 | 评分项",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2565,7 +2706,8 @@
       },
       "matchedText": "2%",
       "context": "1200字）： - 建立缺陷管理规范：级别定义、处理时效要求 - 工具选型：JIRA配置缺陷工作流 - 度量分析：每迭代缺陷趋势分析、缺陷根因分析 - 效果：线上缺陷逃逸率降至2%以下 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2583,7 +2725,8 @@
       },
       "matchedText": "10倍",
       "context": "- 可观测性：ELK日志 + Prometheus监控 + SkyWalking追踪 - 自动化：GitLab CI + ArgoCD + Terraform - 效果：发布频率提升10倍、可用性99.99% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2601,7 +2744,8 @@
       },
       "matchedText": "5倍",
       "context": "ngSphere实现透明分片 - 遇到的问题：跨片关联查询、分布式事务、数据迁移 - 解决方案：宽表冗余+异步同步、Saga模式、双写迁移 - 效果：支撑10亿级数据量、查询性能提升5倍 --- ## 数据来源 | 来源 | URL | 说明 | |------|-----|------| | 启码笔记 | https://ebook.qicoder.com/系统架构设计师/notes/2020年架构论文真题.htm",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2619,7 +2763,8 @@
       },
       "matchedText": "30%",
       "context": "施：Spring AOP实现统一日志切面、声明式事务 - 问题：代理失效（自调用问题）、切面顺序、性能影响 - 解决：暴露代理、@Order排序、合理设计切入点 - 效果：代码量减少30%、关注点分离、可维护性提升 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2637,7 +2782,8 @@
       },
       "matchedText": "60%",
       "context": "功能实现：消息中间件 + ETL + 适配器 + BPM - 问题：性能瓶颈、接口标准不统一、监控困难 - 解决：异步化改造、制定集成规范、统一监控平台 - 效果：系统集成周期缩短60%、数据一致性保障 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2655,7 +2801,8 @@
       },
       "matchedText": "70%",
       "context": "项目介绍（300字）：大型企业应用需要快速开发 2. CBSD过程论述（1000字）：五个阶段详细说明 3. 项目实践（1200字）： - 构件库建设：建立企业级构件仓库 - 构件获取：70%复用现有构件 + 30%自行开发 - 组装实施：基于Spring框架的构件组装 - 问题：构件版本冲突、接口不兼容、测试困难 - 解决：语义版本管理、适配器模式、构件级测试 - 效果：开发效率提升50%、代码复用率7",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2673,7 +2820,8 @@
       },
       "matchedText": "20%",
       "context": "1. 四类软件维护 - 改正性维护（约20%）：修复已发现的缺陷 - 适应性维护（约25%）：适应环境变化（OS、数据库、硬件升级） - 完善性维护（约50%）：增加新功能、改善性能、优化体验 - 预防性维护（约5%）：提前改善代码质量，预防未来问题 2. 影响维",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2691,7 +2839,8 @@
       },
       "matchedText": "60%",
       "context": "rino - 四大特征的具体实现 - 问题：小文件问题、数据倾斜、元数据管理 - 解决：文件合并优化、分区策略调整、Hive Metastore统一目录 - 效果：存储成本降低60%、查询性能提升3倍 --- ## 数据来源 | 来源 | URL | 说明 | |------|-----|------| | 打卡网 | https://www.dratk.com/User/Article/User_Article",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2709,7 +2858,8 @@
       },
       "matchedText": "1000小时",
       "context": "- 可用数据类型：故障时间数据 vs 故障计数数据 - 模型预测精度：通过历史数据验证 - 模型复杂度：参数估计的可行性 4. 可靠性评价流程 - 确定可靠性目标（如MTBF ≥ 1000小时） - 收集测试数据（故障时间、故障数量） - 选择合适的可靠性模型 - 参数估计（最大似然估计/最小二乘法） - 计算可靠性指标 - 与目标对比，决定是否发布 ### 范文思路 写作框架： 1. 项目介绍",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2727,7 +2877,8 @@
       },
       "matchedText": "10ms",
       "context": "架构设计：云-边-端三层架构 - 六种协同的具体实现 - 问题：边缘设备异构、网络不稳定、安全管控 - 解决：容器化统一部署、离线缓存队列、零信任安全 - 效果：响应延迟降至10ms、带宽节省70% --- ## 数据来源 | 来源 | URL | 说明 | |------|-----|------| | IT谷 | http://itgu.com/298.html | 2023年论文真题 | | IT谷 | h",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2745,7 +2896,8 @@
       },
       "matchedText": "40%",
       "context": "ML建模，定义核心领域对象和交互） - PSM转换（选择Java EE平台，映射到Spring框架） - 代码生成（使用EMF生成基础框架，手工完善业务逻辑） - 效果：开发效率提升40%、需求变更影响减小 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2763,7 +2915,8 @@
       },
       "matchedText": "80%",
       "context": "）：每个条件的真假值都覆盖 - 路径覆盖（Path Coverage）：覆盖所有可能的执行路径 - MC/DC覆盖：每个条件独立影响判定结果 - 实践标准：核心业务逻辑要求分支覆盖≥80% 4. 回归测试组织 - 回归测试策略：全量回归 vs 选择性回归 - 自动化回归：CI/CD流水线自动触发 - 测试用例优先级：高风险模块优先 - 工具：Jenkins + JUnit + JaCoCo（覆盖率统",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "quantified-claim-context-review"
@@ -2781,7 +2934,8 @@
       },
       "matchedText": "30%",
       "context": "itOps - 监控体系：Prometheus全栈监控 + 自定义告警 - 自愈与扩缩容：K8s HPA + 故障自动恢复 - 效果：部署频率从月到日、MTTR从小时到分钟、成本降低30% --- ## 数据来源 | 来源 | URL | 说明 | |------|-----|------| | IT谷 | http://itgu.com/295.html | 2024上半年论文真题 | | 环球网校 | https:",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2799,7 +2953,8 @@
       },
       "matchedText": "99.99%",
       "context": "务状态检查解决；库存服务故障时Try失败，触发Cancel释放资源，引入重试与补偿机制；消息堆积通过监控告警和动态扩容消费线程解决；4)效果验证：通过全链路监控和事务成功率指标验证，订单数据一致性达到99.99%，系统吞吐量提升40%，满足双11高并发场景需求。",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": "glm-5.2-reviewed",
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2817,7 +2972,8 @@
       },
       "matchedText": "80%",
       "context": "适用场景 - 说明测试策略的制定原则 - 介绍现代测试技术趋势 3. 项目实践（1200字）： - 测试策略选择：基于项目特点制定分层测试策略 - 具体实施：单元测试（覆盖率>80%）、接口自动化、性能压测 - 遇到的问题：测试环境不稳定、测试数据管理困难、回归测试周期长 - 解决方案：容器化测试环境、测试数据工厂、自动化回归测试 - 效果：缺陷检出率提升、发布质量改善 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2835,7 +2991,8 @@
       },
       "matchedText": "99.99%",
       "context": "LVS（L4高性能转发） - 遇到的问题：会话保持、健康检查误判、突发流量 - 解决方案：Session共享（Redis）、多维度健康检查、弹性扩缩容 - 效果：支撑百万级QPS、99.99%可用性 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2853,7 +3010,8 @@
       },
       "matchedText": "15分钟",
       "context": "代：专注业务逻辑，缩短发布周期 - 细粒度扩展：函数级别独立扩缩容 3. 关键挑战 - 冷启动延迟：首次调用或长时间未调用后的响应延迟 - 执行时间限制：单次函数执行时间有上限（如15分钟） - 状态管理：无状态设计下如何管理会话和上下文 - 调试困难：分布式函数的调试和监控复杂度高 - 厂商锁定：各云平台FaaS接口差异大 4. 应对措施 - 预热机制（Provisioned Concurrenc",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2871,7 +3029,8 @@
       },
       "matchedText": "99.99%",
       "context": "实践（1200字）： - 选型依据：性能需求、成本预算、兼容性要求 - 关键难点：数据迁移、性能调优、团队适应 - 应对措施：灰度迁移、性能基准测试、培训 - 实施效果：可用性99.99%、扩展能力提升10倍、运维成本降低40% ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "outcome-metric-needs-evidence"
@@ -2889,7 +3048,8 @@
       },
       "matchedText": "3倍",
       "context": "搭建 - 测试执行：分阶段递增压力 - 瓶颈发现：数据库连接池不足、GC频繁、慢SQL - 优化措施：连接池调优、JVM参数优化、SQL索引优化、引入缓存 - 效果：TPS提升3倍、P99响应时间降至200ms以内 ---",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
@@ -2907,7 +3067,8 @@
       },
       "matchedText": "99.99%",
       "context": "is Cluster - 遇到的问题：缓存击穿、热点key、数据库锁争用 - 解决方案：缓存预热+永不过期、热点key拆分、库存分段锁 - 效果：支撑百万级QPS、零超卖、系统可用性99.99% --- ## 数据来源 | 来源 | URL | 说明 | |------|-----|------| | 环球网校 | hqwx.com/web_news/html/2025-11/17626781248741.html | 20",
-      "hasPreciseSource": false,
+      "hasSourceLocator": false,
+      "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
