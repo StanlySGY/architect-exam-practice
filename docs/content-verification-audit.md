@@ -709,3 +709,12 @@
 - 学习单元 7.1.2、10.1.2 新增 ISO/IEC/IEEE 42010:2022，支持架构与架构描述工件的区分，以及架构描述结构和表达要求；标准并不规定具体架构活动流程或图模型的变更操作。
 - 学习单元 7.4.1 新增 SEI 软件产品线资料，支持共同核心资产、受管理特性和计划性复用的概念；不把软件产品线工程推广为所有复用活动的强制方法。
 - 来源：[ISO/IEC/IEEE 42010:2022](https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html)；[SEI Software Product Lines Collection](https://www.sei.cmu.edu/library/software-product-lines-collection/)。三个单元保持 partial。命题级证据覆盖从 129 增至 132 个叶子单元，仍缺有效证据的单元从 195 降至 192 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮补充：关系模型、规范化、数据库设计与备份恢复（2026-10-10）
+
+- 学习单元 6.2.1 新增 PostgreSQL 官方表定义文档，支持关系表的行、列与数据类型概念；“域”仍需结合关系理论理解。
+- 学习单元 6.2.3 新增 IBM 规范化文档，支持属性依赖、减少冗余和降低更新异常的关系；不宣称所有系统都应无条件采用最高范式。
+- 学习单元 6.3.1 新增 IBM 数据组织文档，支持从实体/属性分析开始并区分逻辑组织与物理映射；不把阶段划分当作唯一线性流程。
+- 学习单元 6.3.7 新增 PostgreSQL 备份恢复文档，支持备份、恢复和连续归档属于运行维护策略；具体 RPO/RTO 必须按业务需求制定并实测。
+- 来源：[PostgreSQL Table Basics](https://www.postgresql.org/docs/17/ddl-basics.html)；[IBM Normalization](https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-normalization)；[IBM Organizing a database](https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing)；[PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)。四个单元保持 partial。由于学习单元 6.2.3 是既有验证队列排除项，本批 4 个单元中有 3 个计入覆盖率；命题级证据覆盖从 132 增至 135 个队列单元，仍缺有效证据的单元从 192 降至 189 个。总课程状态仍为 3 verified、321 partial。

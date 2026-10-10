@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,132); assert.equal(report.unitsMissingEvidence,192); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,135); assert.equal(report.unitsMissingEvidence,189); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -222,3 +222,6 @@ test('AI development history and edge-cloud positioning have scoped sources',()=
 
 
 test('architecture descriptions and planned software reuse have bounded evidence',()=>{const expected=[['7.1.2','https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html','结构与表达要求'],['7.4.1','https://www.sei.cmu.edu/library/software-product-lines-collection/','共同核心资产'],['10.1.2','https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html','架构本身与用于表达该架构']];for(const [id,url,claim] of expected){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'),id);}});
+
+
+test('relational tables normalization database design and backup have scoped sources',()=>{const cases=[['6.2.1','https://www.postgresql.org/docs/17/ddl-basics.html','行和列'],['6.2.3','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-normalization','属性与主键之间的依赖'],['6.3.1','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing','实体和属性'],['6.3.7','https://www.postgresql.org/docs/current/backup.html','备份与恢复']];for(const [id,url,claim] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'),id);}});

@@ -2942,6 +2942,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL 17 Documentation：Table Basics",
+          "url": "https://www.postgresql.org/docs/17/ddl-basics.html",
+          "sourceAuthority": "PostgreSQL 官方文档（版本 17）",
+          "supportedClaim": "PostgreSQL 文档说明关系数据库表由行和列组成，各列具有名称与数据类型，数据类型约束可赋给该列的值。",
+          "scope": "支持关系表、行、列和列类型的基本对应；“域”作为关系理论中的取值集合仍需结合关系模型教材理解，且 SQL 表不自动保证行唯一或查询返回顺序。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.2.2": {
@@ -3010,6 +3021,17 @@
       "selfChecks": [
         "函数依赖在规范化中起什么作用？为什么判断范式前通常要先分析候选键和依赖？",
         "如果一个非键属性只由候选键的一部分决定，你会重点怀疑哪类规范化问题？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Documentation：Normalization",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-normalization",
+          "sourceAuthority": "IBM 官方产品文档：数据库规范化",
+          "supportedClaim": "IBM 文档说明规范化通过分阶段细化表结构、分析属性与主键之间的依赖，减少不必要的数据重复并帮助避免更新异常。",
+          "scope": "支持规范化、依赖关系与减少冗余/异常的基本联系；文档针对特定数据库产品，不能据此推断所有工作负载都应无条件追求最高范式，也不替代完整的函数依赖理论。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.1": {
@@ -3044,6 +3066,17 @@
       "selfChecks": [
         "数据库设计各阶段的输入、产物和验证重点是什么？",
         "为什么实施后发现问题时可能需要回退迭代？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Documentation：Organizing a database",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing",
+          "sourceAuthority": "IBM 官方产品文档：数据库组织与设计",
+          "supportedClaim": "IBM 文档将数据规范化置于数据分析之后，并说明设计需识别实体和属性，再组织数据结构；逻辑组织与物理文件映射属于不同层次的设计问题。",
+          "scope": "支持数据库设计应从数据需求与对象分析开始、区分逻辑组织和物理实现；不证明所有项目必须采用完全相同的阶段名称、严格线性顺序或一次性完成流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.2": {
@@ -3248,6 +3281,17 @@
       "selfChecks": [
         "性能监控、备份和恢复分别解决什么问题？",
         "为什么必须演练恢复，而不能只检查备份文件存在？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL Documentation：Backup and Restore",
+          "url": "https://www.postgresql.org/docs/current/backup.html",
+          "sourceAuthority": "PostgreSQL 官方文档：数据库备份与恢复",
+          "supportedClaim": "PostgreSQL 官方文档将备份与恢复作为数据库管理的重要任务，并介绍 SQL dump、文件系统级备份和连续归档等不同策略。",
+          "scope": "支持备份与恢复属于数据库运行维护的核心活动；具体备份频率、保留周期、恢复点目标和恢复时间目标必须根据业务风险与实测恢复演练确定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.4": {
