@@ -657,3 +657,10 @@
 
 - 学习单元 4.8.1 新增 GB 17859-1999 标准文本与国家标准信息平台两个来源，分别支持五个等级名称及标准身份/现行状态。明确不把该标准的五级名称直接等同于网络安全等级保护 1.0/2.0 的全部定级、建设与测评要求。
 - 来源：[GB 17859-1999 文本 PDF](https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf)；[全国标准信息公共服务平台记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7)。单元保持 partial。命题级证据覆盖从 112 增至 113 个叶子单元，仍缺有效证据的单元从 212 降至 211 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：网络范围术语与系统性能指标（2026-10-10）
+
+- 学习单元 2.5 新增 NIST LAN/WAN 术语定义，分别支持局部区域网络的基本定义及 WAN 通常覆盖比 LAN 更大范围的差异；不据此声称网络协议、组网工程和全部网络分类已被核验。
+- 学习单元 2.9 新增 ISO/IEC 25010:2023 性能效率子特性，支持以时间行为、资源利用和容量组织性能评价；具体公式、负载模型和性能结论仍需测量。
+- 来源：[NIST LAN Glossary](https://csrc.nist.gov/glossary/term/local_area_network)；[NIST WAN Glossary](https://csrc.nist.gov/glossary/term/wide_area_network)；[ISO/IEC 25010:2023](https://www.iso.org/standard/78176.html)。两个单元保持 partial。命题级证据覆盖从 113 增至 115 个叶子单元，仍缺有效证据的单元从 211 降至 209 个；总状态仍为 3 verified、321 partial。

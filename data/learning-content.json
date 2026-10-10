@@ -1034,6 +1034,26 @@
       "selfChecks": [
         "请不用照抄原文，解释“计算机网络基础涉及网络概念、通信技术、网络技术、组网技术和网络工程。”的核心含义，并说明它解决什么问题。",
         "请用“从通信对象和协议栈理解网络，再分析链路、设备、寻址、路由、组网和冗余”分析“计算机网络基础涉及网络概念、通信技术、网络技术、组网技术和网络工程。”：列出关键步骤，并说明怎样识别“协议解决通信规则，组网解决网络结构与设备连接”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：Local Area Network (LAN)",
+          "url": "https://csrc.nist.gov/glossary/term/local_area_network",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 NIST SP 800-82 Rev. 3 等来源）",
+          "supportedClaim": "NIST 将 LAN 描述为在相对有限区域分布、通过通信链路连接并允许设备彼此交互的一组计算机和其他设备。",
+          "scope": "只支持 LAN 的基本术语含义；不单独覆盖网络协议分层、组网工程流程或所有网络技术分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：wide area network (WAN)",
+          "url": "https://csrc.nist.gov/glossary/term/wide_area_network",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 NIST SP 800-82 Rev. 3 等来源）",
+          "supportedClaim": "NIST 将 WAN 描述为服务于较多独立用户、且通常覆盖范围大于 LAN 的物理或逻辑数据通信网络。",
+          "scope": "只支持 WAN 与 LAN 在服务规模和覆盖范围上的术语差异；不验证具体网络工程设计或通信性能。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.6": {
@@ -1185,6 +1205,17 @@
       "selfChecks": [
         "响应时间、吞吐量、并发用户数分别描述什么？性能题中为什么必须先确认负载和单位？",
         "请用“先定义负载和指标，再建立计算关系，之后设计资源与并发策略，最后通过测试或模型评估验证”分析“系统性能主要从性能指标、性能计算、性能设计和性能评估四个方面理解，把业务负载转化为可度量的系统目标。”：列出关键步骤，并说明怎样识别“响应时间、吞吐量、并发和资源利用率不是同一个指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC 25010:2023：Product quality model",
+          "url": "https://www.iso.org/standard/78176.html",
+          "sourceAuthority": "ISO/IEC（国际标准化组织与国际电工委员会；2023 年国际标准）",
+          "supportedClaim": "ISO/IEC 25010:2023 的产品质量模型将性能效率细分为时间行为、资源利用和容量等子特性，可作为系统性能目标定义和评价的参考。",
+          "scope": "支持性能评价维度的分类；不提供具体系统的性能公式、基准数据、负载模型或设计结论，需按项目场景另行测量。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.1": {

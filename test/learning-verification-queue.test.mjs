@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,113); assert.equal(report.unitsMissingEvidence,211); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,115); assert.equal(report.unitsMissingEvidence,209); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -189,3 +189,9 @@ test('computer system foundations and systems engineering have scoped evidence',
 
 
 test('GB 17859 level names and standard status have distinct sources',()=>{const u=content.units['4.8.1'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf'&&e.supportedClaim.includes('五个等级')&&e.scope.includes('不据此把五级直接等同于现行网络安全等级保护')));assert.ok(u.evidence?.some(e=>e.url==='https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7'&&e.supportedClaim.includes('标记为现行')&&e.scope.includes('只支持标准身份')));});
+
+
+test('LAN WAN and system performance metrics have scoped evidence',()=>{
+ const net=content.units['2.5'];assert.equal(net.status,'partial');assert.ok(net.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/local_area_network'&&e.supportedClaim.includes('相对有限区域')));assert.ok(net.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/wide_area_network'&&e.supportedClaim.includes('覆盖范围大于 LAN')));
+ const perf=content.units['2.9'];assert.equal(perf.status,'partial');assert.ok(perf.evidence?.some(e=>e.url==='https://www.iso.org/standard/78176.html'&&e.supportedClaim.includes('时间行为、资源利用和容量')&&e.scope.includes('不提供具体系统的性能公式')));
+});
