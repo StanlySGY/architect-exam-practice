@@ -8,7 +8,7 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,90); assert.equal(report.unitsMissingEvidence,234); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,92); assert.equal(report.unitsMissingEvidence,232); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -102,4 +102,9 @@ test("cryptography and port-discovery concepts have bounded NIST evidence",()=>{
 test("dataflow, data-centered and event-based architecture styles have scoped SEI evidence",()=>{
  const cases=[["7.3.2","pipe-and-filter"],["7.3.4","data-centered systems"],["7.3.6","event systems"]];
  for(const [id,claim] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url==="https://insights.sei.cmu.edu/documents/232/1994_019_001_30085.pdf"&&e.supportedClaim&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus),id);}
+});
+
+test("call-return and virtual-machine architecture patterns have scoped SEI evidence",()=>{
+ const cases=[["7.3.3","explicit-invocation call-return patterns"],["7.3.5","interpreters among virtual-machine patterns"]];
+ for(const [id,claim] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url==="https://www.sei.cmu.edu/documents/1602/2020_011_001_650228.pdf"&&e.supportedClaim&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus),id);}
 });

@@ -3759,6 +3759,15 @@
       "selfChecks": [
         "分层、主程序—子程序和面向对象风格在组织控制与职责方面有何区别？",
         "为什么仅仅把代码目录分层不能证明系统遵循分层架构？"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.sei.cmu.edu/documents/1602/2020_011_001_650228.pdf",
+          "supportedClaim": "A Carnegie Mellon SEI architecture-pattern taxonomy lists main-program/subroutine and object-oriented organization under explicit-invocation call-return patterns.",
+          "scope": "Supports these as recognized explicit-invocation patterns only; it does not mean every object-oriented design has identical runtime control flow or that layered systems always follow one strict call direction.",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.3.4": {
@@ -3836,6 +3845,15 @@
       "selfChecks": [
         "虚拟机或解释器风格如何屏蔽部分底层差异？",
         "为什么存在运行时抽象后仍需考虑宿主平台和资源开销？"
+      ],
+      "evidence": [
+        {
+          "url": "https://www.sei.cmu.edu/documents/1602/2020_011_001_650228.pdf",
+          "supportedClaim": "The SEI architecture-pattern taxonomy lists interpreters among virtual-machine patterns.",
+          "scope": "Supports interpreter-based organization as a recognized virtual-machine pattern only; it does not establish that all interpreters provide the same degree of platform abstraction or isolation.",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.3.6": {
