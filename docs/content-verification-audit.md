@@ -685,3 +685,20 @@
 - 学习单元 2.2 新增 NIST 系统组件术语定义，支持系统组件可按明确输入、输出和特定功能理解；不据此核验处理器、存储器、总线和外设的具体结构及性能。
 - 学习单元 3.1 新增 NASA 系统/项目生命周期章节，支持生命周期阶段与关键决策点是系统工程管理框架的一部分；该来源不覆盖本章所有分类、原则和开发方法。
 - 来源：[NIST System Component Glossary](https://csrc.nist.gov/glossary/term/system_component)；[NASA Program/Project Life Cycle](https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/)。两个单元保持 partial。命题级证据覆盖从 119 增至 121 个叶子单元，仍缺有效证据的单元从 205 降至 203 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：架构质量属性、可靠性、维护、CPS 与 AI 定义（2026-10-10）
+
+- 学习单元 8.1.3、8.2.2 新增 SEI 架构质量属性场景与架构评估资料，支持将质量要求明确化、采用场景/度量/检查表等方法分析；未宣称某一种模板或方法分类具有唯一性。
+- 学习单元 9.1.3 新增 NIST 可靠性术语定义，明确给定条件和时间范围；不将可靠性数值与失效后果严重程度混为一个通用公式。
+- 学习单元 10.1.1 新增 ISO/IEC/IEEE 14764:2022，支持软件维护的生命周期过程和维护类型；未将维护完全等同于架构演化。
+- 学习单元 11.1.1 新增 NIST CPS 框架，支持数字、模拟、物理与人类组件集成的基本定义；不宣称所有 CPS 都必须采用固定闭环架构。
+- 学习单元 11.2.1 新增 OECD 2024 AI 系统定义，覆盖目标、输入推断、输出与自主性/适应性差异；不把 AI 限定为单一学科、机器学习或大模型。
+- 来源：[SEI Quality Attributes](https://www.sei.cmu.edu/library/reasoning-about-software-quality-attributes/)；[SEI Architecture Evaluation](https://www.sei.cmu.edu/library/principles-for-evaluating-the-quality-attributes-of-a-software-architecture/)；[NIST Reliability Glossary](https://csrc.nist.gov/glossary/term/reliability)；[ISO/IEC/IEEE 14764:2022](https://www.iso.org/standard/80710.html)；[NIST CPS Framework](https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview)；[OECD AI System Definition](https://www.oecd.org/en/publications/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_623da898-en.html)。六个单元均保持 partial。命题级证据覆盖从 121 增至 127 个叶子单元，仍缺有效证据的单元从 203 降至 197 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮补充：AI 技术演进与边缘—云连续体（2026-10-10）
+
+- 学习单元 11.2.2 新增 OECD 的 AI 社会影响概览，有限支持符号式方法、统计机器学习、神经网络/深度学习等历史脉络；该来源不是完整技术史，也不支持把演进简化成严格线性阶段。
+- 学习单元 11.4.1 新增 NIST/IEEE 相关边缘—云连续体研究，支持边缘计算以数据/服务邻近性和延迟权衡为核心的概念；不把边缘节点限制为固定设备清单。
+- 来源：[OECD Artificial Intelligence in Society](https://www.oecd.org/en/publications/artificial-intelligence-in-society_eedfee77-en.html)；[Edge–Cloud Continuum PDF](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934390)。两个单元保持 partial。命题级证据覆盖从 127 增至 129 个叶子单元，仍缺有效证据的单元从 197 降至 195 个；总状态仍为 3 verified、321 partial。

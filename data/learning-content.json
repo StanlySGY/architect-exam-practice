@@ -4492,6 +4492,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“将模糊质量要求转化为可分析、可测试的场景。”的核心含义，并说明它解决什么问题。",
         "请用“围绕质量场景学习：刺激源→刺激→环境→制品→响应→响应度量，再比较架构方案的权衡”分析“将模糊质量要求转化为可分析、可测试的场景。”：列出关键步骤，并说明怎样识别“性能、可靠性、可用性、安全性、可维护性等质量属性常相互制约，不能把单一指标当作总体架构质量”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI：Reasoning About Software Quality Attributes",
+          "url": "https://www.sei.cmu.edu/library/reasoning-about-software-quality-attributes/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute（SEI）",
+          "supportedClaim": "SEI 指出，质量属性场景用于精确定义适用的质量属性需求，以支持架构分析和评价。",
+          "scope": "支持将模糊质量要求转化为通用场景的必要性；不证明某一场景模板是唯一格式，也不保证写出场景就意味着架构满足需求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "8.2.1": {
@@ -4571,6 +4582,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“常见方法包括基于场景、基于度量、基于模型和基于经验/检查表的方法。”的核心含义，并说明它解决什么问题。",
         "请用“围绕质量场景学习：刺激源→刺激→环境→制品→响应→响应度量，再比较架构方案的权衡”分析“常见方法包括基于场景、基于度量、基于模型和基于经验/检查表的方法。”：列出关键步骤，并说明怎样识别“性能、可靠性、可用性、安全性、可维护性等质量属性常相互制约，不能把单一指标当作总体架构质量”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI：Principles for Evaluating the Quality Attributes of a Software Architecture",
+          "url": "https://www.sei.cmu.edu/library/principles-for-evaluating-the-quality-attributes-of-a-software-architecture/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute（SEI），CMU/SEI-96-TR-036",
+          "supportedClaim": "SEI 的架构质量属性评估报告讨论了通过场景、问卷、检查表和度量等手段组织架构分析，并强调依据质量属性选择适当分析技术。",
+          "scope": "支持多种架构评估技术可互补使用；不意味着场景、度量、模型和经验检查表构成唯一或互斥的分类，也不替代对具体方法适用条件的判断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "8.3": {
@@ -4744,6 +4766,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“可靠性目标是用户对软件可靠性水平的定量期望，需要同时考虑失效概率和后果严重程度。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“可靠性目标是用户对软件可靠性水平的定量期望，需要同时考虑失效概率和后果严重程度。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：reliability",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 IEEE 与 NIST 技术报告术语）",
+          "supportedClaim": "NIST 所列定义将可靠性描述为系统在给定条件下、指定时间内执行规定功能而不发生失效的能力或概率。",
+          "scope": "支持可靠性与条件、时间范围及失效相关的定义；不单独规定用户目标如何制定，也不等同于把失效后果严重程度纳入一个统一的可靠性数值。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.1.4": {
@@ -5371,6 +5404,17 @@
       "selfChecks": [
         "什么变化会推动架构演化？为什么架构演化不能简单理解为“换新技术”？",
         "请用“从变化来源→影响分析→演化策略→实施→验证建立闭环”分析“软件架构演化是系统在需求、技术、环境和质量目标变化下持续调整结构的过程。”：列出关键步骤，并说明怎样识别“演化不是随意重构”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022：Software maintenance",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 国际标准，ISO/IEC/IEEE 14764:2022（第 3 版）",
+          "supportedClaim": "该标准为软件维护提供过程与活动指导，并说明软件维护的不同类型；维护过程以软件生命周期过程标准为基础。",
+          "scope": "支持系统交付后维护活动需要过程化管理；不将软件维护与完整的架构演化概念完全等同，也不涵盖所有组织、技术和业务变化的具体治理方法。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.1.2": {
@@ -5926,6 +5970,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“CPS 是控制系统和嵌入式系统的扩展，核心是数据自动流动形成“状态感知→实时分析→科学决策→精准执行”的闭环。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“CPS 是控制系统和嵌入式系统的扩展，核心是数据自动流动形成“状态感知→实时分析→科学决策→精准执行”的闭环。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST：Framework for Cyber-Physical Systems, Volume 1: Overview",
+          "url": "https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview",
+          "sourceAuthority": "美国国家标准与技术研究院（NIST），Special Publication 1500-201",
+          "supportedClaim": "NIST 将信息物理系统（CPS）描述为由数字、模拟、物理和人类组件相互作用，并通过物理规律与逻辑集成实现功能的系统。",
+          "scope": "支持 CPS 涉及计算/数字组件与物理过程、人类交互的定义；不单独证明所有 CPS 都必须采用特定的“感知—分析—决策—执行”架构或统一层次模型。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.1.2": {
@@ -6028,6 +6083,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“AI 是计算机科学与数学、心理学、神经科学、语言学等交叉形成的技术体系。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“AI 是计算机科学与数学、心理学、神经科学、语言学等交叉形成的技术体系。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OECD：Explanatory memorandum on the updated OECD definition of an AI system",
+          "url": "https://www.oecd.org/en/publications/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_623da898-en.html",
+          "sourceAuthority": "经济合作与发展组织（OECD），OECD Artificial Intelligence Papers No. 8（2024）",
+          "supportedClaim": "OECD 将 AI 系统定义为一种机器系统：针对显式或隐式目标，从输入推断如何生成预测、内容、建议或决策等输出，并可能影响物理或虚拟环境；不同系统的自主性和部署后适应性存在差异。",
+          "scope": "支持 AI 系统的工作定义与输出特征；不证明 AI 只由某些学科构成，也不把机器学习或大模型视为 AI 的全部。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.2.2": {
@@ -6062,6 +6128,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“经历符号主义/推理、专家系统、统计学习、深度学习和大模型等阶段。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“经历符号主义/推理、专家系统、统计学习、深度学习和大模型等阶段。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OECD：Artificial Intelligence in Society",
+          "url": "https://www.oecd.org/en/publications/artificial-intelligence-in-society_eedfee77-en.html",
+          "sourceAuthority": "经济合作与发展组织（OECD）",
+          "supportedClaim": "OECD 对 AI 技术发展的概述回顾了早期符号式方法、统计机器学习以及神经网络/深度学习等重要发展阶段。",
+          "scope": "这是面向社会与政策的概览，不是完整的人工智能史或唯一的阶段划分；不据此断言技术演进是严格线性、各阶段互相取代，也不覆盖所有技术流派。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.2.3": {
@@ -6266,6 +6343,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“边缘位于云中心与终端之间，可是网关、基站、边缘服务器、工业控制器或现场设备。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“边缘位于云中心与终端之间，可是网关、基站、边缘服务器、工业控制器或现场设备。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST：Edge–Cloud Continuum",
+          "url": "https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934390",
+          "sourceAuthority": "NIST 与 IEEE Computer Society 相关研究出版物：Edge–Cloud Continuum",
+          "supportedClaim": "该研究将边缘描述为靠近传感器数据采集和使用的位置，并指出云、雾、边缘到终端形成不同的数据/服务邻近程度与延迟权衡。",
+          "scope": "支持边缘计算的相对位置及数据邻近性概念；边缘节点不局限于网关、基站或某一固定设备清单，部署位置需按延迟、带宽、数据和服务需求判断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.4.2": {

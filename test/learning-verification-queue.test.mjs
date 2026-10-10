@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,121); assert.equal(report.unitsMissingEvidence,203); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,129); assert.equal(report.unitsMissingEvidence,195); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -213,3 +213,9 @@ test('hardware component interfaces and system life-cycle evidence are bounded',
  const component=content.units['2.2'];assert.equal(component.status,'partial');assert.ok(component.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/system_component'&&e.supportedClaim.includes('明确输入、输出和特定功能')&&e.scope.includes('不单独验证处理器')));
  const lifecycle=content.units['3.1'];assert.equal(lifecycle.status,'partial');assert.ok(lifecycle.evidence?.some(e=>e.url==='https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/'&&e.supportedClaim.includes('生命周期')&&e.scope.includes('不证明本章所列全部信息系统分类')));
 });
+
+
+test('architecture quality scenarios reliability maintenance CPS and AI definitions have bounded evidence',()=>{const expected=[['8.1.3','https://www.sei.cmu.edu/library/reasoning-about-software-quality-attributes/','质量属性场景'],['8.2.2','https://www.sei.cmu.edu/library/principles-for-evaluating-the-quality-attributes-of-a-software-architecture/','检查表和度量'],['9.1.3','https://csrc.nist.gov/glossary/term/reliability','指定时间内'],['10.1.1','https://www.iso.org/standard/80710.html','软件维护'],['11.1.1','https://www.nist.gov/publications/framework-cyber-physical-systems-volume-1-overview','数字、模拟、物理和人类组件'],['11.2.1','https://www.oecd.org/en/publications/explanatory-memorandum-on-the-updated-oecd-definition-of-an-ai-system_623da898-en.html','显式或隐式目标']];for(const [id,url,claim] of expected){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});
+
+
+test('AI development history and edge-cloud positioning have scoped sources',()=>{const a=content.units['11.2.2'];assert.equal(a.status,'partial');assert.ok(a.evidence?.some(e=>e.url==='https://www.oecd.org/en/publications/artificial-intelligence-in-society_eedfee77-en.html'&&e.supportedClaim.includes('符号式方法')&&e.scope.includes('不是完整的人工智能史')));const edge=content.units['11.4.1'];assert.equal(edge.status,'partial');assert.ok(edge.evidence?.some(e=>e.url==='https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934390'&&e.supportedClaim.includes('靠近传感器数据采集')&&e.scope.includes('不局限于网关')));});
