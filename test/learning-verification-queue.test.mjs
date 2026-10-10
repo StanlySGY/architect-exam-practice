@@ -60,6 +60,45 @@ test('reliability model claims use direct technical sources while textbook-speci
  assert.equal(report.unitsWithClaimLevelEvidence,324);assert.equal(report.unitsWithCompleteClaimEvidence,313);assert.equal(report.unitsMissingEvidence,11);
  assert.deepEqual(report.queue.map(unit=>unit.id),reliabilityIds);
 });
+
+test('supplemental reliability sources support bounded claims without closing textbook-specific gaps', () => {
+  const reliabilityIds = ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
+  const supplementalSources = [
+    ['9.2.3.3', 'https://www.nationalacademies.org/read/18987/chapter/11', '回归方法'],
+    ['9.2.3.4', 'https://doi.org/10.1016/0026-2714(83)91372-0', 'Duane'],
+    ['9.2.3.6', 'https://doi.org/10.1016/0026-2714(78)91139-3', '输入域'],
+    ['9.2.3.7', 'https://doi.org/10.7631/issn.1000-2243.2008.1.59', '路径'],
+    ['9.2.3.8', 'https://doi.org/10.1016/0026-2714(83)91372-0', 'NHPP'],
+    ['9.2.3.9', 'https://doi.org/10.1002/asm.3150060404', 'Markov'],
+    ['9.2.3.10', 'https://www.nationalacademies.org/read/18987/chapter/11', 'Gamma']
+  ];
+
+  for (const id of reliabilityIds) {
+    assert.equal(content.units[id].status, 'partial', id);
+    assert.ok(content.units[id].verificationPendingClaims?.length > 0, id);
+  }
+  for (const [id, url, claimFragment] of supplementalSources) {
+    const unit = content.units[id];
+    assert.ok(
+      unit.evidence.some(e =>
+        e.url === url &&
+        e.reviewStatus === 'source-supports-bounded-claim' &&
+        e.reviewedOn === '2026-10-10' &&
+        e.scope &&
+        /(不证明|不替代)/.test(e.scope) &&
+        e.supportedClaim.toLowerCase().includes(claimFragment.toLowerCase())
+      ),
+      'missing scoped supplemental source for ' + id + ': ' + url
+    );
+  }
+
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitCount, 324);
+  assert.equal(report.unitsWithClaimLevelEvidence, 324);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 313);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.deepEqual(report.queue.map(unit => unit.id), reliabilityIds);
+});
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];
