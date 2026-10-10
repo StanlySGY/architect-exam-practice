@@ -8247,6 +8247,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“业务逻辑层按业务能力划分组件，封装业务规则、事务边界和领域服务。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“业务逻辑层按业务能力划分组件，封装业务规则、事务边界和领域服务。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft DDD-oriented Microservice",
+          "url": "https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice",
+          "sourceAuthority": "Microsoft DDD-oriented Microservice",
+          "supportedClaim": "领域驱动设计将领域模型与业务能力作为组织业务逻辑的重要依据。",
+          "scope": "只支持业务逻辑可围绕领域概念组织；不规定所有业务层都必须采用 DDD 或微服务。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.3.2": {
@@ -8287,6 +8298,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“工作流将复杂业务过程表示为活动、状态、角色、条件和转换的有序组合。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“工作流将复杂业务过程表示为活动、状态、角色、条件和转换的有序组合。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG BPMN 2.0.2",
+          "url": "https://www.omg.org/spec/BPMN/2.0.2",
+          "sourceAuthority": "OMG BPMN 2.0.2",
+          "supportedClaim": "BPMN 2.0.2 为业务流程建模提供标准化的图形元素和流程语义。",
+          "scope": "只支持流程可通过活动、事件、网关和流向建模；不意味着所有工作流引擎都完整实现 BPMN。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.3.3": {
@@ -8327,6 +8349,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“实体表示具有身份、状态和生命周期的业务对象，承载业务数据与部分行为。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“实体表示具有身份、状态和生命周期的业务对象，承载业务数据与部分行为。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft DDD-oriented Microservice",
+          "url": "https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/ddd-oriented-microservice",
+          "sourceAuthority": "Microsoft DDD-oriented Microservice",
+          "supportedClaim": "领域驱动设计区分实体和值对象等领域模型概念，并以业务规则组织领域行为。",
+          "scope": "只支持实体/领域模型的基本思想；具体实体边界需按业务身份、生命周期和一致性规则判断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.3.4": {
@@ -8367,6 +8400,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“业务框架提供组件装配、依赖注入、事务、缓存、日志、异常、权限和消息等通用能力。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“业务框架提供组件装配、依赖注入、事务、缓存、日志、异常、权限和消息等通用能力。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft .NET Dependency Injection",
+          "url": "https://learn.microsoft.com/en-us/dotnet/core/extensions/dependency-injection",
+          "sourceAuthority": "Microsoft .NET Dependency Injection",
+          "supportedClaim": "依赖注入通过容器或服务提供机制管理依赖关系，降低组件对具体实现的直接耦合。",
+          "scope": "只支持依赖注入作为应用框架常见能力；不证明事务、缓存、日志、权限等能力都必须由同一个框架提供。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.1": {
@@ -8407,6 +8451,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“教材重点讨论直接访问、数据访问对象、数据映射器、离线数据模式和对象/关系映射。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“教材重点讨论直接访问、数据访问对象、数据映射器、离线数据模式和对象/关系映射。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Entity Framework Core",
+          "url": "https://learn.microsoft.com/en-us/ef/core/",
+          "sourceAuthority": "Microsoft Entity Framework Core",
+          "supportedClaim": "EF Core 提供对象与关系数据库之间的映射和数据访问抽象。",
+          "scope": "只支持 ORM/数据访问抽象的核心作用；不完整覆盖 DAO、数据映射器、离线数据等所有模式分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.2": {
@@ -8447,6 +8502,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“以统一DataAccess接口封装SQL Server、Oracle、OleDb等实现，由工厂根据数据库类型创建具体访问对象。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“以统一DataAccess接口封装SQL Server、Oracle、OleDb等实现，由工厂根据数据库类型创建具体访问对象。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft ADO.NET DbProviderFactory",
+          "url": "https://learn.microsoft.com/en-us/dotnet/framework/data/adonet/obtaining-a-dbproviderfactory",
+          "sourceAuthority": "Microsoft ADO.NET DbProviderFactory",
+          "supportedClaim": "ADO.NET DbProviderFactory 可根据数据提供程序创建连接、命令等数据库访问对象。",
+          "scope": "只支持通过提供程序工厂抽象数据库访问实现；不保证所有数据库驱动在行为、SQL 方言和事务能力上完全一致。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.3": {
@@ -8487,6 +8553,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“ORM把对象操作映射为数据库操作，Hibernate是开源Java ORM框架，CMP是容器管理持久化。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“ORM把对象操作映射为数据库操作，Hibernate是开源Java ORM框架，CMP是容器管理持久化。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Hibernate ORM Official Site",
+          "url": "https://hibernate.org/orm/",
+          "sourceAuthority": "Hibernate ORM Official Site",
+          "supportedClaim": "Hibernate ORM 将 Java 对象与关系数据库数据进行持久化映射。",
+          "scope": "只支持 Hibernate 作为 Java ORM 的例子；不把 CMP 视为 Hibernate 的同义词，也不证明 ORM 自动消除所有映射代价。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.4": {
@@ -8527,6 +8604,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“XML Schema描述XML文档合法结构、内容限制和数据类型，逐步替代DTD。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“XML Schema描述XML文档合法结构、内容限制和数据类型，逐步替代DTD。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "W3C XML Schema 1.1",
+          "url": "https://www.w3.org/TR/xmlschema11-1/",
+          "sourceAuthority": "W3C XML Schema 1.1",
+          "supportedClaim": "XML Schema 定义 XML 文档的结构、元素/属性约束及数据类型。",
+          "scope": "只支持 XML Schema 的结构与类型约束能力；不证明它在所有场景中都替代 DTD，也不负责业务语义验证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.5": {
@@ -8567,6 +8655,17 @@
       "selfChecks": [
         "事务为什么需要作为整体处理？ACID四个性质分别解决什么问题？",
         "请用“先理解原子性、一致性、隔离性、持久性的目标，再分析事务边界与并发场景”分析“事务是一组需要作为整体处理的操作，成功时提交，失败时回滚，并以ACID描述其关键性质。”：列出关键步骤，并说明怎样识别“ACID四个性质解决的问题不同，不应把“回滚”简单等同于全部ACID”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL Transactions Tutorial",
+          "url": "https://www.postgresql.org/docs/current/tutorial-transactions.html",
+          "sourceAuthority": "PostgreSQL Transactions Tutorial",
+          "supportedClaim": "数据库事务把多个操作组织为一个整体，并支持提交或回滚。",
+          "scope": "只支持事务的基本行为；ACID 的具体保证与隔离级别、数据库实现和配置有关。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.4.6": {
@@ -8607,6 +8706,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“连接对象管理关注连接创建、复用、关闭和并发控制，常用连接池降低建立连接开销。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“连接对象管理关注连接创建、复用、关闭和并发控制，常用连接池降低建立连接开销。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PgBouncer Features",
+          "url": "https://www.pgbouncer.org/features.html",
+          "sourceAuthority": "PgBouncer Features",
+          "supportedClaim": "PgBouncer 通过连接池复用数据库连接，减少频繁建立连接带来的开销。",
+          "scope": "只支持连接池复用的机制与权衡；不规定所有系统必须使用 PgBouncer，也不保证任何负载下都提高性能。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.5": {
@@ -8687,6 +8797,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“重点理解感知层、网络层、应用层的职责及跨层协同。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“重点理解感知层、网络层、应用层的职责及跨层协同。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ITU-T Y.4000 Overview of IoT",
+          "url": "https://www.itu.int/rec/T-REC-Y.4000-201611-I/en",
+          "sourceAuthority": "ITU-T Y.4000 Overview of IoT",
+          "supportedClaim": "ITU-T Y.4000 为物联网提供概念概览，涉及物理对象、通信能力和服务等系统要素。",
+          "scope": "只支持 IoT 涉及对象、连接与服务的跨层协同概念；不证明三层架构是所有 IoT 系统唯一有效的分层方式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.7": {
@@ -9948,6 +10069,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“EOS 负责嵌入式系统软硬件资源分配、任务调度、控制和并行活动协调，通常包含底层驱动、内核、驱动接口、协议栈和可配置组件。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“EOS 负责嵌入式系统软硬件资源分配、任务调度、控制和并行活动协调，通常包含底层驱动、内核、驱动接口、协议栈和可配置组件。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
+          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
+          "supportedClaim": "RTOS 内核提供任务调度、同步和时间相关基础机制，支持嵌入式应用协调并发任务。",
+          "scope": "只支持实时操作系统的内核基础职责；不证明所有嵌入式 OS 都采用相同组件划分或必须内置所有协议栈。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.2.3": {
