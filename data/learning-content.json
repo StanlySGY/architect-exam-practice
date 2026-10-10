@@ -7373,6 +7373,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“信息系统架构是对特定领域信息进行统筹、规划、设计和组织的活动。现代架构同时具有概念层和物理层。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“信息系统架构是对特定领域信息进行统筹、规划、设计和组织的活动。现代架构同时具有概念层和物理层。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF",
+          "supportedClaim": "TOGAF 将企业架构作为连接业务目标、能力和技术实现的整体性规划活动。",
+          "scope": "只支持企业架构作为跨业务与技术的统筹活动；不替代教材对信息系统架构的特定定义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.1.2": {
@@ -7413,6 +7424,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“企业架构从系统结构描述逐步发展为连接战略、业务、信息、技术和治理的体系。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“企业架构从系统结构描述逐步发展为连接战略、业务、信息、技术和治理的体系。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF",
+          "supportedClaim": "TOGAF 的企业架构方法覆盖业务、数据、应用和技术等架构域。",
+          "scope": "只支持企业架构关注多个相互关联的领域；不证明所有企业必须采用完全相同的架构组织方式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.1.3": {
@@ -7453,6 +7475,17 @@
       "selfChecks": [
         "软件架构描述的核心对象是什么？为什么不能把架构简单等同于技术栈或一张模块图？",
         "请用“从元素→外部可见属性→关系→环境和约束理解架构，并追踪这些决策对质量属性的影响”分析“教材对架构的核心表述强调软件元素、元素外部可见属性及其关系，架构描述的是系统结构而非单一技术选型。”：列出关键步骤，并说明怎样识别“不要把“架构=模块图”或“架构=技术栈”当成完整定义”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "ISO/IEC/IEEE 42010 将架构与用于表达架构的架构描述区分，并关注利益相关方及其关注点。",
+          "scope": "只支持架构与架构描述工件的概念边界；不单独验证教材所引 IEEE 定义的历史版本或原文译法。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.2.1": {
@@ -7493,6 +7526,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“架构风格定义系统家族的词汇表、构件与连接件类型，以及组合这些元素的约束。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“架构风格定义系统家族的词汇表、构件与连接件类型，以及组合这些元素的约束。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Architecture Styles",
+          "url": "https://www.sei.cmu.edu/documents/1119/1994_005_001_16331.pdf",
+          "sourceAuthority": "SEI Software Architecture Styles",
+          "supportedClaim": "软件架构风格通过构件、连接件及其组织约束描述一类系统的结构。",
+          "scope": "只支持构件/连接件/约束的核心概念；不证明该来源列出的风格覆盖所有现代架构风格。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.2.2": {
@@ -7533,6 +7577,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“可按物理结构和逻辑结构分类。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“可按物理结构和逻辑结构分类。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Styles",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/",
+          "sourceAuthority": "Microsoft Azure Architecture Styles",
+          "supportedClaim": "Microsoft 架构风格指南区分不同架构组织方式，并强调按系统需求选择合适风格。",
+          "scope": "只支持架构组织方式可从不同风格分析；不提供所有分布式系统物理/逻辑分类的完整教材分类表。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.2.3": {
@@ -7573,6 +7628,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“信息系统架构必须同时考虑战略、业务、组织、管理、技术和人的因素。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“信息系统架构必须同时考虑战略、业务、组织、管理、技术和人的因素。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF",
+          "supportedClaim": "TOGAF 企业架构覆盖业务、数据、应用和技术等相互关联的架构域。",
+          "scope": "只支持企业架构应考虑业务与技术的跨域关系；不证明任何固定组织结构或人的因素分类适用于所有企业。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.2.4": {
@@ -7613,6 +7679,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“常见模型体现从单机到分布式、服务化和企业集成的演进。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“常见模型体现从单机到分布式、服务化和企业集成的演进。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Styles",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/",
+          "sourceAuthority": "Microsoft Azure Architecture Styles",
+          "supportedClaim": "架构风格指南展示分层、事件驱动、微服务等不同组织模式及其适用权衡。",
+          "scope": "只支持架构存在多种组织模式；不构成从单机到分布式的唯一历史演进序列。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.2.5": {
@@ -7653,6 +7730,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“企业信息系统架构是多维、分层和高度集成的模型。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“企业信息系统架构是多维、分层和高度集成的模型。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF",
+          "supportedClaim": "企业架构以多个相互关联的架构域组织企业能力、信息和技术的整体视图。",
+          "scope": "只支持多域企业架构的基本概念；不规定所有企业架构必须采用同样的层数或模型粒度。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.3.1": {
@@ -7693,6 +7781,17 @@
       "selfChecks": [
         "TOGAF、ADM和具体项目架构产物分别是什么层次的概念？为什么不能把它们当成同一个东西？",
         "请用“学习时把框架、开发方法和具体项目产物分开，理解ADM如何围绕架构工作进行迭代”分析“TOGAF是企业架构框架，ADM是其核心的迭代式架构开发方法。”：列出关键步骤，并说明怎样识别“TOGAF不是某个具体软件产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF ADM",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF ADM",
+          "supportedClaim": "TOGAF ADM 是用于开发和管理企业架构的迭代式方法，包含多个相互关联的阶段。",
+          "scope": "只支持 TOGAF 与 ADM 的关系及迭代性质；不意味着每个项目都必须完整执行所有阶段或不作裁剪。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.3.2": {
@@ -7733,6 +7832,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“信息化建设应围绕企业战略和业务，以架构模式、生命周期和总体规划方法组织。”的核心含义，并说明它解决什么问题。",
         "请用“先提取业务目标和质量属性，再划分职责与边界，选择架构风格，明确关键技术决策，最后验证风险与权衡”分析“信息化建设应围绕企业战略和业务，以架构模式、生命周期和总体规划方法组织。”：列出关键步骤，并说明怎样识别“架构设计不是先选技术再找用途”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "The Open Group TOGAF ADM",
+          "url": "https://www.opengroup.org/togaf",
+          "sourceAuthority": "The Open Group TOGAF ADM",
+          "supportedClaim": "TOGAF 强调企业架构开发应联系业务目标、需求管理和架构治理。",
+          "scope": "只支持架构规划与业务目标/治理之间的关系；不提供任何特定企业信息化建设的完整落地方案。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "12.4": {
@@ -7864,6 +7974,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“Controller接收请求并协调；Model封装业务数据和业务逻辑；View呈现数据并接收用户输入。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“Controller接收请求并协调；Model封装业务数据和业务逻辑；View呈现数据并接收用户输入。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft ASP.NET Core MVC Overview",
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/mvc/overview",
+          "sourceAuthority": "Microsoft ASP.NET Core MVC Overview",
+          "supportedClaim": "MVC 模式将模型、视图和控制器分工，以分离应用状态/逻辑、界面呈现和请求协调。",
+          "scope": "只支持 MVC 的基本职责划分；不同框架对模型/控制器的具体实现边界可能有所不同。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.2": {
@@ -7944,6 +8065,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“View与Model通过ViewModel和Data Binding通信，适用于数据驱动和响应式界面。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“View与Model通过ViewModel和Data Binding通信，适用于数据驱动和响应式界面。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft MVVM Architecture",
+          "url": "https://learn.microsoft.com/en-us/dotnet/architecture/maui/mvvm",
+          "sourceAuthority": "Microsoft MVVM Architecture",
+          "supportedClaim": "MVVM 通过 ViewModel 组织视图所需状态与命令，通常配合数据绑定连接视图。",
+          "scope": "只支持 MVVM 的基本机制；不证明所有 MVVM 实现都禁止任何形式的 View 与 Model 直接交互。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.4": {
@@ -7984,6 +8116,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“XML适合描述GUI控件树、属性、布局和事件，与HTML关注显示不同，XML强调数据结构。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“XML适合描述GUI控件树、属性、布局和事件，与HTML关注显示不同，XML强调数据结构。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "W3C Extensible Markup Language (XML)",
+          "url": "https://www.w3.org/TR/xml/",
+          "sourceAuthority": "W3C Extensible Markup Language (XML)",
+          "supportedClaim": "XML 是用于结构化表示和交换数据的标记语言，允许应用定义元素和嵌套结构。",
+          "scope": "只支持 XML 的结构化数据表达能力；不证明 XML 专为 GUI 设计，也不等同于 HTML 的用途定义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.5": {
