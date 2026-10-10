@@ -996,6 +996,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“嵌入式系统是嵌入对象体系、以应用为中心、软硬件协同、资源受限并强调实时性、可靠性和安全性的专用计算系统。”的核心含义，并说明它解决什么问题。",
         "请用“优先建立层次关系和因果链：CPU/存储/总线/IO、软件层次、网络分层、性能指标”分析“嵌入式系统是嵌入对象体系、以应用为中心、软硬件协同、资源受限并强调实时性、可靠性和安全性的专用计算系统。”：列出关键步骤，并说明怎样识别“不要把概念的设计思想与具体产品、型号或实现混为一谈”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST：Embedded Systems Definition (13th National Computer Security Conference Proceedings)",
+          "url": "https://csrc.nist.gov/files/pubs/conference/1990/10/01/proceedings-13th-national-computer-security-confer/final/docs/1990-13th-ncsc-proceedings-vol-1.pdf",
+          "sourceAuthority": "NIST 第 13 届国家计算机安全会议论文集（1990 年技术论文，较早的概念性来源）",
+          "supportedClaim": "该文献将嵌入式计算系统描述为大型系统中的组成部分，并服务于特定用途。",
+          "scope": "只支持“嵌入式系统是更大系统中的专用组成部分”这一基本概念；由于来源年代较早，不单独支持现代嵌入式系统的资源约束、实时性、安全性或软硬件协同等全部特征。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.5": {
@@ -2622,6 +2633,17 @@
       "selfChecks": [
         "测试与调试分别主要解决什么问题？为什么测试通过不能证明软件绝对没有缺陷？",
         "给出一个边界值测试例子，并说明它的预期结果应如何确定。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISTQB Glossary：Expected Result and Test Execution",
+          "url": "https://glossary.istqb.org/en_US/term/expected-result?exact_matches_first=true&syllabus_id=23",
+          "sourceAuthority": "International Software Testing Qualifications Board（ISTQB）官方测试术语表，术语参考 ISO 29119-1",
+          "supportedClaim": "ISTQB 将 expected result 定义为在指定条件下、基于测试依据预测的可观察行为；其测试术语还将 test execution 描述为运行测试并产生实际结果的活动。",
+          "scope": "支持测试通过对照预期结果与实际行为进行评价的核心思路；不证明任一测试套件覆盖充分、无缺陷或能验证所有需求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.5": {

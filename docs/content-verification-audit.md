@@ -671,3 +671,10 @@
 - 学习单元 4.1.1 新增 NIST 保密性、完整性、可用性、真实性和不可否认性术语定义，分别支撑对应概念；这些术语定义不等于证明“五个要素”是所有标准统一采用的固定清单。
 - 学习单元 4.1.2 新增 NIST SP 800-53 Rev. 5 更新版，支持访问控制、审计、身份认证、恶意代码防护、系统与通信保护等控制族确属安全控制目录的一部分；不据此宣称具体系统已实现全部控制。
 - 来源：[NIST Confidentiality](https://csrc.nist.gov/glossary/term/confidentiality)；[NIST Integrity](https://csrc.nist.gov/glossary/term/integrity)；[NIST Availability](https://csrc.nist.gov/glossary/term/availability)；[NIST Authenticity](https://csrc.nist.gov/glossary/term/authenticity)；[NIST Non-repudiation](https://csrc.nist.gov/glossary/term/non_repudiation)；[NIST SP 800-53 Rev. 5 Update 1](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)。两个单元保持 partial。命题级证据覆盖从 115 增至 117 个叶子单元，仍缺有效证据的单元从 209 降至 207 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：嵌入式系统基本定义与软件测试预期结果（2026-10-10）
+
+- 学习单元 2.4 新增 NIST 会议论文中的嵌入式系统定义，只支持其作为更大系统中服务特定用途的组成部分这一核心点。该来源年代较早，不将其作为现代嵌入式系统资源约束、实时性和安全特征的完整依据。
+- 学习单元 5.4 新增 ISTQB 测试术语表，支持预期结果是依据测试基础在指定条件下预测的可观察行为、测试执行会产生实际结果；不据此推断测试覆盖率充分或软件无缺陷。
+- 来源：[NIST Embedded Systems Conference Proceedings](https://csrc.nist.gov/files/pubs/conference/1990/10/01/proceedings-13th-national-computer-security-confer/final/docs/1990-13th-ncsc-proceedings-vol-1.pdf)；[ISTQB Expected Result Glossary](https://glossary.istqb.org/en_US/term/expected-result?exact_matches_first=true&syllabus_id=23)。两个单元保持 partial。命题级证据覆盖从 117 增至 119 个叶子单元，仍缺有效证据的单元从 207 降至 205 个；总状态仍为 3 verified、321 partial。
