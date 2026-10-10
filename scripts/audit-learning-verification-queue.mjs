@@ -11,13 +11,29 @@ export function buildVerificationQueue(content) {
    const validDate = /^\d{4}-\d{2}-\d{2}$/.test(reviewedOn) && !Number.isNaN(Date.parse(`${reviewedOn}T00:00:00Z`)) && new Date(`${reviewedOn}T00:00:00Z`).toISOString().slice(0, 10) === reviewedOn;
    return item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && validDate && String(item.reviewStatus ?? '').trim() && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus));
   });
+  const pendingClaims = Array.isArray(unit?.verificationPendingClaims) ? unit.verificationPendingClaims.map(value => String(value).trim()).filter(Boolean) : [];
   const missing = [];
   if (!validEvidence.length) missing.push('no claim-level evidence record');
-  if (!validEvidence.length && (!unit?.source?.path || !String(unit.source.path).startsWith('https://'))) missing.push('no directly clickable external source path');
+  for (const claim of pendingClaims) missing.push(`unresolved material claim: ${claim}`);
   if (unit?.status === 'verified' && !validEvidence.length) missing.push('verified status without valid claim-level evidence');
-  return { id, status: unit?.status ?? '(missing)', chapter: String(id).split('.')[0], what: String(unit?.what ?? ''), evidenceCount: validEvidence.length, missing, nextAction: missing.length ? 'retrieve authoritative source and record exact supported claim/scope' : 'review whether evidence covers every factual claim before upgrading status' };
+  const nextAction = missing.length
+   ? (validEvidence.length ? 'resolve the listed material claim(s) against a direct source; keep the unit partial' : 'retrieve authoritative source and record the exact supported claim/scope')
+   : 'review whether evidence covers every factual claim before upgrading status';
+  return { id, status: unit?.status ?? '(missing)', chapter: String(id).split('.')[0], what: String(unit?.what ?? ''), evidenceCount: validEvidence.length, pendingClaims, missing, nextAction };
  });
- return { reportVersion: 1, readOnly: true, unitCount: units.length, statusDistribution: units.reduce((a,[,u]) => { const s=u?.status ?? '(missing)'; a[s]=(a[s]??0)+1; return a; }, {}), unitsWithClaimLevelEvidence: queue.filter(x=>x.evidenceCount>0).length, unitsMissingEvidence: queue.filter(x=>x.missing.length>0).length, verifiedWithoutEvidence: queue.filter(x=>x.status==='verified'&&x.evidenceCount===0).map(x=>x.id), queue: queue.filter(x=>x.missing.length>0).sort((a,b)=>a.chapter.localeCompare(b.chapter,undefined,{numeric:true})||a.id.localeCompare(b.id,undefined,{numeric:true})), note: 'A URL alone is not proof; evidence must identify the exact supported claim and scope. Partial units remain partial until all material claims are adequately reviewed.' };
+ const fullyCovered = queue.filter(unit => unit.evidenceCount > 0 && unit.missing.length === 0).length;
+ return {
+  reportVersion: 2,
+  readOnly: true,
+  unitCount: units.length,
+  statusDistribution: units.reduce((a, [, u]) => { const s = u?.status ?? '(missing)'; a[s] = (a[s] ?? 0) + 1; return a; }, {}),
+  unitsWithClaimLevelEvidence: queue.filter(unit => unit.evidenceCount > 0).length,
+  unitsWithCompleteClaimEvidence: fullyCovered,
+  unitsMissingEvidence: queue.filter(unit => unit.missing.length > 0).length,
+  verifiedWithoutEvidence: queue.filter(unit => unit.status === 'verified' && unit.evidenceCount === 0).map(unit => unit.id),
+  queue: queue.filter(unit => unit.missing.length > 0).sort((a, b) => a.chapter.localeCompare(b.chapter, undefined, { numeric: true }) || a.id.localeCompare(b.id, undefined, { numeric: true })),
+  note: 'A URL alone is not proof. A unit can have evidence for one bounded claim while other material claims remain unresolved; verificationPendingClaims keeps these units in the queue until those gaps are addressed. Partial units remain partial until all material claims are adequately reviewed.'
+ };
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
  const file=resolve(process.argv[2] ?? resolve(root,'data/learning-content.json'));

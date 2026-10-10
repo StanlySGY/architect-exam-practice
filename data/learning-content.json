@@ -5433,7 +5433,8 @@
     },
     "9.1.5": {
       "status": "partial",
-      "what": "广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。",
+      "verificationPendingClaims": ["指定教材中“广义测试/狭义测试”的正式分类定义与边界。","狭义测试是否明确要求按运行剖面概率随机抽样、其具体采样方法及可靠性评价口径。"],
+      "what": "运行剖面可描述软件操作及其发生概率，并用于识别需加强测试的操作区域；该来源不证明指定教材“广义/狭义测试”的分类，也不单独证明狭义测试必须如何随机抽样。",
       "why": "理解「广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
       "how": "围绕「广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
       "confusions": "辨析「广义测试包括整个生命周期中为提高可靠性进行的测试活动；狭义测试按运行剖面随机抽样并收集失效数据，用于可靠性评价。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
@@ -5473,8 +5474,16 @@
           "scope": "只支持可靠性核心术语；不支持本单元关于广义/狭义测试、运行剖面抽样或可靠性评价方法的教材分类，须逐项核对指定教材。",
           "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
-        }
-      ]
+        },
+        {
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章将运行剖面描述为软件操作及其发生概率的集合，并指出其可用于识别需要加大测试投入的关键操作区域。",
+          "scope": "支持运行剖面与测试重点选择的关系；不证明《系统架构设计师教程（第2版）》关于广义/狭义测试的分类、随机抽样方式或可靠性评价公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }      ]
     },
     "9.2.1": {
       "status": "partial",
@@ -15028,7 +15037,8 @@
     },
     "9.2.3.1": {
       "status": "partial",
-      "what": "“种子法模型”是课程树中的可靠性模型标签；公开来源不足以确认其指定教材中的精确定义。",
+      "verificationPendingClaims": ["指定教材对“种子法模型”的正式分类位置、精确假设、公式和估计条件。"],
+      "what": "故障播种/标记模型可采用捕获—再捕获思路：向软件人工植入已知故障，再依据测试后仍未发现的植入故障比例评估测试效果；教材所用术语、精确估计公式及假设仍待核对。",
       "why": "学习“种子法模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "回查教材第9章对应小节，记录模型定义、输入、假设与输出后再对照原始文献。",
       "confusions": "不能凭译名或相似分类猜测数学形式。",
@@ -15038,7 +15048,7 @@
       "pitfalls": "本单元（9.2.3.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15059,19 +15069,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长模型研究",
-          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
-          "sourceAuthority": "学术出版社书目页",
-          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
-          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章把 seeding/tagging models 描述为基于人工植入故障数据的 capture–recapture 方法；测试评估与测试结束时仍未发现的植入故障比例有关。",
+          "scope": "支持故障播种的基本估计机制；不证明《系统架构设计师教程（第2版）》采用相同术语、精确公式或相同假设。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.2": {
       "status": "partial",
-      "what": "失效率类模型通过故障率随时间或测试过程的变化描述可靠性，不同模型具有不同假设。",
+      "verificationPendingClaims": ["指定教材“失效率类模型”的准确分类、所含模型、失效率定义和每种模型的假设/公式。"],
+      "what": "软件可靠性研究会利用测试阶段的失效历史建立增长/预测模型，但模型对故障时间、故障过程和调试效果的假设不同；课程树“失效率类模型”的准确分类及公式尚待指定教材核实。",
       "why": "学习“失效率类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "明确观测量是故障计数、运行时间还是失效间隔，再检查强度函数与测试条件。",
       "confusions": "失效率、故障密度和平均失效间隔不同；失效率下降不自动保证可用性。",
@@ -15081,7 +15092,7 @@
       "pitfalls": "本单元（9.2.3.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "path": "https://www.sciencedirect.com/science/chapter/handbook/abs/pii/S016971618807004X",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15102,19 +15113,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
-          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "Software reliability",
+          "url": "https://www.sciencedirect.com/science/chapter/handbook/abs/pii/S016971618807004X",
+          "sourceAuthority": "Handbook of Statistics, Vol. 7; F. B. Bastani and C. V. Ramamoorthy (1988)",
+          "supportedClaim": "该章区分基于测试/调试期间错误历史预测未来行为的可靠性增长模型、基于输入域样本的模型以及错误播种方法；所列模型的适用阶段和假设不同。",
+          "scope": "支持软件可靠性研究的这些一般建模路径；不证明指定教材中“失效率类模型”的命名、成员清单或公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.3": {
       "status": "partial",
-      "what": "曲线拟合类模型用测试故障数据拟合曲线，描述故障发现趋势或预测后续故障。",
+      "verificationPendingClaims": ["指定教材是否把“曲线拟合类模型”列为独立类别，以及其所指拟合曲线、参数估计步骤和公式。"],
+      "what": "软件可靠性增长曲线研究可将测试时间与累计观测故障数联系起来，并使用非参数回归等方法拟合增长曲线；该方法文献不能证明指定教材采用的类别名称或唯一公式。",
       "why": "学习“曲线拟合类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "明确横纵轴、样本范围、残差与外推范围。",
       "confusions": "拟合曲线不是因果解释；测试环境变化可能使旧关系失效。",
@@ -15124,7 +15136,7 @@
       "pitfalls": "本单元（9.2.3.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "path": "https://doi.org/10.1016/j.stamet.2009.10.007",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15145,19 +15157,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长模型研究",
-          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
-          "sourceAuthority": "学术出版社书目页",
-          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
-          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "Fitting software reliability growth curves using nonparametric regression methods",
+          "url": "https://doi.org/10.1016/j.stamet.2009.10.007",
+          "sourceAuthority": "Statistical Methodology, Vol. 7, Issue 2 (2010)",
+          "supportedClaim": "该研究将测试时间与累计观测故障数联系起来，并研究用非参数回归拟合软件可靠性增长曲线的方法。",
+          "scope": "支持一种曲线拟合/回归分析方法；不证明指定教材把它列为独立模型类别或采用同一公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.4": {
       "status": "partial",
-      "what": "可靠性增长模型描述测试、故障修复与版本改进过程中可靠性指标的统计变化。",
+      "verificationPendingClaims": ["指定教材所列可靠性增长模型的子类清单、每个模型公式及其成立条件。"],
+      "what": "软件可靠性增长模型用测试失效历史分析可靠性随开发/测试过程的变化；增长并不保证单调，因为修复可能引入新缺陷，且模型外推受使用剖面和环境影响。具体教材子类与公式仍待核对。",
       "why": "学习“可靠性增长模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "区分故障发现、修复和模型更新，核对测试代表性与模型假设。",
       "confusions": "测试时间变长不代表可靠性必然上升；新功能可能改变故障分布。",
@@ -15188,19 +15201,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章指出软件可靠性增长可能非单调，因为缺陷修复可能引入新缺陷；同时指出 NHPP 是常用建模路径之一，但时间依赖、运行剖面及环境差异会限制模型推断。",
+          "scope": "直接支持可靠性增长建模的用途与重要限制；不证明教材所列各子模型的精确公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.5": {
       "status": "partial",
-      "what": "程序结构分析类方法借助控制流、路径或模块关系辅助分析测试覆盖；课程标签的精确定义仍待教材核实。",
+      "verificationPendingClaims": ["指定教材“程序结构分析模型”的正式定义、涵盖模型清单以及通用假设或公式。"],
+      "what": "已有模块化程序可靠性模型显式建模模块间控制转移、模块自身失效及接口失效，并为整体程序失效率推导近似；这是一个具体结构模型，不足以单独定义指定教材中的整类“程序结构分析模型”。",
       "why": "学习“程序结构分析模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "记录结构表示、路径/模块指标及其与运行剖面或故障数据的关系。",
       "confusions": "结构复杂度、覆盖率和可靠性概率是不同量，不能直接互换。",
@@ -15210,7 +15224,7 @@
       "pitfalls": "本单元（9.2.3.5）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "path": "https://doi.org/10.1109/TR.1979.5220576",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15231,19 +15245,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
-          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "Software Reliability Model for Modular Program Structure",
+          "url": "https://doi.org/10.1109/TR.1979.5220576",
+          "sourceAuthority": "IEEE Transactions on Reliability; Bev Littlewood (1979)",
+          "supportedClaim": "该模块化程序模型假设模块间控制转移遵循半马尔可夫过程，模块及接口均可能失效，并以泊松过程描述各自失效过程，再推导整体程序失效率的近似。",
+          "scope": "支持一个具体的程序结构可靠性模型及其假设；不单独定义指定教材中整个“程序结构分析模型”类别。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.6": {
       "status": "partial",
-      "what": "输入域分类根据输入空间或操作剖面组织测试，使样本尽量代表实际使用条件。",
+      "verificationPendingClaims": ["指定教材“输入域分类模型”与一般输入域模型的精确对应关系、采样规则及教材公式。"],
+      "what": "输入域模型可构造软件输入域与输出域，并根据测试结果识别输入到输出映射中的故障；操作剖面还可用操作及发生概率辅助选择测试重点，但这不证明指定教材的分类名称和特定抽样公式。",
       "why": "学习“输入域分类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "定义输入类别和权重来源，覆盖边界/异常输入，并比较测试与生产分布。",
       "confusions": "等比例测试不必然代表真实使用分布；操作剖面和边界覆盖互补。",
@@ -15274,19 +15289,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章将 input-domain based models 描述为构造软件输入域和输出域、再依据测试结果识别输入到输出映射中的故障；此类模型不对失效过程作动态假设。",
+          "scope": "支持输入域模型的一般定义；不证明指定教材的“输入域分类模型”命名、具体抽样法或特定公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.7": {
       "status": "partial",
-      "what": "执行路径分析关注程序可能或实际执行的控制路径，用于设计路径相关测试。",
+      "verificationPendingClaims": ["指定教材“执行路径分析模型”的精确定义、路径概率/结构假设及预测公式。"],
+      "what": "已有路径型可靠性预测研究会从软件架构/通信顺序进程轨迹推导执行路径，并据此构造组件化嵌入式软件的可靠性预测模型；该论文仅支持一种路径建模方案，不等于指定教材分类的完整定义。",
       "why": "学习“执行路径分析模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "从控制流图识别分支、循环和关键路径，说明路径爆炸与不可达路径问题。",
       "confusions": "语句、分支和路径覆盖不等价；高覆盖率也不证明无缺陷。",
@@ -15296,7 +15312,7 @@
       "pitfalls": "本单元（9.2.3.7）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "path": "https://doi.org/10.1109/FCST.2009.83",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15317,19 +15333,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
-          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "An Improved Path-Based Reliability Prediction Model for Component-Based Embedded Software",
+          "url": "https://doi.org/10.1109/FCST.2009.83",
+          "sourceAuthority": "IEEE Computer Society conference proceedings (FCST 2009)",
+          "supportedClaim": "该论文提出组件化嵌入式软件的路径型可靠性预测模型，并使用 CSP 轨迹模型推导执行路径。",
+          "scope": "支持一种特定路径型预测方案；不证明指定教材中路径分析类别的完整定义、通用假设或考试公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.8": {
       "status": "partial",
-      "what": "NHPP允许事件发生强度随时间或测试过程变化，可用于描述累计故障发现过程。",
+      "verificationPendingClaims": ["指定教材采用的NHPP子模型、均值函数/强度函数精确公式、参数含义和成立假设。"],
+      "what": "NHPP软件可靠性模型以非齐次泊松过程描述失效过程，其均值函数表示截至给定时点的预期累计失效数；不同NHPP子模型使用不同均值函数和参数，不能将某个模型公式当作整个过程家族的统一公式。",
       "why": "学习“非齐次泊松过程 NHPP”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "明确累计均值函数与强度函数含义、时间变量和独立增量假设，并检查拟合。",
       "confusions": "NHPP是过程家族，不是单一可靠性模型；不同均值函数对应不同模型。",
@@ -15360,19 +15377,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章将 NHPP 模型定义为假设失效过程由非齐次泊松过程描述的模型，并将均值函数解释为截至给定时间的预期累计失效数。",
+          "scope": "支持 NHPP 家族的过程假设和均值函数含义；不同子模型有不同均值函数，不能将某一公式当作整个家族的统一公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.9": {
       "status": "partial",
-      "what": "马尔可夫模型以状态和状态转移描述系统演变，假设给定当前状态后未来转移不额外依赖更早历史。",
+      "verificationPendingClaims": ["指定教材具体马尔可夫模型的状态定义、连续/离散时间设定、转移矩阵或速率公式。"],
+      "what": "软件可靠性文献中的马尔可夫模型把失效过程建模为马尔可夫过程，并为软件状态指定状态转移概率；特定模型还会有各自的状态、强度函数与参数假设，须与教材模型逐项对应。",
       "why": "学习“马尔可夫过程模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "定义状态空间、转移概率/速率和时间模型，检查状态是否足以描述系统。",
       "confusions": "马尔可夫性是建模假设；现实系统未必天然满足。",
@@ -15403,19 +15421,20 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长章节",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
-          "sourceAuthority": "National Academies",
-          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
-          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章将软件可靠性 Markov 模型描述为把失效过程视为马尔可夫过程，并为软件各状态指定状态转移概率。",
+          "scope": "支持 Markov 模型的基本状态/转移概念；不规定指定教材所用的具体状态空间、连续/离散时间假设或转移矩阵公式。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
     },
     "9.2.3.10": {
       "status": "partial",
-      "what": "贝叶斯方法结合先验信息与观测数据，更新未知参数或假设的概率判断。",
+      "verificationPendingClaims": ["指定教材“贝叶斯模型”的具体先验、似然、后验设定、估计步骤和公式。"],
+      "what": "贝叶斯过程模型可把测试前已有信息（例如既往版本缺陷信息）与本轮测试数据结合，以改进可靠性估计和预测；来源未规定指定教材采用的具体先验、似然及后验公式。",
       "why": "学习“贝叶斯模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
       "how": "写明先验、观测模型与后验目标，并做先验敏感性分析。",
       "confusions": "贝叶斯更新不会自动把主观判断变成事实；先验和模型设定都会影响结论。",
@@ -15425,7 +15444,7 @@
       "pitfalls": "本单元（9.2.3.10）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -15446,12 +15465,12 @@
       ],
       "evidence": [
         {
-          "sourceTitle": "软件可靠性增长模型研究",
-          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
-          "sourceAuthority": "学术出版社书目页",
-          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
-          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "background-only-needs-textbook-verification",
+          "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Research Council / The National Academies Press (2015)",
+          "supportedClaim": "该章将 Bayesian process models 描述为结合测试前已有信息（例如既往版本缺陷信息）与测试数据，以改善可靠性估计和预测。",
+          "scope": "支持贝叶斯过程模型使用先验信息与测试数据的概念；不证明指定教材采用的特定先验、似然、后验表达式或估计程序。",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
