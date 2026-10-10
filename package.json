@@ -12,7 +12,11 @@
     "lint": "find server.mjs src test scripts public -type f \\( -name '*.mjs' -o -name '*.js' \\) -print0 | xargs -0 -n1 node --check",
     "audit:learning-content": "node scripts/audit-learning-content.mjs",
     "audit:verification-queue": "node scripts/audit-learning-verification-queue.mjs",
-    "audit:answer-risk": "node scripts/audit-bank-answer-risk.mjs"
+    "audit:answer-risk": "node scripts/audit-bank-answer-risk.mjs",
+    "audit:source-mapping": "node scripts/audit-bank-source-mapping.mjs",
+    "audit:answer-risk-report": "node scripts/render-bank-answer-risk-report.mjs",
+    "audit:source-mapping:report": "node scripts/audit-bank-source-mapping.mjs ../architect-exam-bank/data/bank.json ../ruankao-senior-architecture-designer/sources docs/audits/source-mapping-review-queue.json",
+    "audit:answer-risk-report:save": "node scripts/render-bank-answer-risk-report.mjs ../architect-exam-bank/data/bank.json docs/audits/answer-risk-review-queue.json docs/audits/answer-risk-review-queue.md"
   },
   "engines": {
     "node": ">=22.15"
