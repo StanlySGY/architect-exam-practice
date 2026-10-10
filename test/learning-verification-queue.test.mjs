@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { buildVerificationQueue } from '../scripts/audit-learning-verification-queue.mjs';
 const content=JSON.parse(fs.readFileSync(new URL('../data/learning-content.json',import.meta.url),'utf8'));
+const audit=fs.readFileSync(new URL('../docs/content-verification-audit.md',import.meta.url),'utf8');
+
 test('verification queue keeps claim-level evidence separate from whole-unit status',()=>{
  const report=buildVerificationQueue({units:{'4.3.1':{status:'partial',what:'core claim',source:{path:'https://csrc.nist.gov/glossary/term/defense_in_depth'},evidence:[{url:'https://csrc.nist.gov/glossary/term/defense_in_depth',supportedClaim:'definition',scope:'core definition only',reviewedOn:'2026-10-09',reviewStatus:'source-supports-core-claim'}]},'4.3.2':{status:'partial',what:'invalid evidence date',evidence:[{url:'https://example.com/claim',supportedClaim:'claim',scope:'bounded',reviewedOn:'2026-02-30',reviewStatus:'source-supports-core-claim'}]},x:{status:'verified',what:'unsupported',evidence:[{url:'https://example.com'}]}}});
  assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,2);
@@ -98,6 +100,18 @@ test('supplemental reliability sources support bounded claims without closing te
   assert.equal(report.unitsWithCompleteClaimEvidence, 313);
   assert.equal(report.unitsMissingEvidence, 11);
   assert.deepEqual(report.queue.map(unit => unit.id), reliabilityIds);
+});
+
+test('official publisher catalog confirms only the headings and page locations, not chapter-body verification', () => {
+  assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101'));
+  assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/book_09190101.html'));
+  assert.ok(audit.includes('https://wqbook.wqxuetang.com/book/3242210'));
+  assert.ok(audit.includes('第311页'));
+  assert.ok(audit.includes('第314页'));
+  assert.ok(audit.includes('目录页未展开列出 9.2.3 下的十类模型名称、段落、公式或模型假设'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.deepEqual(report.queue.map(unit => unit.id), ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
 });
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
