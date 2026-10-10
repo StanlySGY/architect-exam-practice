@@ -8952,6 +8952,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“Serverless由平台管理服务器、运行时、扩缩和计费，开发者关注函数或业务代码。”的核心含义，并说明它解决什么问题。",
         "请用“围绕容器/编排、微服务、弹性、自动化、可观测性和平台治理分析架构，不把单一云产品当作云原生本身”分析“Serverless由平台管理服务器、运行时、扩缩和计费，开发者关注函数或业务代码。”：列出关键步骤，并说明怎样识别“微服务≠云原生全部”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Serverless Overview",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/serverless-quest/serverless-overview",
+          "sourceAuthority": "Microsoft Azure Serverless Overview",
+          "supportedClaim": "无服务器计算将服务器基础设施管理的大部分责任交由云平台，开发者聚焦应用逻辑并按服务模型使用资源。",
+          "scope": "只支持无服务器的托管模型概念；不表示物理服务器不存在，也不保证所有平台均按相同粒度计费。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.3.4": {
@@ -8992,6 +9003,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“服务网格通过Sidecar或节点代理接管服务间通信，应用无需嵌入大量治理代码。”的核心含义，并说明它解决什么问题。",
         "请用“围绕容器/编排、微服务、弹性、自动化、可观测性和平台治理分析架构，不把单一云产品当作云原生本身”分析“服务网格通过Sidecar或节点代理接管服务间通信，应用无需嵌入大量治理代码。”：列出关键步骤，并说明怎样识别“微服务≠云原生全部”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Istio Architecture Documentation",
+          "url": "https://istio.io/latest/docs/ops/deployment/architecture/",
+          "sourceAuthority": "Istio Architecture Documentation",
+          "supportedClaim": "Istio 服务网格通过数据平面代理与控制平面管理服务间流量及策略。",
+          "scope": "只支持服务网格将部分通信治理能力从业务代码中分离的机制；具体 Sidecar/节点代理模式取决于实现和版本。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.4": {
@@ -9032,6 +9054,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“案例重点观察业务拆分、平台能力、数据治理、弹性、高可用、DevOps和组织协同。”的核心含义，并说明它解决什么问题。",
         "请用“围绕容器/编排、微服务、弹性、自动化、可观测性和平台治理分析架构，不把单一云产品当作云原生本身”分析“案例重点观察业务拆分、平台能力、数据治理、弹性、高可用、DevOps和组织协同。”：列出关键步骤，并说明怎样识别“微服务≠云原生全部”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CNCF Cloud Native Glossary",
+          "url": "https://glossary.cncf.io/cloud-native/",
+          "sourceAuthority": "CNCF Cloud Native Glossary",
+          "supportedClaim": "CNCF 将云原生视为围绕弹性、自动化和可扩展应用构建/运行的一组技术与实践。",
+          "scope": "只支持云原生架构需要综合技术和运行实践；不证明某个案例必须采用固定的业务拆分或平台组合。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.1": {
@@ -9127,6 +9160,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“SOA经历萌芽、标准化和成熟应用三个阶段，并从Web Service扩展到企业级服务治理。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“SOA经历萌芽、标准化和成熟应用三个阶段，并从Web Service扩展到企业级服务治理。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS SOA Reference Model",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS SOA Reference Model",
+          "supportedClaim": "OASIS SOA 参考模型提供面向服务架构的概念基础，并不依赖某一种具体技术实现。",
+          "scope": "只支持 SOA 的概念化服务模型；不支持把历史演进划分为三个阶段当作该规范规定的普遍时间线。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.3": {
@@ -9207,6 +9251,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“服务标准解决发现、描述、消息封装和资源操作等问题。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“服务标准解决发现、描述、消息封装和资源操作等问题。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "W3C Web Services Architecture",
+          "url": "https://www.w3.org/TR/ws-arch/",
+          "sourceAuthority": "W3C Web Services Architecture",
+          "supportedClaim": "W3C Web Services Architecture 描述 Web 服务中的服务、消息、描述和发现等概念。",
+          "scope": "只支持 Web 服务标准涉及的发现/描述/消息等概念；不意味着所有 SOA 都必须使用 SOAP 或同一套 Web Service 标准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.5": {
@@ -9247,6 +9302,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“SOA成功不仅依赖服务技术，还依赖标准化、治理、组织和运行管理。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“SOA成功不仅依赖服务技术，还依赖标准化、治理、组织和运行管理。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS SOA Reference Model",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS SOA Reference Model",
+          "supportedClaim": "OASIS 参考模型强调服务、服务描述、可见效果与服务使用者之间的关系。",
+          "scope": "只支持服务架构不仅是一个协议名称，而是围绕服务契约与使用关系组织的概念；不直接量化治理或组织成熟度。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.6": {
@@ -9287,6 +9353,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“参考架构中的服务按集成对象和控制目标划分。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“参考架构中的服务按集成对象和控制目标划分。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS SOA Reference Model",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS SOA Reference Model",
+          "supportedClaim": "OASIS SOA 参考模型提供服务、可见效果、描述和交互等概念以讨论服务导向架构。",
+          "scope": "只支持以服务概念分析架构的基础；不验证某个厂商参考架构中服务类别划分的完整性。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.7": {
@@ -9327,6 +9404,17 @@
       "selfChecks": [
         "服务粒度为什么会影响SOA质量？过粗和过细分别可能带来什么问题？",
         "请用“从服务边界和契约出发，再分析状态管理、粒度、复用和治理对系统质量的影响”分析“SOA服务设计强调清晰接口、松耦合、可复用、粗粒度、自治等特征，并关注互操作性与治理。”：列出关键步骤，并说明怎样识别““接口存在”不等于服务设计良好”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS SOA Reference Model",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS SOA Reference Model",
+          "supportedClaim": "服务导向架构关注服务能力、服务描述和服务使用者如何基于可见效果进行交互。",
+          "scope": "只支持契约/接口和服务使用关系的核心思想；不证明松耦合、自治、粗粒度等每个特征都在所有实现中同时成立。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.8": {
@@ -9367,6 +9455,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“包括服务注册表模式、企业服务总线模式、案例研究和微服务模式。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“包括服务注册表模式、企业服务总线模式、案例研究和微服务模式。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Istio What is a Service Mesh",
+          "url": "https://istio.io/latest/docs/concepts/what-is-istio/",
+          "sourceAuthority": "Istio What is a Service Mesh",
+          "supportedClaim": "Istio 作为服务网格提供流量管理、安全、可观测性等服务间通信能力。",
+          "scope": "只支持服务网格是服务间治理的一种实现模式；不证明 ESB、服务注册表和微服务模式是同一层级或可互换概念。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.9": {
@@ -9407,6 +9506,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“重点关注原有系统架构中的集成需求，以及服务粒度控制和无状态服务设计。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“重点关注原有系统架构中的集成需求，以及服务粒度控制和无状态服务设计。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "W3C Web Services Architecture",
+          "url": "https://www.w3.org/TR/ws-arch/",
+          "sourceAuthority": "W3C Web Services Architecture",
+          "supportedClaim": "Web 服务架构描述服务如何通过消息与服务描述进行交互。",
+          "scope": "只支持服务接口与消息交互的概念；不证明无状态服务是所有 Web 服务的强制规范要求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.10": {
@@ -9447,6 +9557,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“SOA实施应从业务目标和现状出发，选择方案、识别服务、设计流程、建设基础设施并持续治理。”的核心含义，并说明它解决什么问题。",
         "请用“从服务识别→契约→通信→治理→组合→故障处理分析，并比较同步/异步、集中/分布式治理的取舍”分析“SOA实施应从业务目标和现状出发，选择方案、识别服务、设计流程、建设基础设施并持续治理。”：列出关键步骤，并说明怎样识别“SOA、微服务、Web Service、消息中间件不是同一概念层次，题目要先定位讨论对象”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS SOA Reference Model",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS SOA Reference Model",
+          "supportedClaim": "SOA 参考模型为识别服务、服务描述和服务使用关系提供概念框架。",
+          "scope": "只支持实施前需定义服务及其使用关系的分析基础；不规定唯一的企业级 SOA 落地路线图。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.1.1": {
@@ -9491,6 +9612,17 @@
       "selfChecks": [
         "嵌入式系统的架构为什么必须同时考虑硬件？请列出至少三类典型约束。",
         "请用“明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制”分析“嵌入式系统通常面向特定设备或领域，在资源、实时性、可靠性、功耗和软硬件协同方面具有明显约束。”：列出关键步骤，并说明怎样识别“嵌入式不等于低性能”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Embedded System Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/embedded_system",
+          "sourceAuthority": "NIST CSRC Embedded System Glossary",
+          "supportedClaim": "嵌入式系统是为执行特定功能而设计、嵌入更大系统或设备中的计算系统。",
+          "scope": "只支持嵌入式系统的用途/嵌入关系定义；资源、实时性、功耗和安全约束需按具体系统单独判断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.1.2": {
@@ -9531,6 +9663,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“典型结构由嵌入式处理器、存储器、总线、定时/看门狗、I/O 接口及外部设备组成；设计要在性能、成本、功耗、可靠性和环境适应性之间权衡。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“典型结构由嵌入式处理器、存储器、总线、定时/看门狗、I/O 接口及外部设备组成；设计要在性能、成本、功耗、可靠性和环境适应性之间权衡。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Embedded System Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/embedded_system",
+          "sourceAuthority": "NIST CSRC Embedded System Glossary",
+          "supportedClaim": "嵌入式系统作为更大设备或系统的一部分执行特定功能。",
+          "scope": "只支持嵌入式计算的系统定位；不证明所有嵌入式设备都具有同一套处理器、总线、看门狗或 I/O 组件。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.1.3": {
@@ -9571,6 +9714,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“早期软件只有监控程序和应用程序两层；采用 RTOS 后形成硬件层、BSP、嵌入式/实时 OS、应用软件的基本分层。”的核心含义，并说明它解决什么问题。",
         "请用“先明确任务时限、资源预算和硬件接口，再选择软件组织、调度、存储和可靠性机制，并分析实时性与成本权衡”分析“早期软件只有监控程序和应用程序两层；采用 RTOS 后形成硬件层、BSP、嵌入式/实时 OS、应用软件的基本分层。”：列出关键步骤，并说明怎样识别“实时系统关注时间约束而非单纯“运行得快””所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "FreeRTOS RTOS Kernel Basics",
+          "url": "https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-RTOS-kernel-basics",
+          "sourceAuthority": "FreeRTOS RTOS Kernel Basics",
+          "supportedClaim": "RTOS 内核提供任务调度、同步和时间相关的基础机制，以支持实时应用。",
+          "scope": "只支持 RTOS 内核在嵌入式软件中的基础作用；不规定所有嵌入式系统都必须采用 RTOS 或固定四层结构。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "16.2.1": {
