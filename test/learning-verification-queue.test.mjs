@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,129); assert.equal(report.unitsMissingEvidence,195); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,132); assert.equal(report.unitsMissingEvidence,192); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -219,3 +219,6 @@ test('architecture quality scenarios reliability maintenance CPS and AI definiti
 
 
 test('AI development history and edge-cloud positioning have scoped sources',()=>{const a=content.units['11.2.2'];assert.equal(a.status,'partial');assert.ok(a.evidence?.some(e=>e.url==='https://www.oecd.org/en/publications/artificial-intelligence-in-society_eedfee77-en.html'&&e.supportedClaim.includes('符号式方法')&&e.scope.includes('不是完整的人工智能史')));const edge=content.units['11.4.1'];assert.equal(edge.status,'partial');assert.ok(edge.evidence?.some(e=>e.url==='https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934390'&&e.supportedClaim.includes('靠近传感器数据采集')&&e.scope.includes('不局限于网关')));});
+
+
+test('architecture descriptions and planned software reuse have bounded evidence',()=>{const expected=[['7.1.2','https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html','结构与表达要求'],['7.4.1','https://www.sei.cmu.edu/library/software-product-lines-collection/','共同核心资产'],['10.1.2','https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html','架构本身与用于表达该架构']];for(const [id,url,claim] of expected){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'),id);}});

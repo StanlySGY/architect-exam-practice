@@ -3435,6 +3435,17 @@
       "selfChecks": [
         "为什么架构活动贯穿软件生命周期？",
         "运行反馈推动架构变化时，怎样避免无控制的随意修改？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022：Architecture description",
+          "url": "https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 国际标准，ISO/IEC/IEEE 42010:2022（第 2 版）",
+          "supportedClaim": "ISO/IEC/IEEE 42010:2022 规定架构描述的结构与表达要求，并区分被描述的架构与表达该架构的架构描述工件。",
+          "scope": "支持架构描述的作用及架构与描述工件的区分；该标准明确不规定创建、使用和管理架构描述的具体过程、方法、工具或媒介，因此不能单独证明架构活动必须采用某一种生命周期流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.1.3": {
@@ -4126,6 +4137,17 @@
       "selfChecks": [
         "架构决策、模式、参考架构、框架和构件的复用层次有何区别？",
         "为什么复用前必须评估与新项目约束的匹配度？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI：Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "Carnegie Mellon University Software Engineering Institute（SEI）软件产品线研究资料集",
+          "supportedClaim": "SEI 将软件产品线描述为共享一组受管理特性、面向特定市场或任务需求，并按规定方式基于共同核心资产开发的一组软件密集型系统。",
+          "scope": "支持产品线复用依赖共同核心资产和有计划的变体管理；不证明所有架构、构件、框架或文档复用都必须采用软件产品线工程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.4.2": {
@@ -5449,6 +5471,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“采用何种架构定义，就决定演化关注哪些架构元素。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“采用何种架构定义，就决定演化关注哪些架构元素。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022：Architecture description",
+          "url": "https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 国际标准，ISO/IEC/IEEE 42010:2022（第 2 版）",
+          "supportedClaim": "ISO/IEC/IEEE 42010:2022 明确区分系统的架构本身与用于表达该架构的架构描述，并对架构描述的结构和表达提出要求。",
+          "scope": "支持架构对象与架构描述工件的概念区分；不直接规定顺序图、构件图或其他某一类模型的具体变更操作。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.2.1": {

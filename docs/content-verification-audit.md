@@ -702,3 +702,10 @@
 - 学习单元 11.2.2 新增 OECD 的 AI 社会影响概览，有限支持符号式方法、统计机器学习、神经网络/深度学习等历史脉络；该来源不是完整技术史，也不支持把演进简化成严格线性阶段。
 - 学习单元 11.4.1 新增 NIST/IEEE 相关边缘—云连续体研究，支持边缘计算以数据/服务邻近性和延迟权衡为核心的概念；不把边缘节点限制为固定设备清单。
 - 来源：[OECD Artificial Intelligence in Society](https://www.oecd.org/en/publications/artificial-intelligence-in-society_eedfee77-en.html)；[Edge–Cloud Continuum PDF](https://tsapps.nist.gov/publication/get_pdf.cfm?pub_id=934390)。两个单元保持 partial。命题级证据覆盖从 127 增至 129 个叶子单元，仍缺有效证据的单元从 197 降至 195 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮补充：架构描述标准与计划复用（2026-10-10）
+
+- 学习单元 7.1.2、10.1.2 新增 ISO/IEC/IEEE 42010:2022，支持架构与架构描述工件的区分，以及架构描述结构和表达要求；标准并不规定具体架构活动流程或图模型的变更操作。
+- 学习单元 7.4.1 新增 SEI 软件产品线资料，支持共同核心资产、受管理特性和计划性复用的概念；不把软件产品线工程推广为所有复用活动的强制方法。
+- 来源：[ISO/IEC/IEEE 42010:2022](https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html)；[SEI Software Product Lines Collection](https://www.sei.cmu.edu/library/software-product-lines-collection/)。三个单元保持 partial。命题级证据覆盖从 129 增至 132 个叶子单元，仍缺有效证据的单元从 195 降至 192 个；总状态仍为 3 verified、321 partial。
