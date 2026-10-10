@@ -973,6 +973,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“计算机软件基础包括操作系统、数据库、文件系统、网络协议、中间件、软件构件和应用软件等。”的核心含义，并说明它解决什么问题。",
         "请用“先掌握每类软件解决的问题，再建立应用→中间件/运行环境→操作系统→硬件的依赖关系”分析“计算机软件基础包括操作系统、数据库、文件系统、网络协议、中间件、软件构件和应用软件等。”：列出关键步骤，并说明怎样识别“操作系统负责资源管理”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Operating System Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/os",
+          "sourceAuthority": "NIST CSRC Operating System Glossary",
+          "supportedClaim": "NIST 汇总的操作系统定义指出，操作系统为应用提供运行平台，并管理硬件资源或提供常用系统服务。",
+          "scope": "只支持操作系统作为基础软件的核心作用；不证明本单元列举的每种软件都属于操作系统组成部分。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.4": {
@@ -1317,6 +1328,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“面向日常业务事务，强调高效、准确、可靠地处理大量重复性数据。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“面向日常业务事务，强调高效、准确、可靠地处理大量重复性数据。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Information System Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/information_system",
+          "sourceAuthority": "NIST CSRC Information System Glossary",
+          "supportedClaim": "NIST 引用的定义将信息系统描述为用于信息收集、处理、维护、使用、共享、传播或处置的一组信息资源。",
+          "scope": "只支持信息系统围绕信息处理与资源组织的概念；不单独证明所有事务处理系统都具备相同吞吐、准确性或可靠性指标。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.3": {
@@ -1419,6 +1441,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“ES 是含有特定领域大量专家知识与经验、能推理判断并模拟专家决策过程的智能程序系统。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“ES 是含有特定领域大量专家知识与经验、能推理判断并模拟专家决策过程的智能程序系统。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Types of Artificial Intelligence",
+          "url": "https://www.ibm.com/think/topics/artificial-intelligence-types",
+          "sourceAuthority": "IBM Types of Artificial Intelligence",
+          "supportedClaim": "IBM 将专家系统描述为利用领域知识模拟专家决策过程的 AI 应用类型之一。",
+          "scope": "只支持专家系统以领域知识支持/模拟专家决策的核心概念；不证明其推理结果必然等同于人类专家或适用于所有领域。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.6": {
@@ -1487,6 +1520,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“ERP 是基于信息技术与先进管理思想，对企业物流、资金流、信息流全面集成管理的平台；源于 MRP II。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“ERP 是基于信息技术与先进管理思想，对企业物流、资金流、信息流全面集成管理的平台；源于 MRP II。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SAP What Is ERP",
+          "url": "https://www.sap.com/resources/what-is-erp",
+          "sourceAuthority": "SAP What Is ERP",
+          "supportedClaim": "ERP 软件将财务、人力、制造、供应链、销售和采购等核心业务流程整合到统一视图中。",
+          "scope": "只支持 ERP 的跨业务流程集成核心概念；不单独证明 ERP 的历史起源必然只来自 MRP II。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.8": {
@@ -1521,6 +1565,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“本节以电子政务、企业信息化与电子商务为代表，说明信息系统与组织流程、战略和生态的融合。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“本节以电子政务、企业信息化与电子商务为代表，说明信息系统与组织流程、战略和生态的融合。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OECD Digital Government",
+          "url": "https://www.oecd.org/en/topics/digital-government.html",
+          "sourceAuthority": "OECD Digital Government",
+          "supportedClaim": "OECD 将数字政府描述为利用数字技术与数据贯穿政策和公共服务生命周期，改善政府与服务使用者的互动。",
+          "scope": "只支持数字政府需要组织、治理与服务流程协同；不覆盖企业信息化和电子商务的所有特定模式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.1.1": {
@@ -10495,6 +10550,17 @@
       "selfChecks": [
         "通信协议和通信系统架构有什么区别？设计通信系统时除了协议还需要考虑哪些因素？",
         "请用“从业务通信需求→拓扑/分层→协议机制→容量与时延→可靠性/安全分析”分析“通信系统架构需要综合网络拓扑、通信协议、容量、时延、可靠性、安全和演进能力。”：列出关键步骤，并说明怎样识别“协议是通信规则，不等于完整通信架构”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IETF RFC 1122 Requirements for Internet Hosts",
+          "url": "https://www.rfc-editor.org/rfc/rfc1122.html",
+          "sourceAuthority": "IETF RFC 1122 Requirements for Internet Hosts",
+          "supportedClaim": "IETF RFC 1122 描述 Internet 主机通信层的要求，体现协议分层与网络互操作的架构约束。",
+          "scope": "只支持网络协议栈分层与互操作的基础概念；不构成现代通信系统拓扑、容量、时延或安全设计的完整指南。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.2.1": {
@@ -11739,6 +11805,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“包括物理安全、网络安全、主机安全、应用安全、数据安全、身份安全、密码和安全管理平台。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“包括物理安全、网络安全、主机安全、应用安全、数据安全、身份安全、密码和安全管理平台。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-53 Rev. 5 Update 1",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+          "sourceAuthority": "NIST SP 800-53 Rev. 5 Update 1",
+          "supportedClaim": "NIST SP 800-53 将安全与隐私控制组织为多个控制族，覆盖系统、通信、物理和管理等保护方面。",
+          "scope": "只支持安全控制需覆盖多个保护域的主张；不意味着每个系统都必须无差别部署全部控制或已满足合规要求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.3.2": {
