@@ -3868,6 +3868,17 @@
       "selfChecks": [
         "需求、架构、实现和测试如何形成迭代闭环？",
         "怎样判断反馈应触发架构调整，而非只改局部代码？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Documenting Software Architectures",
+          "url": "https://www.sei.cmu.edu/library/documenting-software-architectures-views-and-beyond/",
+          "sourceAuthority": "SEI Documenting Software Architectures",
+          "supportedClaim": "软件架构文档通过多个视图表达不同利益相关方关心的结构和行为。",
+          "scope": "只支持架构表达需要面向不同关注点；不规定所有项目必须使用固定开发迭代或反馈顺序。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.2.4": {
@@ -3951,6 +3962,17 @@
       "selfChecks": [
         "比较候选架构方案时，应明确哪些结构和质量属性影响？",
         "为什么服务或模块数量更多不必然意味着架构更好？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Documenting Software Architectures",
+          "url": "https://www.sei.cmu.edu/library/documenting-software-architectures-views-and-beyond/",
+          "sourceAuthority": "SEI Documenting Software Architectures",
+          "supportedClaim": "架构文档中的视图用于描述系统结构的不同方面，并可配合视点、元素和关系进行说明。",
+          "scope": "只支持架构表达和组织构件/关系的必要性；不规定每个架构都必须采用相同的设计步骤或部署视图。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.2.6": {
@@ -4075,6 +4097,17 @@
       "selfChecks": [
         "架构原型适合验证哪些高风险假设？",
         "为什么原型通过不能直接等同于生产系统验收通过？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Architecture in Practice",
+          "url": "https://www.sei.cmu.edu/library/software-architecture-in-practice-4th-edition/",
+          "sourceAuthority": "SEI Software Architecture in Practice",
+          "supportedClaim": "软件架构实践强调在实现前后评估架构决策及其对质量属性的影响。",
+          "scope": "只支持用分析/原型等方式验证关键架构假设的价值；不声称原型能替代完整系统测试。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.2.9": {
@@ -4109,6 +4142,17 @@
       "selfChecks": [
         "架构演化前为什么要分析数据、接口和部署的影响范围？",
         "分阶段迁移时如何降低新旧路径并存带来的风险？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 14764:2022",
+          "supportedClaim": "ISO/IEC/IEEE 14764 描述软件维护过程和维护活动。",
+          "scope": "只支持软件在交付后仍需受控维护；不将所有架构变化都归为同一种维护类型。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.3.1": {
@@ -4446,6 +4490,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“提高生产率和质量、降低风险、统一技术路线、缩短上市时间、积累组织资产。”的核心含义，并说明它解决什么问题。",
         "请用“每个架构知识点都问五个问题：解决什么问题、核心结构是什么、关键机制如何工作、适合什么场景、代价是什么”分析“提高生产率和质量、降低风险、统一技术路线、缩短上市时间、积累组织资产。”：列出关键步骤，并说明怎样识别“架构风格/模式不是中间件品牌”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线通过共同核心资产和受管理的可变性支持相关产品的系统化复用。",
+          "scope": "只支持复用资产可带来组织层面的重复利用机会；不保证所有复用项目都必然降低总成本或风险。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.4.3": {
@@ -4480,6 +4535,17 @@
       "selfChecks": [
         "黑盒复用与白盒复用分别依赖什么？",
         "为什么仅依赖公开接口也仍需管理版本和行为兼容性？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线实践区分共同性与可变性，并对可复用核心资产进行有计划的管理。",
+          "scope": "只支持复用资产与变化点的管理思路；不把白盒、灰盒、黑盒作为该来源所定义的唯一分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.4.4": {
@@ -4514,6 +4580,17 @@
       "selfChecks": [
         "评估可复用资产时，除了功能匹配还应检查什么？",
         "为什么复用完成后仍要记录来源、版本和适用边界？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线工程包含核心资产开发和基于核心资产的产品开发两类相互关联的活动。",
+          "scope": "只支持复用资产生产与应用之间的基本关系；不规定所有组织都必须采用同样的资产检索和发布流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.5.1": {
@@ -4548,6 +4625,17 @@
       "selfChecks": [
         "领域参考架构与具体应用系统架构有何区别？",
         "为什么参考架构落地前仍需分析领域变化点和项目约束？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线针对一组相关产品，利用受管理的共同性和可变性形成可复用资产。",
+          "scope": "只支持领域内相关产品共享架构/资产的核心思想；不证明所有领域架构均采用同一组功能或变化点。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.5.2": {
@@ -4582,6 +4670,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“领域分析、领域设计、领域实现。”的核心含义，并说明它解决什么问题。",
         "请用“每个架构知识点都问五个问题：解决什么问题、核心结构是什么、关键机制如何工作、适合什么场景、代价是什么”分析“领域分析、领域设计、领域实现。”：列出关键步骤，并说明怎样识别“架构风格/模式不是中间件品牌”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线方法区分核心资产工程与产品工程，以支持从领域资产到具体产品的复用。",
+          "scope": "只支持领域资产与产品实现之间的分工概念；不声称所有教材中的领域工程阶段划分完全一致。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.5.3": {
@@ -4650,6 +4749,17 @@
       "selfChecks": [
         "领域架构资产建设通常经历哪些主要活动？",
         "如何平衡产品族范围过宽导致共性空泛与范围过窄导致复用不足？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "软件产品线工程需要识别、开发并维护可供相关产品复用的核心资产。",
+          "scope": "只支持核心资产建设和维护的必要性；不规定单一的领域范围界定、建模或评估流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "8.1.1": {
@@ -5289,6 +5399,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“系统在部分软件发生故障时仍能提供正确或可接受服务。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“系统在部分软件发生故障时仍能提供正确或可接受服务。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Fault Tolerance Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/fault_tolerance",
+          "sourceAuthority": "NIST CSRC Fault Tolerance Glossary",
+          "supportedClaim": "容错关注系统在发生特定故障时仍维持规定功能或服务的能力。",
+          "scope": "只支持容错的核心目标；不保证系统在任意故障、任意负载下都能提供完整服务。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.4.2": {
@@ -5391,6 +5512,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过系统级冗余和故障转移提高整体可靠性。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“通过系统级冗余和故障转移提高整体可靠性。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Redundancy Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/redundancy",
+          "sourceAuthority": "NIST CSRC Redundancy Glossary",
+          "supportedClaim": "冗余通过提供额外组件或资源，为故障后的继续运行或恢复创造条件。",
+          "scope": "只支持冗余作为可靠性设计手段之一；不证明冗余本身足以避免共同原因故障或故障转移失败。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.5.1": {
