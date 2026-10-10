@@ -2023,14 +2023,16 @@
           "supportedClaim": "NIST CSRC defines cryptography as a discipline involving principles, means and methods for information security, including confidentiality, data integrity, source authentication and non-repudiation.",
           "scope": "Supports the broad role of cryptography only; it does not validate textbook-specific taxonomies or every cryptographic primitive.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Cryptography Glossary"
         },
         {
           "url": "https://csrc.nist.gov/glossary/term/cryptanalysis",
           "supportedClaim": "NIST CSRC defines cryptanalysis as studying or performing techniques intended to defeat cryptographic protection, including finding weaknesses in algorithms or implementations.",
           "scope": "Supports the core meaning of cryptanalysis only; it does not imply that every analysis succeeds or that cryptanalysis is limited to one attack method.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Cryptanalysis Glossary"
         }
       ]
     },
@@ -2073,7 +2075,8 @@
           "supportedClaim": "NIST defines a symmetric-key algorithm as using the same secret key for an operation and its complement, such as encryption and decryption.",
           "scope": "Supports the shared-key mechanism only; it does not establish a universal performance advantage, suitability for every bulk-data workload, or the full key-distribution discussion.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Symmetric-Key Algorithm Glossary"
         }
       ]
     },
@@ -2093,7 +2096,8 @@
           "supportedClaim": "NIST defines public-key cryptography as using related public/private keys and states that deriving the private key from the public key is computationally infeasible.",
           "scope": "Supports the core asymmetric-key relationship only; it does not verify the entire learning unit, textbook-specific wording, or any exam answer.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Public-Key Cryptography Glossary"
         }
       ],
       "source": {
@@ -2181,7 +2185,8 @@
           "supportedClaim": "NIST defines a public-key certificate as binding an entity's identity to its public key through a certificate signed by a trusted party.",
           "scope": "Supports the identity-to-public-key binding concept only; it does not establish that every certificate is valid or trusted in every context, nor verify the entire learning unit.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Public-Key Certificate Glossary"
         }
       ],
       "source": {
@@ -2517,7 +2522,8 @@
           "supportedClaim": "NIST SP 800-115 describes target-identification and analysis techniques that can identify systems, ports, services and potential vulnerabilities as part of technical security assessment.",
           "scope": "Supports port/service discovery as an assessment and information-gathering technique; it does not establish that every scan identifies an operating system accurately or that scanning alone proves exploitability.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-bounded-claim"
+          "reviewStatus": "source-supports-bounded-claim",
+          "sourceTitle": "NIST SP 800-115: Technical Guide to Information Security Testing and Assessment"
         }
       ]
     },
@@ -2605,7 +2611,8 @@
           "supportedClaim": "NIST's glossary defines vulnerability assessment as a systematic examination to determine the adequacy of security measures and identify security deficiencies, providing data for evaluating proposed measures and checking them after implementation.",
           "scope": "Supports the purpose of vulnerability assessment only; the exact workflow, exploitability likelihood and remediation priority must be established by the chosen assessment method and environment.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "NIST CSRC Vulnerability Assessment Glossary"
         }
       ]
     },
@@ -4381,7 +4388,8 @@
           "supportedClaim": "The SEI introduction to software architecture describes an architecture in terms of computational components and connectors, and an architectural style as a family of systems organized by component/connector vocabulary and combination constraints.",
           "scope": "Supports the component, connector and style/constraint concepts only; it does not validate every taxonomy or exam-specific phrasing in the learning unit.",
           "reviewedOn": "2026-10-10",
-          "reviewStatus": "source-supports-core-claim"
+          "reviewStatus": "source-supports-core-claim",
+          "sourceTitle": "CMU SEI: An Introduction to Software Architecture"
         }
       ]
     },
@@ -4424,7 +4432,8 @@
           "supportedClaim": "The SEI discussion of software architecture identifies pipe-and-filter as a recognized architectural style and describes architectural styles as system-level organizational choices.",
           "scope": "Supports pipe-and-filter as a recognized style only; detailed runtime semantics, performance, ordering and failure behavior depend on the actual design.",
           "reviewStatus": "source-supports-bounded-claim",
-          "reviewedOn": "2026-10-10"
+          "reviewedOn": "2026-10-10",
+          "sourceTitle": "CMU SEI: Architectural Styles and the Design of Network-based Software Architectures"
         }
       ]
     },
@@ -4467,7 +4476,8 @@
           "supportedClaim": "A Carnegie Mellon SEI architecture-pattern taxonomy lists main-program/subroutine and object-oriented organization under explicit-invocation call-return patterns.",
           "scope": "Supports these as recognized explicit-invocation patterns only; it does not mean every object-oriented design has identical runtime control flow or that layered systems always follow one strict call direction.",
           "reviewStatus": "source-supports-bounded-claim",
-          "reviewedOn": "2026-10-10"
+          "reviewedOn": "2026-10-10",
+          "sourceTitle": "CMU SEI Software Architecture Pattern Taxonomy"
         }
       ]
     },
@@ -4510,7 +4520,8 @@
           "supportedClaim": "The SEI discussion identifies data-centered systems, including transactional database systems, as a recognized family of software architectural styles.",
           "scope": "Supports data-centered organization as a recognized style only; it does not prove that every such system uses one physical centralized database or has a single point of failure.",
           "reviewStatus": "source-supports-bounded-claim",
-          "reviewedOn": "2026-10-10"
+          "reviewedOn": "2026-10-10",
+          "sourceTitle": "CMU SEI: Architectural Styles and the Design of Network-based Software Architectures"
         }
       ]
     },
@@ -4553,7 +4564,8 @@
           "supportedClaim": "The SEI architecture-pattern taxonomy lists interpreters among virtual-machine patterns.",
           "scope": "Supports interpreter-based organization as a recognized virtual-machine pattern only; it does not establish that all interpreters provide the same degree of platform abstraction or isolation.",
           "reviewStatus": "source-supports-bounded-claim",
-          "reviewedOn": "2026-10-10"
+          "reviewedOn": "2026-10-10",
+          "sourceTitle": "CMU SEI Software Architecture Pattern Taxonomy"
         }
       ]
     },
@@ -4596,7 +4608,8 @@
           "supportedClaim": "The SEI discussion identifies event systems in which objects broadcast events through a request broker as a recognized architectural style.",
           "scope": "Supports event-based interaction as a recognized style only; delivery guarantees, ordering, coupling and synchronous/asynchronous behavior depend on the concrete event infrastructure.",
           "reviewStatus": "source-supports-bounded-claim",
-          "reviewedOn": "2026-10-10"
+          "reviewedOn": "2026-10-10",
+          "sourceTitle": "CMU SEI: Architectural Styles and the Design of Network-based Software Architectures"
         }
       ]
     },
