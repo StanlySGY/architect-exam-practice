@@ -1522,6 +1522,53 @@
       "selfChecks": [
         "请不用照抄原文，解释“信息安全包含五个基本要素，保护范围包括设备、数据、内容和行为。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“信息安全包含五个基本要素，保护范围包括设备、数据、内容和行为。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：confidentiality",
+          "url": "https://csrc.nist.gov/glossary/term/confidentiality",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary",
+          "supportedClaim": "NIST 将保密性定义为保护信息不向未授权个人、实体或过程披露的属性。",
+          "scope": "支持保密性概念；不单独证明本单元所称“五个基本要素”是所有标准统一采用的固定清单。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：integrity",
+          "url": "https://csrc.nist.gov/glossary/term/integrity",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary",
+          "supportedClaim": "NIST 信息安全术语中的完整性关注防止信息被不当修改或破坏，并保障其准确性与完整性。",
+          "scope": "支持完整性这一安全目标；不单独证明某个系统的数据完整性控制已充分实现，也不证明五要素清单具有普遍唯一性。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：availability",
+          "url": "https://csrc.nist.gov/glossary/term/availability",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary",
+          "supportedClaim": "NIST 将可用性定义为授权实体按需及时、可靠地访问和使用信息或信息系统的能力。",
+          "scope": "支持可用性这一安全目标；不保证某一具体系统达到给定可用率或恢复时间。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：authenticity",
+          "url": "https://csrc.nist.gov/glossary/term/authenticity",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary",
+          "supportedClaim": "NIST 术语表将真实性与能够证明主体或资源确为其所声称身份的能力联系起来。",
+          "scope": "支持真实性的基本概念；不意味着任意身份凭据或认证方案都足够可靠。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：non-repudiation",
+          "url": "https://csrc.nist.gov/glossary/term/non_repudiation",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary",
+          "supportedClaim": "NIST 将不可否认性与可向第三方验证的数据来源、完整性或发送/接收行为证据联系起来。",
+          "scope": "支持不可否认性的目标概念；不单独证明本单元所称五要素清单是统一标准，也不意味着日志或任意数字签名足以证明全部行为事实。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.1.2": {
@@ -1556,6 +1603,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“覆盖信息使用安全、安全监控、病毒防治、数据加密和防非法攻击等方面。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“覆盖信息使用安全、安全监控、病毒防治、数据加密和防非法攻击等方面。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-53 Rev. 5 Update 1：Security and Privacy Controls",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+          "sourceAuthority": "NIST（SP 800-53 Rev. 5，含 Release 5.2.0 更新信息）",
+          "supportedClaim": "NIST SP 800-53 控制目录包含访问控制、审计问责、身份认证、恶意代码防护、系统与通信保护及系统完整性等安全控制族。",
+          "scope": "支持安全工作涵盖多类技术和管理控制；不证明某个系统已部署全部控制，也不单独验证本单元列举的每种防护措施的具体效果。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.1.3": {

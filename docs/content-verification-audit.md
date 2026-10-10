@@ -664,3 +664,10 @@
 - 学习单元 2.5 新增 NIST LAN/WAN 术语定义，分别支持局部区域网络的基本定义及 WAN 通常覆盖比 LAN 更大范围的差异；不据此声称网络协议、组网工程和全部网络分类已被核验。
 - 学习单元 2.9 新增 ISO/IEC 25010:2023 性能效率子特性，支持以时间行为、资源利用和容量组织性能评价；具体公式、负载模型和性能结论仍需测量。
 - 来源：[NIST LAN Glossary](https://csrc.nist.gov/glossary/term/local_area_network)；[NIST WAN Glossary](https://csrc.nist.gov/glossary/term/wide_area_network)；[ISO/IEC 25010:2023](https://www.iso.org/standard/78176.html)。两个单元保持 partial。命题级证据覆盖从 113 增至 115 个叶子单元，仍缺有效证据的单元从 211 降至 209 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：信息安全目标术语与控制目录（2026-10-10）
+
+- 学习单元 4.1.1 新增 NIST 保密性、完整性、可用性、真实性和不可否认性术语定义，分别支撑对应概念；这些术语定义不等于证明“五个要素”是所有标准统一采用的固定清单。
+- 学习单元 4.1.2 新增 NIST SP 800-53 Rev. 5 更新版，支持访问控制、审计、身份认证、恶意代码防护、系统与通信保护等控制族确属安全控制目录的一部分；不据此宣称具体系统已实现全部控制。
+- 来源：[NIST Confidentiality](https://csrc.nist.gov/glossary/term/confidentiality)；[NIST Integrity](https://csrc.nist.gov/glossary/term/integrity)；[NIST Availability](https://csrc.nist.gov/glossary/term/availability)；[NIST Authenticity](https://csrc.nist.gov/glossary/term/authenticity)；[NIST Non-repudiation](https://csrc.nist.gov/glossary/term/non_repudiation)；[NIST SP 800-53 Rev. 5 Update 1](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)。两个单元保持 partial。命题级证据覆盖从 115 增至 117 个叶子单元，仍缺有效证据的单元从 209 降至 207 个；总状态仍为 3 verified、321 partial。

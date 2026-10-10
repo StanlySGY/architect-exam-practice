@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,115); assert.equal(report.unitsMissingEvidence,209); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,117); assert.equal(report.unitsMissingEvidence,207); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -194,4 +194,10 @@ test('GB 17859 level names and standard status have distinct sources',()=>{const
 test('LAN WAN and system performance metrics have scoped evidence',()=>{
  const net=content.units['2.5'];assert.equal(net.status,'partial');assert.ok(net.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/local_area_network'&&e.supportedClaim.includes('相对有限区域')));assert.ok(net.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/wide_area_network'&&e.supportedClaim.includes('覆盖范围大于 LAN')));
  const perf=content.units['2.9'];assert.equal(perf.status,'partial');assert.ok(perf.evidence?.some(e=>e.url==='https://www.iso.org/standard/78176.html'&&e.supportedClaim.includes('时间行为、资源利用和容量')&&e.scope.includes('不提供具体系统的性能公式')));
+});
+
+
+test('information security objectives and control families have scoped evidence',()=>{
+ const goals=content.units['4.1.1'];assert.equal(goals.status,'partial');for(const term of ['confidentiality','integrity','availability','authenticity','non_repudiation'])assert.ok(goals.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/'+term&&e.supportedClaim&&e.scope&&e.reviewedOn==='2026-10-10'&&e.reviewStatus==='source-supports-bounded-claim'),term);
+ const controls=content.units['4.1.2'];assert.equal(controls.status,'partial');assert.ok(controls.evidence?.some(e=>e.url==='https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final'&&e.supportedClaim.includes('恶意代码防护')&&e.scope.includes('不证明某个系统已部署全部控制')));
 });
