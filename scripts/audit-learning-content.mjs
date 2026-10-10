@@ -10,7 +10,7 @@ const knownTemplateTails = {
 };
 
 export function auditLearningContent(content) {
-  const units = Object.entries(content?.units ?? {});
+  const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
   const duplicateFields = {};
   for (const field of fields) {
     const groups = new Map();

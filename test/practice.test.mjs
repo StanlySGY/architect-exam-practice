@@ -1968,7 +1968,7 @@ test("系统学习单元按最深编号节点拆分并保留来源状态", async
   assert.equal(chapterOne.teaching.what.includes("基本组织"), true);
 });
 
-test("全部课程学习单元都有课程内容记录且字段完整", async (t) => {
+test("系统学习单元 ID 全局唯一，缺少专属课程内容时明确隔离章节摘要", async (t) => {
   const directory = await mkdtemp(join(tmpdir(), "architect-learning-coverage-test-"));
   const store = new JsonStore(join(directory, "state.json"));
   t.after(async () => { store.close(); await rm(directory, { recursive: true, force: true }); });
@@ -1976,15 +1976,32 @@ test("全部课程学习单元都有课程内容记录且字段完整", async (t
   const service = new PracticeService({ store, root });
   await service.init();
   const units = service.learningUnits();
-  assert.ok(units.length >= 300);
+  assert.equal(units.length, 324);
+  assert.equal(new Set(units.map((unit) => unit.id)).size, units.length, "learning IDs must be globally unique");
+  const authored = units.filter((unit) => unit.contentSource?.type === "course-content");
+  const fallback = units.filter((unit) => unit.contentSource?.type === "mindmap-fallback");
+  assert.equal(authored.length, 286);
+  assert.equal(fallback.length, 38);
   const required = ["what", "why", "how", "confusions", "scenarios", "examples", "examFocus", "pitfalls"];
-  for (const unit of units) {
-    assert.ok(unit.contentSource?.type === "course-content", "missing course content: " + unit.id);
-    assert.ok(["verified", "partial", "missing"].includes(unit.contentSource.status), "invalid content status: " + unit.id);
+  for (const unit of authored) {
+    assert.ok(["verified", "partial"].includes(unit.contentSource.status), "invalid content status: " + unit.id);
     for (const key of required) assert.ok(Object.prototype.hasOwnProperty.call(unit.teaching, key), unit.id + " missing " + key);
   }
-  const verifiedCount = units.filter((unit) => unit.contentStatus === "verified").length;
-  assert.ok(verifiedCount >= 3, `expected at least 3 verified units, got ${verifiedCount}`);
+  for (const unit of fallback) {
+    assert.equal(unit.contentStatus, "missing", "fallback must not imply authored course coverage: " + unit.id);
+    assert.equal(unit.contentSource.status, "missing");
+  }
+  assert.deepEqual(units.filter((unit) => unit.title === "1NF").map((unit) => unit.id), ["6.2.3.1"]);
+  assert.deepEqual(units.filter((unit) => unit.title === "3NF").map((unit) => unit.id), ["6.2.3.3"]);
+  const firstNormalForm = units.find((unit) => unit.id === "6.2.3.1");
+  assert.match(firstNormalForm.teaching.what, /属性值不可再分/);
+  assert.doesNotMatch(firstNormalForm.teaching.what, /本章围绕《计算机系统基础知识》展开/);
+  assert.deepEqual(units.filter((unit) => unit.title === "4G/5G演进").map((unit) => unit.id), ["17.2.3.4"]);
+  assert.ok(units.some((unit) => unit.id === "19.3.5.1" && unit.title === "缺点"));
+  assert.ok(units.some((unit) => unit.id === "19.4.4.1" && unit.title === "优点"));
+  assert.ok(units.some((unit) => unit.id === "19.4.4.2" && unit.title === "缺点"));
+  assert.ok(!units.some((unit) => /^\d+$/.test(unit.id)), "chapter summaries must not be lesson IDs");
+  assert.ok(!units.some((unit) => unit.id === "19.4.4" || unit.id === "19.3.5"));
 });
 
 test("系统学习按思维导图建立单元、记录学习状态并衔接章节练习", async (t) => {
@@ -2111,6 +2128,60 @@ test("学习队列对零记录新手给出入门路径，产生学习记录后�
     afterPractice.items.find((item) => item.id === "beginner:path"),
     undefined,
   );
+});
+
+test("新手路径只把已通过核验的生成题视为可用，并识别已导入题库", async (t) => {
+  const { service } = await fixture(t);
+  await service.addGeneratedQuestions({
+    chapter: 1,
+    difficulty: "easy",
+    source: "mindmap",
+    sourceNode: "第1章 绪论",
+    questions: [{
+      question: "待核验题目",
+      options: { A: "选项A", B: "选项B", C: "选项C", D: "选项D" },
+      correct_answer: "A",
+      analysis: "尚未人工核验的测试解析",
+      knowledge_detail: "测试知识点",
+    }],
+  });
+
+  const pendingOnly = service.studyQueue({ limit: 5 });
+  const pendingBeginner = pendingOnly.items.find((item) => item.id === "beginner:path");
+  assert.deepEqual(
+    pendingBeginner.action.options.map((option) => option.type),
+    ["open-materials", "import-bank", "generate"],
+  );
+  assert.doesNotMatch(pendingBeginner.description, /练 10 道第 1 章题/);
+  assert.equal(pendingBeginner.action.options.some((option) => option.type === "start-practice"), false);
+  assert.equal(pendingBeginner.action.options.some((option) => option.type === "open-mock"), false);
+
+  await importSampleBank(service, t);
+  const importedAvailable = service.studyQueue({ limit: 5 });
+  const importedBeginner = importedAvailable.items.find((item) => item.id === "beginner:path");
+  assert.deepEqual(
+    importedBeginner.action.options.map((option) => option.type),
+    ["open-materials", "open-mock"],
+  );
+  assert.match(importedBeginner.description, /已导入题库/);
+  assert.equal(importedAvailable.items.some((item) => item.id === "setup:question-bank"), false);
+});
+
+test("已有练习记录且仅有导入题时，队列提供可执行入口而不误导重复导入", async (t) => {
+  const { service } = await fixture(t);
+  await importSampleBank(service, t);
+  await service.store.update((state) => {
+    state.attempts.push({ id: "history-exists", createdAt: service.now(), total: 1, correct: 1 });
+    return state;
+  });
+  const queue = service.studyQueue({ limit: 5 });
+  const setup = queue.items.find((item) => item.id === "setup:question-bank");
+  assert.equal(setup.title, "章节题待核验 · 可以先做真题");
+  assert.deepEqual(
+    setup.action.options.map((option) => option.type),
+    ["open-mock", "open-bank", "generate"],
+  );
+  assert.match(setup.description, /已导入的真题和模拟题仍可在模拟考试页使用/);
 });
 
 test("内容质量摘要区分来源、答案信任、套卷缺题、Wiki 校对和问题题", async (t) => {

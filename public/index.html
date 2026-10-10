@@ -563,11 +563,11 @@
           </div>
         </div>
         <div id="wiki-filters" class="wiki-filters">
-          <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" />
+          <input id="wiki-search" type="search" placeholder="搜索知识点标题或内容" aria-label="搜索知识点标题或内容" />
           <select id="wiki-chapter-filter" aria-label="按章节筛选">
             <option value="all">全部章节</option>
           </select>
-          <select id="wiki-status-filter">
+          <select id="wiki-status-filter" aria-label="按校对状态筛选">
             <option value="all">全部状态</option>
             <option value="draft">待校对</option>
             <option value="reviewed">已校对</option>
@@ -1076,6 +1076,6 @@
       </div>
     </dialog>
     <div id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="/app.js"></script>
+    <script type="module" src="/app.js?v=20261010-full-audit1"></script>
   </body>
 </html>

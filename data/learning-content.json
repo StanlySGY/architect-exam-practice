@@ -12259,12 +12259,17 @@
   },
   "coverage": {
     "source": "architect.mm",
-    "leafUnits": 309,
+    "leafUnits": 324,
     "courseRecords": 309,
     "policy": "verified仅表示已有明确可靠来源并经人工核验；批量课程化记录保持partial，不冒充教材级核验。",
-    "uniqueLeafIds": 309,
+    "uniqueLeafIds": 324,
     "qualityRule": "课程字段完整不等于事实已核验；知识点只有经过可靠来源核验后才能升级verified。",
     "enrichedRecords": 17,
-    "selfCheckEnrichedRecords": 309
+    "selfCheckEnrichedRecords": 309,
+    "lessonCourseRecords": 286,
+    "chapterSummaryRecords": 18,
+    "sectionSummaryRecords": 5,
+    "missingLeafCourseRecords": 38,
+    "lessonSelfCheckEnrichedRecords": 286
   }
 }

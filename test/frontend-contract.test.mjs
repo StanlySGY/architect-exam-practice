@@ -92,6 +92,20 @@ test("知识图谱、模型工作区和案例模拟保持当前交互状态", ()
   assert.match(app, /memory\.upcomingDistinct \?\? memory\.upcoming/);
 });
 
+test("学习自检、案例作答、论文草稿和知识库筛选具有可访问名称", () => {
+  assert.match(app, /type: "checkbox", "aria-label": check\.prompt/);
+  assert.match(app, /"aria-label": "案例作答：问题 " \+ \(index \+ 1\)/);
+  assert.match(app, /"aria-label": "论文草稿：" \+ \(paper\.title \|\| paper\.id\)/);
+  assert.match(app, /"aria-label": "编辑概念解释"/);
+  assert.match(html, /id="wiki-search"[^>]*aria-label="搜索知识点标题或内容"/);
+  assert.match(html, /id="wiki-status-filter"[^>]*aria-label="按校对状态筛选"/);
+});
+
+test("命令面板支持 Escape 关闭，避免模态层阻断页面导航", () => {
+  assert.match(app, /document\.getElementById\("command-palette"\)\.close\(\);/);
+  assert.match(html, /id="command-palette"[^>]*aria-label="命令面板"/);
+});
+
 test("首页学习队列和内容质量概览使用只读 API，并禁用零到期复习入口", () => {
   assert.match(app, /api\("\/api\/study-queue\?limit=5"\)/);
   assert.match(app, /api\("\/api\/content-health"\)/);

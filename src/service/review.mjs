@@ -12,24 +12,63 @@ import { MASTERED_STREAK } from "./sessions.mjs";
 import { SessionsDomain } from "./sessions.mjs";
 import { isQuestionEligibleForFormalStudy } from "./helpers.mjs";
 
-const NUMBERED_NODE = /^(\d+(?:\.\d+)*)\s*(.*)$/;
+const NUMBERED_NODE = /^(\d+(?:\.\d+)*)(?:\s+(.+))$/;
 function parseLearningNode(node) {
-  const m = String(node?.text ?? "").trim().match(NUMBERED_NODE);
-  return m ? { id: m[1], title: m[2] || String(node.text).trim() } : null;
+  const text = String(node?.text ?? "").trim();
+  const numbered = text.match(NUMBERED_NODE);
+  if (numbered) return { id: numbered[1], title: numbered[2] };
+  // 保留 1NF、4G/5G 等以数字开头但不是完整章节编号的术语。
+  const shorthand = text.match(/^(\d+)(?=[A-Za-z])/);
+  return shorthand ? { id: shorthand[1], title: text, shorthand: true } : null;
 }
-function collectLearningUnits(node, chapter, chapterTitle, parentId, units) {
+function canonicalLearningNodeId(parsed, chapter, parentId) {
+  if (parsed.id.includes(".")) return parsed.id;
+  return String(parentId ?? chapter) + "." + parsed.id;
+}
+const LEARNING_NODE_OVERRIDES = [
+  { parentId: "19.3.5", sourceText: "19.3.5 缺点", title: "缺点", details: "需要维护批处理与速度层两套逻辑，协调结果一致性、资源与计算口径，通常增加开发和运维复杂度。" },
+  { parentId: "19.4.4", sourceText: "19.4.4 优点", title: "优点", details: "架构简单、代码统一，实时处理路径直接；减少批流双路径维护和结果协调成本。" },
+  { parentId: "19.4.4", sourceText: "19.4.4 缺点", title: "缺点", details: "依赖事件日志保留与重放能力；历史全量重算可能成本较高，复杂全量算法和随机历史查询不如批处理自然。" },
+];
+function nextUniqueLearningId(id, occupied) {
+  const match = id.match(/^(.*\.)(\d+)$/);
+  if (match) {
+    let index = Number(match[2]) + 1;
+    let candidate = match[1] + index;
+    while (occupied.has(candidate)) candidate = match[1] + (++index);
+    return candidate;
+  }
+  let index = 1;
+  let candidate = id + "." + index;
+  while (occupied.has(candidate)) candidate = id + "." + (++index);
+  return candidate;
+}
+function collectLearningUnits(node, chapter, chapterTitle, parentId, units, override = null, forcedId = null) {
   const parsed = parseLearningNode(node);
   if (!parsed) return;
+  const nodeId = forcedId ?? canonicalLearningNodeId(parsed, chapter, parentId);
   const numbered = (node.children ?? []).filter((child) => parseLearningNode(child));
   if (numbered.length) {
-    for (const child of numbered) collectLearningUnits(child, chapter, chapterTitle, parsed.id, units);
+    const rawSiblingIds = new Set(numbered.map((child) => canonicalLearningNodeId(parseLearningNode(child), chapter, nodeId)));
+    const assignedSiblingIds = new Set();
+    for (let index = 0; index < numbered.length; index++) {
+      const child = numbered[index];
+      const childParsed = parseLearningNode(child);
+      let childId = canonicalLearningNodeId(childParsed, chapter, nodeId);
+      if (childId === nodeId) childId = nodeId + "." + (index + 1);
+      if (assignedSiblingIds.has(childId)) childId = nextUniqueLearningId(childId, new Set([...rawSiblingIds, ...assignedSiblingIds]));
+      assignedSiblingIds.add(childId);
+      const sourceText = String(child.text ?? "").trim();
+      const childOverride = LEARNING_NODE_OVERRIDES.find((item) => item.parentId === nodeId && item.sourceText === sourceText) ?? null;
+      collectLearningUnits(child, chapter, chapterTitle, nodeId, units, childOverride, childId);
+    }
     return;
   }
   const keyPoints = (node.children ?? []).filter((child) => !parseLearningNode(child)).map((child) => String(child.text ?? "").trim()).filter(Boolean).slice(0, 12);
-  const details = String(node.details ?? "").trim();
+  const details = override?.details ?? String(node.details ?? "").trim();
   units.push({
-    id: parsed.id, chapter, chapterTitle, sectionId: parsed.id.split(".").slice(0, 2).join("."), parentId: parentId ?? null,
-    title: parsed.title, sourceTitle: String(node.text ?? "").trim(), details, keyPoints,
+    id: nodeId, chapter, chapterTitle, sectionId: nodeId.split(".").slice(0, 2).join("."), parentId: parentId ?? null,
+    title: override?.title ?? parsed.title, sourceTitle: String(node.text ?? "").trim(), details, keyPoints,
     source: { type: "mindmap", path: "architect.mm", status: "needs-review" },
     contentStatus: details || keyPoints.length ? "partial" : "missing",
     teaching: { what: details || null, why: null, how: null, confusions: null, scenarios: null, examples: null, examFocus: null, pitfalls: null },
@@ -41,6 +80,7 @@ function collectLearningUnits(node, chapter, chapterTitle, parentId, units) {
     order: units.length,
   });
 }
+
 function learningTeaching(unit) {
   const t = unit.teaching ?? {};
   return { what: t.what || unit.details || (unit.keyPoints.length ? unit.keyPoints.join("；") : null), why: t.why || null, how: t.how || null, confusions: t.confusions || null, scenarios: t.scenarios || null, examples: t.examples || null, examFocus: t.examFocus || null, pitfalls: t.pitfalls || null };
@@ -82,7 +122,14 @@ export function selectLearningReinforcementQuestions({ unit, questions, limit = 
 
 function mergeLearningContent(unit, content) {
   const authored = content?.units?.[unit.id];
-  if (!authored || typeof authored !== "object") return unit;
+  if (!authored || typeof authored !== "object" || authored.source?.path === "data/chapters.json" || ["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(unit.id)) {
+    // 章节/小节总览不能冒充叶子知识点的专属课程内容。
+    return {
+      ...unit,
+      contentStatus: "missing",
+      contentSource: { type: "mindmap-fallback", path: "architect.mm", status: "missing" },
+    };
+  }
   const teaching = {
     ...unit.teaching,
     ...Object.fromEntries(Object.entries(authored).filter(([key, value]) =>
@@ -754,15 +801,20 @@ export class ReviewDomain extends SessionsDomain {
       activeSessions.length > 0;
     const beginnerOptions = [];
     let showBeginnerPath = false;
+    const questions = this.allQuestions(state);
+    const availableGeneratedQuestions = questions.filter(
+      (question) =>
+        (question.sourceType ?? "generated") === "generated" &&
+        isQuestionEligibleForFormalStudy(question),
+    );
+    const availableImportedQuestions = questions.filter(
+      (question) =>
+        (question.sourceType ?? "generated") !== "generated" &&
+        isQuestionEligibleForFormalStudy(question),
+    );
     if (!hasLearningHistory) {
       showBeginnerPath = true;
-      const questions = this.allQuestions(state);
-      const generatedQuestions = questions.filter(
-        (question) =>
-          (question.sourceType ?? "generated") === "generated" &&
-          !question.disabledAt,
-      );
-      const chapterOneCount = generatedQuestions.filter(
+      const chapterOneCount = availableGeneratedQuestions.filter(
         (question) => question.chapter === 1,
       ).length;
       beginnerOptions.push({
@@ -780,7 +832,7 @@ export class ReviewDomain extends SessionsDomain {
           label: "练第 1 章 10 题",
         });
       }
-      if (generatedQuestions.length) {
+      if (availableGeneratedQuestions.length || availableImportedQuestions.length) {
         beginnerOptions.push({ type: "open-mock", label: "做摸底模拟卷" });
       } else {
         beginnerOptions.push(
@@ -795,8 +847,10 @@ export class ReviewDomain extends SessionsDomain {
         title: "第一次备考？从这里开始",
         description: chapterOneCount
           ? "① 读教材第 1 章建立整体框架 → ② 练 10 道第 1 章题上手 → ③ 做一次 75 题摸底卷看整体水平。综合知识覆盖全部 20 章，案例与论文重点在第 12–20 章。"
-          : "① 读教材第 1 章建立整体框架 → ② 导入真题库或按章节生成题目 → ③ 题目就绪后开始练手和摸底。综合知识覆盖全部 20 章，案例与论文重点在第 12–20 章。",
-        action: { type: "beginner-path", options: beginnerOptions },
+          : availableImportedQuestions.length
+            ? "① 读教材第 1 章建立整体框架 → ② 用已导入题库做真题套卷或摸底模拟。章节练习只使用通过人工核验的生成题。综合知识覆盖全部 20 章，案例与论文重点在第 12–20 章。"
+            : "① 读教材第 1 章建立整体框架 → ② 导入真题库或生成并核验章节题 → ③ 题目就绪后开始练手和摸底。未通过人工核验的生成题不会进入正式练习。综合知识覆盖全部 20 章，案例与论文重点在第 12–20 章。",
+        action: { type: "beginner:path", options: beginnerOptions },
       });
     }
 
@@ -852,12 +906,7 @@ export class ReviewDomain extends SessionsDomain {
       });
     }
 
-    const questions = this.allQuestions(state);
-    const generatedQuestions = questions.filter(
-      (question) =>
-        isQuestionEligibleForFormalStudy(question) &&
-        (question.sourceType ?? "generated") === "generated",
-    );
+    const generatedQuestions = availableGeneratedQuestions;
     const chapterStats = this.statistics().chapters;
     const activeWrongByChapter = new Map();
     for (const record of Object.values(state.wrongBook ?? {})) {
@@ -924,16 +973,25 @@ export class ReviewDomain extends SessionsDomain {
         id: "setup:question-bank",
         kind: "setup",
         priority: 4,
-        title: "准备第一轮章节练习",
-        description:
-          "当前没有可用的生成题，可配置模型、生成章节题或导入真题。",
+        title: availableImportedQuestions.length
+          ? "章节题待核验 · 可以先做真题"
+          : "准备第一轮章节练习",
+        description: availableImportedQuestions.length
+          ? "当前没有通过人工核验的生成题，暂不能进行章节练习；已导入的真题和模拟题仍可在模拟考试页使用。"
+          : "当前没有通过人工核验的生成题，可配置模型、生成章节题或导入真题。",
         action: {
           type: "setup-question-bank",
-          options: [
-            { type: "configure-model", label: "配置模型" },
-            { type: "generate", label: "生成章节题" },
-            { type: "import-bank", label: "导入真题库" },
-          ],
+          options: availableImportedQuestions.length
+            ? [
+                { type: "open-mock", label: "进入真题/模拟考试" },
+                { type: "open-bank", label: "审校生成题" },
+                { type: "generate", label: "生成章节题" },
+              ]
+            : [
+                { type: "configure-model", label: "配置模型" },
+                { type: "generate", label: "生成章节题" },
+                { type: "import-bank", label: "导入真题库" },
+              ],
         },
       });
     }

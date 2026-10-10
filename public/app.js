@@ -1162,7 +1162,7 @@ function renderLearningPath(data) {
       element("section", { className: "learning-checks" }, [
         element("div", { className: "learning-checks-heading" }, [element("div", {}, [element("h3", { text: "学完自检" }), element("p", { text: "勾选你已经能独立解释的知识点" })]), element("span", { className: "learning-checks-count", text: (unit.selfChecks ?? []).filter((check) => check.completed).length + " / " + (unit.selfChecks ?? []).length })]),
         element("ul", { className: "learning-check-list" }, (unit.selfChecks ?? []).map((check) => {
-          const checkbox = element("input", { attrs: { type: "checkbox" } });
+          const checkbox = element("input", { attrs: { type: "checkbox", "aria-label": check.prompt } });
           checkbox.checked = Boolean(check.completed);
           checkbox.addEventListener("change", async () => {
             checkbox.disabled = true;
@@ -1246,6 +1246,11 @@ async function runStudyQueueAction(action) {
   if (action.type === "open-mock") {
     switchView("mock");
     $("#mock-exam-form")?.scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+  if (action.type === "open-bank") {
+    switchView("bank");
+    document.querySelector("#bank-view .page-heading")?.scrollIntoView({ behavior: "smooth" });
     return;
   }
   if (action.type === "resume-case-exam") {
@@ -3740,6 +3745,7 @@ function caseNode(caseItem) {
         attrs: {
           rows: "4",
           placeholder: "在此输入你的作答…",
+          "aria-label": "案例作答：问题 " + (index + 1) + "，" + question.text,
           "data-case-id": caseItem.id,
           "data-question-id": question.id,
         },
@@ -4044,6 +4050,7 @@ function paperNode(paper) {
       rows: "12",
       placeholder:
         "第一行只写“摘要”，其后另起“正文”或一级标题。摘要 300–400 字，正文 2000–3000 字，并用第一人称写清项目职责。",
+      "aria-label": "论文草稿：" + (paper.title || paper.id),
       "data-paper-id": paper.id,
     },
   });
@@ -4583,7 +4590,7 @@ function wikiNode(entry) {
   });
   const summaryInput = element("textarea", {
     className: "wiki-edit-summary",
-    attrs: { rows: "4" },
+    attrs: { rows: "4", "aria-label": "编辑概念解释" },
   });
   summaryInput.value = entry.summary || "";
   const saveEdit = element("button", {
@@ -5914,6 +5921,9 @@ $("#command-input")?.addEventListener("keydown", (event) => {
     event.preventDefault();
     const command = paletteState.matches[paletteState.index];
     if (command) executeCommand(command);
+  } else if (event.key === "Escape") {
+    event.preventDefault();
+    document.getElementById("command-palette").close();
   }
 });
 
