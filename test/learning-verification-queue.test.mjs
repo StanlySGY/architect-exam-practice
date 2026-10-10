@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,94); assert.equal(report.unitsMissingEvidence,230); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,95); assert.equal(report.unitsMissingEvidence,229); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -120,4 +120,10 @@ test('SDN terminology has bounded IRTF evidence and remains partial',()=>{
  const unit=content.units['17.3.3'];
  assert.equal(unit.status,'partial');
  assert.ok(unit.evidence?.some(e=>e.url==='https://www.rfc-editor.org/rfc/rfc7426.html'&&e.supportedClaim.includes('控制平面与转发平面')&&e.scope.includes('信息类参考术语文档')));
+});
+
+test('IPv4/IPv6 campus coexistence has bounded IETF evidence and remains partial',()=>{
+ const unit=content.units['17.5.2'];
+ assert.equal(unit.status,'partial');
+ assert.ok(unit.evidence?.some(e=>e.url==='https://www.rfc-editor.org/rfc/rfc4213.html'&&e.supportedClaim.includes('双栈')&&e.scope.includes('不证明具体园区')));
 });

@@ -9725,6 +9725,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“园区网络同时运行IPv4和IPv6，采用地址规划、双栈设备、DNS和安全策略。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“园区网络同时运行IPv4和IPv6，采用地址规划、双栈设备、DNS和安全策略。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "RFC 4213：Basic Transition Mechanisms for IPv6 Hosts and Routers",
+          "url": "https://www.rfc-editor.org/rfc/rfc4213.html",
+          "sourceAuthority": "IETF RFC Editor（标准轨道文档）",
+          "supportedClaim": "RFC 4213 将双栈描述为 IPv4/IPv6 共存的基本过渡机制之一。",
+          "scope": "只支持双栈作为共存机制这一核心点；不证明具体园区的地址规划、DNS 配置或安全策略正确，也不保证双栈部署无需额外运维成本。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.5.3": {
