@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,93); assert.equal(report.unitsMissingEvidence,231); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,94); assert.equal(report.unitsMissingEvidence,230); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -114,4 +114,10 @@ test("dataflow, data-centered and event-based architecture styles have scoped SE
 test("call-return and virtual-machine architecture patterns have scoped SEI evidence",()=>{
  const cases=[["7.3.3","explicit-invocation call-return patterns"],["7.3.5","interpreters among virtual-machine patterns"]];
  for(const [id,claim] of cases){const u=content.units[id];assert.equal(u.status,"partial",id);assert.ok(u.evidence?.some(e=>e.url==="https://www.sei.cmu.edu/documents/1602/2020_011_001_650228.pdf"&&e.supportedClaim&&e.supportedClaim.includes(claim)&&e.scope&&e.reviewStatus),id);}
+});
+
+test('SDN terminology has bounded IRTF evidence and remains partial',()=>{
+ const unit=content.units['17.3.3'];
+ assert.equal(unit.status,'partial');
+ assert.ok(unit.evidence?.some(e=>e.url==='https://www.rfc-editor.org/rfc/rfc7426.html'&&e.supportedClaim.includes('控制平面与转发平面')&&e.scope.includes('信息类参考术语文档')));
 });

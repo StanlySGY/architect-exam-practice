@@ -9474,6 +9474,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“SDN通过控制器集中编排和网络开放API实现自动化。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“SDN通过控制器集中编排和网络开放API实现自动化。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "RFC 7426：Software-Defined Networking (SDN): Layers and Architecture Terminology",
+          "url": "https://www.rfc-editor.org/rfc/rfc7426.html",
+          "sourceAuthority": "IRTF SDN Research Group / RFC Editor（信息类 RFC）",
+          "supportedClaim": "RFC 7426 将 SDN 描述为通过开放接口动态初始化、控制、改变和管理网络行为的方法，并说明控制平面与转发平面的抽象分离。",
+          "scope": "RFC 7426 是信息类参考术语文档，不是强制特定控制器拓扑或 API 的标准；实际系统的集中程度、开放接口和自动化能力取决于实现。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.4.1": {
