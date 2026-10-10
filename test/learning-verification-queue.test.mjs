@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,119); assert.equal(report.unitsMissingEvidence,205); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,121); assert.equal(report.unitsMissingEvidence,203); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -206,4 +206,10 @@ test('information security objectives and control families have scoped evidence'
 test('embedded-system purpose and test expected-result evidence remain scoped',()=>{
  const embedded=content.units['2.4'];assert.equal(embedded.status,'partial');assert.ok(embedded.evidence?.some(e=>e.url==='https://csrc.nist.gov/files/pubs/conference/1990/10/01/proceedings-13th-national-computer-security-confer/final/docs/1990-13th-ncsc-proceedings-vol-1.pdf'&&e.supportedClaim.includes('大型系统中的组成部分')&&e.scope.includes('来源年代较早')));
  const testing=content.units['5.4'];assert.equal(testing.status,'partial');assert.ok(testing.evidence?.some(e=>e.url==='https://glossary.istqb.org/en_US/term/expected-result?exact_matches_first=true&syllabus_id=23'&&e.supportedClaim.includes('实际结果')&&e.scope.includes('不证明任一测试套件覆盖充分')));
+});
+
+
+test('hardware component interfaces and system life-cycle evidence are bounded',()=>{
+ const component=content.units['2.2'];assert.equal(component.status,'partial');assert.ok(component.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/system_component'&&e.supportedClaim.includes('明确输入、输出和特定功能')&&e.scope.includes('不单独验证处理器')));
+ const lifecycle=content.units['3.1'];assert.equal(lifecycle.status,'partial');assert.ok(lifecycle.evidence?.some(e=>e.url==='https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/'&&e.supportedClaim.includes('生命周期')&&e.scope.includes('不证明本章所列全部信息系统分类')));
 });

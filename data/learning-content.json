@@ -924,6 +924,17 @@
       "selfChecks": [
         "请按离CPU由近到远说明常见存储层次，并解释为什么要做这种层次化设计。",
         "请用“按“CPU→缓存→主存→外部存储”建立层次，再理解总线和接口如何连接处理、存储与I/O”分析“计算机硬件基础围绕处理器、存储器、总线、接口和外部设备展开，不同部件在计算、存储和数据交换中承担不同职责。”：列出关键步骤，并说明怎样识别“不要把缓存、主存和外部存储视为同一种存储”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：system component",
+          "url": "https://csrc.nist.gov/glossary/term/system_component",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 NIST IR 8401、NIST IR 8441 等来源）",
+          "supportedClaim": "NIST 术语表将系统组件描述为较大系统中的硬件、软件或固件部分，具有明确输入、输出和特定功能。",
+          "scope": "支持组件按功能和接口参与系统的基本理解；不单独验证处理器、存储器、总线和外设的具体电路结构或性能指标。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.3": {
@@ -1261,6 +1272,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“从定义、发展、分类、生命周期、建设原则与开发方法建立全章基础。”的核心含义，并说明它解决什么问题。",
         "请用“用“用户→输入→处理→输出→决策层级→典型场景”六格法学习，并和相邻信息系统横向比较”分析“从定义、发展、分类、生命周期、建设原则与开发方法建立全章基础。”：列出关键步骤，并说明怎样识别“TPS/MIS/DSS/ES/OAS/ERP按主要目标和使用层级区分，不要只靠缩写硬背”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook：NASA Program/Project Life Cycle",
+          "url": "https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/",
+          "sourceAuthority": "NASA Systems Engineering Handbook（美国国家航空航天局官方工程手册）",
+          "supportedClaim": "NASA 系统工程手册以生命周期阶段和关键决策点组织重大系统项目管理，说明生命周期是系统工程与项目治理的重要组织方式。",
+          "scope": "只支持系统/项目生命周期作为工程管理框架的概念；不证明本章所列全部信息系统分类、建设原则和开发方法均由该来源覆盖。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "3.2": {

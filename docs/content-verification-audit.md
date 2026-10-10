@@ -678,3 +678,10 @@
 - 学习单元 2.4 新增 NIST 会议论文中的嵌入式系统定义，只支持其作为更大系统中服务特定用途的组成部分这一核心点。该来源年代较早，不将其作为现代嵌入式系统资源约束、实时性和安全特征的完整依据。
 - 学习单元 5.4 新增 ISTQB 测试术语表，支持预期结果是依据测试基础在指定条件下预测的可观察行为、测试执行会产生实际结果；不据此推断测试覆盖率充分或软件无缺陷。
 - 来源：[NIST Embedded Systems Conference Proceedings](https://csrc.nist.gov/files/pubs/conference/1990/10/01/proceedings-13th-national-computer-security-confer/final/docs/1990-13th-ncsc-proceedings-vol-1.pdf)；[ISTQB Expected Result Glossary](https://glossary.istqb.org/en_US/term/expected-result?exact_matches_first=true&syllabus_id=23)。两个单元保持 partial。命题级证据覆盖从 117 增至 119 个叶子单元，仍缺有效证据的单元从 207 降至 205 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：硬件组件功能接口与系统生命周期（2026-10-10）
+
+- 学习单元 2.2 新增 NIST 系统组件术语定义，支持系统组件可按明确输入、输出和特定功能理解；不据此核验处理器、存储器、总线和外设的具体结构及性能。
+- 学习单元 3.1 新增 NASA 系统/项目生命周期章节，支持生命周期阶段与关键决策点是系统工程管理框架的一部分；该来源不覆盖本章所有分类、原则和开发方法。
+- 来源：[NIST System Component Glossary](https://csrc.nist.gov/glossary/term/system_component)；[NASA Program/Project Life Cycle](https://www.nasa.gov/reference/3-0-nasa-program-project-life-cycle/)。两个单元保持 partial。命题级证据覆盖从 119 增至 121 个叶子单元，仍缺有效证据的单元从 205 降至 203 个；总状态仍为 3 verified、321 partial。
