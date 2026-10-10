@@ -866,6 +866,26 @@
       "selfChecks": [
         "计算机系统为什么不能只理解为硬件？请分别说明硬件、系统软件和应用软件的职责。",
         "请用“建立“应用软件→系统软件/运行环境→硬件”的依赖关系，再理解处理器、存储器、总线与I/O职责”分析“计算机系统由硬件和软件组成；硬件提供计算、存储、输入输出等资源，软件负责管理资源并实现应用功能。”：列出关键步骤，并说明怎样识别“不要把计算机系统等同于硬件”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：hardware",
+          "url": "https://csrc.nist.gov/glossary/term/hardware",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 NIST/CNSSI 术语来源）",
+          "supportedClaim": "NIST 术语表将硬件描述为信息系统的物理组件。",
+          "scope": "只支持硬件的基本定义；不单独覆盖处理器、存储器、总线和输入输出设备的具体结构或性能。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary：software",
+          "url": "https://csrc.nist.gov/glossary/term/software",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 NIST/CNSSI 术语来源）",
+          "supportedClaim": "NIST 术语表将软件描述为存储并由计算机硬件执行的程序及相关数据。",
+          "scope": "只支持软件的基本定义；不单独验证本单元列举的所有软件类别及其具体职责。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.2": {
@@ -1116,6 +1136,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“系统工程采用整体、综合、跨学科方法，协调系统全生命周期的需求、架构、实现、验证、运行和退役。”的核心含义，并说明它解决什么问题。",
         "请用“优先建立层次关系和因果链：CPU/存储/总线/IO、软件层次、网络分层、性能指标”分析“系统工程采用整体、综合、跨学科方法，协调系统全生命周期的需求、架构、实现、验证、运行和退役。”：列出关键步骤，并说明怎样识别“不要把概念的设计思想与具体产品、型号或实现混为一谈”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook：Fundamentals of Systems Engineering",
+          "url": "https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/",
+          "sourceAuthority": "NASA Systems Engineering Handbook（美国国家航空航天局官方工程手册）",
+          "supportedClaim": "NASA 将系统工程描述为采用系统化、多学科方法开展系统设计、实现、技术管理、运行和退役的活动。",
+          "scope": "支持系统工程的总体定义及生命周期视角；不意味着所有行业必须采用 NASA 的具体流程、阶段门或交付物。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "2.9": {
@@ -2290,6 +2321,26 @@
       "selfChecks": [
         "请不用照抄原文，解释“GB 17859—1999 将安全保护能力划分为五级，能力由自主访问控制逐步增强到形式化、结构化和强抗渗透。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“GB 17859—1999 将安全保护能力划分为五级，能力由自主访问控制逐步增强到形式化、结构化和强抗渗透。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "GB 17859-1999《计算机信息系统安全保护等级划分准则》",
+          "url": "https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf",
+          "sourceAuthority": "GB 17859-1999 国家标准文本（浙江省政府网站转载 PDF）",
+          "supportedClaim": "该标准文本规定计算机信息系统安全保护能力分为五个等级：用户自主保护级、系统审计保护级、安全标记保护级、结构化保护级和访问验证保护级。",
+          "scope": "支持该标准文本中列出的五级名称；不据此把五级直接等同于现行网络安全等级保护 1.0/2.0 的全部定级、备案、建设整改或测评要求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "全国标准信息公共服务平台：GB 17859-1999",
+          "url": "https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7",
+          "sourceAuthority": "国家市场监督管理总局、国家标准化管理委员会全国标准信息公共服务平台",
+          "supportedClaim": "国家标准信息平台将 GB 17859-1999《计算机信息系统 安全保护等级划分准则》标记为现行，并列出其发布日期和实施日期。",
+          "scope": "只支持标准身份、名称和平台当前列示的标准状态；等级具体技术要求应以标准文本及适用的配套法规、标准为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.8.2": {
@@ -2403,6 +2454,17 @@
       "selfChecks": [
         "请区分功能需求和非功能需求，并说明非功能需求为什么会直接影响架构。",
         "如果业务方只说“系统必须快”，你会继续追问哪些信息，才能把它变成可验证的需求？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook：Systems Engineering Processes",
+          "url": "https://www.nasa.gov/reference/3-0-systems-engineering-processes-vol-2/",
+          "sourceAuthority": "NASA Systems Engineering Handbook（官方工程过程指南）",
+          "supportedClaim": "NASA 系统工程过程指南覆盖需求与系统设计相关过程，并强调过程输出、验证和验证证据在系统生命周期中的作用。",
+          "scope": "支持系统工程中需求、设计和验证过程需有结构化管理的核心观点；不替代软件需求工程标准，也不证明任一项目的需求规格已完整或正确。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.3": {

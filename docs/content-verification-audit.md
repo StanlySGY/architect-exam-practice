@@ -643,3 +643,17 @@
 
 - 复核验证队列过滤规则后确认：学习单元 17.2.3、19.3.5、19.4.4 虽已添加边界证据，但当前队列将这些历史映射/兼容单元排除在覆盖率分母之外，故不能把它们计入有效覆盖增量。
 - 以实际执行的 buildVerificationQueue 结果为准：验证队列纳入 324 个叶子单元；新增证据的 17.2.3、19.3.5、19.4.4 被既有过滤规则排除在该分母之外。队列计数为 109 个有有效证据、215 个缺有效证据；状态仍为 3 verified、321 partial。未把任何 partial 升级为 verified。
+
+
+## 本轮新增：计算机系统基础与系统工程过程的来源证据（2026-10-10）
+
+- 学习单元 2.1 分别新增 NIST 硬件与软件术语定义，支持硬件作为信息系统物理组件、软件作为由硬件执行的程序及相关数据；不据此宣称该单元列出的所有子类别均已核验。
+- 学习单元 2.8 新增 NASA 系统工程手册，支持系统工程的多学科和生命周期视角；不把 NASA 的具体流程当作所有行业的强制要求。
+- 学习单元 5.2 新增 NASA 系统工程过程指南，支持需求、设计、验证过程需要结构化管理；不将其当作软件需求标准或某项目需求正确性的替代证明。
+- 来源：[NIST hardware](https://csrc.nist.gov/glossary/term/hardware)；[NIST software](https://csrc.nist.gov/glossary/term/software)；[NASA Systems Engineering Fundamentals](https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/)；[NASA Systems Engineering Processes](https://www.nasa.gov/reference/3-0-systems-engineering-processes-vol-2/)。三个单元保持 partial。命题级证据覆盖从 109 增至 112 个叶子单元，仍缺有效证据的单元从 215 降至 212 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：GB 17859-1999 五级名称与标准状态的双来源证据（2026-10-10）
+
+- 学习单元 4.8.1 新增 GB 17859-1999 标准文本与国家标准信息平台两个来源，分别支持五个等级名称及标准身份/现行状态。明确不把该标准的五级名称直接等同于网络安全等级保护 1.0/2.0 的全部定级、建设与测评要求。
+- 来源：[GB 17859-1999 文本 PDF](https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf)；[全国标准信息公共服务平台记录](https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7)。单元保持 partial。命题级证据覆盖从 112 增至 113 个叶子单元，仍缺有效证据的单元从 212 降至 211 个；总状态仍为 3 verified、321 partial。

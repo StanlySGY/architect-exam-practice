@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,109); assert.equal(report.unitsMissingEvidence,215); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,113); assert.equal(report.unitsMissingEvidence,211); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -179,3 +179,13 @@ test('Lambda and Kappa architecture claims have bounded source evidence',()=>{
  const lambda=content.units['19.3.5'];assert.equal(lambda.status,'partial');assert.ok(lambda.evidence?.some(e=>e.url==='https://d1.awsstatic.com/whitepapers/lambda-architecure-on-for-batch-aws.pdf'&&e.supportedClaim.includes('batch、speed 和 serving')&&e.scope.includes('不证明它对所有实时分析场景都最优')));
  const kappa=content.units['19.4.4'];assert.equal(kappa.status,'partial');assert.ok(kappa.evidence?.some(e=>e.url==='https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa'&&e.supportedClaim.includes('Kappa')&&e.scope.includes('不证明 Kappa 在所有系统都能替代 Lambda')));
 });
+
+
+test('computer system foundations and systems engineering have scoped evidence',()=>{
+ const system=content.units['2.1'];assert.equal(system.status,'partial');assert.ok(system.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/hardware'&&e.supportedClaim.includes('物理组件')));assert.ok(system.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/software'&&e.supportedClaim.includes('程序及相关数据')));
+ const se=content.units['2.8'];assert.equal(se.status,'partial');assert.ok(se.evidence?.some(e=>e.url==='https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/'&&e.supportedClaim.includes('多学科方法')&&e.scope.includes('不意味着所有行业')));
+ const req=content.units['5.2'];assert.equal(req.status,'partial');assert.ok(req.evidence?.some(e=>e.url==='https://www.nasa.gov/reference/3-0-systems-engineering-processes-vol-2/'&&e.supportedClaim.includes('验证证据')&&e.scope.includes('不替代软件需求工程标准')));
+});
+
+
+test('GB 17859 level names and standard status have distinct sources',()=>{const u=content.units['4.8.1'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf'&&e.supportedClaim.includes('五个等级')&&e.scope.includes('不据此把五级直接等同于现行网络安全等级保护')));assert.ok(u.evidence?.some(e=>e.url==='https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7'&&e.supportedClaim.includes('标记为现行')&&e.scope.includes('只支持标准身份')));});
