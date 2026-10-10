@@ -34,6 +34,32 @@ test('normal-form evidence makes distinct claims and reliability-model backgroun
  const current=buildVerificationQueue(content);assert.deepEqual(current.queue.map(unit=>unit.id),reliabilityIds);
 });
 
+test('reliability model claims use direct technical sources while textbook-specific gaps remain open',()=>{
+ const reliabilityIds=['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
+ const sources=[
+  ['9.1.5','https://doi.org/10.1016/S0377-2217(02)00461-7','operational profile'],
+  ['9.2.3.1','https://doi.org/10.1109/TSE.1981.230821','捕获—再捕获'],
+  ['9.2.3.2','https://www.nationalacademies.org/read/18987/chapter/11','jelinski'],
+  ['9.2.3.3','https://doi.org/10.1016/j.stamet.2009.10.007','非参数回归'],
+  ['9.2.3.4','https://www.nationalacademies.org/read/18987/chapter/11','s-shaped'],
+  ['9.2.3.5','https://doi.org/10.1109/TSE.1980.234477','markov'],
+  ['9.2.3.6','https://www.nationalacademies.org/read/18987/chapter/11','input-domain'],
+  ['9.2.3.7','https://doi.org/10.1109/FCST.2009.83','csp'],
+  ['9.2.3.8','https://www.nationalacademies.org/read/18987/chapter/11','goel–okumoto'],
+  ['9.2.3.9','https://doi.org/10.2307/2346564','markov'],
+  ['9.2.3.10','https://doi.org/10.2307/2346781','贝叶斯']
+ ];
+ for(const [id,url,claim] of sources){
+  const unit=content.units[id];
+  assert.equal(unit.status,'partial',id);
+  assert.ok(unit.verificationPendingClaims?.length>0,id);
+  assert.ok(unit.evidence.some(e=>e.url===url&&e.reviewStatus==='source-supports-bounded-claim'&&e.scope&&e.supportedClaim.toLowerCase().includes(claim.toLowerCase())),`${id}: ${url}`);
+ }
+ assert.ok(!content.units['9.1.5'].what.includes('狭义测试按运行剖面随机抽样'));
+ const report=buildVerificationQueue(content);
+ assert.equal(report.unitsWithClaimLevelEvidence,324);assert.equal(report.unitsWithCompleteClaimEvidence,313);assert.equal(report.unitsMissingEvidence,11);
+ assert.deepEqual(report.queue.map(unit=>unit.id),reliabilityIds);
+});
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];

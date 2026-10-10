@@ -834,3 +834,14 @@
 - `9.2.3.7`：组件化嵌入式软件的路径型可靠性预测论文基于 CSP 轨迹推导执行路径（https://doi.org/10.1109/FCST.2009.83）；它只证明一个具体路径模型。
 - 证据队列指标语义已细分：`unitsWithClaimLevelEvidence` 表示至少有一个被直接支持的命题；`unitsWithCompleteClaimEvidence` 表示没有记录级缺口的单元；`unitsMissingEvidence` 仍统计缺少证据或尚有材料性主张待核的单元。当前目标队列仍为 11 项，单元状态仍为 3 个 `verified`、321 个 `partial`，没有批量升级。
 - 后续仍需取得指定教材第 9 章相应页或足以直接验证其分类口径的一手来源；未补齐的公式、模型假设与广义/狭义测试分类继续保持待核，不使用社区文章填补。
+## 本轮：第9章可靠性模型的原始文献交叉核验（2026-10-10）
+
+- 官方版本定位：清华大学出版社图书页确认《系统架构设计师教程（第2版）》第9章“软件可靠性基础知识”，目录列出 9.1.5（第311页）及 9.2.3（第314页）；出版社当前公开样章为第1章，PDF共23页，未覆盖第9章。官方书目页：https://www.tup.tsinghua.edu.cn/bookscenter/book_09190101.html；官方样章：https://www.tup.tsinghua.edu.cn/upload/books/yz/091901-01.pdf。因而本轮没有声称取得或逐页核对正版第9章正文。
+- `9.1.5` 新增一篇关于 operational profile 的同行评审来源，直接支持操作集合及发生概率、按使用概率分配测试的概念；它仍不证明教材广义/狭义测试定义的逐字口径，因此教材特定主张继续待核。
+- `9.2.3.1` 增加 Duran 与 Wiorkowski 的 IEEE 原始论文（1981，DOI 10.1109/TSE.1981.230821）：论文摘要明确涉及随机植入已知错误、同时检测植入与原生错误、最大似然估计、置信区间及固定样本/序贯测试。National Academies 还提醒 fault seeding 可能受 fault masking 等因素影响；目标教材公式及偏差条件仍须核对。
+- `9.2.3.2` 增加 National Academies 对 Jelinski–Moranda 模型假设、Goel–Okumoto 均值函数及 Musa–Okumoto 对数泊松失效率函数的明确描述。这为模型级定义和公式提供独立技术参照，但不决定这些模型在目标教材中的分类归属。
+- `9.2.3.4` 增加 National Academies 对 Duane、Weibull/改进 Weibull 及 S-shaped NHPP 模型的讨论，并保留不同模型不应混用的边界。
+- `9.2.3.5` 增加 Cheung 的 IEEE 原始研究，支持模块可靠性、模块间转移概率和用户剖面组成的 Markov 结构模型；它只是一个具体模型，不作为整个教材分类的证明。
+- `9.2.3.8` 增加两个 NHPP 公式级对照：Goel–Okumoto 均值函数 `m(t)=a(1−e^(−bt))`，S-shaped 均值函数 `m(t)=a[1−(1+bt)e^(−bt)]`。它们证明 NHPP 子模型可以有不同的均值函数，不代表目标教材完整子模型清单。
+- `9.2.3.9` 增加 Littlewood 的 Markov 结构可靠性原始论文；`9.2.3.10` 增加 Littlewood–Verrall 的 Bayesian 软件可靠性增长原始研究，用于核对 Markov 状态转移和 Bayesian 推断的模型前提。
+- 更新了 11 个单元的 `verificationPendingClaims`，将待核项收紧到正版教材分类归属、具体子模型、公式/参数、调试假设和运行剖面抽样口径。它们仍为 `partial`，没有因一般模型文献而被关闭。
