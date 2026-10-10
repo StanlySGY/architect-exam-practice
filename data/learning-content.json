@@ -9414,6 +9414,26 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过双栈、隧道、翻译和协议转换逐步完成IPv4向IPv6演进。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“通过双栈、隧道、翻译和协议转换逐步完成IPv4向IPv6演进。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "RFC 4213：IPv6 主机和路由器的基本过渡机制",
+          "url": "https://www.rfc-editor.org/rfc/rfc4213.html",
+          "sourceAuthority": "IETF RFC Editor（标准轨道文档）",
+          "supportedClaim": "RFC 4213 明确描述双栈与配置隧道作为 IPv4/IPv6 共存和过渡机制。",
+          "scope": "只支持双栈和配置隧道这两个机制；本单元提到的翻译/协议转换需另查 RFC 6144 等资料，且 RFC 4213 本身不保证某个部署的迁移效果。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "RFC 6144：IPv4/IPv6 转换框架",
+          "url": "https://www.rfc-editor.org/rfc/rfc6144.html",
+          "sourceAuthority": "IETF RFC Editor（信息类 RFC）",
+          "supportedClaim": "RFC 6144 描述 IPv4/IPv6 地址与协议转换作为网络共存和过渡工具的框架。",
+          "scope": "这是信息类框架文档，不是对所有转换方案的统一标准或长期部署建议；具体机制、适用情境和安全限制需进一步核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.3.3": {
