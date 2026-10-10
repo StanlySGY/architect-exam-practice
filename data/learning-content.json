@@ -6823,6 +6823,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“机器人能够感知环境、执行动作并在一定自主程度下完成任务；不仅是机械臂，也包括软件机器人和智能服务平台。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“机器人能够感知环境、执行动作并在一定自主程度下完成任务；不仅是机械臂，也包括软件机器人和智能服务平台。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Robotics Program",
+          "url": "https://www.nist.gov/programs-projects/robotics",
+          "sourceAuthority": "NIST Robotics Program",
+          "supportedClaim": "NIST 机器人研究覆盖制造和自动化场景，机器人系统需要将感知、规划或控制与物理动作结合。",
+          "scope": "只支持机器人可通过感知/控制参与实际任务的核心概念；不把所有机器人都限制为机械臂或都赋予同等自主性。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.3.2": {
@@ -6925,6 +6936,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“可按智能程度、应用领域和结构分类。”的核心含义，并说明它解决什么问题。",
         "请用“按“核心原理→新增能力→架构影响→适用场景→限制/风险”学习，并以教材表述为准”分析“可按智能程度、应用领域和结构分类。”：列出关键步骤，并说明怎样识别“新技术名称不等于架构优势”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Types of Artificial Intelligence",
+          "url": "https://www.ibm.com/think/topics/artificial-intelligence-types",
+          "sourceAuthority": "IBM Types of Artificial Intelligence",
+          "supportedClaim": "IBM AI 技术概览按不同技术和应用方向讨论 AI 系统能力，例如视觉、语言和专家系统。",
+          "scope": "只支持 AI 系统可按多种技术/能力维度分析；不把不同分类维度混为互斥、穷尽的单一分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "11.4.1": {
@@ -8157,6 +8179,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“Model提供数据，View负责显示，Presenter负责全部交互逻辑；View不直接访问Model。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“Model提供数据，View负责显示，Presenter负责全部交互逻辑；View不直接访问Model。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Martin Fowler: Model View Presenter",
+          "url": "https://martinfowler.com/eaaDev/ModelViewPresenter.html",
+          "sourceAuthority": "Martin Fowler: Model View Presenter",
+          "supportedClaim": "Model-View-Presenter 模式将界面展示与交互协调职责分离，并由 Presenter 协调视图行为。",
+          "scope": "只支持 MVP 的职责分离思想；不同实现对 View 与 Model 的依赖限制可能不同，不能一概说 View 绝不访问 Model。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.3": {
@@ -8339,6 +8372,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“根据元数据、模板、控件定义和业务规则动态生成页面，减少重复开发。”的核心含义，并说明它解决什么问题。",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“根据元数据、模板、控件定义和业务规则动态生成页面，减少重复开发。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Blazor DynamicComponent",
+          "url": "https://learn.microsoft.com/en-us/aspnet/core/blazor/components/dynamiccomponent",
+          "sourceAuthority": "Microsoft Blazor DynamicComponent",
+          "supportedClaim": "Blazor DynamicComponent 允许根据运行时类型和参数动态渲染组件。",
+          "scope": "只支持特定框架中基于类型/参数动态选择组件的能力；不证明所有动态页面生成机制都采用同样实现。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.3.1": {
@@ -9075,6 +9119,17 @@
       "selfChecks": [
         "云原生相关技术很多时，为什么不能根据技术名词数量判断架构是否云原生？应先看哪些目标？",
         "请用“先从云环境的运行模型和平台能力出发，再判断具体技术是否真正解决弹性、交付、治理或可观测性问题”分析“云原生架构面向云环境设计，可利用容器、微服务、服务网格、Serverless、DevOps等技术形成弹性、自动化和持续演进能力。”：列出关键步骤，并说明怎样识别“云原生不是技术清单”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CNCF Cloud Native Glossary",
+          "url": "https://glossary.cncf.io/cloud-native/",
+          "sourceAuthority": "CNCF Cloud Native Glossary",
+          "supportedClaim": "CNCF 将云原生描述为使用容器、微服务、声明式 API 等技术构建和运行可扩展应用的方法。",
+          "scope": "只支持云原生相关技术与目标的概念关系；不表示每个云原生应用必须同时采用列出的全部技术。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.2.2": {
@@ -9166,6 +9221,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“云原生常见模式用于解耦、弹性、治理和平台化。”的核心含义，并说明它解决什么问题。",
         "请用“围绕容器/编排、微服务、弹性、自动化、可观测性和平台治理分析架构，不把单一云产品当作云原生本身”分析“云原生常见模式用于解耦、弹性、治理和平台化。”：列出关键步骤，并说明怎样识别“微服务≠云原生全部”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Patterns",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/",
+          "sourceAuthority": "Microsoft Azure Architecture Patterns",
+          "supportedClaim": "Microsoft 架构模式目录提供用于解决常见架构问题的模式及其适用背景和权衡。",
+          "scope": "只支持架构模式可用于应对重复出现的设计问题；不证明所有模式均属于云原生专属模式或适用于每个系统。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.2.4": {
@@ -9206,6 +9272,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“云原生改造如果只迁移技术而不改变设计，会产生新的复杂性。”的核心含义，并说明它解决什么问题。",
         "请用“围绕容器/编排、微服务、弹性、自动化、可观测性和平台治理分析架构，不把单一云产品当作云原生本身”分析“云原生改造如果只迁移技术而不改变设计，会产生新的复杂性。”：列出关键步骤，并说明怎样识别“微服务≠云原生全部”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CNCF Cloud Native Glossary",
+          "url": "https://glossary.cncf.io/cloud-native/",
+          "sourceAuthority": "CNCF Cloud Native Glossary",
+          "supportedClaim": "云原生定义涵盖构建和运行应用的技术与方法，而非单纯选择某个托管位置。",
+          "scope": "只支持云原生不应被简化为单一部署位置的概念；不证明每种迁移项目必然产生复杂性，具体结果取决于设计与治理。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.3.1": {
