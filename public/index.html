@@ -9,7 +9,7 @@
       content="软考高级系统架构设计师章节练习、自动判卷与错题回顾"
     />
     <link rel="icon" href="/favicon.svg" />
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/styles.css?v=20261010-chapter-ui1" />
   </head>
   <body>
     <div class="app-shell">
@@ -64,8 +64,12 @@
         <main>
       <section id="home-view" class="view active">
         <div class="hero">
-          <h1>今天，攻克哪一章？</h1>
-          <p>按章节与难度精准练习。提交后立即判卷，错题自动进入间隔回顾。</p>
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="hero-live-dot" aria-hidden="true"></span> ARCHITECT STUDY · 今日学习</p>
+            <h1>今天，攻克哪一章？</h1>
+            <p>把备考拆成清晰、可完成的小步。学一节，练一组，及时复盘。</p>
+          </div>
+          <div class="hero-mark" aria-hidden="true"><span>架</span><i></i><i></i><i></i></div>
         </div>
         <section id="study-plan" class="panel study-plan" hidden>
           <div class="study-plan-main">
@@ -128,9 +132,14 @@
         <section id="bank-onboarding" class="panel bank-onboarding" hidden></section>
         <div class="setup-grid">
           <form id="practice-form" class="panel setup-panel">
-            <div class="panel-heading">
-              <div>
-                <h2>创建章节练习</h2>
+            <div class="panel-heading setup-heading">
+              <div class="setup-heading-copy">
+                <span class="step">01</span>
+                <div>
+                  <p class="eyebrow">FOCUS SESSION</p>
+                  <h2>规划本次练习</h2>
+                  <p class="panel-description">按你的复习进度，自由组合章节与难度。</p>
+                </div>
               </div>
               <span id="availability" class="availability">载入题库…</span>
             </div>
@@ -167,8 +176,10 @@
           </form>
 
           <aside class="panel review-panel">
-            <div class="panel-heading">
+            <div class="review-heading">
+              <span class="review-icon" aria-hidden="true">↺</span>
               <div>
+                <p class="eyebrow">SPACED REVIEW</p>
                 <h2>今日错题回顾</h2>
               </div>
             </div>
