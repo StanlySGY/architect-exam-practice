@@ -487,12 +487,15 @@ async function generatorWithFetch(t, fetchImplementation) {
   const originalFetch = globalThis.fetch;
   const originalBaseUrl = process.env.ARCHITECT_LLM_BASE_URL;
   const originalModel = process.env.ARCHITECT_LLM_MODEL;
+  const originalTimeout = process.env.ARCHITECT_AGENT_TIMEOUT_MS;
   t.after(() => {
     globalThis.fetch = originalFetch;
     if (originalBaseUrl === undefined) delete process.env.ARCHITECT_LLM_BASE_URL;
     else process.env.ARCHITECT_LLM_BASE_URL = originalBaseUrl;
     if (originalModel === undefined) delete process.env.ARCHITECT_LLM_MODEL;
     else process.env.ARCHITECT_LLM_MODEL = originalModel;
+    if (originalTimeout === undefined) delete process.env.ARCHITECT_AGENT_TIMEOUT_MS;
+    else process.env.ARCHITECT_AGENT_TIMEOUT_MS = originalTimeout;
   });
   process.env.ARCHITECT_LLM_BASE_URL = "http://model.test/v1";
   process.env.ARCHITECT_LLM_MODEL = "test-model";
@@ -552,6 +555,21 @@ test("模型返回非法 JSON 会被识别为格式错误", async (t) => {
       }),
     }),
     { code: "LLM_INVALID_RESPONSE", status: 502, message: "JSON" },
+  );
+});
+
+test("模型请求超时返回明确错误且测试不调用外部模型", async (t) => {
+  const generator = await generatorWithFetch(t, async (_url, options) =>
+    await new Promise((resolve, reject) => {
+      options.signal.addEventListener("abort", () => {
+        reject(Object.assign(new Error("mock request aborted"), { name: "AbortError" }));
+      }, { once: true });
+    }),
+  );
+  process.env.ARCHITECT_AGENT_TIMEOUT_MS = "10";
+  await assert.rejects(
+    () => generator.generate({ chapter: 1, difficulty: "easy", count: 1 }),
+    (error) => error.code === "LLM_TIMEOUT" && error.status === 504 && error.message.includes("超时"),
   );
 });
 
@@ -2992,6 +3010,41 @@ test("备份导入拒绝重复 ID、悬空会话题目和无效时间", async (t
   );
 });
 
+test("不支持的备份版本与损坏备份被拒绝且不改变现有学习数据", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 4, difficulty: "easy", count: 2 });
+  const before = service.store.snapshot();
+  const backup = await service.exportData();
+
+  const unsupportedVersion = structuredClone(backup);
+  unsupportedVersion.version += 1;
+  await assert.rejects(
+    () => service.importData({ backup: unsupportedVersion, confirm: "IMPORT" }),
+    (error) => error.code === "INVALID_BACKUP",
+  );
+
+  const corrupt = structuredClone(backup);
+  corrupt.data.sessions = {
+    "session-with-missing-question": {
+      id: "session-with-missing-question",
+      questionIds: ["question-that-does-not-exist"],
+      checkedAnswers: {},
+      createdAt: "2026-04-01T08:00:00.000Z",
+    },
+  };
+  await assert.rejects(
+    () => service.importData({ backup: corrupt, confirm: "IMPORT" }),
+    (error) => error.code === "INVALID_BACKUP",
+  );
+
+  const after = service.store.snapshot();
+  assert.deepEqual(after.generatedQuestions, before.generatedQuestions);
+  assert.deepEqual(after.sessions, before.sessions);
+  assert.deepEqual(after.attempts, before.attempts);
+  assert.deepEqual(after.wrongBook, before.wrongBook);
+  assert.deepEqual(after.questionIssues, before.questionIssues);
+});
+
 test("论文模拟的草稿和评分都受服务端截止时间约束", async (t) => {
   const base = Date.parse("2026-04-01T08:00:00.000Z");
   let time = new Date(base).toISOString();
@@ -3037,6 +3090,32 @@ test("恢复问题题目会按上报前状态归还错题复习", async (t) => {
   record = service
     .wrongQuestions()
     .records.find((item) => item.questionId === question.id);
+  assert.equal(record.disabledByIssue, false);
+  assert.equal(record.mastered, false);
+  assert.equal(record.nextReviewAt <= service.now(), true);
+});
+
+test("重复上报问题题目不会覆盖错题掌握状态的恢复依据", async (t) => {
+  const { service } = await fixture(t);
+  await addQuestions(service, { chapter: 7, difficulty: "easy", count: 1 });
+  const session = await service.createSession({
+    chapter: 7,
+    difficulty: "easy",
+    count: 1,
+  });
+  const question = session.questions[0];
+  await service.grade({ sessionId: session.id, answers: { [question.id]: "B" } });
+  const original = service.wrongQuestions().records.find((item) => item.questionId === question.id);
+  assert.equal(original.mastered, false);
+
+  await service.reportQuestion({ questionId: question.id, note: "首次上报" });
+  await service.reportQuestion({ questionId: question.id, note: "补充说明后再次上报" });
+  let record = service.wrongQuestions().records.find((item) => item.questionId === question.id);
+  assert.equal(record.disabledByIssue, true);
+  assert.equal(record.mastered, true);
+
+  await service.restoreQuestion(question.id);
+  record = service.wrongQuestions().records.find((item) => item.questionId === question.id);
   assert.equal(record.disabledByIssue, false);
   assert.equal(record.mastered, false);
   assert.equal(record.nextReviewAt <= service.now(), true);

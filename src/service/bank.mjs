@@ -295,8 +295,10 @@ export class BankDomain extends ReviewDomain {
       };
       const wrongRecord = state.wrongBook[questionId];
       if (wrongRecord) {
-        // 记住上报前的掌握状态，恢复题目时按原状态归还错题复习。
-        wrongRecord.prevMastered = Boolean(wrongRecord.mastered);
+        // 只在首次进入问题隔离时记录原状态；重复上报不能覆盖恢复依据。
+        if (!wrongRecord.disabledByIssue) {
+          wrongRecord.prevMastered = Boolean(wrongRecord.mastered);
+        }
         wrongRecord.mastered = true;
         wrongRecord.disabledByIssue = true;
       }
