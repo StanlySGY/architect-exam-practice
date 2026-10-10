@@ -5469,9 +5469,9 @@
           "sourceTitle": "NIST CSRC Reliability Glossary",
           "url": "https://csrc.nist.gov/glossary/term/reliability",
           "sourceAuthority": "NIST Handbook of Reliability Engineering",
-          "supportedClaim": "NIST provides a bounded definition of reliability as a system property under stated conditions; reliability evaluation must be interpreted against its intended operating context.",
-          "scope": "只支持可靠性核心术语；不支持广义/狭义测试的教材分类、特定概率分布或模型选择结论，仍需核对指定教材。",
-          "reviewStatus": "source-supports-bounded-claim",
+          "supportedClaim": "NIST defines reliability as a system property under specified conditions and operating context.",
+          "scope": "只支持可靠性核心术语；不支持本单元关于广义/狭义测试、运行剖面抽样或可靠性评价方法的教材分类，须逐项核对指定教材。",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -14933,9 +14933,9 @@
           "sourceTitle": "IBM 数据库规范化说明",
           "url": "https://www.ibm.com/think/topics/database-normalization",
           "sourceAuthority": "IBM 技术说明",
-          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
-          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "supportedClaim": "IBM explains first normal form as one value per attribute/row and avoiding repeating groups or multi-valued cells.",
+          "scope": "Supports the single-value and no-repeating-group criterion for 1NF; formal interpretation should follow the course text and attribute semantics.",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -14976,9 +14976,9 @@
           "sourceTitle": "IBM 数据库规范化说明",
           "url": "https://www.ibm.com/think/topics/database-normalization",
           "sourceAuthority": "IBM 技术说明",
-          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
-          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "supportedClaim": "IBM explains second normal form requires each non-key attribute to depend on the entire key, not only part of a composite key.",
+          "scope": "Supports the distinction from partial dependency; formal determination requires identifying candidate keys and functional dependencies.",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15019,9 +15019,9 @@
           "sourceTitle": "IBM 数据库规范化说明",
           "url": "https://www.ibm.com/think/topics/database-normalization",
           "sourceAuthority": "IBM 技术说明",
-          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
-          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "supportedClaim": "IBM explains third normal form excludes non-key attributes depending on other non-key attributes rather than on the key (transitive dependency).",
+          "scope": "Supports the common 3NF teaching formulation; formal testing must account for candidate keys and functional dependencies.",
+          "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15064,7 +15064,7 @@
           "sourceAuthority": "学术出版社书目页",
           "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
           "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15107,7 +15107,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15150,7 +15150,7 @@
           "sourceAuthority": "学术出版社书目页",
           "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
           "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15193,7 +15193,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15236,7 +15236,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15279,7 +15279,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15322,7 +15322,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15365,7 +15365,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15408,7 +15408,7 @@
           "sourceAuthority": "National Academies",
           "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
           "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
@@ -15451,7 +15451,7 @@
           "sourceAuthority": "学术出版社书目页",
           "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
           "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
-          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewStatus": "background-only-needs-textbook-verification",
           "reviewedOn": "2026-10-10"
         }
       ]
