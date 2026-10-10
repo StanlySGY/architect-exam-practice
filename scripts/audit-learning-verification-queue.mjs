@@ -6,7 +6,11 @@ export function buildVerificationQueue(content) {
  const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
  const queue = units.map(([id, unit]) => {
   const evidence = Array.isArray(unit?.evidence) ? unit.evidence : [];
-  const validEvidence = evidence.filter(item => item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && String(item.reviewedOn ?? '').trim() && String(item.reviewStatus ?? '').trim() && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus)));
+  const validEvidence = evidence.filter(item => {
+   const reviewedOn = String(item?.reviewedOn ?? '');
+   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(reviewedOn) && !Number.isNaN(Date.parse(`${reviewedOn}T00:00:00Z`)) && new Date(`${reviewedOn}T00:00:00Z`).toISOString().slice(0, 10) === reviewedOn;
+   return item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && validDate && String(item.reviewStatus ?? '').trim() && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus));
+  });
   const missing = [];
   if (!validEvidence.length) missing.push('no claim-level evidence record');
   if (!validEvidence.length && (!unit?.source?.path || !String(unit.source.path).startsWith('https://'))) missing.push('no directly clickable external source path');

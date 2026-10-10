@@ -4,8 +4,15 @@ import fs from 'node:fs';
 import { buildVerificationQueue } from '../scripts/audit-learning-verification-queue.mjs';
 const content=JSON.parse(fs.readFileSync(new URL('../data/learning-content.json',import.meta.url),'utf8'));
 test('verification queue keeps claim-level evidence separate from whole-unit status',()=>{
- const report=buildVerificationQueue({units:{'4.3.1':{status:'partial',what:'core claim',source:{path:'https://csrc.nist.gov/glossary/term/defense_in_depth'},evidence:[{url:'https://csrc.nist.gov/glossary/term/defense_in_depth',supportedClaim:'definition',scope:'core definition only',reviewedOn:'2026-10-09',reviewStatus:'source-supports-core-claim'}]},x:{status:'verified',what:'unsupported',evidence:[{url:'https://example.com'}]}}});
- assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,1);
+ const report=buildVerificationQueue({units:{'4.3.1':{status:'partial',what:'core claim',source:{path:'https://csrc.nist.gov/glossary/term/defense_in_depth'},evidence:[{url:'https://csrc.nist.gov/glossary/term/defense_in_depth',supportedClaim:'definition',scope:'core definition only',reviewedOn:'2026-10-09',reviewStatus:'source-supports-core-claim'}]},'4.3.2':{status:'partial',what:'invalid evidence date',evidence:[{url:'https://example.com/claim',supportedClaim:'claim',scope:'bounded',reviewedOn:'2026-02-30',reviewStatus:'source-supports-core-claim'}]},x:{status:'verified',what:'unsupported',evidence:[{url:'https://example.com'}]}}});
+ assert.equal(report.unitsWithClaimLevelEvidence,1); assert.deepEqual(report.verifiedWithoutEvidence,['x']); assert.equal(report.unitsMissingEvidence,2);
+});
+
+test('verification queue rejects malformed or impossible evidence review dates',()=>{
+ const makeEvidence=reviewedOn=>({url:'https://example.com/claim',supportedClaim:'claim',scope:'bounded claim only',reviewedOn,reviewStatus:'source-supports-core-claim'});
+ const report=buildVerificationQueue({units:{valid:{status:'partial',evidence:[makeEvidence('2024-02-29')]},malformed:{status:'partial',evidence:[makeEvidence('2024-2-09')]},impossible:{status:'partial',evidence:[makeEvidence('2025-02-29')]}}});
+ assert.equal(report.unitsWithClaimLevelEvidence,1);
+ assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
  const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,92); assert.equal(report.unitsMissingEvidence,232); assert.deepEqual(report.verifiedWithoutEvidence,[]);
