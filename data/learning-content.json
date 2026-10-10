@@ -14853,7 +14853,7 @@
       "pitfalls": "本单元（4.4.2.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
       "source": {
         "type": "external-reference-screening",
-        "path": "https://csrc.nist.gov/news-events/news/2023/nist-to-withdraw-special-publication-800-67-revision-2",
+        "path": "https://csrc.nist.gov/news/2023/nist-to-withdraw-sp-800-67-rev-2",
         "status": "needs-review"
       },
       "prerequisites": [
@@ -14875,7 +14875,7 @@
       "evidence": [
         {
           "sourceTitle": "NIST SP 800-67 Rev. 2 撤回公告",
-          "url": "https://csrc.nist.gov/news-events/news/2023/nist-to-withdraw-special-publication-800-67-revision-2",
+          "url": "https://csrc.nist.gov/news/2023/nist-to-withdraw-sp-800-67-rev-2",
           "sourceAuthority": "NIST 官方公告",
           "supportedClaim": "TDEA/SP 800-67 Rev. 2 的撤回状态与时间。",
           "scope": "只支持标准状态和迁移背景；不独立证明算法细节或本地合规要求。",
