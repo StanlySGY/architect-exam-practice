@@ -1146,29 +1146,37 @@ function renderLearningPath(data) {
     } catch (error) { showToast(error.message, true); } finally { completeButton.disabled = false; }
   });
   body.replaceChildren(
-    element("div", { className: "learning-meta" }, [element("span", { text: "第 " + unit.chapter + " 章 · " + unit.chapterTitle }), element("span", { text: unit.sourceTitle })]),
+    element("div", { className: "learning-meta" }, [
+      element("span", { className: "learning-chapter-chip", text: "第 " + unit.chapter + " 章 · " + unit.chapterTitle }),
+      element("span", { className: "learning-section-title", text: unit.sourceTitle }),
+    ]),
     element("div", { className: "learning-content" }, [
-      element("h3", { text: "这节先学什么" }), element("p", { text: unit.coreKnowledge }),
-      element("h3", { text: "为什么 / 怎么工作" }), element("p", { text: unit.teaching?.why || unit.teaching?.how || "待补：这里将补充问题背景与核心机制。" }),
-      element("h3", { text: "场景与例子" }), element("p", { text: unit.teaching?.scenarios || unit.teaching?.examples || "待补：这里将补充应用场景与实际系统例子。" }),
-      element("h3", { text: "考试关注点" }), element("p", { text: unit.examFocus }),
-      element("h3", { text: "易混淆 / 常见陷阱" }), element("p", { text: (unit.teaching?.confusions || unit.commonConfusions) + (unit.teaching?.pitfalls ? "；" + unit.teaching.pitfalls : "") }),
-      element("h3", { text: "学习检查（只记录自检，不等于掌握）" }),
-      element("ul", {}, (unit.selfChecks ?? []).map((check) => {
-        const checkbox = element("input", { attrs: { type: "checkbox" } });
-        checkbox.checked = Boolean(check.completed);
-        checkbox.addEventListener("change", async () => {
-          checkbox.disabled = true;
-          try { renderLearningPath(await api("/api/learning/check", { method: "POST", body: JSON.stringify({ unitId: unit.id, checkId: check.id, completed: checkbox.checked }) })); }
-          catch (error) { checkbox.checked = !checkbox.checked; showToast(error.message, true); }
-          finally { checkbox.disabled = false; }
-        });
-        return element("li", {}, [checkbox, element("span", { text: " " + check.prompt })]);
-      })),
-      element("p", { className: "muted", text: "内容状态：" + (unit.contentStatus === "verified" ? "已核验课程内容" : unit.contentStatus === "partial" ? "已有部分内容，仍需教材核验/补全" : "待补") }),
+      element("section", { className: "learning-topic learning-topic-primary" }, [
+        element("span", { className: "learning-topic-index", text: "01" }),
+        element("div", {}, [element("h3", { text: "这节先学什么" }), element("p", { text: unit.coreKnowledge })]),
+      ]),
+      element("section", { className: "learning-topic" }, [element("h3", { text: "为什么 / 怎么工作" }), element("p", { text: unit.teaching?.why || unit.teaching?.how || "待补：这里将补充问题背景与核心机制。" })]),
+      element("section", { className: "learning-topic" }, [element("h3", { text: "场景与例子" }), element("p", { text: unit.teaching?.scenarios || unit.teaching?.examples || "待补：这里将补充应用场景与实际系统例子。" })]),
+      element("section", { className: "learning-topic learning-topic-exam" }, [element("h3", { text: "考试关注点" }), element("p", { text: unit.examFocus })]),
+      element("section", { className: "learning-topic" }, [element("h3", { text: "易混淆 / 常见陷阱" }), element("p", { text: (unit.teaching?.confusions || unit.commonConfusions) + (unit.teaching?.pitfalls ? "；" + unit.teaching.pitfalls : "") })]),
+      element("section", { className: "learning-checks" }, [
+        element("div", { className: "learning-checks-heading" }, [element("div", {}, [element("h3", { text: "学完自检" }), element("p", { text: "勾选你已经能独立解释的知识点" })]), element("span", { className: "learning-checks-count", text: (unit.selfChecks ?? []).filter((check) => check.completed).length + " / " + (unit.selfChecks ?? []).length })]),
+        element("ul", { className: "learning-check-list" }, (unit.selfChecks ?? []).map((check) => {
+          const checkbox = element("input", { attrs: { type: "checkbox" } });
+          checkbox.checked = Boolean(check.completed);
+          checkbox.addEventListener("change", async () => {
+            checkbox.disabled = true;
+            try { renderLearningPath(await api("/api/learning/check", { method: "POST", body: JSON.stringify({ unitId: unit.id, checkId: check.id, completed: checkbox.checked }) })); }
+            catch (error) { checkbox.checked = !checkbox.checked; showToast(error.message, true); }
+            finally { checkbox.disabled = false; }
+          });
+          return element("li", { className: check.completed ? "is-complete" : "" }, [checkbox, element("span", { text: check.prompt })]);
+        })),
+      ]),
+      element("div", { className: "learning-content-status" }, [element("span", { className: "status-dot", attrs: { "aria-hidden": "true" } }), element("span", { text: "课程内容状态：" + (unit.contentStatus === "verified" ? "已核验" : unit.contentStatus === "partial" ? "部分核验，仍需教材复核" : "待补充与核验") })]),
     ]),
     element("div", { className: "learning-actions" }, [startButton, completeButton]),
-    element("p", { className: "muted", text: data.disclaimer }),
+    element("p", { className: "muted learning-disclaimer", text: data.disclaimer }),
   );
 }
 
@@ -1278,10 +1286,12 @@ function studyQueueItemNode(item) {
         studyQueueActionButton(
           item,
           item.kind === "resume-case-exam" || item.kind === "resume-session"
-            ? "继续"
+            ? "继续学习"
             : item.kind === "review"
               ? "开始回顾"
-              : "开始练习",
+              : item.kind === "learning"
+                ? "开始学习"
+                : "开始练习",
         ),
       ];
   return element("article", { className: "study-queue-item" }, [
