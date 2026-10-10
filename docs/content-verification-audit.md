@@ -575,3 +575,71 @@
 - 学习单元 `17.5.2` 新增 RFC 4213 的命题级证据，只支持“双栈是 IPv4/IPv6 共存的基本过渡机制之一”这一核心点。
 - 来源：[RFC 4213](https://www.rfc-editor.org/rfc/rfc4213.html)。该证据不覆盖园区地址规划、DNS 配置或安全策略的正确性，也不保证部署无需额外运维成本；这些内容仍需分别核验。
 - 单元状态保持 `partial`。命题级证据覆盖从 94 增至 95 个叶子单元，仍缺有效证据的单元从 230 降至 229 个；总状态仍为 3 `verified`、321 `partial`，没有新增 `verified`。
+
+
+## 本轮新增：存储访问方式与 5G/IMT-2020 的有限来源证据（2026-10-10）
+
+- 学习单元 17.2.4 新增 SNIA 对象存储资料，只支持“对象存储以可唯一标识的对象组织和检索数据”这一边界明确的描述；不外推块、文件存储的完整定义，也不据此判断特定负载的性能或成本。
+- 学习单元 17.5.3 新增现行 ITU-R M.2150-3 来源，支持 IMT-2020（通常称为 5G）的地面无线接口规范及相关使用场景；不外推为具体行业方案、云边缘部署或性能承诺的证明。
+- 来源：[SNIA Object Storage](https://www.snia.org/education/what-is-object-storage)；[ITU-R M.2150](https://www.itu.int/rec/R-REC-M.2150/en)。两个单元均保持 partial，新增回归测试验证证据链接、主张范围和状态。命题级证据覆盖从 95 增至 97 个叶子单元；仍缺有效证据的单元从 229 降至 227 个，总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：园区 LAN、连续性规划与事务语义的边界证据（2026-10-10）
+
+- 学习单元 17.2.1 新增 Cisco 园区 LAN 设计指南，支持园区 LAN 覆盖一栋或多栋建筑、以及接入/分布/核心分层模型的描述；该指南属于厂商设计指导，且明确实际层数取决于规模，不是所有 LAN 的强制结构。
+- 学习单元 17.5.1 新增 NIST 连续性规划专题，支持将备用设备、替代处理方式和备用地点纳入中断恢复策略；不将其外推为所有系统必须采用相同冗余方案。
+- 学习单元 18.2.4 新增 PostgreSQL 官方事务文档，支持事务的全有或全无及并发可见性这一技术实例；不据此宣称职责分离或所有数据完整性控制已得到验证。
+- 来源：[Cisco Campus LAN/WLAN Design Guide](https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html)；[NIST Contingency Planning](https://csrc.nist.gov/Topics/Security-and-Privacy/security-programs-and-operations/contingency-planning)；[PostgreSQL Transactions](https://www.postgresql.org/docs/18/tutorial-transactions.html)。三个单元均保持 partial。命题级证据覆盖从 97 增至 100 个叶子单元，仍缺有效证据的单元从 227 降至 224 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：WAN 术语定义与商业利益冲突访问控制模型（2026-10-10）
+
+- 学习单元 17.2.2 新增 NIST CSRC 的 WAN 术语定义，支持 WAN 通常比 LAN 覆盖更大地理范围、服务更多独立用户的有限结论；没有将其外推为具体网络质量或设计方案的验证。
+- 学习单元 18.2.5 新增 Brewer–Nash 1989 年 Chinese Wall 原始研究论文，支持利益冲突访问控制会参考用户历史访问行为这一核心模型；具体冲突类别、审计及例外仍需按实现单独核验。
+- 来源：[NIST WAN Glossary](https://csrc.nist.gov/glossary/term/wide_area_network)；[Brewer–Nash 原始论文镜像](https://www.cs.purdue.edu/homes/ninghui/readings/AccessControl/brewer_nash_89.pdf)。两个单元保持 partial。命题级证据覆盖从 100 增至 102 个叶子单元，仍缺有效证据的单元从 224 降至 222 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：数据中心能效措施的有限证据（2026-10-10）
+
+- 学习单元 17.4.4 新增美国能源部 2024 年数据中心能效设计指南，支持高效 IT 设备、服务器/存储整合、虚拟化和环境管理属于相关能效实践；不外推为每种工作负载都必然节能，也不把一项来源当作全部节能及碳排主张的证明。
+- 来源：[U.S. DOE Best Practices Guide for Energy-Efficient Data Center Design](https://www.energy.gov/cmei/femp/articles/best-practices-guide-energy-efficient-data-center-design)。单元保持 partial。命题级证据覆盖从 102 增至 103 个叶子单元，仍缺有效证据的单元从 222 降至 221 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：质量属性权衡与安全控制目录的有限证据（2026-10-10）
+
+- 学习单元 17.4.2 新增 ISO/IEC 25010:2023 产品质量模型，支持可靠性、性能效率、安全、兼容性和可维护性等作为质量评价维度；具体项目权重、成本和架构最佳选择仍需按需求分析。
+- 学习单元 18.1.3 新增 NIST SP 800-53 Rev. 5 更新版，支持 NIST 安全与隐私控制目录是安全架构参考之一；不据此宣称其他列出的标准/框架或国内法规已完成核验。
+- 来源：[ISO/IEC 25010:2023](https://www.iso.org/standard/78176.html)；[NIST SP 800-53 Rev. 5 Update 1](https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final)。两个单元保持 partial。命题级证据覆盖从 103 增至 105 个叶子单元，仍缺有效证据的单元从 221 降至 219 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：网络安全生命周期与不可否认性定义（2026-10-10）
+
+- 学习单元 17.4.3 新增 NIST CSF 2.0 来源，支持 Govern、Identify、Protect、Detect、Respond、Recover 六项功能及供应链风险治理；不据此宣称具体组织已完成部署或符合所有控制。
+- 学习单元 18.5.6 新增 NIST 不可否认性术语定义，支持通过可验证证据建立数据来源、完整性或发送/接收方面的保证；不将日志、时间戳或任意数字签名单独视为足够证据。
+- 来源：[NIST CSF 2.0](https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20)；[NIST Non-repudiation Glossary](https://csrc.nist.gov/glossary/term/non_repudiation)。两个单元保持 partial。命题级证据覆盖从 105 增至 107 个叶子单元，仍缺有效证据的单元从 219 降至 217 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：质量需求定义与流批执行模式的实现证据（2026-10-10）
+
+- 学习单元 17.4.1 新增 ISO/IEC 25010:2023，支持使用产品质量模型辅助需求定义、完整性检查、设计/测试目标和验收准则；不将其当作某项目需求已经完整收集的证明。
+- 学习单元 19.4.5 新增 Apache Flink 官方执行模式文档，支持有界输入可采用批式执行、无界输入需要持续流式处理等具体实现边界；不外推为数据湖、周期快照或实时数仓架构的完整证明。
+- 来源：[ISO/IEC 25010:2023](https://www.iso.org/standard/78176.html)；[Apache Flink Execution Mode](https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/execution_mode/)。两个单元保持 partial。命题级证据覆盖从 107 增至 109 个叶子单元，仍缺有效证据的单元从 217 降至 215 个；总状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：5G 系统架构规范的版本限定证据（2026-10-10）
+
+- 学习单元 17.2.3 新增 3GPP TS 23.501 / ETSI TS 123 501 V18.5.0，支持 5G System 架构及移动性、QoS、策略控制、计费和认证等功能范围。该文档为 Release 18 的特定版本，不把它称为最新版本，也不将其外推为整个移动通信网络的固定组件清单。
+- 来源：[ETSI TS 123 501 V18.5.0 PDF](https://www.etsi.org/deliver/etsi_ts/123500_123599/123501/18.05.00_60/ts_123501v180500p.pdf)。单元保持 partial。该单元 ID（17.2.3）当前被验证队列按既有规则排除，因此此证据不改变队列覆盖计数；总队列计数保持 109 个有证据、215 个缺证据。
+
+
+## 本轮新增：Lambda 与 Kappa 数据处理架构的对比证据（2026-10-10）
+
+- 学习单元 19.3.5 新增 AWS 架构白皮书，支持 Lambda 模式的 batch、speed、serving 层及其用于平衡完整性与低时延的基本思路；不宣称其适用于所有实时分析场景。
+- 学习单元 19.4.4 新增 Ericsson 对 Lambda/Kappa 的架构比较，支持 Kappa 侧重单一流处理路径的概念性区别；不将其外推为 Kappa 一定能替代 Lambda 或保证特定性能。
+- 来源：[AWS Lambda Architecture Whitepaper](https://d1.awsstatic.com/whitepapers/lambda-architecure-on-for-batch-aws.pdf)；[Ericsson Lambda and Kappa](https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa)。两个单元保持 partial。这两个历史映射单元（19.3.5、19.4.4）当前被验证队列按既有规则排除，因此此批证据不改变队列覆盖计数；总队列计数保持 109 个有证据、215 个缺证据。
+
+
+## 覆盖率口径校正：验证队列排除项（2026-10-10）
+
+- 复核验证队列过滤规则后确认：学习单元 17.2.3、19.3.5、19.4.4 虽已添加边界证据，但当前队列将这些历史映射/兼容单元排除在覆盖率分母之外，故不能把它们计入有效覆盖增量。
+- 以实际执行的 buildVerificationQueue 结果为准：验证队列纳入 324 个叶子单元；新增证据的 17.2.3、19.3.5、19.4.4 被既有过滤规则排除在该分母之外。队列计数为 109 个有有效证据、215 个缺有效证据；状态仍为 3 verified、321 partial。未把任何 partial 升级为 verified。

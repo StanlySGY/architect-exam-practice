@@ -9152,6 +9152,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“局域网覆盖园区、楼宇或机房，常采用分层设计。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“局域网覆盖园区、楼宇或机房，常采用分层设计。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Cisco：Campus LAN and Wireless LAN Solution Design Guide",
+          "url": "https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html",
+          "sourceAuthority": "Cisco Validated Design（厂商设计指南；用于支持设计模型，不视为强制标准）",
+          "supportedClaim": "该指南将园区有线 LAN 描述为连接一栋或多栋建筑内设备的网络，并介绍接入、汇聚/分布和核心层的分层设计模型。",
+          "scope": "只支持园区 LAN 的常见覆盖范围及一种分层设计模型；指南明确层数取决于部署规模，不能据此断言所有 LAN 必须使用三层结构。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.2.2": {
@@ -9192,6 +9203,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“广域网连接不同地域和组织，关注链路质量、路由、成本、容灾和安全。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“广域网连接不同地域和组织，关注链路质量、路由、成本、容灾和安全。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：wide area network",
+          "url": "https://csrc.nist.gov/glossary/term/wide_area_network",
+          "sourceAuthority": "NIST CSRC Glossary（术语定义引用 NIST SP 800-82 Rev. 3）",
+          "supportedClaim": "NIST 将 WAN 定义为服务于较多独立用户、且通常覆盖范围大于 LAN 的物理或逻辑数据通信网络。",
+          "scope": "只支持 WAN 相对 LAN 的规模与覆盖范围这一术语定义；不证明某个具体 WAN 的链路质量、路由策略、成本、容灾或安全设计。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.2.3": {
@@ -9232,6 +9254,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“移动通信网络由终端、无线接入网、核心网、承载网和业务平台组成。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“移动通信网络由终端、无线接入网、核心网、承载网和业务平台组成。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "3GPP TS 23.501 / ETSI TS 123 501 V18.5.0：System architecture for the 5G System",
+          "url": "https://www.etsi.org/deliver/etsi_ts/123500_123599/123501/18.05.00_60/ts_123501v180500p.pdf",
+          "sourceAuthority": "3GPP SA2 技术规范，经 ETSI 发布（Release 18，版本 18.5.0，2024-05）",
+          "supportedClaim": "该规范定义 5G System（5GS）的系统架构，并覆盖移动性、服务质量、策略控制、计费和认证等系统级功能。",
+          "scope": "支持 5G 核心系统架构及部分系统功能；不单独证明完整移动通信网络必须按某一固定的终端、无线接入、核心、承载和业务平台清单部署，也不代表该版本是当前最新版本。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.2.4": {
@@ -9272,6 +9305,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“存储网络为服务器提供块、文件或对象存储访问。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“存储网络为服务器提供块、文件或对象存储访问。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SNIA：What Is Object Storage?",
+          "url": "https://www.snia.org/education/what-is-object-storage",
+          "sourceAuthority": "Storage Networking Industry Association (SNIA；存储网络行业协会的技术教育资料)",
+          "supportedClaim": "SNIA 将对象存储描述为以可唯一标识的对象集合存储和检索数据的方式，并说明对象通常通过对象标识访问。",
+          "scope": "只支持对象存储的基本组织与访问特征；不单独证明块存储、文件存储的全部定义，也不证明某种存储适合特定负载、性能或成本最优。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.2.5": {
@@ -9525,6 +9569,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“识别业务、用户、应用、流量、性能、可靠性、安全、管理和预算需求。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“识别业务、用户、应用、流量、性能、可靠性、安全、管理和预算需求。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC 25010:2023：Product quality model",
+          "url": "https://www.iso.org/standard/78176.html",
+          "sourceAuthority": "ISO/IEC（国际标准化组织与国际电工委员会；2023 年国际标准）",
+          "supportedClaim": "ISO/IEC 25010:2023 说明产品质量模型可用于需求获取与定义、检查需求完整性、确定设计目标、测试目标和验收准则。",
+          "scope": "支持需求分析中系统化定义和评价产品质量的做法；不能据此断言某个项目的业务、用户、流量、预算和全部质量目标已经完整识别。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.4.2": {
@@ -9565,6 +9620,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“在技术、性能、可靠性、兼容性、安全性、可维护性和成本之间权衡。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“在技术、性能、可靠性、兼容性、安全性、可维护性和成本之间权衡。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC 25010:2023：Product quality model",
+          "url": "https://www.iso.org/standard/78176.html",
+          "sourceAuthority": "ISO/IEC（国际标准化组织与国际电工委员会；2023 年国际标准）",
+          "supportedClaim": "ISO/IEC 25010:2023 定义 ICT 与软件产品质量模型，以多个质量特性作为产品规格、测量和评价的参考，包括可靠性、性能效率、安全、兼容性和可维护性等。",
+          "scope": "支持将多种质量特性作为评价维度；不替具体项目给出各维度权重，也不直接证明成本、技术路线或某个架构方案的最佳权衡。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.4.3": {
@@ -9605,6 +9671,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“网络安全需覆盖边界、内部、终端、身份、数据、运维和供应链。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“网络安全需覆盖边界、内部、终端、身份、数据、运维和供应链。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Cybersecurity Framework (CSF) 2.0",
+          "url": "https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20",
+          "sourceAuthority": "NIST（美国国家标准与技术研究院，CSWP 29，2024-02-26）",
+          "supportedClaim": "NIST CSF 2.0 将网络安全风险管理结果组织为 Govern、Identify、Protect、Detect、Respond、Recover 六项功能，并在 Govern 中明确涉及网络安全供应链风险管理。",
+          "scope": "支持网络安全治理应覆盖风险识别、防护、检测、响应、恢复及供应链治理等方面；框架不规定唯一实施方法，也不证明具体组织已部署或满足全部控制。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.4.4": {
@@ -9645,6 +9722,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过节能设备、虚拟化、合理容量和智能运维降低能耗与碳排。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“通过节能设备、虚拟化、合理容量和智能运维降低能耗与碳排。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "U.S. Department of Energy：Best Practices Guide for Energy-Efficient Data Center Design",
+          "url": "https://www.energy.gov/cmei/femp/articles/best-practices-guide-energy-efficient-data-center-design",
+          "sourceAuthority": "美国能源部 Federal Energy Management Program（联邦能源管理计划，2024 年设计最佳实践指南）",
+          "supportedClaim": "美国能源部指南将高效 IT 设备、服务器与存储整合、虚拟化和数据中心环境管理列为数据中心能效设计的相关措施。",
+          "scope": "支持这些措施属于可考虑的能效实践；不能据此保证每种工作负载、设备组合或虚拟化方案都必然降低总能耗，也不提供本学习单元中所有节能与碳排主张的完整验证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.5.1": {
@@ -9685,6 +9773,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“针对关键业务设计核心、链路、设备、机房和运营商多重冗余。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“针对关键业务设计核心、链路、设备、机房和运营商多重冗余。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC：Contingency Planning",
+          "url": "https://csrc.nist.gov/Topics/Security-and-Privacy/security-programs-and-operations/contingency-planning",
+          "sourceAuthority": "NIST Computer Security Resource Center（美国国家标准与技术研究院官方专题）",
+          "supportedClaim": "NIST 将信息系统应急规划描述为在中断后恢复系统、业务和数据的协调策略，并列举备用设备、替代处理方式和备用地点等恢复路径。",
+          "scope": "支持连续性规划中考虑替代设备和地点等恢复策略；不证明所有系统都必须部署每一种冗余，也不保证冗余本身能够避免全部中断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "17.5.2": {
@@ -9776,6 +9875,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“5G与云、边缘和行业应用结合，支持工业、交通、医疗、能源和物联网。”的核心含义，并说明它解决什么问题。",
         "请用“从业务通信需求→网络拓扑/分层→协议机制→容量与时延→可靠性/安全→运维分析”分析“5G与云、边缘和行业应用结合，支持工业、交通、医疗、能源和物联网。”：列出关键步骤，并说明怎样识别“带宽、吞吐量、时延、抖动、丢包率是不同指标”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ITU-R Recommendation M.2150-3：IMT-2020 terrestrial radio interfaces",
+          "url": "https://www.itu.int/rec/R-REC-M.2150/en",
+          "sourceAuthority": "ITU-R（国际电信联盟无线电通信部门；现行建议书 M.2150-3，2026-02）",
+          "supportedClaim": "ITU-R M.2150 规定 IMT-2020（通常称为 5G）的地面无线接口详细规范，并列出增强移动宽带、海量机器类通信和超可靠低时延通信等使用场景。",
+          "scope": "支持 5G/IMT-2020 无线接口与相关场景的有限事实；不证明任何具体行业应用必然适用，也不覆盖云、边缘平台的具体部署架构、商业效果或性能承诺。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.1.1": {
@@ -9930,6 +10040,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“安全架构需参考ISO/IEC 27000系列、ISO/IEC 15408、NIST、OSI安全框架及国内等级保护、密码和数据安全规范。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“安全架构需参考ISO/IEC 27000系列、ISO/IEC 15408、NIST、OSI安全框架及国内等级保护、密码和数据安全规范。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-53 Rev. 5 Update 1：Security and Privacy Controls",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+          "sourceAuthority": "NIST Computer Security Resource Center（SP 800-53 Rev. 5，含 2025 年 5.2.0 更新信息）",
+          "supportedClaim": "NIST SP 800-53 提供面向信息系统与组织的安全和隐私控制目录，涵盖访问控制、审计问责、身份认证、应急规划、风险评估及供应链风险管理等控制族。",
+          "scope": "仅支持 NIST 控制目录作为安全架构参考之一；不验证 ISO/IEC 27000、ISO/IEC 15408、OSI 框架或中国法规的具体要求，也不替代适用性分析与合规审查。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.2.1": {
@@ -10133,6 +10254,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过良构事务、完整性验证过程和职责分离保护商业数据完整性。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“通过良构事务、完整性验证过程和职责分离保护商业数据完整性。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation：Transactions",
+          "url": "https://www.postgresql.org/docs/18/tutorial-transactions.html",
+          "sourceAuthority": "PostgreSQL 官方文档（具体数据库产品的事务语义说明）",
+          "supportedClaim": "PostgreSQL 文档以全有或全无的操作说明事务：事务失败时未完成的步骤不产生部分提交效果，事务完成后变更对其他并发事务可见。",
+          "scope": "支持事务原子性和并发可见性的示例；不单独证明商业数据完整性已充分保障，也不证明职责分离、审计或业务约束已正确实现。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.2.5": {
@@ -10173,6 +10305,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过动态访问控制防止利益冲突，主体一旦访问某公司数据，不能再访问同一利益冲突类别的竞争公司数据。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“通过动态访问控制防止利益冲突，主体一旦访问某公司数据，不能再访问同一利益冲突类别的竞争公司数据。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Brewer and Nash：The Chinese Wall Security Policy",
+          "url": "https://www.cs.purdue.edu/homes/ninghui/readings/AccessControl/brewer_nash_89.pdf",
+          "sourceAuthority": "Brewer 与 Nash，IEEE Symposium on Security and Privacy（1989 年原始研究论文；大学课程资料镜像）",
+          "supportedClaim": "Brewer–Nash 原始模型将商业利益冲突纳入访问控制，并根据用户此前访问过的数据约束后续可访问对象。",
+          "scope": "支持 Chinese Wall/利益冲突策略的核心模型思路；不意味着所有动态访问控制系统都采用该模型，也不证明具体实现中的利益冲突分类、审计和例外规则正确。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.3.1": {
@@ -10742,6 +10885,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过数字签名、时间戳、可信第三方、日志和证据链证明发送、接收和操作事实。”的核心含义，并说明它解决什么问题。",
         "请用“先识别资产和信任边界，再做身份、访问控制、数据保护、监测审计和恢复设计，最后验证残余风险”分析“通过数字签名、时间戳、可信第三方、日志和证据链证明发送、接收和操作事实。”：列出关键步骤，并说明怎样识别“安全架构不是增加一个安全产品”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Glossary：non-repudiation",
+          "url": "https://csrc.nist.gov/glossary/term/non_repudiation",
+          "sourceAuthority": "NIST Computer Security Resource Center Glossary（引用 FIPS 186-5 等来源）",
+          "supportedClaim": "NIST 将不可否认性描述为能够向第三方提供数据完整性与来源方面的可验证保证，或为发送/接收行为提供可验证证据。",
+          "scope": "只支持不可否认性的目标定义；不能据此保证单靠日志、时间戳或任意数字签名就足以证明全部发送、接收和操作事实，具体保证取决于协议、密钥管理和证据保全。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "18.6.1": {
@@ -11580,6 +11734,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“兼容历史题目来源路径；实际考点归入“Lambda架构优缺点”。”的核心含义，并说明它解决什么问题。",
         "请用“按数据流学习：采集→传输→存储→计算→治理→分析/服务→监控”分析“兼容历史题目来源路径；实际考点归入“Lambda架构优缺点”。”：列出关键步骤，并说明怎样识别“大数据架构不等于某个数据库或计算引擎”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "AWS：Lambda Architecture for Batch and Stream Processing",
+          "url": "https://d1.awsstatic.com/whitepapers/lambda-architecure-on-for-batch-aws.pdf",
+          "sourceAuthority": "Amazon Web Services 官方架构白皮书（厂商实现示例）",
+          "supportedClaim": "该白皮书描述 Lambda 架构由 batch、speed 和 serving 等层构成：批处理生成批视图，speed layer 补偿批处理延迟，查询侧组合两类视图。",
+          "scope": "支持该架构模式的典型层次与数据流；不证明它对所有实时分析场景都最优，也不意味着所有实现都使用 AWS 产品。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "19.3.6": {
@@ -11848,6 +12013,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“兼容历史题目来源路径；实际考点归入“Kappa架构优缺点”。”的核心含义，并说明它解决什么问题。",
         "请用“按数据流学习：采集→传输→存储→计算→治理→分析/服务→监控”分析“兼容历史题目来源路径；实际考点归入“Kappa架构优缺点”。”：列出关键步骤，并说明怎样识别“大数据架构不等于某个数据库或计算引擎”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Ericsson：Data processing architectures – Lambda and Kappa",
+          "url": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+          "sourceAuthority": "Ericsson 技术架构文章（厂商技术分析，非标准规范）",
+          "supportedClaim": "该文章对比 Lambda 与 Kappa 数据处理架构，说明 Lambda 使用 batch、speed、serving 三层，而 Kappa 的设计思路侧重以流处理路径处理新数据和重放数据。",
+          "scope": "支持两种架构模式的概念性对比；不证明 Kappa 在所有系统都能替代 Lambda，也不验证具体实现的重放能力、数据保留策略或性能。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "19.4.5": {
@@ -11888,6 +12064,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“流处理加周期快照；流批一体引擎；数据湖存原始事件、流引擎负责统一计算；实时数仓。”的核心含义，并说明它解决什么问题。",
         "请用“按数据流学习：采集→传输→存储→计算→治理→分析/服务→监控”分析“流处理加周期快照；流批一体引擎；数据湖存原始事件、流引擎负责统一计算；实时数仓。”：列出关键步骤，并说明怎样识别“大数据架构不等于某个数据库或计算引擎”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Apache Flink Documentation：Execution Mode (Batch/Streaming)",
+          "url": "https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/execution_mode/",
+          "sourceAuthority": "Apache Flink 官方文档（开源分布式流处理引擎的产品技术文档）",
+          "supportedClaim": "Flink DataStream API 支持流式与批式执行模式；对于有界输入，文档说明两种执行模式在正确解释最终结果时可得到相同最终结果，但处理过程与增量输出方式可能不同。",
+          "scope": "只支持单一处理引擎兼顾有界与无界数据的一个具体实现示例；不证明所有流批一体引擎具有相同语义，也不支持本单元中数据湖、快照或实时数仓的全部架构主张。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "19.5": {

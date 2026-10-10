@@ -15,7 +15,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course has 324 authored units and preserves evidence boundaries',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,95); assert.equal(report.unitsMissingEvidence,229); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,109); assert.equal(report.unitsMissingEvidence,215); assert.deepEqual(report.verifiedWithoutEvidence,[]);
 });
 
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
@@ -126,4 +126,56 @@ test('IPv4/IPv6 campus coexistence has bounded IETF evidence and remains partial
  const unit=content.units['17.5.2'];
  assert.equal(unit.status,'partial');
  assert.ok(unit.evidence?.some(e=>e.url==='https://www.rfc-editor.org/rfc/rfc4213.html'&&e.supportedClaim.includes('双栈')&&e.scope.includes('不证明具体园区')));
+});
+
+
+test('storage and 5G learning units have bounded source evidence and remain partial',()=>{
+ const storage=content.units['17.2.4'];
+ assert.equal(storage.status,'partial');
+ assert.ok(storage.evidence?.some(e=>e.url==='https://www.snia.org/education/what-is-object-storage'&&e.supportedClaim.includes('对象存储')&&e.scope.includes('不单独证明块存储')));
+ const fiveG=content.units['17.5.3'];
+ assert.equal(fiveG.status,'partial');
+ assert.ok(fiveG.evidence?.some(e=>e.url==='https://www.itu.int/rec/R-REC-M.2150/en'&&e.supportedClaim.includes('IMT-2020')&&e.scope.includes('不证明任何具体行业应用必然适用')));
+});
+
+
+test('campus LAN, continuity planning, and transaction semantics have bounded evidence',()=>{
+ const cases=[['17.2.1','https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html','不能据此断言所有 LAN 必须使用三层结构'],['17.5.1','https://csrc.nist.gov/Topics/Security-and-Privacy/security-programs-and-operations/contingency-planning','不保证冗余本身能够避免全部中断'],['18.2.4','https://www.postgresql.org/docs/18/tutorial-transactions.html','不单独证明商业数据完整性已充分保障']];
+ for(const [id,url,scope] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope.includes(scope)&&e.reviewStatus==='source-supports-bounded-claim'),id);}
+});
+
+
+test('WAN definition and Chinese Wall access control have bounded evidence',()=>{
+ const wan=content.units['17.2.2'];assert.equal(wan.status,'partial');assert.ok(wan.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/wide_area_network'&&e.supportedClaim.includes('NIST')&&e.scope.includes('不证明某个具体 WAN')));
+ const wall=content.units['18.2.5'];assert.equal(wall.status,'partial');assert.ok(wall.evidence?.some(e=>e.url==='https://www.cs.purdue.edu/homes/ninghui/readings/AccessControl/brewer_nash_89.pdf'&&e.supportedClaim.includes('此前访问过的数据')&&e.scope.includes('不意味着所有动态访问控制系统')));
+});
+
+
+test('data-center energy efficiency evidence remains bounded',()=>{const u=content.units['17.4.4'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://www.energy.gov/cmei/femp/articles/best-practices-guide-energy-efficient-data-center-design'&&e.supportedClaim.includes('虚拟化')&&e.scope.includes('不能据此保证每种工作负载')));});
+
+
+test('quality tradeoffs and security-control catalog have bounded evidence',()=>{
+ const quality=content.units['17.4.2'];assert.equal(quality.status,'partial');assert.ok(quality.evidence?.some(e=>e.url==='https://www.iso.org/standard/78176.html'&&e.supportedClaim.includes('质量模型')&&e.scope.includes('不直接证明成本')));
+ const security=content.units['18.1.3'];assert.equal(security.status,'partial');assert.ok(security.evidence?.some(e=>e.url==='https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final'&&e.supportedClaim.includes('安全和隐私控制目录')&&e.scope.includes('不验证 ISO/IEC 27000')));
+});
+
+
+test('cybersecurity lifecycle and non-repudiation have bounded evidence',()=>{
+ const cyber=content.units['17.4.3'];assert.equal(cyber.status,'partial');assert.ok(cyber.evidence?.some(e=>e.url==='https://www.nist.gov/publications/nist-cybersecurity-framework-csf-20'&&e.supportedClaim.includes('六项功能')&&e.scope.includes('不规定唯一实施方法')));
+ const nr=content.units['18.5.6'];assert.equal(nr.status,'partial');assert.ok(nr.evidence?.some(e=>e.url==='https://csrc.nist.gov/glossary/term/non_repudiation'&&e.supportedClaim.includes('第三方')&&e.scope.includes('不能据此保证单靠日志')));
+});
+
+
+test('quality requirements and bounded/unbounded stream processing have scoped evidence',()=>{
+ const req=content.units['17.4.1'];assert.equal(req.status,'partial');assert.ok(req.evidence?.some(e=>e.url==='https://www.iso.org/standard/78176.html'&&e.supportedClaim.includes('验收准则')&&e.scope.includes('不能据此断言某个项目')));
+ const stream=content.units['19.4.5'];assert.equal(stream.status,'partial');assert.ok(stream.evidence?.some(e=>e.url==='https://nightlies.apache.org/flink/flink-docs-stable/docs/dev/datastream/execution_mode/'&&e.supportedClaim.includes('有界输入')&&e.scope.includes('不支持本单元中数据湖')));
+});
+
+
+test('5G system architecture evidence stays within specification scope',()=>{const u=content.units['17.2.3'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://www.etsi.org/deliver/etsi_ts/123500_123599/123501/18.05.00_60/ts_123501v180500p.pdf'&&e.supportedClaim.includes('5G System')&&e.scope.includes('不代表该版本是当前最新版本')));});
+
+
+test('Lambda and Kappa architecture claims have bounded source evidence',()=>{
+ const lambda=content.units['19.3.5'];assert.equal(lambda.status,'partial');assert.ok(lambda.evidence?.some(e=>e.url==='https://d1.awsstatic.com/whitepapers/lambda-architecure-on-for-batch-aws.pdf'&&e.supportedClaim.includes('batch、speed 和 serving')&&e.scope.includes('不证明它对所有实时分析场景都最优')));
+ const kappa=content.units['19.4.4'];assert.equal(kappa.status,'partial');assert.ok(kappa.evidence?.some(e=>e.url==='https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa'&&e.supportedClaim.includes('Kappa')&&e.scope.includes('不证明 Kappa 在所有系统都能替代 Lambda')));
 });
