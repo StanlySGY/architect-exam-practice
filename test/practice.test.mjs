@@ -8,8 +8,29 @@ import { parseFreeplane } from "../src/mindmap.mjs";
 import { ModelConfig } from "../src/model-config.mjs";
 import { PracticeService } from "../src/questions.mjs";
 import { JsonStore, SQLiteStore } from "../src/store.mjs";
+import { auditSourceMapping } from "../scripts/audit-bank-source-mapping.mjs";
 
 const root = resolve(import.meta.dirname, "..");
+test("source mapping separates mock provenance and compares real question number, stem, options and answer", () => {
+  const sourceRoot = "/tmp/source-root";
+  const sourceFile = "/tmp/source-root/02-历年真题/2024年上半年-系统架构设计师-综合知识.md";
+  const sourceText = [
+    "## 第1题", "样例题干用于检验真实题干匹配逻辑？", "", "- **A.** 甲", "- **B.** 乙", "- **C.** 丙", "- **D.** 丁", "", "**正确答案：B**", "",
+    "## 第2题", "另一道题？", "", "- **A.** 甲一", "- **B.** 乙一", "- **C.** 丙一", "- **D.** 丁一", "", "**正确答案：A**"
+  ].join("\n");
+  const bank = { choices: [
+    { id: "mock-2024年上半年-模拟卷1-001", sourceType: "mock", term: "2024年上半年模拟卷", paper: "模拟卷1", questionNo: 1, stem: "模拟题", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, answer: "B" },
+    { id: "real-2024年上半年-001", sourceType: "real", term: "2024年上半年", paper: "2024年上半年", questionNo: 1, stem: "样例题干用于检验真实题干匹配逻辑？", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, answer: "B" },
+    { id: "real-2024年上半年-002", sourceType: "real", term: "2024年上半年", paper: "2024年上半年", questionNo: 2, stem: "样例题干用于检验真实题干匹配逻辑？", options: { A: "甲", B: "乙", C: "丙", D: "丁" }, answer: "B" }
+  ] };
+  const report = auditSourceMapping(bank, sourceRoot, [sourceFile], new Map([[sourceFile, sourceText]]));
+  assert.equal(report.records[0].status, "simulated-no-original-source");
+  assert.equal(report.records[1].status, "candidate-question-content-match-needs-human-review");
+  assert.equal(report.records[1].candidates[0].matchedExactQuestion, true);
+  assert.equal(report.records[2].status, "candidate-content-match-local-heading-number-differs");
+  assert.equal(report.records[2].candidates[0].matchedQuestionNo, 1);
+});
+
 
 
 test("AI 生成题默认 pending_review，且缺 knowledgeDetail 审计为 quarantined", async (t) => {
@@ -1998,8 +2019,13 @@ test("系统学习单元 ID 全局唯一，缺少专属课程内容时明确隔�
   assert.equal(new Set(units.map((unit) => unit.id)).size, units.length, "learning IDs must be globally unique");
   const authored = units.filter((unit) => unit.contentSource?.type === "course-content");
   const fallback = units.filter((unit) => unit.contentSource?.type === "mindmap-fallback");
-  assert.equal(authored.length, 286);
-  assert.equal(fallback.length, 38);
+  assert.equal(authored.length, 324);
+  assert.equal(fallback.length, 0);
+  assert.ok(authored.every((unit) => ["verified", "partial"].includes(unit.contentStatus)), "authored lessons must expose an explicit review status");
+  const newlyAuthoredIds = ["4.4.2.3","6.2.3.1","6.2.3.2","6.2.3.3","9.2.3.1","9.2.3.2","9.2.3.3","9.2.3.4","9.2.3.5","9.2.3.6","9.2.3.7","9.2.3.8","9.2.3.9","9.2.3.10","10.4.1","10.4.2","10.4.3","10.4.4","10.4.5","10.4.6","10.4.7","10.4.8","10.4.9","10.4.10","10.4.11","10.4.12","10.4.13","10.4.14","10.4.15","10.4.16","10.4.17","10.4.18","17.2.3.4","17.2.3.5","19.3.5.1","19.3.7","19.4.4.1","19.4.4.2"];
+  const newlyAuthored = newlyAuthoredIds.map((id) => units.find((unit) => unit.id === id));
+  assert.equal(newlyAuthored.length, 38);
+  assert.ok(newlyAuthored.every((unit) => unit?.contentSource?.type === "course-content" && unit.contentSource.status === "partial" && unit.contentStatus === "partial"), "all previously missing lessons must now have explicit partial course records");
   const required = ["what", "why", "how", "confusions", "scenarios", "examples", "examFocus", "pitfalls"];
   for (const unit of authored) {
     assert.ok(["verified", "partial"].includes(unit.contentSource.status), "invalid content status: " + unit.id);
@@ -2012,7 +2038,7 @@ test("系统学习单元 ID 全局唯一，缺少专属课程内容时明确隔�
   assert.deepEqual(units.filter((unit) => unit.title === "1NF").map((unit) => unit.id), ["6.2.3.1"]);
   assert.deepEqual(units.filter((unit) => unit.title === "3NF").map((unit) => unit.id), ["6.2.3.3"]);
   const firstNormalForm = units.find((unit) => unit.id === "6.2.3.1");
-  assert.match(firstNormalForm.teaching.what, /属性值不可再分/);
+  assert.match(firstNormalForm.teaching.what, /属性值不可再分|原子性/);
   assert.doesNotMatch(firstNormalForm.teaching.what, /本章围绕《计算机系统基础知识》展开/);
   assert.deepEqual(units.filter((unit) => unit.title === "4G/5G演进").map((unit) => unit.id), ["17.2.3.4"]);
   assert.ok(units.some((unit) => unit.id === "19.3.5.1" && unit.title === "缺点"));

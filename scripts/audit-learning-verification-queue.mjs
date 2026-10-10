@@ -6,7 +6,7 @@ export function buildVerificationQueue(content) {
  const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
  const queue = units.map(([id, unit]) => {
   const evidence = Array.isArray(unit?.evidence) ? unit.evidence : [];
-  const validEvidence = evidence.filter(item => item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && String(item.reviewedOn ?? '').trim() && String(item.reviewStatus ?? '').trim());
+  const validEvidence = evidence.filter(item => item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && String(item.reviewedOn ?? '').trim() && String(item.reviewStatus ?? '').trim() && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus)));
   const missing = [];
   if (!validEvidence.length) missing.push('no claim-level evidence record');
   if (!validEvidence.length && (!unit?.source?.path || !String(unit.source.path).startsWith('https://'))) missing.push('no directly clickable external source path');

@@ -138,7 +138,7 @@ function mergeLearningContent(unit, content) {
   return {
     ...unit,
     teaching,
-    contentStatus: authored.status === "verified" ? "verified" : unit.contentStatus,
+    contentStatus: authored.status === "verified" ? "verified" : authored.status === "partial" ? "partial" : unit.contentStatus,
     contentSource: { type: "course-content", path: "data/learning-content.json", status: authored.status ?? "partial" },
   };
 }

@@ -20,7 +20,7 @@ test('来源映射按题型和年份生成候选，不把同名或文本匹配�
   assert.equal(report.records.find((x) => x.id === 'case-1').status, 'ambiguous-candidates');
   assert.equal(report.records.find((x) => x.id === 'essay-1').status, 'candidate-text-match-needs-human-review');
   assert.equal(report.records.find((x) => x.id === 'essay-remote').status, 'remote-source-needs-review');
-  assert.equal(report.records.find((x) => x.id === 'essay-mock').status, 'missing-source-candidate');
+  assert.equal(report.records.find((x) => x.id === 'essay-mock').status, 'simulated-no-original-source');
   assert.match(renderSourceMappingMarkdown(report), /不判断答案对错/);
 });
 

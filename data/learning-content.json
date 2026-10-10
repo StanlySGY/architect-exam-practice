@@ -12255,21 +12255,1655 @@
         "请不用照抄原文，解释“通过针对性检查减少跑题、空泛、失真和格式失分。”的核心含义，并说明它解决什么问题。",
         "请用“用“项目背景→问题/约束→架构方案→关键决策与权衡→实施→效果→反思”组织素材，避免只写技术名词”分析“通过针对性检查减少跑题、空泛、失真和格式失分。”：列出关键步骤，并说明怎样识别“论文不是技术百科”所指出的概念边界。"
       ]
+    },
+    "4.4.2.3": {
+      "status": "partial",
+      "what": "3DES/TDEA 是由多次 DES 运算构成的历史分组密码方案，需区分算法机制、密钥选项和当前标准状态。",
+      "why": "学习“3DES”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "回查教材的运算结构和密钥选项，再核对现行标准状态与迁移要求。",
+      "confusions": "历史兼容性、算法安全性和当前合规建议不是同一问题。",
+      "scenarios": "情境练习（非教材原例）：旧系统读取 TDEA 数据时分别评估兼容读取、重新加密和新数据保护。",
+      "examples": "自拟练习（非教材原例）：旧系统读取 TDEA 数据时分别评估兼容读取、重新加密和新数据保护。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明历史用途与迁移风险，不把它推荐为新系统默认算法。",
+      "pitfalls": "本单元（4.4.2.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://csrc.nist.gov/news-events/news/2023/nist-to-withdraw-special-publication-800-67-revision-2",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“3DES”的核心概念，并指出至少一个适用前提。",
+        "针对“3DES”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-67 Rev. 2 撤回公告",
+          "url": "https://csrc.nist.gov/news-events/news/2023/nist-to-withdraw-special-publication-800-67-revision-2",
+          "sourceAuthority": "NIST 官方公告",
+          "supportedClaim": "TDEA/SP 800-67 Rev. 2 的撤回状态与时间。",
+          "scope": "只支持标准状态和迁移背景；不独立证明算法细节或本地合规要求。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "6.2.3.1": {
+      "status": "partial",
+      "what": "第一范式关注关系属性值的原子性，避免把需独立操作的重复组或多值集合塞入一个属性。",
+      "why": "学习“1NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "逐字段检查数据语义；若一个字段承担多个需独立检索、约束或更新的值，评估拆分关系。",
+      "confusions": "字段含分隔符不必然违反1NF；关键是属性在数据模型中的语义。",
+      "scenarios": "情境练习（非教材原例）：联系人表把多个电话号码放在一个字段，导致单号查询和唯一约束困难。",
+      "examples": "自拟练习（非教材原例）：联系人表把多个电话号码放在一个字段，导致单号查询和唯一约束困难。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "识别多值属性并解释拆分后的键关系。",
+      "pitfalls": "本单元（6.2.3.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ibm.com/think/topics/database-normalization",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“1NF”的核心概念，并指出至少一个适用前提。",
+        "针对“1NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM 数据库规范化说明",
+          "url": "https://www.ibm.com/think/topics/database-normalization",
+          "sourceAuthority": "IBM 技术说明",
+          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
+          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "6.2.3.2": {
+      "status": "partial",
+      "what": "第二范式要求满足1NF，且非主属性完全函数依赖于每个候选键，不只依赖复合键的一部分。",
+      "why": "学习“2NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "列出候选键和函数依赖，检查非主属性是否只依赖复合键部分。",
+      "confusions": "部分依赖通常针对复合候选键；不能凭字段数量判断。",
+      "scenarios": "情境练习（非教材原例）：选课表以学生号和课程号为键，但课程名只依赖课程号。",
+      "examples": "自拟练习（非教材原例）：选课表以学生号和课程号为键，但课程名只依赖课程号。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "依据函数依赖识别部分依赖并解释分解。",
+      "pitfalls": "本单元（6.2.3.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ibm.com/think/topics/database-normalization",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“2NF”的核心概念，并指出至少一个适用前提。",
+        "针对“2NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM 数据库规范化说明",
+          "url": "https://www.ibm.com/think/topics/database-normalization",
+          "sourceAuthority": "IBM 技术说明",
+          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
+          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "6.2.3.3": {
+      "status": "partial",
+      "what": "第三范式限制非主属性对候选键的传递依赖；正式判定需依据候选键、主属性和函数依赖。",
+      "why": "学习“3NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "写出候选键和依赖，检查经非主属性形成的传递决定，并核验分解性质。",
+      "confusions": "3NF与BCNF相关但不等价；“直接依赖主键”不能替代正式判据。",
+      "scenarios": "情境练习（非教材原例）：员工号决定部门号、部门号决定部门名称，可考虑拆出部门关系。",
+      "examples": "自拟练习（非教材原例）：员工号决定部门号、部门号决定部门名称，可考虑拆出部门关系。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分2NF部分依赖、3NF传递依赖和BCNF。",
+      "pitfalls": "本单元（6.2.3.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ibm.com/think/topics/database-normalization",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“3NF”的核心概念，并指出至少一个适用前提。",
+        "针对“3NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM 数据库规范化说明",
+          "url": "https://www.ibm.com/think/topics/database-normalization",
+          "sourceAuthority": "IBM 技术说明",
+          "supportedClaim": "关系规范化的动机与 1NF/2NF/3NF 核心概念。",
+          "scope": "具体范式判定须依据候选键、属性语义和函数依赖。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.1": {
+      "status": "partial",
+      "what": "“种子法模型”是课程树中的可靠性模型标签；公开来源不足以确认其指定教材中的精确定义。",
+      "why": "学习“种子法模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "回查教材第9章对应小节，记录模型定义、输入、假设与输出后再对照原始文献。",
+      "confusions": "不能凭译名或相似分类猜测数学形式。",
+      "scenarios": "情境练习（非教材原例）：模型题先摘录教材定义与前提，再判断公式适用性。",
+      "examples": "自拟练习（非教材原例）：模型题先摘录教材定义与前提，再判断公式适用性。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "此项保留为教材待核，不背诵未核实公式。",
+      "pitfalls": "本单元（9.2.3.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“种子法模型”的核心概念，并指出至少一个适用前提。",
+        "针对“种子法模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长模型研究",
+          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+          "sourceAuthority": "学术出版社书目页",
+          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
+          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.2": {
+      "status": "partial",
+      "what": "失效率类模型通过故障率随时间或测试过程的变化描述可靠性，不同模型具有不同假设。",
+      "why": "学习“失效率类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "明确观测量是故障计数、运行时间还是失效间隔，再检查强度函数与测试条件。",
+      "confusions": "失效率、故障密度和平均失效间隔不同；失效率下降不自动保证可用性。",
+      "scenarios": "情境练习（非教材原例）：根据测试中故障间隔估计可靠性，先声明数据窗口和运行剖面。",
+      "examples": "自拟练习（非教材原例）：根据测试中故障间隔估计可靠性，先声明数据窗口和运行剖面。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "解释观测量与模型前提，具体公式以教材为准。",
+      "pitfalls": "本单元（9.2.3.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“失效率类模型”的核心概念，并指出至少一个适用前提。",
+        "针对“失效率类模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.3": {
+      "status": "partial",
+      "what": "曲线拟合类模型用测试故障数据拟合曲线，描述故障发现趋势或预测后续故障。",
+      "why": "学习“曲线拟合类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "明确横纵轴、样本范围、残差与外推范围。",
+      "confusions": "拟合曲线不是因果解释；测试环境变化可能使旧关系失效。",
+      "scenarios": "情境练习（非教材原例）：比较两个模型对同一数据的拟合，不能只凭拟合优度选模型。",
+      "examples": "自拟练习（非教材原例）：比较两个模型对同一数据的拟合，不能只凭拟合优度选模型。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明数据、拟合目标和外推限制。",
+      "pitfalls": "本单元（9.2.3.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“曲线拟合类模型”的核心概念，并指出至少一个适用前提。",
+        "针对“曲线拟合类模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长模型研究",
+          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+          "sourceAuthority": "学术出版社书目页",
+          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
+          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.4": {
+      "status": "partial",
+      "what": "可靠性增长模型描述测试、故障修复与版本改进过程中可靠性指标的统计变化。",
+      "why": "学习“可靠性增长模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "区分故障发现、修复和模型更新，核对测试代表性与模型假设。",
+      "confusions": "测试时间变长不代表可靠性必然上升；新功能可能改变故障分布。",
+      "scenarios": "情境练习（非教材原例）：发布评审用测试数据评估剩余风险，并报告预测区间。",
+      "examples": "自拟练习（非教材原例）：发布评审用测试数据评估剩余风险，并报告预测区间。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "掌握模型目的、输入、假设和外推限制。",
+      "pitfalls": "本单元（9.2.3.4）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“可靠性增长模型”的核心概念，并指出至少一个适用前提。",
+        "针对“可靠性增长模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.5": {
+      "status": "partial",
+      "what": "程序结构分析类方法借助控制流、路径或模块关系辅助分析测试覆盖；课程标签的精确定义仍待教材核实。",
+      "why": "学习“程序结构分析模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "记录结构表示、路径/模块指标及其与运行剖面或故障数据的关系。",
+      "confusions": "结构复杂度、覆盖率和可靠性概率是不同量，不能直接互换。",
+      "scenarios": "情境练习（非教材原例）：用模块复杂度安排测试，但不据此断言其失效率必然更高。",
+      "examples": "自拟练习（非教材原例）：用模块复杂度安排测试，但不据此断言其失效率必然更高。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分结构度量、覆盖指标与统计可靠性结论。",
+      "pitfalls": "本单元（9.2.3.5）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“程序结构分析模型”的核心概念，并指出至少一个适用前提。",
+        "针对“程序结构分析模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.6": {
+      "status": "partial",
+      "what": "输入域分类根据输入空间或操作剖面组织测试，使样本尽量代表实际使用条件。",
+      "why": "学习“输入域分类模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "定义输入类别和权重来源，覆盖边界/异常输入，并比较测试与生产分布。",
+      "confusions": "等比例测试不必然代表真实使用分布；操作剖面和边界覆盖互补。",
+      "scenarios": "情境练习（非教材原例）：为支付服务分层测试正常交易、异常金额、重试与权限失败。",
+      "examples": "自拟练习（非教材原例）：为支付服务分层测试正常交易、异常金额、重试与权限失败。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明输入分类、抽样依据和代表性限制。",
+      "pitfalls": "本单元（9.2.3.6）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“输入域分类模型”的核心概念，并指出至少一个适用前提。",
+        "针对“输入域分类模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.7": {
+      "status": "partial",
+      "what": "执行路径分析关注程序可能或实际执行的控制路径，用于设计路径相关测试。",
+      "why": "学习“执行路径分析模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "从控制流图识别分支、循环和关键路径，说明路径爆炸与不可达路径问题。",
+      "confusions": "语句、分支和路径覆盖不等价；高覆盖率也不证明无缺陷。",
+      "scenarios": "情境练习（非教材原例）：测试支付流程的超时、重复请求和补偿失败路径。",
+      "examples": "自拟练习（非教材原例）：测试支付流程的超时、重复请求和补偿失败路径。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分控制流覆盖与可靠性统计推断。",
+      "pitfalls": "本单元（9.2.3.7）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“执行路径分析模型”的核心概念，并指出至少一个适用前提。",
+        "针对“执行路径分析模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.8": {
+      "status": "partial",
+      "what": "NHPP允许事件发生强度随时间或测试过程变化，可用于描述累计故障发现过程。",
+      "why": "学习“非齐次泊松过程 NHPP”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "明确累计均值函数与强度函数含义、时间变量和独立增量假设，并检查拟合。",
+      "confusions": "NHPP是过程家族，不是单一可靠性模型；不同均值函数对应不同模型。",
+      "scenarios": "情境练习（非教材原例）：对累计故障数拟合均值函数，避免超出观测窗口过度外推。",
+      "examples": "自拟练习（非教材原例）：对累计故障数拟合均值函数，避免超出观测窗口过度外推。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "理解非齐次与强度变化，公式须对应具体模型。",
+      "pitfalls": "本单元（9.2.3.8）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“非齐次泊松过程 NHPP”的核心概念，并指出至少一个适用前提。",
+        "针对“非齐次泊松过程 NHPP”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.9": {
+      "status": "partial",
+      "what": "马尔可夫模型以状态和状态转移描述系统演变，假设给定当前状态后未来转移不额外依赖更早历史。",
+      "why": "学习“马尔可夫过程模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "定义状态空间、转移概率/速率和时间模型，检查状态是否足以描述系统。",
+      "confusions": "马尔可夫性是建模假设；现实系统未必天然满足。",
+      "scenarios": "情境练习（非教材原例）：为双机热备系统建模正常、主机失效、切换中和备机失效状态。",
+      "examples": "自拟练习（非教材原例）：为双机热备系统建模正常、主机失效、切换中和备机失效状态。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "画出状态转移图并说明参数作用。",
+      "pitfalls": "本单元（9.2.3.9）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.nationalacademies.org/read/18987/chapter/11",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“马尔可夫过程模型”的核心概念，并指出至少一个适用前提。",
+        "针对“马尔可夫过程模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长章节",
+          "url": "https://www.nationalacademies.org/read/18987/chapter/11",
+          "sourceAuthority": "National Academies",
+          "supportedClaim": "软件可靠性增长建模、测试数据和模型假设的一般背景。",
+          "scope": "不证明课程树中每个模型标签的教材定义或具体公式。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "9.2.3.10": {
+      "status": "partial",
+      "what": "贝叶斯方法结合先验信息与观测数据，更新未知参数或假设的概率判断。",
+      "why": "学习“贝叶斯模型”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "写明先验、观测模型与后验目标，并做先验敏感性分析。",
+      "confusions": "贝叶斯更新不会自动把主观判断变成事实；先验和模型设定都会影响结论。",
+      "scenarios": "情境练习（非教材原例）：新版本样本有限时参考历史版本，但单独报告新版本证据与不确定性。",
+      "examples": "自拟练习（非教材原例）：新版本样本有限时参考历史版本，但单独报告新版本证据与不确定性。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明先验、似然和后验；缺数据时不输出精确概率。",
+      "pitfalls": "本单元（9.2.3.10）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "观测数据→模型假设→参数/预测→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“贝叶斯模型”的核心概念，并指出至少一个适用前提。",
+        "针对“贝叶斯模型”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "软件可靠性增长模型研究",
+          "url": "https://link.springer.com/book/10.1007/978-981-16-0025-8",
+          "sourceAuthority": "学术出版社书目页",
+          "supportedClaim": "软件可靠性增长研究包含多种模型家族与统计方法。",
+          "scope": "仅支持研究背景；具体模型定义、假设和公式仍待教材逐项核对。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.1": {
+      "status": "partial",
+      "what": "演化成本控制要求比较修改、测试、部署、兼容、迁移和后续维护的全生命周期成本。",
+      "why": "学习“演化成本控制”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "建立变更基线，估算开发、测试、迁移、停机和维护成本，并记录假设。",
+      "confusions": "成本控制不等于只压缩工时或跳过验证。",
+      "scenarios": "情境练习（非教材原例）：比较数据库迁移的一次性成本、双写周期、回滚与长期运维成本。",
+      "examples": "自拟练习（非教材原例）：比较数据库迁移的一次性成本、双写周期、回滚与长期运维成本。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "按全生命周期比较并注明成本范围。",
+      "pitfalls": "本单元（10.4.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“演化成本控制”的核心概念，并指出至少一个适用前提。",
+        "针对“演化成本控制”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.2": {
+      "status": "partial",
+      "what": "进度可控强调把维护变更拆成可估算、可验证的工作并管理依赖和验收条件。",
+      "why": "学习“进度可控”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "明确范围、依赖、回归测试、部署窗口、回滚点和验收标准。",
+      "confusions": "按期交付不等于跳过测试；估算不是无条件保证。",
+      "scenarios": "情境练习（非教材原例）：多服务兼容升级先做契约测试与分阶段发布。",
+      "examples": "自拟练习（非教材原例）：多服务兼容升级先做契约测试与分阶段发布。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "关联计划、依赖、验证与部署。",
+      "pitfalls": "本单元（10.4.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“进度可控”的核心概念，并指出至少一个适用前提。",
+        "针对“进度可控”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.3": {
+      "status": "partial",
+      "what": "风险可控要求识别维护中的故障、迁移、兼容、安全和回滚风险，并安排缓解措施。",
+      "why": "学习“风险可控”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "记录风险、影响、可能性、控制、验证和责任人；高影响变更应设计回滚。",
+      "confusions": "列出风险不等于风险已降低；等级不能替代失效分析。",
+      "scenarios": "情境练习（非教材原例）：修改认证组件前检查兼容、密钥轮换、回退与审计。",
+      "examples": "自拟练习（非教材原例）：修改认证组件前检查兼容、密钥轮换、回退与审计。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "串联风险识别、控制措施和验证证据。",
+      "pitfalls": "本单元（10.4.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“风险可控”的核心概念，并指出至少一个适用前提。",
+        "针对“风险可控”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.4": {
+      "status": "partial",
+      "what": "“主体维持”是课程树中的维护原则标签；精确教材定义未直接核实，暂以保留核心业务不变量作为辅助理解。",
+      "why": "学习“主体维持”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "列出核心业务不变量和外部契约，再区分可变实现与必须保持的行为，并回查教材。",
+      "confusions": "保持主体不等于禁止重构，也不代表应保留已知安全缺陷。",
+      "scenarios": "情境练习（非教材原例）：替换支付组件时保持账务不变量和对外契约。",
+      "examples": "自拟练习（非教材原例）：替换支付组件时保持账务不变量和对外契约。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "明确核心不变量、兼容边界和可演化部分。",
+      "pitfalls": "本单元（10.4.4）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“主体维持”的核心概念，并指出至少一个适用前提。",
+        "针对“主体维持”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.5": {
+      "status": "partial",
+      "what": "总体结构优化关注变更对模块边界、依赖、部署结构和质量属性的整体影响。",
+      "why": "学习“总体结构优化”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "比较变更前后的依赖图、故障传播和质量目标，并用测试或运行指标验证。",
+      "confusions": "模块数量减少不一定代表架构更好，必须结合系统约束。",
+      "scenarios": "情境练习（非教材原例）：拆分共享数据库服务时权衡一致性、运维和故障隔离。",
+      "examples": "自拟练习（非教材原例）：拆分共享数据库服务时权衡一致性、运维和故障隔离。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "从系统整体约束判断架构改动。",
+      "pitfalls": "本单元（10.4.5）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“总体结构优化”的核心概念，并指出至少一个适用前提。",
+        "针对“总体结构优化”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.6": {
+      "status": "partial",
+      "what": "平滑演化把降低迁移中断风险作为目标，可使用兼容层、分阶段迁移和回滚部署。",
+      "why": "学习“平滑演化”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "制定阶段、兼容窗口、数据校验、流量切换和回滚标准。",
+      "confusions": "平滑不等于无风险；分阶段方案也可能增加临时复杂度。",
+      "scenarios": "情境练习（非教材原例）：旧API迁移到新API时先提供适配层，再逐步切换消费者。",
+      "examples": "自拟练习（非教材原例）：旧API迁移到新API时先提供适配层，再逐步切换消费者。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明迁移阶段、验证点和回滚条件。",
+      "pitfalls": "本单元（10.4.6）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“平滑演化”的核心概念，并指出至少一个适用前提。",
+        "针对“平滑演化”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.7": {
+      "status": "partial",
+      "what": "目标一致关注维护变更与业务目标、质量属性和既定约束之间的关联。",
+      "why": "学习“目标一致”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "记录业务目标、质量场景、决策依据、验收指标和副作用。",
+      "confusions": "满足一个目标可能损害另一个目标，不能假设所有属性同时最大化。",
+      "scenarios": "情境练习（非教材原例）：提高审计追踪能力时权衡合规与性能。",
+      "examples": "自拟练习（非教材原例）：提高审计追踪能力时权衡合规与性能。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "把变更目标关联到可测量验收条件。",
+      "pitfalls": "本单元（10.4.7）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“目标一致”的核心概念，并指出至少一个适用前提。",
+        "针对“目标一致”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.8": {
+      "status": "partial",
+      "what": "模块独立演化要求契约与依赖边界清晰，使组件可相对独立地修改、测试和发布。",
+      "why": "学习“模块独立演化”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "识别稳定接口、共享数据和隐含调用，用契约测试与版本策略验证。",
+      "confusions": "独立部署不等于没有运行依赖；微服务数量多也不自动带来独立性。",
+      "scenarios": "情境练习（非教材原例）：服务内部更改存储格式，但保持API兼容并通过契约测试。",
+      "examples": "自拟练习（非教材原例）：服务内部更改存储格式，但保持API兼容并通过契约测试。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分模块边界、运行依赖和发布独立性。",
+      "pitfalls": "本单元（10.4.8）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“模块独立演化”的核心概念，并指出至少一个适用前提。",
+        "针对“模块独立演化”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.9": {
+      "status": "partial",
+      "what": "影响可控要求变更前识别受影响组件、接口、数据、用户和流程，控制变更半径。",
+      "why": "学习“影响可控”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "结合依赖图、代码引用、数据血缘和运行指标形成影响清单。",
+      "confusions": "静态依赖图可能遗漏动态调用、外部集成和人工流程。",
+      "scenarios": "情境练习（非教材原例）：修改事件schema前检查生产者、消费者、历史重放和报表。",
+      "examples": "自拟练习（非教材原例）：修改事件schema前检查生产者、消费者、历史重放和报表。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "使用多种依赖证据确定变更范围。",
+      "pitfalls": "本单元（10.4.9）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“影响可控”的核心概念，并指出至少一个适用前提。",
+        "针对“影响可控”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.10": {
+      "status": "partial",
+      "what": "复杂性可控关注维护后复杂度、依赖和操作负担是否仍可理解、验证和运行。",
+      "why": "学习“复杂性可控”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "列出新增组件、状态、配置分支和运维流程，评估排障与测试成本。",
+      "confusions": "代码行数少不一定更简单；抽象可能隐藏控制流。",
+      "scenarios": "情境练习（非教材原例）：比较两种重试机制的幂等、重复执行、可观测性和排障成本。",
+      "examples": "自拟练习（非教材原例）：比较两种重试机制的幂等、重复执行、可观测性和排障成本。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "综合判断可理解、可测试和可运维性。",
+      "pitfalls": "本单元（10.4.10）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“复杂性可控”的核心概念，并指出至少一个适用前提。",
+        "针对“复杂性可控”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.11": {
+      "status": "partial",
+      "what": "有利于重构强调在保持外部可观察行为的前提下改善内部结构，并通过测试检查回归。",
+      "why": "学习“有利于重构”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "先建立行为测试和指标基线，再小步修改并逐次验证。",
+      "confusions": "重构不同于功能改写；测试只覆盖现有测试范围。",
+      "scenarios": "情境练习（非教材原例）：提取重复规则时比较边界条件、错误处理和事务语义。",
+      "examples": "自拟练习（非教材原例）：提取重复规则时比较边界条件、错误处理和事务语义。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分行为保持、结构改善和功能变更。",
+      "pitfalls": "本单元（10.4.11）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“有利于重构”的核心概念，并指出至少一个适用前提。",
+        "针对“有利于重构”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.12": {
+      "status": "partial",
+      "what": "有利于重用关注稳定、通用且边界清晰的能力能否在多个场景安全复用。",
+      "why": "学习“有利于重用”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "确认契约、输入约束、错误语义、版本兼容和安全边界后再验证。",
+      "confusions": "复制代码、共享库和业务复用不同；过早抽象可能更昂贵。",
+      "scenarios": "情境练习（非教材原例）：多个服务共用权限校验时检查能否保留各自策略和审计语义。",
+      "examples": "自拟练习（非教材原例）：多个服务共用权限校验时检查能否保留各自策略和审计语义。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "判断复用边界和维护成本。",
+      "pitfalls": "本单元（10.4.12）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“有利于重用”的核心概念，并指出至少一个适用前提。",
+        "针对“有利于重用”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.13": {
+      "status": "partial",
+      "what": "遵从设计原则要求维护变更检查模块职责、依赖方向、封装、接口契约和架构约束。",
+      "why": "学习“遵从设计原则”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "把适用原则转成依赖规则、代码评审项、架构测试或决策记录。",
+      "confusions": "原则之间可能冲突，不能脱离上下文机械套用。",
+      "scenarios": "情境练习（非教材原例）：修复循环依赖时检查职责边界并运行架构约束测试。",
+      "examples": "自拟练习（非教材原例）：修复循环依赖时检查职责边界并运行架构约束测试。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "把抽象原则转成可检查的工程约束。",
+      "pitfalls": "本单元（10.4.13）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“遵从设计原则”的核心概念，并指出至少一个适用前提。",
+        "针对“遵从设计原则”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.14": {
+      "status": "partial",
+      "what": "适应新技术强调评估迁移收益、风险、技能、兼容和生命周期成本，而非追新。",
+      "why": "学习“适应新技术”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "检查支持周期、兼容、迁移路径、性能/安全证据、团队能力与回滚策略。",
+      "confusions": "新技术更现代不代表更适合当前负载；厂商宣传不等于独立评测。",
+      "scenarios": "情境练习（非教材原例）：替换消息队列前测试吞吐、顺序语义、恢复与运维成本。",
+      "examples": "自拟练习（非教材原例）：替换消息队列前测试吞吐、顺序语义、恢复与运维成本。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "用需求和可复现实验评估技术迁移。",
+      "pitfalls": "本单元（10.4.14）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“适应新技术”的核心概念，并指出至少一个适用前提。",
+        "针对“适应新技术”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.15": {
+      "status": "partial",
+      "what": "环境适应性关注软件在操作系统、运行时、基础设施和部署条件变化时维持所需行为。",
+      "why": "学习“环境适应性”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "列出环境差异，执行兼容测试、配置校验和部署演练。",
+      "confusions": "可移植性、互操作性和环境兼容相关但不完全相同；容器化不消除所有差异。",
+      "scenarios": "情境练习（非教材原例）：服务迁入容器集群时检查持久化、时钟、DNS、信号和资源限制。",
+      "examples": "自拟练习（非教材原例）：服务迁入容器集群时检查持久化、时钟、DNS、信号和资源限制。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "明确环境变量、外部依赖与验证矩阵。",
+      "pitfalls": "本单元（10.4.15）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“环境适应性”的核心概念，并指出至少一个适用前提。",
+        "针对“环境适应性”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.16": {
+      "status": "partial",
+      "what": "标准依从性要求识别适用法规、行业标准和接口规范，并在变更后重新确认符合性。",
+      "why": "学习“标准依从性”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "建立标准清单与版本日期，映射到控制和测试，对更新执行影响分析。",
+      "confusions": "采用某项标准不等于系统自动合规；标准、法律义务和最佳实践不同。",
+      "scenarios": "情境练习（非教材原例）：升级加密库前核对适用标准版本、密钥要求与兼容性。",
+      "examples": "自拟练习（非教材原例）：升级加密库前核对适用标准版本、密钥要求与兼容性。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "记录标准编号、版本、适用范围和证据。",
+      "pitfalls": "本单元（10.4.16）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“标准依从性”的核心概念，并指出至少一个适用前提。",
+        "针对“标准依从性”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.17": {
+      "status": "partial",
+      "what": "质量向好应作为需指标验证的目标，如缺陷率、可用性、性能或可维护性变化。",
+      "why": "学习“质量向好”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "变更前定义指标、样本和窗口，变更后在可比条件下复测并报告副作用。",
+      "confusions": "测试通过不等于所有质量属性提升；单项改善可能伴随其他退化。",
+      "scenarios": "情境练习（非教材原例）：重构后比较相同负载下的错误率、延迟分位数和回滚率。",
+      "examples": "自拟练习（非教材原例）：重构后比较相同负载下的错误率、延迟分位数和回滚率。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "用可比数据论证质量变化并报告局限。",
+      "pitfalls": "本单元（10.4.17）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“质量向好”的核心概念，并指出至少一个适用前提。",
+        "针对“质量向好”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "10.4.18": {
+      "status": "partial",
+      "what": "适应新需求关注业务、法规、用户或接口变化对架构、数据、测试和运行的影响。",
+      "why": "学习“适应新需求”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "记录需求来源、验收条件、影响组件、数据迁移、兼容窗口和回归范围。",
+      "confusions": "适应需求不等于无条件接受；冲突需求需权衡优先级、成本和风险。",
+      "scenarios": "情境练习（非教材原例）：新增数据留存限制时评估存储、删除、审计、备份和下游副本。",
+      "examples": "自拟练习（非教材原例）：新增数据留存限制时评估存储、删除、审计、备份和下游副本。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "将需求变更映射到架构、数据影响和可测试验收标准。",
+      "pitfalls": "本单元（10.4.18）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；该维护原则的准确教材口径仍待核对。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.iso.org/standard/80710.html",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先理解软件维护目标、变更范围与生命周期约束"
+      ],
+      "keyRelations": [
+        "维护目标→变更方案→风险/成本→验证结果"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“适应新需求”的核心概念，并指出至少一个适用前提。",
+        "针对“适应新需求”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 14764:2022 软件维护标准",
+          "url": "https://www.iso.org/standard/80710.html",
+          "sourceAuthority": "ISO/IEC/IEEE 标准官方介绍",
+          "supportedClaim": "软件维护属于需要计划、执行和评价的软件生命周期活动。",
+          "scope": "只支持维护生命周期背景；不能证明课程树中的原则名称是标准原文，须对照指定教材核验。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "17.2.3.4": {
+      "status": "partial",
+      "what": "4G到5G的演进涉及无线接入、核心网架构、服务化能力和部署模式，须区分标准版本与NSA/SA。",
+      "why": "学习“4G/5G 演进”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "按接入网、核心网、接口、部署模式和业务需求比较，并标注3GPP Release。",
+      "confusions": "标准能力目标不等于实测结果；NSA与SA不是同一部署架构。",
+      "scenarios": "情境练习（非教材原例）：工业控制选网时核对覆盖、时延、可靠性、核心网和终端支持。",
+      "examples": "自拟练习（非教材原例）：工业控制选网时核对覆盖、时延、可靠性、核心网和终端支持。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "区分标准演进、部署架构与现场指标。",
+      "pitfalls": "本单元（17.2.3.4）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.3gpp.org/news-events/3gpp-news/sa2-artcle",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“4G/5G 演进”的核心概念，并指出至少一个适用前提。",
+        "针对“4G/5G 演进”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "3GPP 系统架构资料",
+          "url": "https://www.3gpp.org/news-events/3gpp-news/sa2-artcle",
+          "sourceAuthority": "3GPP 官方资料",
+          "supportedClaim": "3GPP 按 Release 持续定义和演进 5G 系统架构。",
+          "scope": "具体能力须按标准条款、Release、部署方式和测量条件核验。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "17.2.3.5": {
+      "status": "partial",
+      "what": "5G常讨论增强移动宽带、海量机器类通信和超可靠低时延等能力方向；部署需在覆盖、容量、时延和成本间权衡。",
+      "why": "学习“5G 关键特征”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "把业务指标拆为带宽、端到端时延、设备密度、移动性、可靠性和覆盖，映射到标准和部署条件。",
+      "confusions": "能力方向不是每张网络同时达到的保证；无线时延不等于端到端时延。",
+      "scenarios": "情境练习（非教材原例）：工厂控制系统同时评估无线、核心网、边缘计算、终端和应用调度。",
+      "examples": "自拟练习（非教材原例）：工厂控制系统同时评估无线、核心网、边缘计算、终端和应用调度。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "用业务指标描述能力，不只背诵宣传标签。",
+      "pitfalls": "本单元（17.2.3.5）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.3gpp.org/news-events/3gpp-news/nr-verticals",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "定义→判定条件→适用边界"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“5G 关键特征”的核心概念，并指出至少一个适用前提。",
+        "针对“5G 关键特征”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "3GPP NR 规格进展",
+          "url": "https://www.3gpp.org/news-events/3gpp-news/nr-verticals",
+          "sourceAuthority": "3GPP 官方资料",
+          "supportedClaim": "NR 标准持续扩展不同垂直行业的通信能力与用例支持。",
+          "scope": "不能把标准目标当成任一网络的实测保证。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "19.3.5.1": {
+      "status": "partial",
+      "what": "Lambda通常维护批处理与实时处理两条路径并合并结果，代价包括逻辑重复、口径协调和双路径运维。",
+      "why": "学习“Lambda 架构缺点”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "检查批流路径是否重复实现逻辑、结果如何合并，以及批视图刷新后如何处理增量。",
+      "confusions": "Lambda的缺点不代表它在所有系统都不适用，需结合实时要求和历史重算。",
+      "scenarios": "情境练习（非教材原例）：实时看板由流处理提供近期结果、批处理次日校正，团队需协调口径。",
+      "examples": "自拟练习（非教材原例）：实时看板由流处理提供近期结果、批处理次日校正，团队需协调口径。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "解释双路径重复、结果合并与运维权衡。",
+      "pitfalls": "本单元（19.3.5.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "处理路径→延迟/重算→维护成本→适用场景"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“Lambda 架构缺点”的核心概念，并指出至少一个适用前提。",
+        "针对“Lambda 架构缺点”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Ericsson Lambda/Kappa 架构比较",
+          "url": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+          "sourceAuthority": "Ericsson 技术文章",
+          "supportedClaim": "Lambda 与 Kappa 在处理路径、逻辑复用、历史重算和运维方面存在权衡。",
+          "scope": "支持架构比较维度，不构成所有工作负载均成立的优劣排名。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "19.3.7": {
+      "status": "partial",
+      "what": "比较Lambda、Kappa等模式时，应考虑处理路径、延迟、历史重算、逻辑复用、日志保留和团队能力。",
+      "why": "学习“与其他模式对比”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "明确SLA、事件保留、重算频率、算法可流化程度和历史准确性要求，再做验证。",
+      "confusions": "Kappa依赖日志重放；Lambda也不保证批结果自动正确。",
+      "scenarios": "情境练习（非教材原例）：复杂历史重算场景与实时优先且算法可流化的场景可能需要不同方案。",
+      "examples": "自拟练习（非教材原例）：复杂历史重算场景与实时优先且算法可流化的场景可能需要不同方案。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "按明确维度比较，不作无条件排名。",
+      "pitfalls": "本单元（19.3.7）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "处理路径→延迟/重算→维护成本→适用场景"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“与其他模式对比”的核心概念，并指出至少一个适用前提。",
+        "针对“与其他模式对比”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Ericsson Lambda/Kappa 架构比较",
+          "url": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+          "sourceAuthority": "Ericsson 技术文章",
+          "supportedClaim": "Lambda 与 Kappa 在处理路径、逻辑复用、历史重算和运维方面存在权衡。",
+          "scope": "支持架构比较维度，不构成所有工作负载均成立的优劣排名。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "19.4.4.1": {
+      "status": "partial",
+      "what": "Kappa以流处理作为统一计算路径，并可通过重放持久事件日志进行历史重算，减少批流逻辑重复。",
+      "why": "学习“Kappa 架构优点”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "检查日志持久性、重放能力、重算期间视图切换及状态/版本兼容。",
+      "confusions": "统一代码路径不等于所有成本更低；大规模重放可能昂贵。",
+      "scenarios": "情境练习（非教材原例）：新版本流任务从历史日志构建新状态，完成后切换查询视图。",
+      "examples": "自拟练习（非教材原例）：新版本流任务从历史日志构建新状态，完成后切换查询视图。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "说明逻辑统一的收益与成立条件。",
+      "pitfalls": "本单元（19.4.4.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "处理路径→延迟/重算→维护成本→适用场景"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“Kappa 架构优点”的核心概念，并指出至少一个适用前提。",
+        "针对“Kappa 架构优点”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Ericsson Lambda/Kappa 架构比较",
+          "url": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+          "sourceAuthority": "Ericsson 技术文章",
+          "supportedClaim": "Lambda 与 Kappa 在处理路径、逻辑复用、历史重算和运维方面存在权衡。",
+          "scope": "支持架构比较维度，不构成所有工作负载均成立的优劣排名。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
+    },
+    "19.4.4.2": {
+      "status": "partial",
+      "what": "Kappa依赖持久事件日志、足够保留期、可靠重放、状态重建和流式计算能力。",
+      "why": "学习“Kappa 架构缺点”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
+      "how": "估算日志存储、重放时间、版本切换与状态一致性；必要时保留独立离线路径。",
+      "confusions": "统一路径不消除运维复杂性；重放不自动解决外部副作用幂等问题。",
+      "scenarios": "情境练习（非教材原例）：对多年历史数据运行昂贵算法前验证重放窗口与资源成本。",
+      "examples": "自拟练习（非教材原例）：对多年历史数据运行昂贵算法前验证重放窗口与资源成本。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
+      "examFocus": "列出日志保留、重放、状态恢复和算法适配约束。",
+      "pitfalls": "本单元（19.4.4.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "source": {
+        "type": "external-reference-screening",
+        "path": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "先掌握父级知识点及相关基础概念"
+      ],
+      "keyRelations": [
+        "处理路径→延迟/重算→维护成本→适用场景"
+      ],
+      "practiceFocus": [
+        "概念识别",
+        "前提检查",
+        "适用边界",
+        "证据定位"
+      ],
+      "selfChecks": [
+        "请解释“Kappa 架构缺点”的核心概念，并指出至少一个适用前提。",
+        "针对“Kappa 架构缺点”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Ericsson Lambda/Kappa 架构比较",
+          "url": "https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa",
+          "sourceAuthority": "Ericsson 技术文章",
+          "supportedClaim": "Lambda 与 Kappa 在处理路径、逻辑复用、历史重算和运维方面存在权衡。",
+          "scope": "支持架构比较维度，不构成所有工作负载均成立的优劣排名。",
+          "reviewStatus": "source-supports-core-claim-with-scope-limit",
+          "reviewedOn": "2026-10-10"
+        }
+      ]
     }
   },
   "coverage": {
     "source": "architect.mm",
     "leafUnits": 324,
-    "courseRecords": 309,
+    "courseRecords": 347,
     "policy": "verified仅表示已有明确可靠来源并经人工核验；批量课程化记录保持partial，不冒充教材级核验。",
     "uniqueLeafIds": 324,
     "qualityRule": "课程字段完整不等于事实已核验；知识点只有经过可靠来源核验后才能升级verified。",
     "enrichedRecords": 17,
-    "selfCheckEnrichedRecords": 309,
-    "lessonCourseRecords": 286,
+    "selfCheckEnrichedRecords": 347,
+    "lessonCourseRecords": 324,
     "chapterSummaryRecords": 18,
     "sectionSummaryRecords": 5,
-    "missingLeafCourseRecords": 38,
-    "lessonSelfCheckEnrichedRecords": 286
+    "missingLeafCourseRecords": 0,
+    "lessonSelfCheckEnrichedRecords": 324
   }
 }
