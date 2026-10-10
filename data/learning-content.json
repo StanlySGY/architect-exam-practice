@@ -1681,6 +1681,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“网络开放性、身份隐藏和跨域连接扩大了攻击面，安全工作需要同时处理漏洞、威胁和安全目标。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“网络开放性、身份隐藏和跨域连接扩大了攻击面，安全工作需要同时处理漏洞、威胁和安全目标。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Attack Surface Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/attack_surface",
+          "sourceAuthority": "NIST CSRC Attack Surface Glossary",
+          "supportedClaim": "攻击面描述系统中可被攻击者利用的入口、边界或暴露部分。",
+          "scope": "只支持攻击面概念；不证明开放网络必然导致特定攻击，也不对某个系统的攻击面大小作量化。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.2": {
@@ -1715,6 +1726,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“信息安全事关个人权益、企业经营、社会稳定、国家安全和发展；攻击已从窃密、诈骗和破坏数据发展到长期潜伏、供应链渗透和影响物理设施。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“信息安全事关个人权益、企业经营、社会稳定、国家安全和发展；攻击已从窃密、诈骗和破坏数据发展到长期潜伏、供应链渗透和影响物理设施。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST Cybersecurity Framework 2.0",
+          "url": "https://www.nist.gov/cyberframework",
+          "sourceAuthority": "NIST Cybersecurity Framework 2.0",
+          "supportedClaim": "NIST CSF 2.0 提供组织识别、评估、优先排序和沟通网络安全风险的高层结果分类。",
+          "scope": "只支持网络安全风险具有组织与业务语境、需持续管理；不证明本单元列出的攻击趋势全部来自该框架。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.3.1": {
@@ -1794,6 +1816,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“由机构、岗位和人事管理构成组织保障。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“由机构、岗位和人事管理构成组织保障。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-53 Rev. 5 Update 1",
+          "url": "https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final",
+          "sourceAuthority": "NIST SP 800-53 Rev. 5 Update 1",
+          "supportedClaim": "NIST SP 800-53 将安全与隐私控制按控制族组织，并包含规划、职责和风险管理相关控制。",
+          "scope": "只支持安全治理需要控制、责任和管理机制；不证明组织采用某一固定部门设置即可合规。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.3.3": {
@@ -1828,6 +1861,17 @@
       "selfChecks": [
         "请不用照抄原文，解释““三分技术，七分管理”强调安全能力依赖持续管理。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析““三分技术，七分管理”强调安全能力依赖持续管理。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-37 Rev. 2",
+          "url": "https://csrc.nist.gov/pubs/sp/800/37/r2/final",
+          "sourceAuthority": "NIST SP 800-37 Rev. 2",
+          "supportedClaim": "NIST 风险管理框架把安全与隐私活动纳入系统生命周期，并强调控制选择、实施、评估和持续监测。",
+          "scope": "只支持安全管理需贯穿生命周期；不支持“三分技术、七分管理”作为可量化普遍定律。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.4.1": {
@@ -1998,6 +2042,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“目标是自动、高效分配密钥并减少系统长期驻留密钥数量。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“目标是自动、高效分配密钥并减少系统长期驻留密钥数量。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-57 Part 1 Rev. 5",
+          "url": "https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final",
+          "sourceAuthority": "NIST SP 800-57 Part 1 Rev. 5",
+          "supportedClaim": "NIST SP 800-57 提供密码密钥管理的一般建议，包括密钥生命周期与保护要求。",
+          "scope": "只支持密钥管理需覆盖生命周期和保护；不证明任何单一机制都能自动分配所有密钥或减少所有驻留密钥。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.5.2": {
@@ -2075,6 +2130,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“双方先可信交换公钥，再通过随机数完成相互认证，用公钥机制保护会话密钥，随后用对称算法进行高效通信。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“双方先可信交换公钥，再通过随机数完成相互认证，用公钥机制保护会话密钥，随后用对称算法进行高效通信。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IETF RFC 8446 TLS 1.3",
+          "url": "https://www.rfc-editor.org/rfc/rfc8446.html",
+          "sourceAuthority": "IETF RFC 8446 TLS 1.3",
+          "supportedClaim": "TLS 1.3 规范描述握手阶段的密钥协商、身份认证选项以及后续记录层保护。",
+          "scope": "只支持现代安全通信中握手与记录保护的概念；不等同于所有协议都使用同一公钥认证和随机数流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.6.1": {
@@ -2289,6 +2355,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“攻击者伪造地址、身份或响应，使通信方信任错误的对象。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“攻击者伪造地址、身份或响应，使通信方信任错误的对象。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Spoofing Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/spoofing",
+          "sourceAuthority": "NIST CSRC Spoofing Glossary",
+          "supportedClaim": "NIST 将欺骗/伪装类攻击描述为伪造或冒充可信实体以误导系统或用户。",
+          "scope": "只支持伪装攻击的核心概念；不把地址伪造、身份冒充和所有响应伪造视为完全相同的技术手段。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.7.4": {
@@ -2366,6 +2443,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“通过协议栈配置、过滤、限流和更新降低利用协议缺陷发起 DoS 的风险。”的核心含义，并说明它解决什么问题。",
         "请用“按“资产→威胁→脆弱性→风险→安全目标→控制措施→残余风险”建立因果链”分析“通过协议栈配置、过滤、限流和更新降低利用协议缺陷发起 DoS 的风险。”：列出关键步骤，并说明怎样识别“认证、授权、审计、加密、完整性、可用性是不同安全目标/机制，不能互换”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Denial of Service Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/denial_of_service",
+          "sourceAuthority": "NIST CSRC Denial of Service Glossary",
+          "supportedClaim": "拒绝服务攻击旨在阻止或削弱授权用户对系统、服务或资源的正常访问。",
+          "scope": "只支持 DoS 的目标定义；不证明某一配置、限流或过滤方案可独立消除所有拒绝服务风险。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "4.7.6": {
@@ -2542,6 +2630,17 @@
       "selfChecks": [
         "软件工程要解决的不只是“写代码”，还要控制哪些工程目标？为什么需要过程化方法？",
         "面对需求持续变化的项目，你能指出至少两个需要工程化管理的活动，并说明它们分别控制什么风险吗？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IEEE Computer Society SWEBOK",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society SWEBOK",
+          "supportedClaim": "IEEE Computer Society 的软件工程知识体系（SWEBOK）以知识域组织软件工程专业知识。",
+          "scope": "只支持软件工程作为有组织知识领域的概念；不证明本单元列出的全部过程、度量和项目管理结论。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.2": {
@@ -2621,6 +2720,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”的核心含义，并说明它解决什么问题。",
         "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IEEE Computer Society SWEBOK",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society SWEBOK",
+          "supportedClaim": "IEEE Computer Society 的 SWEBOK 将需求、设计、构造、测试和维护等组织为软件工程知识领域。",
+          "scope": "只支持软件开发活动存在相关知识域；不证明所有项目必须严格采用单一线性顺序。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.4": {
@@ -2700,6 +2810,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”的核心含义，并说明它解决什么问题。",
         "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST SP 800-218 Secure Software Development Framework",
+          "url": "https://csrc.nist.gov/pubs/sp/800/218/final",
+          "sourceAuthority": "NIST SP 800-218 Secure Software Development Framework",
+          "supportedClaim": "NIST SSDF 建议把安全实践整合到软件开发生命周期，降低软件漏洞并减少根因复发。",
+          "scope": "只支持开发中系统化预防缺陷/漏洞的价值；不证明形式化方法能在所有软件中保证零缺陷。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.6": {
@@ -2734,6 +2855,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”的核心含义，并说明它解决什么问题。",
         "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "SEI Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "SEI Software Product Lines Collection",
+          "supportedClaim": "SEI 软件产品线材料描述通过共同核心资产和受管理变化支持相关产品的计划性复用。",
+          "scope": "只支持共享资产复用的工程思路；不把构件复用等同于所有场景都应购买而非自研。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "5.7": {
@@ -2768,6 +2900,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”的核心含义，并说明它解决什么问题。",
         "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook",
+          "url": "https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/",
+          "sourceAuthority": "NASA Systems Engineering Handbook",
+          "supportedClaim": "NASA 系统工程手册强调多学科协作、需求、技术管理与项目目标之间的系统化关系。",
+          "scope": "只支持工程项目需要协调技术与管理活动；不定义软件项目必须使用 People/Product/Process/Project 的唯一分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.1.1": {
@@ -2806,6 +2949,17 @@
       "selfChecks": [
         "为什么数据库设计应先分析业务对象和规则，而不是先建表？",
         "从需求到物理实现通常经过哪些层次？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Database Organization",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing",
+          "sourceAuthority": "IBM Database Organization",
+          "supportedClaim": "数据库设计分析数据对象及其属性，并将业务数据组织成适用的数据结构。",
+          "scope": "只支持从数据需求与对象开始建模；不规定所有项目必须采用同一套设计阶段或建模工具。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.1.2": {
@@ -2840,6 +2994,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Database Organization",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing",
+          "sourceAuthority": "IBM Database Organization",
+          "supportedClaim": "数据组织过程需识别数据对象及其属性，并明确这些对象如何服务于应用需求。",
+          "scope": "只支持数据模型承载对象/属性等结构信息；不覆盖所有数据模型形式及其完整语义约束。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.1.3": {
@@ -2874,6 +3039,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL Tutorial: Concepts",
+          "url": "https://www.postgresql.org/docs/current/tutorial-concepts.html",
+          "sourceAuthority": "PostgreSQL Tutorial: Concepts",
+          "supportedClaim": "PostgreSQL 教程介绍数据库、表、查询和数据库系统的基本概念及其关系。",
+          "scope": "只支持数据库管理系统提供数据定义与查询等管理能力；不逐项证明本单元列出的全部控制、维护和安全功能。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.1.4": {
@@ -3111,6 +3287,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM 数据库组织文档",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing",
+          "sourceAuthority": "IBM 数据库组织文档",
+          "supportedClaim": "数据库组织与设计需要识别数据对象及其属性，并根据应用需求组织数据。",
+          "scope": "只支持需求分析中识别实体/属性及组织数据的核心主张；不替代具体项目的数据量、增长率、安全和性能调查。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.3": {
@@ -3145,6 +3332,17 @@
         "关系梳理",
         "对比辨析",
         "场景判断"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "IBM Database Organization",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing",
+          "sourceAuthority": "IBM Database Organization",
+          "supportedClaim": "数据库组织文档将识别实体/数据对象及其属性作为数据组织的重要内容。",
+          "scope": "只支持概念建模中识别对象和属性的核心步骤；不替代 ER 图符号、基数和弱实体等教材细节的核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.4": {
@@ -3213,6 +3411,17 @@
       "selfChecks": [
         "物理数据库设计需要结合哪些访问与运行信息？",
         "为什么索引可能改善查询却增加写入成本？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "PostgreSQL Indexes",
+          "url": "https://www.postgresql.org/docs/current/indexes.html",
+          "sourceAuthority": "PostgreSQL Indexes",
+          "supportedClaim": "PostgreSQL 文档说明索引可帮助数据库找到匹配行，但也会带来存储与维护开销。",
+          "scope": "只支持访问路径设计需要权衡查询收益与索引代价；不直接给出特定业务系统的最佳物理设计。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "6.3.6": {
@@ -3524,6 +3733,17 @@
       "selfChecks": [
         "架构如何帮助不同涉众沟通并在早期控制风险？",
         "为什么架构文档完整不等于系统质量目标必然达成？"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "ISO/IEC/IEEE 42010:2022",
+          "url": "https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html",
+          "sourceAuthority": "ISO/IEC/IEEE 42010:2022",
+          "supportedClaim": "ISO/IEC/IEEE 42010 关注架构描述的利益相关方、关注点和架构视点等表达结构。",
+          "scope": "支持架构描述作为沟通和表达工件的核心作用；不单独证明架构必然降低成本、风险或提升复用。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "7.2.1": {
@@ -4877,6 +5097,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“严重软件失效可能导致经济、生命和国家安全损失；普通功能测试难覆盖全部路径，必须专门获取可靠性证据。”的核心含义，并说明它解决什么问题。",
         "请用“区分故障、错误、失效及其传播，结合可靠性模型、冗余、容错和恢复机制理解因果关系”分析“严重软件失效可能导致经济、生命和国家安全损失；普通功能测试难覆盖全部路径，必须专门获取可靠性证据。”：列出关键步骤，并说明怎样识别“可靠性、可用性、容错性相关但不等价”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "NIST CSRC Reliability Glossary",
+          "url": "https://csrc.nist.gov/glossary/term/reliability",
+          "sourceAuthority": "NIST CSRC Reliability Glossary",
+          "supportedClaim": "NIST 将可靠性定义为系统或组件在规定条件下、规定时间内执行所需功能的能力。",
+          "scope": "只支持可靠性概念与条件/时间边界；不量化任何具体失效的损失，也不证明普通功能测试必然不足。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "9.1.5": {
@@ -5560,6 +5791,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“对象是顺序图中的构件实体，影响动态行为的主要操作是增加和删除。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“对象是顺序图中的构件实体，影响动态行为的主要操作是增加和删除。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG UML 2.5.1 规范",
+          "url": "https://www.omg.org/spec/UML/2.5.1",
+          "sourceAuthority": "OMG UML 2.5.1 规范",
+          "supportedClaim": "UML 2.5.1 规范定义交互图中的生命线及其在交互中的参与者表示。",
+          "scope": "只支持 UML 交互中生命线/参与者的标准语义；不意味着所有生命线都等同于可独立部署的软件构件。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.2.2": {
@@ -5594,6 +5836,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“消息是顺序图核心，源对象、目标对象和时序变化会直接改变构件交互。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“消息是顺序图核心，源对象、目标对象和时序变化会直接改变构件交互。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG UML 2.5.1 规范",
+          "url": "https://www.omg.org/spec/UML/2.5.1",
+          "sourceAuthority": "OMG UML 2.5.1 规范",
+          "supportedClaim": "UML 交互通过消息表达参与者之间的通信及其在交互中的顺序。",
+          "scope": "只支持消息及交互顺序的标准概念；不推断具体业务系统的运行时延或并发保证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.2.3": {
@@ -5628,6 +5881,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“复合片段描述交互控制流，常见 ref、loop、break、alt、opt、par。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“复合片段描述交互控制流，常见 ref、loop、break、alt、opt、par。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG UML 2.5.1 规范",
+          "url": "https://www.omg.org/spec/UML/2.5.1",
+          "sourceAuthority": "OMG UML 2.5.1 规范",
+          "supportedClaim": "UML 交互片段使用组合片段及操作符表达循环、选择、并行等控制结构。",
+          "scope": "只支持组合片段/操作符的标准语义；具体操作符清单与教材术语仍应按指定版本和教材核对。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.2.4": {
@@ -5662,6 +5926,17 @@
       "selfChecks": [
         "请不用照抄原文，解释“约束规定对象和消息必须满足的行为规则，改变约束会改变合法执行集合。”的核心含义，并说明它解决什么问题。",
         "请用“从变化来源→架构影响→演化策略→验证→迁移/回滚学习，关注增量演化和风险控制”分析“约束规定对象和消息必须满足的行为规则，改变约束会改变合法执行集合。”：列出关键步骤，并说明怎样识别“重构、重写、迁移、升级、架构演化不是同义词”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OMG UML 2.5.1 规范",
+          "url": "https://www.omg.org/spec/UML/2.5.1",
+          "sourceAuthority": "OMG UML 2.5.1 规范",
+          "supportedClaim": "UML 交互可用约束和守卫条件限制消息或组合片段的适用情形。",
+          "scope": "只支持交互约束/守卫的作用；不证明图中任意自然语言约束都具有形式化可执行语义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "10.3.1": {
@@ -7285,6 +7560,17 @@
       "selfChecks": [
         "层次式架构的核心约束是什么？为什么增加层数并不一定提高架构质量？",
         "请用“识别各层职责、允许的依赖方向、跨层通信方式和变化隔离点，再分析性能、灵活性和维护成本”分析“层次式架构将系统组织成层次结构：每层为上层服务，同时作为下层客户；常见为表现层、中间层、访问层和数据层。”：列出关键步骤，并说明怎样识别““分层”不等于简单堆模块”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "Microsoft Azure Architecture Center",
+          "url": "https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/",
+          "sourceAuthority": "Microsoft Azure Architecture Center",
+          "supportedClaim": "Microsoft Azure Architecture Center 将分层架构列为常见架构风格之一，并描述层之间的组织方式。",
+          "scope": "支持分层风格的基本概念；表现层/中间层/访问层/数据层并非所有分层系统都必须采用的固定分层数。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "13.2.1": {
@@ -8089,6 +8375,17 @@
       "selfChecks": [
         "为什么“把应用部署到云上”不自动等于云原生？请从运行和交付能力解释。",
         "请用“从运行环境、服务化、弹性、自动化、可观测性和持续交付分析整体运行模型”分析“云原生架构围绕云环境下的弹性、自动化、可观测性和持续交付等能力组织系统，而不是简单等同于把系统部署到云上。”：列出关键步骤，并说明怎样识别“上云不等于云原生”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "CNCF Cloud Native Glossary",
+          "url": "https://glossary.cncf.io/cloud-native/",
+          "sourceAuthority": "CNCF Cloud Native Glossary",
+          "supportedClaim": "CNCF 将云原生描述为利用容器、服务网格、微服务、不可变基础设施和声明式 API 等技术构建和运行可扩展应用的方法。",
+          "scope": "支持云原生不只是把应用搬到云上的概念边界；列举技术并不表示每个云原生系统都必须使用全部技术。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "14.2.1": {
@@ -8493,6 +8790,17 @@
       "selfChecks": [
         "SOA为什么强调服务边界和契约？为什么“有接口”本身不能证明系统采用了良好的SOA设计？",
         "请用“从服务识别→边界→契约→通信→治理→组合→故障处理理解完整链路”分析“面向服务架构通过服务边界和契约组织系统能力，使业务能力能够以服务形式被组合和复用。”：列出关键步骤，并说明怎样识别“SOA不等于微服务”所指出的概念边界。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "OASIS Reference Model for Service Oriented Architecture",
+          "url": "https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html",
+          "sourceAuthority": "OASIS Reference Model for Service Oriented Architecture",
+          "supportedClaim": "OASIS SOA 参考模型以服务及其可见效果/目的来组织面向服务架构的概念。",
+          "scope": "只支持服务导向的概念模型；不规定唯一的微服务实现、协议、部署拓扑或业务能力拆分方式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-10"
+        }
       ]
     },
     "15.2": {

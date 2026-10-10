@@ -718,3 +718,19 @@
 - 学习单元 6.3.1 新增 IBM 数据组织文档，支持从实体/属性分析开始并区分逻辑组织与物理映射；不把阶段划分当作唯一线性流程。
 - 学习单元 6.3.7 新增 PostgreSQL 备份恢复文档，支持备份、恢复和连续归档属于运行维护策略；具体 RPO/RTO 必须按业务需求制定并实测。
 - 来源：[PostgreSQL Table Basics](https://www.postgresql.org/docs/17/ddl-basics.html)；[IBM Normalization](https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-normalization)；[IBM Organizing a database](https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing)；[PostgreSQL Backup and Restore](https://www.postgresql.org/docs/current/backup.html)。四个单元保持 partial。由于学习单元 6.2.3 是既有验证队列排除项，本批 4 个单元中有 3 个计入覆盖率；命题级证据覆盖从 132 增至 135 个队列单元，仍缺有效证据的单元从 192 降至 189 个。总课程状态仍为 3 verified、321 partial。
+
+
+## 本轮新增：软件工程、UML 交互与架构风格的来源证据（2026-10-10）
+
+- 为学习单元 5.1、6.3.2、7.1.3、9.1.4、10.2.1–10.2.4、13.1、14.1、15.1 新增 11 条可定位的外部来源证据，来源包括 IEEE Computer Society、IBM、ISO/IEC/IEEE、NIST、OMG、Microsoft、CNCF 与 OASIS。
+- 每条记录明确写出来源支持的命题和适用范围，尤其避免把 UML 生命线直接等同于可部署构件、把云原生工具清单理解为必选项，或把架构沟通价值夸大为必然降低成本。
+- 所有单元继续保持 partial；来源只支持相应核心命题，不意味着整个单元或关联考试题答案已完成核验。
+- 验证队列的预期覆盖数同步更新为 146 个有有效命题证据、178 个仍缺证据；被队列排除的单元不计入覆盖率。
+
+
+## 本轮新增：安全治理、软件工程与数据库设计证据（2026-10-10）
+
+- 新增 17 条命题级来源记录，覆盖安全攻击面、网络安全风险治理、组织安全控制、密钥管理、TLS 1.3、欺骗/拒绝服务、软件工程知识域、开发安全实践、软件产品线复用、系统工程管理、数据库建模与索引代价。
+- 来源以 NIST、IETF、IEEE Computer Society、SEI、NASA、IBM 和 PostgreSQL 官方文档为主。每条均保留明确的支持范围，避免将框架建议误写为唯一流程、将安全控制清单当作系统已合规的证明，或将索引收益与成本简化成单向结论。
+- 所有相关单元仍为 partial；本批证据不等于整个章节或题库答案已经核验。
+- 队列覆盖预期更新为 163 个有有效命题证据、161 个仍缺证据。
