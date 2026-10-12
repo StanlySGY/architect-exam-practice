@@ -891,3 +891,10 @@
 - 这两条独立技术来源补强了某些模型名称、建模假设及分类比较的背景证据；它们同时表明不同论文使用的分类框架并不相同。因此不能将 failure-counting models 直接翻译/映射为本教材的“失效率类模型”，也不能据此推断该教材的准确成员顺序或中文版术语。
 - 已把 `9.2.3.2` 的 `verificationPendingClaims` 收窄为具体核对任务：逐项确认教材列出的模型名称、顺序、中文术语、公式、参数和调试假设。该单元继续保持 `partial`；这不是取得了指定教材正文，而是用更直接的外部资料明确接下来需要核对什么。
 - 第三方章节转写仍只用于发现检索关键词，不加入结构化 evidence；本轮新增记录均有独立技术来源，且明确限定其支持范围。
+
+## 本轮继续：NHPP 模型适用性的反例与边界核验（2026-10-12）
+
+- 对照 National Academies Press《Reliability Growth: Enhancing Defense System Reliability》第 9 章公开正文（https://www.nationalacademies.org/read/18987/chapter/11），其第 118 页指出软件可靠性增长常非单调，修复可能引入新缺陷；NHPP 虽是领先方法之一，但对开发中软件常产生较差推断/决策规则，且时间依赖、运行剖面、环境和硬件交互会限制模型适用性。
+- 新增同行评审研究《Does software reliability growth behavior follow a non-homogeneous Poisson process》（Information and Software Technology, 50(12), 1232–1247, 2008，DOI https://doi.org/10.1016/j.infsof.2007.12.001）。其摘要报告两组受控实验同时分析累计失效数均值与方差，结果对“软件可靠性增长一般服从 NHPP”及 Goel–Okumoto 模型提出质疑；作者也承认需要在其他实验中进一步检验。
+- 已将 `9.2.3.8` 的教学说明从单纯介绍 NHPP 家族扩展为“识别 m(t) / λ(t)、检查过程假设、比较观测数据与模型并审视外推”；新增自检题要求解释反例的外推边界。回归测试确保这份反证性旁证被保留。
+- 证据边界：该研究不证明所有软件失效过程都不符合 NHPP；它提醒学习者不能把常用模型等同于普遍规律。它也不能证明《系统架构设计师教程（第2版）》的 NHPP 子模型清单、符号或公式，因此 `9.2.3.8` 继续保持 `partial`，教材待核主张不关闭，可靠性待核队列仍应为 11 项。

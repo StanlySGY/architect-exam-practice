@@ -102,6 +102,25 @@ test('supplemental reliability sources support bounded claims without closing te
   assert.deepEqual(report.queue.map(unit => unit.id), reliabilityIds);
 });
 
+test('NHPP evidence includes a critical empirical counterexample without closing textbook verification', () => {
+  const unit = content.units['9.2.3.8'];
+  const empirical = unit.evidence.find(e => e.url === 'https://doi.org/10.1016/j.infsof.2007.12.001');
+  assert.equal(unit.status, 'partial');
+  assert.ok(unit.verificationPendingClaims?.length > 0);
+  assert.ok(empirical, 'peer-reviewed controlled-experiment source should be recorded');
+  assert.equal(empirical.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(empirical.reviewedOn, '2026-10-12');
+  assert.ok(empirical.supportedClaim.includes('均值与方差'));
+  assert.ok(empirical.scope.includes('不证明所有软件失效过程'));
+  assert.ok(unit.what.includes('不是所有软件失效过程必然遵守'));
+  assert.ok(unit.selfChecks.some(q => q.includes('受控实验') && q.includes('所有软件')));
+  assert.ok(audit.includes('NHPP 模型适用性的反例与边界核验'));
+  assert.ok(audit.includes('https://doi.org/10.1016/j.infsof.2007.12.001'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.some(item => item.id === '9.2.3.8'));
+});
+
 test('official publisher catalog confirms only the headings and page locations, not chapter-body verification', () => {
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101'));
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/book_09190101.html'));
@@ -180,7 +199,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, 2, id);
+    assert.equal(unit.selfChecks.length, id === '9.2.3.8' ? 3 : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
