@@ -142,6 +142,38 @@ test('publisher-provided preview and third-party reposts cannot substitute for t
   assert.ok(report.queue.every(unit => unit.missing.some(item => item.startsWith('unresolved material claim:'))));
 });
 
+test('reliability-model self-checks are model-specific while textbook evidence gaps stay open', () => {
+  const expected = {
+    '9.2.3.1': ['可发现性', '故障遮蔽'],
+    '9.2.3.2': ['失效间隔', '失效率'],
+    '9.2.3.3': ['拟合优度', '残差'],
+    '9.2.3.4': ['修复', '增长'],
+    '9.2.3.5': ['模块', '转移概率'],
+    '9.2.3.6': ['运行剖面', '抽样'],
+    '9.2.3.7': ['路径覆盖', '条件成功率'],
+    '9.2.3.8': ['m(t)', 'λ(t)'],
+    '9.2.3.9': ['状态划分', '转移'],
+    '9.2.3.10': ['先验', '后验']
+  };
+  for (const [id, terms] of Object.entries(expected)) {
+    const unit = content.units[id];
+    assert.equal(unit.status, 'partial', id);
+    assert.ok(unit.verificationPendingClaims?.length > 0, id);
+    assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
+    assert.equal(unit.selfChecks.length, 2, id);
+    for (const term of terms) {
+      assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
+    }
+    assert.ok(unit.selfChecks.every(q => !q.includes('核心概念，并指出至少一个适用前提')), id);
+    assert.ok(unit.selfChecks.every(q => !q.includes('构造具体情境，列出判断依据')), id);
+  }
+  const seed = content.units['9.2.3.1'].examples;
+  assert.ok(seed.includes('48×(24−16)/16=24'));
+  assert.ok(seed.includes('不是目标教材公式的核验结果'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.deepEqual(report.queue.map(unit => unit.id), ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
+});
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];
