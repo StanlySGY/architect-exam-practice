@@ -130,6 +130,18 @@ test('Fuzhou University journal record verifies the component-reliability paper 
   assert.equal(report.unitsMissingEvidence, 11);
   assert.ok(report.queue.some(item => item.id === '9.2.3.7'));
 });
+test('publisher-provided preview and third-party reposts cannot substitute for target textbook chapter evidence', () => {
+  assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/upload/books/yz/091901-01.pdf'));
+  assert.ok(audit.includes('样章共 23 页'));
+  assert.ok(audit.includes('出版社页面同时标明“暂无网络资源”'));
+  assert.ok(audit.includes('不能证明待核公式与分类成员'));
+  assert.ok(audit.includes('不能证明转载授权、具体版次及转写准确性'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.every(unit => unit.status === 'partial'));
+  assert.ok(report.queue.every(unit => unit.missing.some(item => item.startsWith('unresolved material claim:'))));
+});
+
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];
