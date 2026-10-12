@@ -113,6 +113,23 @@ test('official publisher catalog confirms only the headings and page locations, 
   assert.equal(report.unitsMissingEvidence, 11);
   assert.deepEqual(report.queue.map(unit => unit.id), ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
 });
+
+test('Fuzhou University journal record verifies the component-reliability paper metadata and only its bounded claim', () => {
+  const unit = content.units['9.2.3.7'];
+  const journalRecord = unit.evidence.find(e => e.url === 'https://xbzrb1.fzu.edu.cn/ch/reader/view_abstract.aspx?file_no=20080117&flag=1');
+  assert.ok(journalRecord, 'official journal abstract page should be retained as a direct source');
+  assert.equal(journalRecord.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(journalRecord.reviewedOn, '2026-10-12');
+  assert.match(journalRecord.sourceAuthority, /魏建新、叶少珍/);
+  assert.match(journalRecord.sourceAuthority, /10\.7631\/issn\.1000-2243\.2008\.1\.59/);
+  assert.match(journalRecord.supportedClaim, /操作剖面.*构件使用上下文.*系统功能路径划分/);
+  assert.match(journalRecord.scope, /不证明目标教材的分类原文/);
+  assert.equal(unit.status, 'partial');
+  assert.ok(unit.verificationPendingClaims.some(claim => /Shooman/.test(claim)));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.some(item => item.id === '9.2.3.7'));
+});
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
   const unit=content.units[id];

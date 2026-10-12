@@ -15422,6 +15422,15 @@
           "scope": "支持一种以操作剖面和功能路径为基础的具体模型；不证明目标教材将其等同于 Shooman 分解法，也不替代教材中的路径概率公式与适用假设。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "福州大学学报（自然科学版）官方摘要页：一种基于构件的软件系统可靠性模型",
+          "url": "https://xbzrb1.fzu.edu.cn/ch/reader/view_abstract.aspx?file_no=20080117&flag=1",
+          "sourceAuthority": "福州大学学报（自然科学版）编辑部官方文章记录；魏建新、叶少珍；2008，36(1):59–63；DOI 10.7631/issn.1000-2243.2008.1.59",
+          "supportedClaim": "期刊官方摘要确认该研究以操作剖面和构件使用上下文为基础，并通过系统功能路径划分提出构件软件系统可靠性路径分析方法。",
+          "scope": "官方元数据确认论文标题、作者、卷期页码和 DOI；摘要支持一种具体路径分析模型。该页面不证明目标教材的分类原文、Shooman 分解法对应关系或本教材公式和假设。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-12"
         }
       ]
     },
