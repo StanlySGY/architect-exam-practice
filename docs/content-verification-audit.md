@@ -906,3 +906,11 @@
 - 新增 Oxford Academic 正式期刊记录《A Bayesian Reliability Growth Model for Computer Software》（B. Littlewood、J. L. Verrall，*Journal of the Royal Statistical Society: Series C*, 22(3), 332–346, 1973）：<https://academic.oup.com/jrsssc/article/22/3/332/6882722>。该文摘要指出，这个特定模型以故障/修复之间的连续运行时长为分析基础，包含故障后的修复规则，讨论参数推断，而且不尝试建模程序内部结构。
 - 已据该摘要强化 `9.2.3.10` 的教学边界：区分 Bayesian 方法家族与 Littlewood–Verrall 这一特定模型；记录使用历史版本信息时需论证版本、运行剖面和修复机制是否可比，并开展先验敏感性分析。
 - 这两条出版社页面支持所列原始论文的元数据和摘要范围，但不是《系统架构设计师教程（第2版）》第314页之后正文的证据；两单元仍为 `partial`，11 项教材待核队列不变。回归测试锁定来源 URL、支持命题、范围限制与未关闭的待核状态。
+
+## 本轮继续：运行剖面漂移、种子偏差与曲线估计限制（2026-10-12）
+
+- `9.1.5` 与 `9.2.3.6` 增加 Elsevier 期刊《Reliability assessment of service-based software under operational profile uncertainty》（Roberto Pietrantuono、Peter Popov、Stefano Russo，*Reliability Engineering & System Safety*, 204, 2020, Article 107193，DOI <https://doi.org/10.1016/j.ress.2020.107193>）。摘要指出，运行可靠性测试需要准确描述预期操作剖面；实际线上剖面若偏离测试剖面或随时间变化，测试结果可能无法准确预测线上可靠性。研究提出基于输入域分区信息的两阶段 Bayesian 方法处理这类不确定性。
+- 已将此来源的支持范围拆分记录：`9.1.5` 用它讨论测试与真实运行剖面不一致/漂移的风险；`9.2.3.6` 用它讨论输入域分区与运行剖面权重的关系。两处均未将该论文当作目标教材定义、特定分类或公式的证明。
+- `9.2.3.1` 进一步显式记录 National Academies Press 对 fault seeding 的限制：人工种子可能有偏差，而且大型系统各组成部分的可靠性特征未必相同。补充自检题让学习者分析种子偏置会如何破坏其对全系统原生故障的代表性；现有捕获—再捕获公式仍标为需教材核对。
+- `9.2.3.3` 根据《Fitting software reliability growth curves using nonparametric regression methods》（*Statistical Methodology*, 7(2), 2010, DOI <https://doi.org/10.1016/j.stamet.2009.10.007>）的期刊摘要，补充不完美调试与新故障引入可能导致模型复杂、标准最大似然估计在部分模型上难以正确估参的边界。课程说明要求分别检查估计收敛、残差及样本外预测；并未声称所有模型都会失败或非参数方法普遍更优。
+- 更新均为外部技术文献支持的有界命题，`9.1.5`、`9.2.3.1`、`9.2.3.3`、`9.2.3.6` 仍保持 `partial`；指定教材的分类、原文措辞与具体公式缺口没有关闭，11 项待核队列继续保留。

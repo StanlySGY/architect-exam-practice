@@ -150,6 +150,46 @@ test('official journal abstracts distinguish specific Markov and Bayesian softwa
   assert.ok(report.queue.some(unit => unit.id === '9.2.3.10'));
 });
 
+test('operational-profile uncertainty, seeding bias, and curve-estimation limits carry bounded evidence', () => {
+  const operational = content.units['9.1.5'];
+  const operationalEvidence = operational.evidence.find(e => e.url === 'https://doi.org/10.1016/j.ress.2020.107193');
+  assert.equal(operational.status, 'partial');
+  assert.ok(operational.verificationPendingClaims?.length > 0);
+  assert.ok(operationalEvidence);
+  assert.equal(operationalEvidence.reviewStatus, 'source-supports-bounded-claim');
+  assert.ok(operationalEvidence.supportedClaim.includes('随时间变化'));
+  assert.ok(operationalEvidence.scope.includes('不证明目标教材'));
+  assert.ok(operational.selfChecks.some(q => q.includes('线上后的真实使用比例') || q.includes('上线后的真实使用比例')));
+
+  const seed = content.units['9.2.3.1'];
+  assert.ok(seed.evidence.some(e => e.url === 'https://www.nationalacademies.org/read/18987/chapter/11' && e.supportedClaim.includes('种子故障可能带有偏差') && e.scope.includes('组件异质性')));
+  assert.ok(seed.selfChecks.some(q => q.includes('种子故障可能有偏差') && q.includes('可靠性特征')));
+  assert.equal(seed.status, 'partial');
+
+  const curve = content.units['9.2.3.3'];
+  const curveEvidence = curve.evidence.find(e => e.url === 'https://doi.org/10.1016/j.stamet.2009.10.007');
+  assert.equal(curve.status, 'partial');
+  assert.ok(curveEvidence);
+  assert.equal(curveEvidence.reviewedOn, '2026-10-12');
+  assert.ok(curveEvidence.supportedClaim.includes('最大似然估计'));
+  assert.ok(curveEvidence.scope.includes('不意味着所有传统模型'));
+  assert.ok(curve.selfChecks.some(q => q.includes('估计收敛') || q.includes('参数估计')));
+
+  const inputDomain = content.units['9.2.3.6'];
+  const profileEvidence = inputDomain.evidence.find(e => e.url === 'https://doi.org/10.1016/j.ress.2020.107193');
+  assert.equal(inputDomain.status, 'partial');
+  assert.ok(profileEvidence);
+  assert.ok(profileEvidence.scope.includes('不证明目标教材模型分类'));
+  assert.ok(inputDomain.selfChecks.some(q => q.includes('剖面') && q.includes('变化')));
+
+  assert.ok(audit.includes('运行剖面漂移、种子偏差与曲线估计限制'));
+  assert.ok(audit.includes('https://doi.org/10.1016/j.ress.2020.107193'));
+  assert.ok(audit.includes('https://doi.org/10.1016/j.stamet.2009.10.007'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  for (const id of ['9.1.5','9.2.3.1','9.2.3.3','9.2.3.6']) assert.ok(report.queue.some(unit => unit.id === id), id);
+});
+
 test('official publisher catalog confirms only the headings and page locations, not chapter-body verification', () => {
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101'));
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/book_09190101.html'));
@@ -228,7 +268,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, ['9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.3','9.2.3.6','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
