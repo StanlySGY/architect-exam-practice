@@ -121,6 +121,35 @@ test('NHPP evidence includes a critical empirical counterexample without closing
   assert.ok(report.queue.some(item => item.id === '9.2.3.8'));
 });
 
+test('official journal abstracts distinguish specific Markov and Bayesian software reliability models', () => {
+  const markov = content.units['9.2.3.9'];
+  const markovPublisher = markov.evidence.find(e => e.url === 'https://academic.oup.com/jrsssc/article/24/2/172/6953465');
+  assert.equal(markov.status, 'partial');
+  assert.ok(markov.verificationPendingClaims?.length > 0);
+  assert.ok(markovPublisher);
+  assert.equal(markovPublisher.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(markovPublisher.reviewedOn, '2026-10-12');
+  assert.ok(markovPublisher.supportedClaim.includes('连续参数 Markov 链'));
+  assert.ok(markovPublisher.scope.includes('不证明目标教材'));
+  assert.ok(markov.selfChecks.some(q => q.includes('Littlewood') && q.includes('Xie')));
+
+  const bayes = content.units['9.2.3.10'];
+  const bayesPublisher = bayes.evidence.find(e => e.url === 'https://academic.oup.com/jrsssc/article/22/3/332/6882722');
+  assert.equal(bayes.status, 'partial');
+  assert.ok(bayes.verificationPendingClaims?.length > 0);
+  assert.ok(bayesPublisher);
+  assert.equal(bayesPublisher.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(bayesPublisher.reviewedOn, '2026-10-12');
+  assert.ok(bayesPublisher.supportedClaim.includes('不尝试利用程序内部结构'));
+  assert.ok(bayesPublisher.scope.includes('不证明目标教材'));
+  assert.ok(bayes.selfChecks.some(q => q.includes('失效间连续运行时长') || q.includes('连续运行时长')));
+
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.some(unit => unit.id === '9.2.3.9'));
+  assert.ok(report.queue.some(unit => unit.id === '9.2.3.10'));
+});
+
 test('official publisher catalog confirms only the headings and page locations, not chapter-body verification', () => {
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101'));
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/bookscenter/book_09190101.html'));
@@ -199,7 +228,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, id === '9.2.3.8' ? 3 : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }

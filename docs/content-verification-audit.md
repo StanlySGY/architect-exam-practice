@@ -898,3 +898,11 @@
 - 新增同行评审研究《Does software reliability growth behavior follow a non-homogeneous Poisson process》（Information and Software Technology, 50(12), 1232–1247, 2008，DOI https://doi.org/10.1016/j.infsof.2007.12.001）。其摘要报告两组受控实验同时分析累计失效数均值与方差，结果对“软件可靠性增长一般服从 NHPP”及 Goel–Okumoto 模型提出质疑；作者也承认需要在其他实验中进一步检验。
 - 已将 `9.2.3.8` 的教学说明从单纯介绍 NHPP 家族扩展为“识别 m(t) / λ(t)、检查过程假设、比较观测数据与模型并审视外推”；新增自检题要求解释反例的外推边界。回归测试确保这份反证性旁证被保留。
 - 证据边界：该研究不证明所有软件失效过程都不符合 NHPP；它提醒学习者不能把常用模型等同于普遍规律。它也不能证明《系统架构设计师教程（第2版）》的 NHPP 子模型清单、符号或公式，因此 `9.2.3.8` 继续保持 `partial`，教材待核主张不关闭，可靠性待核队列仍应为 11 项。
+
+## 本轮继续：Markov 与 Bayesian 特定软件可靠性模型的原始期刊来源（2026-10-12）
+
+- 新增 Oxford Academic 正式期刊记录《A Reliability Model for Systems with Markov Structure》（B. Littlewood，*Journal of the Royal Statistical Society: Series C*, 24(2), 172–177, 1975）：<https://academic.oup.com/jrsssc/article/24/2/172/6953465>。其摘要明确描述子系统按连续参数 Markov 链切换、子系统内与切换期间都可能出现 Poisson 失效，并假设这些失效过程独立。
+- 该模型是“系统结构及子系统切换”的具体例子；现有 Xie（1990）论文则以具有递减跳跃强度的 Markov 过程建模“软件故障检测过程”。两者同属 Markov 模型，但建模对象和机制不同。已在 `9.2.3.9` 的课程说明与自检题中加入此区分，避免把 Markov 名称误当成单一模型。
+- 新增 Oxford Academic 正式期刊记录《A Bayesian Reliability Growth Model for Computer Software》（B. Littlewood、J. L. Verrall，*Journal of the Royal Statistical Society: Series C*, 22(3), 332–346, 1973）：<https://academic.oup.com/jrsssc/article/22/3/332/6882722>。该文摘要指出，这个特定模型以故障/修复之间的连续运行时长为分析基础，包含故障后的修复规则，讨论参数推断，而且不尝试建模程序内部结构。
+- 已据该摘要强化 `9.2.3.10` 的教学边界：区分 Bayesian 方法家族与 Littlewood–Verrall 这一特定模型；记录使用历史版本信息时需论证版本、运行剖面和修复机制是否可比，并开展先验敏感性分析。
+- 这两条出版社页面支持所列原始论文的元数据和摘要范围，但不是《系统架构设计师教程（第2版）》第314页之后正文的证据；两单元仍为 `partial`，11 项教材待核队列不变。回归测试锁定来源 URL、支持命题、范围限制与未关闭的待核状态。
