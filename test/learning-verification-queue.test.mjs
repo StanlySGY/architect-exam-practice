@@ -142,6 +142,26 @@ test('publisher-provided preview and third-party reposts cannot substitute for t
   assert.ok(report.queue.every(unit => unit.missing.some(item => item.startsWith('unresolved material claim:'))));
 });
 
+test('NASA and peer-reviewed reliability papers support bounded failure-rate model claims without proving textbook taxonomy', () => {
+  const unit = content.units['9.2.3.2'];
+  const nasa = unit.evidence.find(e => e.url === 'https://ntrs.nasa.gov/api/citations/19870013811/downloads/19870013811.pdf');
+  const elsevier = unit.evidence.find(e => e.url === 'https://www.sciencedirect.com/science/article/pii/002627149090551W');
+  assert.ok(nasa, 'NASA technical report should be retained as a direct technical source');
+  assert.equal(nasa.reviewedOn, '2026-10-12');
+  assert.match(nasa.supportedClaim, /Moranda geometric de-eutrophication/);
+  assert.match(nasa.supportedClaim, /相互独立并服从指数分布/);
+  assert.match(nasa.scope, /不证明目标教材/);
+  assert.ok(elsevier, 'Elsevier abstract should be retained as a distinct comparative source');
+  assert.equal(elsevier.reviewedOn, '2026-10-12');
+  assert.match(elsevier.supportedClaim, /Schick–Wolverton/);
+  assert.match(elsevier.supportedClaim, /failure-counting models/);
+  assert.match(elsevier.scope, /不是同义关系/);
+  assert.equal(unit.status, 'partial');
+  assert.ok(unit.verificationPendingClaims.some(claim => /中文术语和顺序/.test(claim)));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.some(item => item.id === '9.2.3.2'));
+});
 test('reliability-model self-checks are model-specific while textbook evidence gaps stay open', () => {
   const expected = {
     '9.2.3.1': ['可发现性', '故障遮蔽'],

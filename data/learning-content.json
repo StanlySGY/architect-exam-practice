@@ -15100,7 +15100,7 @@
     },
     "9.2.3.2": {
       "status": "partial",
-      "verificationPendingClaims": ["确认哪些具体模型被目标教材归入“失效率类”；逐项核对失效率/故障间隔公式、参数估计和完全/不完全调试等假设，不能由其他书的模型分类推定。"],
+      "verificationPendingClaims": ["确认目标教材在“失效率类模型”下列出的确切模型名称、中文术语和顺序；独立技术文献讨论了 Moranda geometric de-eutrophication、Schick–Wolverton、Goel–Okumoto 等不同模型，但外部文献的分类不能证明它们在目标教材中的归属；仍需核对各模型的失效率/故障间隔公式、参数估计和完全/不完全调试假设。"],
       "what": "软件可靠性研究会利用测试阶段的失效历史建立增长/预测模型，但模型对故障时间、故障过程和调试效果的假设不同；课程树“失效率类模型”的准确分类及公式尚待指定教材核实。",
       "why": "失效率类模型试图根据故障发生时间、故障间隔或失效强度描述软件在测试过程中的变化。选择模型前，应先判断观测数据是什么、测试条件是否稳定、修复后是否可能引入新故障；相似的趋势并不意味着可以直接套用同一个模型。",
       "how": "明确观测量是故障计数、运行时间还是失效间隔，再检查强度函数与测试条件。",
@@ -15148,6 +15148,24 @@
           "scope": "支持几个经典模型的有限定义、公式和参数解释；不证明这些模型全部归入目标教材的“失效率类模型”，也不替代教材自己的参数估计口径。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Development of Confidence Limits by Pivotal Functions for Estimating Software Reliability",
+          "url": "https://ntrs.nasa.gov/api/citations/19870013811/downloads/19870013811.pdf",
+          "sourceAuthority": "NASA Technical Paper 2709; Kelly J. Dotson; Langley Research Center; June 1987 (public-domain NASA technical report)",
+          "supportedClaim": "该技术报告使用 Moranda geometric de-eutrophication 模型研究软件可靠性估计；模型假设相邻故障间隔相互独立并服从指数分布，故障率随缺陷被发现并修复而按几何级数变化；报告进一步构造可靠性置信界与下一次故障时间预测界。",
+          "scope": "直接支持这一具体模型的若干假设和估计目标；不证明目标教材“失效率类模型”的中文术语、成员清单、顺序或公式与它相同，也不决定它在教材分类树中的归属。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "The limit conditions of five failure counting models of software reliability",
+          "url": "https://www.sciencedirect.com/science/article/pii/002627149090551W",
+          "sourceAuthority": "Microelectronics Reliability, 30(5), 855–859 (1990); Xizi Huang; DOI 10.1016/0026-2714(90)90551-W; Elsevier",
+          "supportedClaim": "该论文摘要列出 Modified Schick–Wolverton、Modified Jelinski–Moranda、Modified Geometric De-eutrophication、Geometric Poisson 与 Shooman Exponential 五种软件可靠性模型，并比较其极限条件；论文将这五者视作 failure-counting models。",
+          "scope": "支持这些模型在独立技术文献中的名称以及该论文特定的 failure-counting 分类；该分类与目标教材的“失效率类模型”不是同义关系，不能据此断言教材成员、顺序、中文名称或指定公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-12"
         }
       ]
     },

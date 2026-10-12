@@ -883,3 +883,11 @@
 - 当前最直接的合法获取路线仍是出版社详情页上的“电子书”入口进入文泉书局，或购买 ISBN 9787302619925 的纸书；公开页面未提供可逐页核验的第311页、第314页正文。本轮没有绕过登录/付费限制，也没有把其他版本或第三方转写冒充成第2版原文。
 - 为避免用户在取得原文前只能面对通用占位练习，本轮针对 9.2.3.1—9.2.3.10 重写了学习价值说明与两道自检题：分别聚焦种子故障估计及可发现性、失效间隔/失效率、曲线拟合与外推、可靠性增长与修复、程序结构/转移概率、输入域权重、执行路径概率、NHPP 的 m(t) 与 λ(t)、Markov 状态划分，以及 Bayesian 先验敏感性。9.2.3.1 另增加了一道明确标注为自拟教学演算的简化估计例，特别注明它不是已核实的教材公式。
 - 这些教学补强改善练习的针对性，但不替代目标教材证据。11 个单元全部继续保持 partial 并保留 verificationPendingClaims；后续拿到可确认版次的正文后，仍需对十类名称/顺序、公式、参数和模型假设逐条核对。
+
+## 本轮：失效率模型候选的独立技术资料复核（2026-10-12）
+
+- 新增公开可读取的 NASA Technical Paper 2709（Kelly J. Dotson, 1987）：<https://ntrs.nasa.gov/api/citations/19870013811/downloads/19870013811.pdf>。报告直接讨论 Moranda geometric de-eutrophication 模型，说明其失效率随缺陷发现/修复按几何级数变化，并使用独立指数分布的故障间隔建模；也讨论可靠性置信界与下一次故障时间预测界。
+- 新增 Elsevier 论文摘要《The limit conditions of five failure counting models of software reliability》（Xizi Huang, 1990，DOI <https://doi.org/10.1016/0026-2714(90)90551-W>）。摘要确认研究比较 Modified Schick–Wolverton、Modified Jelinski–Moranda、Modified Geometric De-eutrophication、Geometric Poisson 和 Shooman Exponential 五种模型，并把它们归为该论文语境下的 failure-counting models。
+- 这两条独立技术来源补强了某些模型名称、建模假设及分类比较的背景证据；它们同时表明不同论文使用的分类框架并不相同。因此不能将 failure-counting models 直接翻译/映射为本教材的“失效率类模型”，也不能据此推断该教材的准确成员顺序或中文版术语。
+- 已把 `9.2.3.2` 的 `verificationPendingClaims` 收窄为具体核对任务：逐项确认教材列出的模型名称、顺序、中文术语、公式、参数和调试假设。该单元继续保持 `partial`；这不是取得了指定教材正文，而是用更直接的外部资料明确接下来需要核对什么。
+- 第三方章节转写仍只用于发现检索关键词，不加入结构化 evidence；本轮新增记录均有独立技术来源，且明确限定其支持范围。
