@@ -3,19 +3,19 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 14,
-    "targetClaims": 20,
-    "exactTextTargetsMatched": 20,
+    "records": 18,
+    "targetClaims": 26,
+    "exactTextTargetsMatched": 26,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 9,
-    "recordsWithExternalSources": 8,
-    "recordsWithAllowedDisposition": 14,
-    "recordsWithAllowedVerification": 14,
+    "sourceEntries": 10,
+    "recordsWithExternalSources": 9,
+    "recordsWithAllowedDisposition": 18,
+    "recordsWithAllowedVerification": 18,
     "invalidRecords": 0,
     "byDisposition": {
-      "calculation-reproduced": 2,
+      "calculation-reproduced": 5,
       "internal-definition-conflict": 1,
-      "supported-with-scope": 2,
+      "supported-with-scope": 3,
       "assumption-sensitive-calculation": 1,
       "retired-technology-needs-context": 1,
       "overgeneralized": 2,
@@ -435,9 +435,119 @@
       ],
       "answerVerification": "not-established",
       "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "kafka-batch-tuning-with-latency-bound",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "增大batch.size（如64KB→256KB）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "增大linger.ms（如0→20ms）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "availability-four-nines-downtime-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-057",
+          "field": "analysis",
+          "claimNeedle": "525960×0.0001≈52.6分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "throughput-tps-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-056",
+          "field": "analysis",
+          "claimNeedle": "36000 / 3600秒 = 10 TPS",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mm1-queueing-response-time-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-055",
+          "field": "analysis",
+          "claimNeedle": "W=1/(μ-λ)=1/(5-4)=1分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-055",
+          "field": "analysis",
+          "claimNeedle": "Wq=λ/[μ(μ-λ)]=4/[5×1]=0.8分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
     }
   ],
-  "sourcePath": "..\\architect-exam-bank\\data\\bank.json",
-  "registerPath": "docs\\audits\\bank-claim-evidence-register-2026-10-13.json",
-  "outputPath": "docs\\audits\\bank-claim-evidence-audit-2026-10-13.json"
+  "sourcePath": "../architect-exam-bank/data/bank.json",
+  "registerPath": "docs/audits/bank-claim-evidence-register-2026-10-13.json",
+  "outputPath": "docs/audits/bank-claim-evidence-audit-2026-10-13.json"
 }

@@ -325,6 +325,60 @@
       "conclusion": "“防止99%的黑客攻击”是未定义测量范围的量化安全目标；该比例既不能由 NIST 度量指南推出，也无法仅凭题干判断是否可达到。应把它视为需要定义与验证的需求，而非通用安全能力事实。",
       "recommendedAction": "明确攻击类别、威胁模型、统计分母、观察窗口和测试方法，并为该目标提供可复现证据；若只是考查安全性质量属性，可删除 99% 数字，避免造成“安全控制可普遍保证固定拦截率”的印象。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "kafka-batch-tuning-with-latency-bound",
+      "disposition": "supported-with-scope",
+      "topic": "Kafka producer batch.size and linger.ms tuning recommendations",
+      "targets": [
+        { "itemId": "case-mock-2026年5月-模拟卷1-3:问题3", "field": "reference_answer", "claimNeedle": "增大batch.size（如64KB→256KB）" },
+        { "itemId": "case-mock-2026年5月-模拟卷1-3:问题3", "field": "reference_answer", "claimNeedle": "增大linger.ms（如0→20ms）" }
+      ],
+      "sourceEvidence": [{
+        "url": "https://kafka.apache.org/40/configuration/producer-configs/",
+        "title": "Producer Configs (Apache Kafka 4.0)",
+        "publisher": "Apache Kafka project",
+        "sourceKind": "official-project-documentation",
+        "checkedOn": "2026-10-13",
+        "supports": "The official producer configuration reference explains that batch.size controls the default per-partition batch size; small batches can reduce throughput while very large batch allocations can waste memory. linger.ms caps the extra batching wait, and Kafka 4.0 documents a 5 ms default (changed from 0 in 4.0); increasing linger can reduce request count while adding latency for low-load traffic.",
+        "limitations": "The documentation supports the mechanism and trade-off, not that 64 KiB→256 KiB or 0→20 ms is optimal for every workload. Tuning requires traffic-shape, throughput, p95/p99 latency, memory and broker measurements. Historical defaults differ by Kafka version."
+      }],
+      "conclusion": "增大批次与 linger 时间是可以测试的吞吐量优化方向，但 256 KiB 与 20 ms 只是候选参数，不是跨版本、跨负载的通用最佳值；较高 linger 会带来延迟/吞吐权衡。",
+      "recommendedAction": "保留为待基准验证的优化建议；明确 Kafka 版本，使用代表性负载测量吞吐量、尾延迟和内存，按业务延迟 SLO 调优，不要把示例值写成通用结论。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "availability-four-nines-downtime-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "99.99 percent annual availability downtime arithmetic",
+      "targets": [{ "itemId": "mock-2026年5月-模拟卷7-057", "field": "analysis", "claimNeedle": "525960×0.0001≈52.6分钟" }],
+      "sourceEvidence": [],
+      "conclusion": "按一年 365.25 天换算为 525,960 分钟，99.99% 可用性意味着计划区间内 0.01% 不可用时间；525,960 × 0.0001 = 52.596 分钟，四舍五入约 52.6 分钟。",
+      "recommendedAction": "可保留计算并写明采用 365.25 天的年化假设。不要将它直接当作所有 SLA 的停机额度，需确认服务计量窗口、维护排除项与可用性定义。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "throughput-tps-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Transaction throughput unit calculation",
+      "targets": [{ "itemId": "mock-2026年5月-模拟卷6-056", "field": "analysis", "claimNeedle": "36000 / 3600秒 = 10 TPS" }],
+      "sourceEvidence": [],
+      "conclusion": "1 小时为 3,600 秒，36,000 次事务 ÷ 3,600 秒 = 10 次/秒（TPS），算术与量纲一致。",
+      "recommendedAction": "可保留作为题面给定数值的算术复算；这不验证原题来源，也不表示系统实际压测吞吐量。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "mm1-queueing-response-time-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "M/M/1 queue response and waiting time calculation",
+      "targets": [
+        { "itemId": "mock-2026年5月-模拟卷7-055", "field": "analysis", "claimNeedle": "W=1/(μ-λ)=1/(5-4)=1分钟" },
+        { "itemId": "mock-2026年5月-模拟卷7-055", "field": "analysis", "claimNeedle": "Wq=λ/[μ(μ-λ)]=4/[5×1]=0.8分钟" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "给定到达率 λ=4/分钟、服务率 μ=5/分钟，满足稳定条件 λ<μ。M/M/1 平均逗留时间 W=1/(μ−λ)=1 分钟；平均排队等待时间 Wq=λ/[μ(μ−λ)]=4/5 分钟=0.8 分钟；平均服务时间 1/μ=0.2 分钟，W=Wq+1/μ。",
+      "recommendedAction": "保留时需说明适用 M/M/1 假设、稳定条件与时间单位；这只是模型计算，不是具体生产系统的实测响应时间。",
+      "answerVerification": "calculation-only"
     }
   ]
 }

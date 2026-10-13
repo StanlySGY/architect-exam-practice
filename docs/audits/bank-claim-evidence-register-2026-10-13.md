@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 14 个审查记录、20 个原文目标定位；其中 8 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测与尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。未纳入本批次的 157 条风险候选与 1,595 条非模拟题来源映射候选仍维持原复核队列状态。
+登记现包含 18 个审查记录、26 个原文目标定位；其中 9 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测与尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。未纳入本批次的 157 条风险候选与 1,595 条非模拟题来源映射候选仍维持原复核队列状态。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -34,7 +34,7 @@
 
 ### 此批次的边界
 
-- 本次累计 14 条审查记录、20 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本次累计 18 条审查记录、26 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
 - 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
 - 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。
 
@@ -43,3 +43,10 @@
 - `sdp-service-visibility-overgeneralization`：NIST SP 800-207 支持认证与授权先于资源会话建立、按最小权限保护资源；但它不是对每一种 SDP 产品的接口行为认证，不能支撑“所有服务与端口对所有未认证用户完全不可见”的绝对说法。
 - `unsupported-exam-frequency-prediction`：把 MTTF/MTTR/MTBF 描述为“几乎每年必考1题”需要完整官方历年原卷序列和稳定分类口径。当前条目没有这类统计证据，建议改成明确的复习建议，而非事实式频率陈述。
 - `security-attack-prevention-percentage-unsubstantiated`：NIST SP 800-55 Vol. 1 指导如何开发、选择和评价信息安全度量，但不提供“拦截99%黑客攻击”的通用标准。该目标至少需要攻击分类、威胁模型、分母、观察窗口和可复现测试方法。
+
+## 续查批次：Kafka 调优边界与可计算性能指标（2026-10-13）
+
+- `kafka-batch-tuning-with-latency-bound`：Apache Kafka 4.0 官方 producer 配置文档说明 batch size 与 linger 的工作方式及吞吐量、内存和延迟权衡。它支持将增大批次/等待时间作为调优方向，但不证明 `64KiB→256KiB` 或 `0→20ms` 对任何工作负载都最佳。应明确 Kafka 版本并基于代表性流量测吞吐、尾延迟与内存。来源：[Apache Kafka 4.0 producer configs](https://kafka.apache.org/40/configuration/producer-configs/)。
+- `availability-four-nines-downtime-calculation`：按一年 365.25 天计，全年共有 525,960 分钟；99.99% 的 0.01% 不可用比例对应约 52.596 分钟。可保留算术，但要确认具体 SLA 的计量窗口与排除项。
+- `throughput-tps-calculation`：36,000 次事务 / 3,600 秒 = 10 TPS，算术和单位一致；这是题面数值复算，不是系统压测结果。
+- `mm1-queueing-response-time-calculation`：λ=4/min、μ=5/min 满足稳定条件 λ<μ；M/M/1 模型给出平均逗留时间 W=1 分钟、平均排队等待 Wq=0.8 分钟、服务时间 0.2 分钟。只验证模型内计算，不外推为生产环境 SLA。
