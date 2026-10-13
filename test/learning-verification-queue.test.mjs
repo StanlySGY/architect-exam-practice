@@ -268,7 +268,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.3','9.2.3.6','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.6','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
@@ -529,6 +529,37 @@ test('TDEA withdrawal evidence points to the current NIST CSRC announcement URL'
 
 test('confirmed broken learning-source URLs are replaced with current scoped sources',()=>{const cases={'9.4.2':'https://csrc.nist.gov/glossary/term/fault_tolerance','9.1.5':'https://csrc.nist.gov/glossary/term/reliability','9.2.2':'https://csrc.nist.gov/glossary/term/reliability','9.5.1':'https://csrc.nist.gov/glossary/term/reliability','9.6.2':'https://csrc.nist.gov/glossary/term/reliability','9.4.4':'https://csrc.nist.gov/glossary/term/fault_tolerance','13.2.5':'https://martinfowler.com/eaaCatalog/applicationController.html','16.1.3':'https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html','16.2.1':'https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html','16.2.2':'https://docs.aws.amazon.com/freertos/latest/userguide/dev-guide-freertos-kernel.html','19.6.4':'https://aws.amazon.com/retail/advanced-data-insights/','14.1':'https://glossary.cncf.io/cloud-native-tech/','14.2.1':'https://glossary.cncf.io/cloud-native-tech/','14.2.2':'https://glossary.cncf.io/cloud-native-tech/','14.2.4':'https://glossary.cncf.io/cloud-native-tech/','14.4':'https://glossary.cncf.io/cloud-native-tech/','18.8.1':'https://api-security.owasp.org/','11.3.1':'https://www.nist.gov/robotics','11.3.2':'https://www.nist.gov/robotics','16.1.1':'https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=AppendixA','16.1.2':'https://nodis3.gsfc.nasa.gov/displayDir.cfm?Internal_ID=N_PR_7150_002D_&page_name=AppendixA'};for(const [id,url] of Object.entries(cases)){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope),id)}});
 
+test('reliability model units document imperfect-debugging assumptions and curve-shape comparison', () => {
+  const jm = content.units['9.2.3.2'];
+  const jmModelSource = jm.evidence.find(e => e.url === 'https://doi.org/10.3233/MAS-2010-0127');
+  const debuggingSource = jm.evidence.find(e => e.url === 'https://doi.org/10.1016/0026-2714(95)00157-3');
+  assert.equal(jm.status, 'partial');
+  assert.ok(jm.verificationPendingClaims?.length > 0);
+  assert.ok(jmModelSource);
+  assert.equal(jmModelSource.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(jmModelSource.reviewedOn, '2026-10-13');
+  assert.ok(jmModelSource.scope.includes('不证明目标教材'));
+  assert.ok(debuggingSource?.supportedClaim.includes('一一对应'));
+  assert.ok(debuggingSource?.scope.includes('不证明所有 S 形增长'));
+  assert.ok(jm.selfChecks.some(q => q.includes('Jelinski–Moranda') && q.includes('不完美调试')));
+
+  const growth = content.units['9.2.3.4'];
+  const growthSource = growth.evidence.find(e => e.url === 'https://doi.org/10.1016/0026-2714(95)00157-3');
+  assert.equal(growth.status, 'partial');
+  assert.ok(growth.verificationPendingClaims?.length > 0);
+  assert.ok(growthSource);
+  assert.equal(growthSource.reviewStatus, 'source-supports-bounded-claim');
+  assert.ok(growthSource.scope.includes('不证明目标教材'));
+  assert.ok(growth.selfChecks.some(q => q.includes('m(t)=a(1−e^(−bt))') && q.includes('t=0')));
+  assert.ok(growth.evidence.some(e => e.url === 'https://www.nationalacademies.org/read/18987/chapter/11' && e.supportedClaim.includes('m(t)=a[1−(1+bt)e^(−bt)]') && e.supportedClaim.includes('S-shaped')));
+
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  assert.ok(report.queue.some(unit => unit.id === '9.2.3.2'));
+  assert.ok(report.queue.some(unit => unit.id === '9.2.3.4'));
+  assert.equal(content.units['9.2.3.2'].status, 'partial');
+  assert.equal(content.units['9.2.3.4'].status, 'partial');
+});
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
  assert.ok(count>0);
