@@ -7,7 +7,7 @@
     "targetClaims": 50,
     "exactTextTargetsMatched": 50,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 20,
+    "sourceEntries": 21,
     "recordsWithExternalSources": 15,
     "recordsWithAllowedDisposition": 32,
     "recordsWithAllowedVerification": 32,
@@ -55,9 +55,14 @@
       "dispositionAllowed": true,
       "targetCount": 2,
       "targetsOk": true,
-      "sourceCount": 1,
+      "sourceCount": 2,
       "sourceMetadataOk": true,
       "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
         {
           "urlValid": true,
           "sourceMetadataComplete": true,

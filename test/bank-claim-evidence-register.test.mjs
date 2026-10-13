@@ -352,6 +352,11 @@ test('可用性公式的公开证据保留模型假设，不掩盖 MTBF/MTTF 术
       publisher: 'NASA', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13',
       supports: 'NASA defines steady-state inherent availability as MTBF/(MTBF+MTTR) under its constant-rate model.',
       limitations: 'Formula and terminology depend on the source model; does not validate an unqualified identity MTBF=MTTF+MTTR.',
+    }, {
+      url: 'https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf',
+      title: 'Reliability-Centered Maintenance Guide', publisher: 'NASA', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13',
+      supports: 'Section 14.3 gives Ai = MTBF/(MTBF+MTTR), and glossary defines MTBF alternatively as mean time to failure.',
+      limitations: 'Does not support MTBF=MTTF+MTTR as an unqualified identity.',
     }],
     answerVerification: 'not-established',
   }];
@@ -361,7 +366,7 @@ test('可用性公式的公开证据保留模型假设，不掩盖 MTBF/MTTF 术
   assert.equal(report.counts.exactTextTargetsMatched, 2);
   assert.equal(report.counts.recordsWithAllowedDisposition, 1);
   assert.equal(report.counts.recordsWithAllowedVerification, 1);
-  assert.equal(report.counts.sourceEntries, 1);
+  assert.equal(report.counts.sourceEntries, 2);
   assert.equal(report.counts.recordsWithExternalSources, 1);
   assert.equal(report.counts.invalidRecords, 0);
 });
