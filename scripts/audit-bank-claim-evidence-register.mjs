@@ -12,6 +12,7 @@ const ALLOWED_DISPOSITIONS = new Set([
   'retired-technology-needs-context',
   'historical-case-supported-with-scope',
   'unsubstantiated-performance-claim',
+  'unsupported-exam-frequency-prediction',
 ]);
 const ALLOWED_VERIFICATIONS = new Set(['not-established', 'calculation-only']);
 const COLLECTIONS = ['choices', 'cases', 'essays'];

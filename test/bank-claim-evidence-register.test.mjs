@@ -67,3 +67,45 @@ test('案例子题 ID 可追溯，且登记不能把答案状态写为 verified 
   assert.equal(report.counts.invalidRecords, 2);
   assert.ok(report.records.every((record) => record.answerVerificationAllowed === false));
 });
+
+test('SDP 绝对可见性、考试频率押题和安全百分比均被登记为有边界的未核实命题', () => {
+  const bank = {
+    choices: [
+      { id: 'sdp', analysis: '未认证用户对未认证用户完全不可见这类说法需要限定。' },
+      { id: 'exam', analysis: 'MTTF/MTTR/MTBF几乎每年必考1题。' },
+      { id: 'security', stem: '系统应能够防止99%的黑客攻击。' },
+    ],
+    cases: [],
+    essays: [],
+  };
+  const records = [
+    {
+      recordId: 'sdp',
+      disposition: 'overgeneralized',
+      targets: [{ itemId: 'sdp', field: 'analysis', claimNeedle: '对未认证用户完全不可见' }],
+      sourceEvidence: [{ url: 'https://csrc.nist.gov/pubs/sp/800/207/final', title: 'Zero Trust Architecture', publisher: 'NIST', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: '先认证授权再建立会话。', limitations: '不证明所有 SDP 产品都隐藏所有端口。' }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'exam',
+      disposition: 'unsupported-exam-frequency-prediction',
+      targets: [{ itemId: 'exam', field: 'analysis', claimNeedle: 'MTTF/MTTR/MTBF几乎每年必考1题' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'security',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [{ itemId: 'security', field: 'stem', claimNeedle: '防止99%的黑客攻击' }],
+      sourceEvidence: [{ url: 'https://csrc.nist.gov/pubs/sp/800/55/v1/final', title: 'Measurement Guide for Information Security', publisher: 'NIST', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: '指南讨论信息安全度量的开发与评价。', limitations: '不提供通用的 99% 攻击拦截保证。' }],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 3);
+  assert.equal(report.counts.targetClaims, 3);
+  assert.equal(report.counts.exactTextTargetsMatched, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 3);
+  assert.equal(report.counts.recordsWithAllowedVerification, 3);
+  assert.equal(report.counts.invalidRecords, 0);
+});
