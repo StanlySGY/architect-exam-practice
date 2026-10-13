@@ -16,7 +16,8 @@
     "audit:source-mapping": "node scripts/audit-bank-source-mapping.mjs",
     "audit:answer-risk-report": "node scripts/render-bank-answer-risk-report.mjs",
     "audit:source-mapping:report": "node scripts/audit-bank-source-mapping.mjs ../architect-exam-bank/data/bank.json ../ruankao-senior-architecture-designer/sources docs/audits/source-mapping-review-queue.json",
-    "audit:answer-risk-report:save": "node scripts/render-bank-answer-risk-report.mjs ../architect-exam-bank/data/bank.json docs/audits/answer-risk-review-queue.json docs/audits/answer-risk-review-queue.md"
+    "audit:answer-risk-report:save": "node scripts/render-bank-answer-risk-report.mjs ../architect-exam-bank/data/bank.json docs/audits/answer-risk-review-queue.json docs/audits/answer-risk-review-queue.md",
+    "audit:claim-evidence": "node scripts/audit-bank-claim-evidence-register.mjs"
   },
   "engines": {
     "node": ">=22.15"

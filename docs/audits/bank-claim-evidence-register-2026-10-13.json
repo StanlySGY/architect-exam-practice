@@ -1,0 +1,166 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-10-13",
+  "readOnly": true,
+  "reviewMode": "assistant-assisted source comparison; no human sign-off",
+  "note": "登记的目标文字必须仍能在外部题库中精确定位。来源链接/范围描述不是在线可访问性检测，也不代表整题答案已核验。此清单不修改外部题库；不得据此自动提升 verified/approved 状态。",
+  "records": [
+    {
+      "recordId": "aws-lambda-timeout-scope",
+      "disposition": "supported-with-scope",
+      "topic": "AWS Lambda function timeout",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷2-029",
+          "field": "analysis",
+          "claimNeedle": "如AWS Lambda 15分钟"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html",
+          "title": "Lambda quotas",
+          "publisher": "AWS official documentation",
+          "sourceKind": "vendor-documentation",
+          "checkedOn": "2026-10-13",
+          "supports": "普通 Lambda 函数配置中的 Function timeout 最大值为 900 秒（15 分钟）。",
+          "limitations": "文档列出 Lambda Managed Instances 的特定异步调用和事件源映射场景可到 5400 秒；该例子不代表所有 FaaS 产品或所有 Lambda 执行模式的统一上限。"
+        }
+      ],
+      "conclusion": "15 分钟是 AWS Lambda 普通函数配置的有效示例，但必须限定产品与执行模式。",
+      "recommendedAction": "把解析改成“例如，AWS Lambda 普通函数的 timeout 上限为 15 分钟；具体限制依执行模式和事件来源而异”，不要把它泛化为全部 FaaS。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "lora-trainable-parameter-ratio",
+      "disposition": "overgeneralized",
+      "topic": "LoRA trainable parameter ratio and single-GPU claim",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷3-068",
+          "field": "analysis",
+          "claimNeedle": "通常只有原模型的0.1%-1%"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷3-068",
+          "field": "analysis",
+          "claimNeedle": "这使得单卡GPU即可微调大模型"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-065",
+          "field": "analysis",
+          "claimNeedle": "通常不到原模型参数的1%"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://arxiv.org/abs/2106.09685",
+          "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+          "publisher": "arXiv / original research paper by Hu et al.",
+          "sourceKind": "primary-research-paper",
+          "checkedOn": "2026-10-13",
+          "supports": "原论文说明 LoRA 冻结预训练权重、训练低秩矩阵；在 GPT-3 175B 示例中，可训练参数可低至原模型参数的 0.01%。",
+          "limitations": "这是特定模型、目标层、rank 与实验设置下的结果；它不能证明所有模型常见比例固定在 0.1%-1%，也不能单独证明“单卡 GPU 即可微调大模型”。原论文的 GPT-3 资源讨论仍涉及数百 GB 训练显存，不能概括成单卡通用保证。"
+        }
+      ],
+      "conclusion": "低秩可训练参数和冻结基座模型是方法核心；通用参数比例与单卡能力说法超出了这条来源直接支持的范围。",
+      "recommendedAction": "保留机制描述；把比例写成随基座模型、rank、适配层和训练设置变化的示例，删除“因此单卡即可”这种无条件因果结论，或补充具体模型、量化、显存与实验条件。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "wbs-100-percent-rule",
+      "disposition": "supported-with-scope",
+      "topic": "WBS 100% rule",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷4-035",
+          "field": "analysis",
+          "claimNeedle": "遵循100%规则（B正确）"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://www.pmi.org/learning/library/practice-standard-work-breakdown-structures-8063",
+          "title": "Proactive Standard - Work Breakdown Structures",
+          "publisher": "Project Management Institute (PMI)",
+          "sourceKind": "professional-standard-explainer",
+          "checkedOn": "2026-10-13",
+          "supports": "WBS 应覆盖项目范围内 100% 的工作；子层工作合计应完整对应父层工作，不能遗漏或纳入范围外工作。",
+          "limitations": "该来源支持 100% 规则这一选项，不会单独验证本题所有其他选项、原卷来源或整份答案解释。分解粒度应适当，不能推出“越细越好”。"
+        }
+      ],
+      "conclusion": "来源支持解析中关于 WBS 100% 规则的核心命题，并支持反对无限细分的方向。",
+      "recommendedAction": "可以保留这条概念解释；若声称其为历年真题或完整答案已核验，还需要独立的原题出处及逐项核对。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "availability-mtbf-definition-conflict",
+      "disposition": "internal-definition-conflict",
+      "topic": "MTBF / MTTF / MTTR availability formula",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "稳态可用性 = MTBF/(MTBF+MTTR)"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "MTBF = MTTF + MTTR"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，一边又称 MTBF=MTTF+MTTR 并改用 A=MTTF/(MTTF+MTTR)。这混用了不同的 MTBF 定义口径。题目给的数值可在“MTBF 指运行时间间隔”约定下得到 99.9%，但解析内部需先统一定义。",
+      "recommendedAction": "明确 MTBF 在该题中是“运行时间间隔”还是“包括修复时间的平均两次故障间隔”；若前者，保留 999/(999+1) 并删除冲突解释；若后者，则题干应提供 MTTF 或改正数据。该题暂不记为已核验。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cpu-execution-time-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "CPU execution time arithmetic",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-007",
+          "field": "analysis",
+          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "独立复算：执行时间 = 总时钟周期数 / 主频 = 6×10⁹ cycles ÷ 2.4×10⁹ cycles/s = 2.5 s，单位相消一致。",
+      "recommendedAction": "计算结果与题面数值一致；这是对解析算术的复现，不等于原卷来源或整道题的独立权威核验。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "amdahl-limit-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Amdahl's law upper bound",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-056",
+          "field": "analysis",
+          "claimNeedle": "1/0.2=5"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "在可并行部分 f=0.8、处理器数 N 趋于无穷且不另计额外开销时，S=1/((1-f)+f/N) 的极限为 1/(1-0.8)=5。",
+      "recommendedAction": "可保留该计算，但保留“理论上限”和模型假设；这是独立公式复算，不是原题出处或经验性能承诺的核验。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "cache-binary-unit-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Cache address-bit calculation and GB unit convention",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷3-006",
+          "field": "analysis",
+          "claimNeedle": "主存4GB = 2^32"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "后续位数计算在 1 GB=2^30 bytes、1 KB=2^10 bytes 的二进制约定下内部一致；若按 SI 十进制 GB 理解，4 GB 并非 2^32 bytes。",
+      "recommendedAction": "在题干或解析开头明确使用的二进制单位约定，避免把默认约定写成普遍定义。",
+      "answerVerification": "calculation-only"
+    }
+  ]
+}
