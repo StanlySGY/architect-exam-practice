@@ -7,8 +7,8 @@
     "targetClaims": 50,
     "exactTextTargetsMatched": 50,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 19,
-    "recordsWithExternalSources": 14,
+    "sourceEntries": 20,
+    "recordsWithExternalSources": 15,
     "recordsWithAllowedDisposition": 32,
     "recordsWithAllowedVerification": 32,
     "invalidRecords": 0,
@@ -55,9 +55,15 @@
       "dispositionAllowed": true,
       "targetCount": 2,
       "targetsOk": true,
-      "sourceCount": 0,
+      "sourceCount": 1,
       "sourceMetadataOk": true,
-      "sourceChecks": [],
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
       "targetChecks": [
         {
           "itemId": "mock-2026年5月-模拟卷5-002",

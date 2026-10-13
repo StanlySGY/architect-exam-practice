@@ -37,9 +37,17 @@
           "claimNeedle": "MTBF = MTTF + MTTR"
         }
       ],
-      "sourceEvidence": [],
-      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，一边又称 MTBF=MTTF+MTTR 并改用 A=MTTF/(MTTF+MTTR)。这混用了不同的 MTBF 定义口径。题目给的数值可在“MTBF 指运行时间间隔”约定下得到 99.9%，但解析内部需先统一定义。",
-      "recommendedAction": "明确 MTBF 在该题中是“运行时间间隔”还是“包括修复时间的平均两次故障间隔”；若前者，保留 999/(999+1) 并删除冲突解释；若后者，则题干应提供 MTTF 或改正数据。该题暂不记为已核验。",
+      "sourceEvidence": [{
+        "url": "https://www.nasa.gov/wp-content/uploads/2023/11/170508-formulas-inherent-availability-and-reliability-with-constant-failure-and-repair-rates.pdf",
+        "title": "Formulas: Inherent Availability and Reliability with Constant Failure and Repair Rates",
+        "publisher": "NASA",
+        "sourceKind": "government-standard-guidance",
+        "checkedOn": "2026-10-13",
+        "supports": "NASA's steady-state inherent-availability formula is A = MTBF/(MTBF + MTTR) under its stated constant failure/repair rate model; it defines MTBF as mean time between failure and MTTR as mean time to repair.",
+        "limitations": "The formula is tied to the source's model and nomenclature. Some texts use MTTF for mean operating time to failure and write A = MTTF/(MTTF + MTTR). These expressions require consistent definitions of the uptime interval and MTBF. The NASA formula does not support the answer's separate blanket identity MTBF = MTTF + MTTR without qualifying the term definitions."
+      }],
+      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，该计算符合 NASA 给出的稳态固有可用性公式及其 MTBF/MTTR 口径；但解析随后称“MTBF = MTTF + MTTR”并改用 A=MTTF/(MTTF+MTTR)，未先定义这两种平均时间的计量起止点，造成术语口径矛盾。答案 C 可在题目默认 MTBF 指平均运行间隔的常见口径下得到支持，但整段解析仍需澄清定义。",
+      "recommendedAction": "采用单一术语口径：若题目按固有可用性惯用式 A=MTBF/(MTBF+MTTR) 并给定 MTBF=999 h、MTTR=1 h，则保留 C=99.9%，删除或重写“MTBF=MTTF+MTTR”的混用解释；如果将 MTBF 定义为已包含修复时间的日历间隔，则应重新给出相互一致的公式及题目参数。来源支持公式范围，不代表整道题已经完成权威答案认证。",
       "answerVerification": "not-established"
     },
     {

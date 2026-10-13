@@ -335,3 +335,33 @@ test('Kafka 消费者默认超时参数应限定版本，协作式再均衡需�
   assert.equal(report.counts.recordsWithExternalSources, 1);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('可用性公式的公开证据保留模型假设，不掩盖 MTBF/MTTF 术语冲突', () => {
+  const bank = {
+    choices: [{ id: 'availability', analysis: '稳态可用性 = MTBF/(MTBF+MTTR) = 999/(999+1) = 99.9%。注意MTBF = MTTF + MTTR，此处MTBF已包含修复时间。实际上更精确的是A = MTTF/(MTTF+MTTR)。' }],
+  };
+  const records = [{
+    recordId: 'availability', disposition: 'internal-definition-conflict',
+    targets: [
+      { itemId: 'availability', field: 'analysis', claimNeedle: '稳态可用性 = MTBF/(MTBF+MTTR)' },
+      { itemId: 'availability', field: 'analysis', claimNeedle: 'MTBF = MTTF + MTTR' },
+    ],
+    sourceEvidence: [{
+      url: 'https://www.nasa.gov/wp-content/uploads/2023/11/170508-formulas-inherent-availability-and-reliability-with-constant-failure-and-repair-rates.pdf',
+      title: 'Formulas: Inherent Availability and Reliability with Constant Failure and Repair Rates',
+      publisher: 'NASA', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13',
+      supports: 'NASA defines steady-state inherent availability as MTBF/(MTBF+MTTR) under its constant-rate model.',
+      limitations: 'Formula and terminology depend on the source model; does not validate an unqualified identity MTBF=MTTF+MTTR.',
+    }],
+    answerVerification: 'not-established',
+  }];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 2);
+  assert.equal(report.counts.exactTextTargetsMatched, 2);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 1);
+  assert.equal(report.counts.recordsWithAllowedVerification, 1);
+  assert.equal(report.counts.sourceEntries, 1);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});
