@@ -456,6 +456,50 @@
       "conclusion": "“百万级 QPS”和“99.99% 可用性”属于写作思路中的能力/成果示例，目前没有请求定义、压力模型、拓扑、故障情景、时间窗口或观测数据支撑为已验证结果。",
       "recommendedAction": "明确 QPS 是峰值还是持续值、请求形态和延迟分位数，并给出压测/生产流量证据；可用性指标应说明统计窗口与排除项。若仅作为练习范例，要醒目标记为虚构示例数据。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "content-coupling-principle-needs-scope",
+      "disposition": "supported-with-scope",
+      "topic": "Content coupling is discouraged as a design ideal, not proof of universal zero coupling",
+      "targets": [
+        { "itemId": "real-2021年下半年-031", "field": "analysis", "claimNeedle": "完全避免内容耦合" }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://martinfowler.com/ieeeSoftware/coupling.pdf",
+          "title": "Reducing Coupling",
+          "publisher": "Martin Fowler, IEEE Software",
+          "sourceKind": "expert-article",
+          "checkedOn": "2026-10-13",
+          "supports": "The article explains that some coupling is necessary because modules must communicate; design should control and reduce harmful coupling rather than treat all coupling as something that can always be eliminated.",
+          "limitations": "This is general design guidance, not an official exam answer key, and it does not argue that content coupling is desirable. The original multiple-choice answer remains consistent with the conventional preference to avoid content coupling."
+        },
+        {
+          "url": "https://software-engineering-guide.github.io/chapters/02-02-software-design-principles/",
+          "title": "Software design principles",
+          "publisher": "Software Engineering Guide",
+          "sourceKind": "educational-guide",
+          "checkedOn": "2026-10-13",
+          "supports": "The guide describes design principles as heuristics rather than laws and recommends explicit dependencies, narrow interfaces, and low coupling.",
+          "limitations": "The guide supports interpreting the phrase as an idealized design recommendation; it does not validate the complete original question or every answer option."
+        }
+      ],
+      "conclusion": "原题把“完全不用内容耦合”作为低耦合设计原则，按考试语境可理解为应避免最差的内容耦合；但解析宜说明这是设计目标/规范性建议，而非能证明任何真实系统绝无此类依赖的绝对保证。",
+      "recommendedAction": "保留耦合类型优劣的考点，同时将解释写为“应避免内容耦合，优先采用较弱、可控的依赖关系”；不要将规范性原则误述为系统实现的普遍事实。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "unsupported-quality-attribute-exam-trend",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "topic": "Quality-attribute annual-frequency and 2024 item-count prediction",
+      "targets": [
+        { "itemId": "case-mock-2026年5月-模拟卷1-1:问题2", "field": "reference_answer", "claimNeedle": "质量属性分析是每年必考题" },
+        { "itemId": "case-mock-2026年5月-模拟卷1-1:问题2", "field": "reference_answer", "claimNeedle": "需求条目数量从2024年的10条增加到12条" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "范文思路中的“每年必考”与“2024 年从 10 条增加到 12 条”没有配套官方历年原卷样本、年份覆盖范围、条目计数规则或复核统计。前者是无依据的考试频率预测，后者是当前不可复现的定量比较。",
+      "recommendedAction": "删除确定性预测，改为“属于需要重点掌握的常见知识点”并明确这是复习建议；若保留年度比较，应逐年引用官方试题、附抽样范围和一致的条目分类/统计方法。",
+      "answerVerification": "not-established"
     }
   ]
 }

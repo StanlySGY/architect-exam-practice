@@ -183,3 +183,40 @@ test('真题主题写作提纲里的容量与成效指标必须标为示例或�
   assert.equal(report.counts.recordsWithAllowedVerification, 3);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('设计原则的绝对措辞保留考试语义，但不代表真实系统零耦合；押题趋势需统计证据', () => {
+  const bank = {
+    choices: [{ id: 'coupling', analysis: '设计原则是追求低耦合，应尽量使用数据耦合（最低），完全避免内容耦合（最高）。' }],
+    cases: [{ id: 'trend-case', subQuestions: [{ question_label: '问题2', reference_answer: '考试趋势：质量属性分析是每年必考题，需求条目数量从2024年的10条增加到12条。' }] }],
+    essays: [],
+  };
+  const records = [
+    {
+      recordId: 'coupling', disposition: 'supported-with-scope',
+      targets: [{ itemId: 'coupling', field: 'analysis', claimNeedle: '完全避免内容耦合' }],
+      sourceEvidence: [
+        { url: 'https://martinfowler.com/ieeeSoftware/coupling.pdf', title: 'Reducing Coupling', publisher: 'Martin Fowler, IEEE Software', sourceKind: 'expert-article', checkedOn: '2026-10-13', supports: '某些耦合不可避免，应控制有害耦合。', limitations: '不作为原题官方答案证明。' },
+        { url: 'https://software-engineering-guide.github.io/chapters/02-02-software-design-principles/', title: 'Software design principles', publisher: 'Software Engineering Guide', sourceKind: 'educational-guide', checkedOn: '2026-10-13', supports: '设计原则是启发式，不是定律；提倡低耦合。', limitations: '不验证原题所有选项。' },
+      ],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'trend', disposition: 'unsupported-exam-frequency-prediction',
+      targets: [
+        { itemId: 'trend-case:问题2', field: 'reference_answer', claimNeedle: '质量属性分析是每年必考题' },
+        { itemId: 'trend-case:问题2', field: 'reference_answer', claimNeedle: '需求条目数量从2024年的10条增加到12条' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 2);
+  assert.equal(report.counts.targetClaims, 3);
+  assert.equal(report.counts.exactTextTargetsMatched, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 2);
+  assert.equal(report.counts.recordsWithAllowedVerification, 2);
+  assert.equal(report.counts.sourceEntries, 2);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});

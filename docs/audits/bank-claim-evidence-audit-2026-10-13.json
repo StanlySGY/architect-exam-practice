@@ -3,26 +3,26 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 24,
-    "targetClaims": 37,
-    "exactTextTargetsMatched": 37,
+    "records": 26,
+    "targetClaims": 40,
+    "exactTextTargetsMatched": 40,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 10,
-    "recordsWithExternalSources": 9,
-    "recordsWithAllowedDisposition": 24,
-    "recordsWithAllowedVerification": 24,
+    "sourceEntries": 12,
+    "recordsWithExternalSources": 10,
+    "recordsWithAllowedDisposition": 26,
+    "recordsWithAllowedVerification": 26,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 5,
       "internal-definition-conflict": 1,
-      "supported-with-scope": 3,
+      "supported-with-scope": 4,
       "assumption-sensitive-calculation": 1,
       "retired-technology-needs-context": 1,
       "overgeneralized": 2,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 8,
-      "unsupported-exam-frequency-prediction": 1
+      "unsupported-exam-frequency-prediction": 2
     }
   },
   "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
@@ -710,6 +710,69 @@
           "itemId": "essay-real-2025年上半年-3",
           "field": "writingPoints",
           "claimNeedle": "99.99%可用性",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "content-coupling-principle-needs-scope",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "real-2021年下半年-031",
+          "field": "analysis",
+          "claimNeedle": "完全避免内容耦合",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "unsupported-quality-attribute-exam-trend",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "质量属性分析是每年必考题",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "需求条目数量从2024年的10条增加到12条",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

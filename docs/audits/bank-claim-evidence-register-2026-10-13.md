@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 24 个审查记录、37 个原文目标定位；其中 9 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 26 个审查记录、40 个原文目标定位；其中 10 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -34,7 +34,7 @@
 
 ### 此批次的边界
 
-- 本次累计 24 条审查记录、37 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本次累计 26 条审查记录、40 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
 - 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
 - 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。
 
@@ -62,3 +62,8 @@
 - `real-essay-cloudnative-results-illustrative`：云原生写作提纲里的“发布频率提升 10 倍、可用性 99.99%”位于范文思路而非题面测得结果；当前没有发布统计口径或监控数据，须标明示例并由考生替换为本人可佐证的数据。
 - `real-essay-distributed-transaction-results-illustrative`：分布式事务参考思路的“一致性 99.99%、吞吐量提升 40%”缺少一致性判定方法、分母、基线版本和压测结果；不能当成真实成绩或官方提供的数据。
 - `real-essay-load-balancing-capacity-illustrative`：负载均衡写作提纲的“百万级 QPS、99.99% 可用性”需要请求形态、压测环境、持续时长、延迟分位数和可用性计量窗口。作为范例可用，但须明确标为示例，而不是已经验证的项目实绩。
+
+## 续查批次：绝对化设计原则与考试趋势数字（2026-10-13）
+
+- `content-coupling-principle-needs-scope`：低耦合与避免内容耦合是合理的设计原则，但“完全避免”应理解为规范性目标，而非任何真实系统都保证零耦合。Martin Fowler 的设计讨论指出模块必须通信，耦合需要控制而不是被当作一概可消除；软件工程学习指南也将设计原则定位为启发式而非不变定律。来源：[Reducing Coupling](https://martinfowler.com/ieeeSoftware/coupling.pdf)、[Software design principles](https://software-engineering-guide.github.io/chapters/02-02-software-design-principles/)。
+- `unsupported-quality-attribute-exam-trend`：写作思路中“质量属性分析是每年必考题”和“需求条目数量从 2024 年 10 条增加到 12 条”没有官方历年原卷样本、计数规则或可复核统计；应删除确定性预测，年度比较则须给出年份范围与分类方法。
