@@ -268,7 +268,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? (['9.2.3.2','9.2.3.3','9.2.3.4'].includes(id) ? 4 : 3) : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
@@ -585,6 +585,38 @@ test('remaining reliability model families have scoped architecture, profile, pa
   const report = buildVerificationQueue(content);
   assert.equal(report.unitsMissingEvidence, 11);
   for (const [id] of cases) assert.ok(report.queue.some(item => item.id === id), id);
+});
+test('software reliability model taxonomy crosswalk distinguishes classification axes without upgrading textbook verification', () => {
+  const jm = content.units['9.2.3.2'];
+  const curve = content.units['9.2.3.3'];
+  const growth = content.units['9.2.3.4'];
+  assert.equal(jm.status, 'partial');
+  assert.equal(curve.status, 'partial');
+  assert.equal(growth.status, 'partial');
+  for (const unit of [jm, curve, growth]) assert.ok(unit.verificationPendingClaims?.length > 0);
+
+  const taxonomy = jm.evidence.find(e =>
+    e.url === 'https://www.nationalacademies.org/read/18987/chapter/11' &&
+    e.reviewedOn === '2026-10-13' &&
+    e.supportedClaim.includes('七类广义软件可靠性模型') &&
+    e.supportedClaim.includes('软件度量')
+  );
+  assert.ok(taxonomy, 'broad external taxonomy must have a scoped evidence record');
+  assert.ok(taxonomy.scope.includes('不能据此一一映射'));
+  assert.ok(jm.confusions.includes('不是天然等价'));
+  assert.ok(jm.selfChecks.some(q => q.includes('七类清单') && q.includes('分类依据')));
+  assert.ok(curve.confusions.includes('NHPP 是对失效过程的概率假设'));
+  assert.ok(curve.selfChecks.some(q => q.includes('估计方法') && q.includes('随机过程假设')));
+  assert.ok(growth.confusions.includes('曲线形态本身不能确定模型类别'));
+  assert.ok(growth.selfChecks.some(q => q.includes('分类层级') && q.includes('观测曲线形态')));
+
+  assert.ok(audit.includes('软件可靠性模型分类口径交叉核验'));
+  assert.ok(audit.includes('11 个待核单元全部保持 partial'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  for (const id of ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']) {
+    assert.ok(report.queue.some(item => item.id === id), id);
+  }
 });
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
