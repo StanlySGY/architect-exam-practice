@@ -265,3 +265,42 @@ test('CQRS 的工作负载与延迟数字不得泛化，Kafka exactly-once 必�
   assert.equal(report.counts.recordsWithExternalSources, 2);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('位示图计算需要显式声明二进制单位，CPU 周期数运算只证明算术正确', () => {
+  const bank = {
+    choices: [
+      { id: 'bitmap', analysis: '物理块数=300×1024/4=76800个，位示图大小=76800/32=2400个字。' },
+      { id: 'cpu', analysis: '执行时间 = 时钟周期数 / 主频 = 6×10⁹ / 2.4×10⁹ = 2.5秒。' },
+    ],
+    cases: [],
+    essays: [],
+  };
+  const records = [
+    {
+      recordId: 'bitmap', disposition: 'assumption-sensitive-calculation',
+      targets: [
+        { itemId: 'bitmap', field: 'analysis', claimNeedle: '物理块数=300×1024/4=76800个' },
+        { itemId: 'bitmap', field: 'analysis', claimNeedle: '位示图大小=76800/32=2400个字' },
+      ],
+      sourceEvidence: [
+        { url: 'https://www.bipm.org/en/measurement-units/si-prefixes', title: 'SI prefixes', publisher: 'BIPM', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: 'G/M SI prefixes use decimal factors.', limitations: 'Does not determine the intended convention in the exam question.' },
+        { url: 'https://physics.nist.gov/cuu/Units/binary.html', title: 'The binary prefixes', publisher: 'NIST', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: 'Ki/Mi/Gi denote binary powers.', limitations: 'Does not replace the exam author’s intended convention.' },
+      ],
+      answerVerification: 'calculation-only',
+    },
+    {
+      recordId: 'cpu', disposition: 'calculation-reproduced',
+      targets: [{ itemId: 'cpu', field: 'analysis', claimNeedle: '6×10⁹ / 2.4×10⁹ = 2.5秒' }],
+      sourceEvidence: [], answerVerification: 'calculation-only',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 2);
+  assert.equal(report.counts.targetClaims, 3);
+  assert.equal(report.counts.exactTextTargetsMatched, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 2);
+  assert.equal(report.counts.recordsWithAllowedVerification, 2);
+  assert.equal(report.counts.sourceEntries, 2);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});

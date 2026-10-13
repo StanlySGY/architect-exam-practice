@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 29 个审查记录、44 个原文目标定位；其中 12 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 31 个审查记录、47 个原文目标定位；其中 13 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -34,7 +34,7 @@
 
 ### 此批次的边界
 
-- 本次累计 29 条审查记录、44 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本次累计 31 条审查记录、47 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
 - 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
 - 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。
 
@@ -73,3 +73,8 @@
 - `cqrs-query-share-stat-needs-provenance`：模拟案例里“80% 以上的订单查询是按用户维度”没有日志、统计窗口或分类口径支撑。可作为明确的题设假设用于解释 user_id 分片，但不能推广为所有电商系统的事实。
 - `cqrs-read-model-lag-and-isolation-overgeneralization`：Microsoft CQRS 指南指出读写数据存储分离后需要同步且可能出现陈旧读；没有承诺同步通常小于 1 秒，也不意味着 CDC/binlog 和同步链路对 MySQL 的资源开销为零。应把 1 秒写成带测量窗口/分位数的目标或实测指标，把“完全不影响”改为“降低直接查询压力，仍需监测同步成本”。来源：[Microsoft Learn — CQRS pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)。
 - `kafka-exactly-once-boundary`：Apache Kafka 文档限定精确一次语义的范围：Kafka Streams 或使用事务生产者与 `read_committed` 消费者的 Kafka 主题内读—处理—写可以实现精确一次；写入外部数据库/服务通常还需要目标系统参与协同，或用事务/幂等去重。应在参考答案里明示事务边界。来源：[Apache Kafka — Design](https://kafka.apache.org/design/)。
+
+## 续查批次：位示图单位约定与 CPU 计算复核（2026-10-13）
+
+- `bitmap-block-count-binary-prefix-assumption`：300GB 磁盘、4MB 物理块的位示图答案 2,400 字，在 1GB=1,024MB 的二进制换算约定下算术成立。BIPM 的 SI 前缀中 G=10⁹、M=10⁶；NIST 另列出 Gi/Mi 等二进制前缀。因此题目省略单位约定会产生歧义，应在解析明确写出采用的换算规则。来源：[BIPM — SI prefixes](https://www.bipm.org/en/measurement-units/si-prefixes)、[NIST — binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)。
+- `cpu-clock-cycle-time-calculation`：6×10⁹ 个周期 ÷ 2.4×10⁹ 周期/秒 = 2.5 秒，算术和量纲一致；该计算仅复核题面给定值，不验证周期数来源或实际程序运行时间。

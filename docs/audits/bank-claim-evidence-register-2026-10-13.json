@@ -553,6 +553,50 @@
       "conclusion": "Kafka 0.11+ 引入的事务与幂等机制可为 Kafka 内部读—处理—写主题提供精确一次能力；若结果写入外部数据库、HTTP 服务或其他系统，必须由目标系统协同事务、原子保存 offset/结果或幂等去重，不能笼统宣称组合参数就保证任意端到端精确一次。",
       "recommendedAction": "把答案范围明确为“Kafka 主题内读、处理、写可借助事务实现精确一次；对外部系统需目标存储协同事务或幂等处理”。若用“端到端”，必须写清起止系统与事务边界。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "bitmap-block-count-binary-prefix-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Bitmap block count depends on binary versus SI storage units",
+      "targets": [
+        { "itemId": "real-2020年下半年-003", "field": "analysis", "claimNeedle": "物理块数=300×1024/4=76800个" },
+        { "itemId": "real-2020年下半年-003", "field": "analysis", "claimNeedle": "位示图大小=76800/32=2400个字" }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://www.bipm.org/en/measurement-units/si-prefixes",
+          "title": "SI prefixes",
+          "publisher": "Bureau International des Poids et Mesures (BIPM)",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-13",
+          "supports": "The SI prefixes giga (G) and mega (M) represent decimal factors 10^9 and 10^6, respectively.",
+          "limitations": "This defines SI decimal prefixes; it does not determine the unstated unit convention intended by an older Chinese exam question."
+        },
+        {
+          "url": "https://physics.nist.gov/cuu/Units/binary.html",
+          "title": "Definitions of the SI units: The binary prefixes",
+          "publisher": "National Institute of Standards and Technology (NIST)",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-13",
+          "supports": "NIST describes IEC binary prefixes such as Ki, Mi and Gi for powers of 2; for example 1 GiB = 2^30 bytes, while 1 GB = 10^9 bytes.",
+          "limitations": "This clarifies unit notation, not the exam author's intended convention. The multiple-choice options indicate the intended calculation uses 1 GB = 1024 MB."
+        }
+      ],
+      "conclusion": "按题目常见的二进制换算约定，300×1024/4=76,800 个物理块，每块需要 1 位，32 位一字，因此 76,800/32=2,400 字，选项 A 与该约定一致。严格按 SI 十进制 GB/MB 计算则块数为 75,000，位示图需要向上取整至 2,344 个 32 位字；题干没有明示单位约定，因此这是约定敏感题而非纯粹无条件的算术结论。",
+      "recommendedAction": "解析显式写明“按本题约定 1GB=1024MB、1MB=1024KB”或使用 GiB/MiB 等二进制单位符号；不要把 GB/MB 一律定义为 1024 进制。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "cpu-clock-cycle-time-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "CPU execution time from cycle count and clock frequency",
+      "targets": [
+        { "itemId": "mock-2026年5月-模拟卷6-007", "field": "analysis", "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "执行时间 = 时钟周期数 / 主频 = 6×10^9 周期 ÷ 2.4×10^9 周期/秒 = 2.5 秒，数值和单位换算一致。",
+      "recommendedAction": "可作为题面给定周期数和主频的算术复核；此结果不验证周期数本身的来源，也不应与实际运行时间（受缓存、流水线、停顿及测量边界影响）混为一谈。",
+      "answerVerification": "calculation-only"
     }
   ]
 }

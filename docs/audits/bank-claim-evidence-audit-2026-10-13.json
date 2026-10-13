@@ -3,20 +3,20 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 29,
-    "targetClaims": 44,
-    "exactTextTargetsMatched": 44,
+    "records": 31,
+    "targetClaims": 47,
+    "exactTextTargetsMatched": 47,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 14,
-    "recordsWithExternalSources": 12,
-    "recordsWithAllowedDisposition": 29,
-    "recordsWithAllowedVerification": 29,
+    "sourceEntries": 16,
+    "recordsWithExternalSources": 13,
+    "recordsWithAllowedDisposition": 31,
+    "recordsWithAllowedVerification": 31,
     "invalidRecords": 0,
     "byDisposition": {
-      "calculation-reproduced": 5,
+      "calculation-reproduced": 6,
       "internal-definition-conflict": 1,
       "supported-with-scope": 4,
-      "assumption-sensitive-calculation": 1,
+      "assumption-sensitive-calculation": 2,
       "retired-technology-needs-context": 1,
       "overgeneralized": 4,
       "historical-case-supported-with-scope": 1,
@@ -865,6 +865,69 @@
         }
       ],
       "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "bitmap-block-count-binary-prefix-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "real-2020年下半年-003",
+          "field": "analysis",
+          "claimNeedle": "物理块数=300×1024/4=76800个",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "real-2020年下半年-003",
+          "field": "analysis",
+          "claimNeedle": "位示图大小=76800/32=2400个字",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "cpu-clock-cycle-time-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-007",
+          "field": "analysis",
+          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
       "answerVerificationAllowed": true
     }
   ],
