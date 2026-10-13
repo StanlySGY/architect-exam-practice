@@ -1,0 +1,364 @@
+{
+  "reportVersion": 1,
+  "readOnly": true,
+  "checkedOn": "2026-10-13",
+  "counts": {
+    "records": 11,
+    "targetClaims": 17,
+    "exactTextTargetsMatched": 17,
+    "targetClaimsUnmatched": 0,
+    "sourceEntries": 7,
+    "recordsWithExternalSources": 6,
+    "recordsWithAllowedDisposition": 11,
+    "recordsWithAllowedVerification": 11,
+    "invalidRecords": 0,
+    "byDisposition": {
+      "calculation-reproduced": 2,
+      "internal-definition-conflict": 1,
+      "supported-with-scope": 2,
+      "assumption-sensitive-calculation": 1,
+      "retired-technology-needs-context": 1,
+      "overgeneralized": 1,
+      "historical-case-supported-with-scope": 1,
+      "durability-bound-overstatement": 1,
+      "unsubstantiated-performance-claim": 1
+    }
+  },
+  "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
+  "records": [
+    {
+      "recordId": "amdahl-limit-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-056",
+          "field": "analysis",
+          "claimNeedle": "1/0.2=5",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "availability-mtbf-definition-conflict",
+      "disposition": "internal-definition-conflict",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "稳态可用性 = MTBF/(MTBF+MTTR)",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "MTBF = MTTF + MTTR",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "aws-lambda-timeout-scope",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷2-029",
+          "field": "analysis",
+          "claimNeedle": "如AWS Lambda 15分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "cache-binary-unit-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷3-006",
+          "field": "analysis",
+          "claimNeedle": "主存4GB = 2^32",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "codepush-retirement-and-archive",
+      "disposition": "retired-technology-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "5分钟内修复bug",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "CodePush (React Native)",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "cpu-execution-time-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-007",
+          "field": "analysis",
+          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "lora-trainable-parameter-ratio",
+      "disposition": "overgeneralized",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷3-068",
+          "field": "analysis",
+          "claimNeedle": "通常只有原模型的0.1%-1%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷3-068",
+          "field": "analysis",
+          "claimNeedle": "这使得单卡GPU即可微调大模型",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-065",
+          "field": "analysis",
+          "claimNeedle": "通常不到原模型参数的1%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "nyt-ec2-historical-throughput",
+      "disposition": "historical-case-supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "real-2022年下半年-015",
+          "field": "analysis",
+          "claimNeedle": "成百上千台AmazonEC2实例在36小时内处理TB级的文档数据",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "redis-aof-everysec-loss-bound",
+      "disposition": "durability-bound-overstatement",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-real-2025年上半年-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "最多丢失1秒数据",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "tls-latency-and-encryption-microbenchmark",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "TLS加密（不影响业务延迟）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "增加10-50ms的延迟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "将加密延迟控制在1-5ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "wbs-100-percent-rule",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷4-035",
+          "field": "analysis",
+          "claimNeedle": "遵循100%规则（B正确）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    }
+  ],
+  "sourcePath": "../architect-exam-bank/data/bank.json",
+  "registerPath": "docs/audits/bank-claim-evidence-register-2026-10-13.json",
+  "outputPath": "docs/audits/bank-claim-evidence-audit-2026-10-13.json"
+}

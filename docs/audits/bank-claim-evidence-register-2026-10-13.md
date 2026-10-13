@@ -18,4 +18,19 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-本轮登记包含 7 个审查记录、10 个原文目标定位，其中 3 个记录关联公开来源，4 个记录是内部定义/算术/单位约定核查。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。未纳入本批次的 157 条风险候选与 1,595 条非模拟题来源映射候选仍维持原复核队列状态。
+登记现包含 11 个审查记录、17 个原文目标定位；其中 6 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定与尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。未纳入本批次的 157 条风险候选与 1,595 条非模拟题来源映射候选仍维持原复核队列状态。
+
+## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
+
+| 登记 ID | 当前题库目标 | 核查结果 | 处理建议 |
+|---|---|---|---|
+| `redis-aof-everysec-loss-bound` | `case-real-2025年上半年-3:问题3` | Redis 官方文档称 `appendfsync everysec` 每秒 fsync，灾难故障时可能丢失约一秒写入；这不应被包装为任何存储栈/故障情形下的严格绝对上限。 | 将“最多丢失1秒”改为“按秒刷盘，灾难故障时可能丢失约一秒写入”，并保留配置与故障模型限定。来源：[Redis persistence](https://redis.io/docs/latest/management/persistence/)。 |
+| `codepush-retirement-and-archive` | `case-mock-2026年5月-模拟卷3-5:问题3` | Microsoft 官方资料确认 App Center 的非 Analytics/Diagnostics 功能及 CodePush 托管服务于 2025-03-31 退役；独立 CodePush Server 仓库在 2025-05-20 归档只读。自托管 fork 并非不存在，但原服务不应作为当前活跃托管方案宣传。 | 把 CodePush 标成历史/自行维护的自托管方案；删除没有测试口径的“5分钟内修复 bug”保证。来源：[Microsoft retirement notice](https://learn.microsoft.com/en-us/appcenter/retirement)、[archived upstream repository](https://github.com/microsoft/code-push-server)。 |
+| `nyt-ec2-historical-throughput` | `real-2022年下半年-015` | AWS 官方 2008 年文章支持纽约时报用数百台机器在少于 36 小时内处理数据，并列出 405,000 张 TIFF、3.3 million SGML、405,000 XML 文件的工作量；该页面未在正文中直接量化输入总字节为 TB。 | 保留带年份的历史例子；将文件规模改用来源可支持的描述，或另补原始一手来源证明“TB级”容量。来源：[AWS News Blog — New York Times TimesMachine](https://aws.amazon.com/blogs/aws/new-york-times/)。 |
+| `tls-latency-and-encryption-microbenchmark` | `case-mock-2026年5月-模拟卷1-1:问题2` | “TLS 加密不影响业务延迟”是绝对断言；同段的 10–50ms、1–5ms 没有硬件、TLS 版本、握手、连接复用、负载或测量依据。本条没有把无来源数字伪装成已查证事实。 | 改为目标环境的端到端基准测试建议；移除无条件数字，或附具体环境、测量方法与原始数据。 |
+
+### 此批次的边界
+
+- 本次累计 11 条审查记录、17 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
+- 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。

@@ -49,3 +49,21 @@ test('证据目标发生漂移、来源元数据不完整或 disposition 越界�
   assert.equal(report.counts.invalidRecords, 1);
   assert.equal(report.records[0].sourceMetadataOk, false);
 });
+
+test('案例子题 ID 可追溯，且登记不能把答案状态写为 verified 或 approved', () => {
+  const bank = { cases: [{ id: 'case-1', subQuestions: [{ question_label: '问题1', reference_answer: '这是一段可定位的参考解析。' }] }] };
+  const records = ['verified', 'approved'].map((answerVerification) => ({
+    recordId: answerVerification,
+    disposition: 'supported-with-scope',
+    targets: [{ itemId: 'case-1:问题1', field: 'reference_answer', claimNeedle: '可定位的参考解析' }],
+    sourceEvidence: [],
+    answerVerification,
+  }));
+  const report = auditClaimEvidenceRegister(bank, { records });
+  assert.equal(report.counts.exactTextTargetsMatched, 2);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 2);
+  assert.equal(report.counts.recordsWithAllowedVerification, 0);
+  assert.equal(report.counts.invalidRecords, 2);
+  assert.ok(report.records.every((record) => record.answerVerificationAllowed === false));
+});

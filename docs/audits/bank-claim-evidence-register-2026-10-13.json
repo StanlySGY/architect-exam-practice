@@ -6,6 +6,43 @@
   "note": "登记的目标文字必须仍能在外部题库中精确定位。来源链接/范围描述不是在线可访问性检测，也不代表整题答案已核验。此清单不修改外部题库；不得据此自动提升 verified/approved 状态。",
   "records": [
     {
+      "recordId": "amdahl-limit-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Amdahl's law upper bound",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-056",
+          "field": "analysis",
+          "claimNeedle": "1/0.2=5"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "在可并行部分 f=0.8、处理器数 N 趋于无穷且不另计额外开销时，S=1/((1-f)+f/N) 的极限为 1/(1-0.8)=5。",
+      "recommendedAction": "可保留该计算，但保留“理论上限”和模型假设；这是独立公式复算，不是原题出处或经验性能承诺的核验。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "availability-mtbf-definition-conflict",
+      "disposition": "internal-definition-conflict",
+      "topic": "MTBF / MTTF / MTTR availability formula",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "稳态可用性 = MTBF/(MTBF+MTTR)"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "MTBF = MTTF + MTTR"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，一边又称 MTBF=MTTF+MTTR 并改用 A=MTTF/(MTTF+MTTR)。这混用了不同的 MTBF 定义口径。题目给的数值可在“MTBF 指运行时间间隔”约定下得到 99.9%，但解析内部需先统一定义。",
+      "recommendedAction": "明确 MTBF 在该题中是“运行时间间隔”还是“包括修复时间的平均两次故障间隔”；若前者，保留 999/(999+1) 并删除冲突解释；若后者，则题干应提供 MTTF 或改正数据。该题暂不记为已核验。",
+      "answerVerification": "not-established"
+    },
+    {
       "recordId": "aws-lambda-timeout-scope",
       "disposition": "supported-with-scope",
       "topic": "AWS Lambda function timeout",
@@ -30,6 +67,78 @@
       "conclusion": "15 分钟是 AWS Lambda 普通函数配置的有效示例，但必须限定产品与执行模式。",
       "recommendedAction": "把解析改成“例如，AWS Lambda 普通函数的 timeout 上限为 15 分钟；具体限制依执行模式和事件来源而异”，不要把它泛化为全部 FaaS。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cache-binary-unit-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Cache address-bit calculation and GB unit convention",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷3-006",
+          "field": "analysis",
+          "claimNeedle": "主存4GB = 2^32"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "后续位数计算在 1 GB=2^30 bytes、1 KB=2^10 bytes 的二进制约定下内部一致；若按 SI 十进制 GB 理解，4 GB 并非 2^32 bytes。",
+      "recommendedAction": "在题干或解析开头明确使用的二进制单位约定，避免把默认约定写成普遍定义。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "codepush-retirement-and-archive",
+      "disposition": "retired-technology-needs-context",
+      "topic": "CodePush as a current mobile hot-update option",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "5分钟内修复bug"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "CodePush (React Native)"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://learn.microsoft.com/en-us/appcenter/retirement",
+          "title": "Visual Studio App Center Retirement",
+          "publisher": "Microsoft Learn",
+          "sourceKind": "vendor-official-documentation",
+          "checkedOn": "2026-10-13",
+          "supports": "Microsoft 官方说明 App Center 非 Analytics/Diagnostics 功能于 2025-03-31 退役，之后无法登录或调用 API；CodePush 被列出为可独立运行的特别版本。",
+          "limitations": "这不意味着所有自托管 fork 都立即无法运行，但不能把已退役的托管服务写成仍受支持的当前服务；也不支持“5分钟修复 bug”这一性能/交付保证。"
+        },
+        {
+          "url": "https://github.com/microsoft/code-push-server",
+          "title": "microsoft/code-push-server",
+          "publisher": "Microsoft GitHub repository",
+          "sourceKind": "upstream-archived-repository",
+          "checkedOn": "2026-10-13",
+          "supports": "上游仓库明确说明 CodePush 随 App Center 于 2025-03-31 退役，并于 2025-05-20 被归档为只读仓库。",
+          "limitations": "归档不等同于社区 fork 不可使用；意味着原仓库不再按正常活跃项目维护，部署方需自行评估安全、兼容性和长期维护。"
+        }
+      ],
+      "conclusion": "截至 2026 年，不应把 Microsoft 托管 CodePush 当作当前活跃受支持方案。自托管代码存在，但上游仓库已归档，“5分钟修复 bug”也没有给出测量口径。",
+      "recommendedAction": "将 CodePush 明确标为历史/自托管且由使用方自行维护的方案；删除“5分钟内修复 bug”保证或明确写成无实测依据的示例。补充当下平台政策、安全审批、回滚与应用商店规则的限定。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cpu-execution-time-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "CPU execution time arithmetic",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-007",
+          "field": "analysis",
+          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "独立复算：执行时间 = 总时钟周期数 / 主频 = 6×10⁹ cycles ÷ 2.4×10⁹ cycles/s = 2.5 s，单位相消一致。",
+      "recommendedAction": "计算结果与题面数值一致；这是对解析算术的复现，不等于原卷来源或整道题的独立权威核验。",
+      "answerVerification": "calculation-only"
     },
     {
       "recordId": "lora-trainable-parameter-ratio",
@@ -68,6 +177,84 @@
       "answerVerification": "not-established"
     },
     {
+      "recordId": "nyt-ec2-historical-throughput",
+      "disposition": "historical-case-supported-with-scope",
+      "topic": "The New York Times EC2 archive processing anecdote",
+      "targets": [
+        {
+          "itemId": "real-2022年下半年-015",
+          "field": "analysis",
+          "claimNeedle": "成百上千台AmazonEC2实例在36小时内处理TB级的文档数据"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://aws.amazon.com/blogs/aws/new-york-times/",
+          "title": "New York Times TimesMachine",
+          "publisher": "AWS News Blog",
+          "sourceKind": "provider-published-historical-case",
+          "checkedOn": "2026-10-13",
+          "supports": "AWS 官方 2008 年文章描述纽约时报使用数百台机器，在少于 36 小时内处理数据；文章明确列出 405,000 张大型 TIFF 图像、3.3 million SGML 文件和 405,000 XML 文件的转换工作。",
+          "limitations": "这是特定的 2008 年 TimesMachine/Hadoop 作业，不是通用的 EC2 性能承诺。该页面列出文件数量与格式，但没有直接在正文中量化输入总字节为 TB；如保留“TB级”，应另加准确的一手数据出处。"
+        }
+      ],
+      "conclusion": "36小时以内、数百台机器的历史案例能在 AWS 官方公开文章中找到支持；当前解析的“TB级”精确容量尚未由该页面直接支持。",
+      "recommendedAction": "保留历史案例时标明年份并尽量按 AWS 文章中的文件格式/数量复述；将“TB级”补上独立一手来源，或在无法补证时删去该精确容量措辞。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "redis-aof-everysec-loss-bound",
+      "disposition": "durability-bound-overstatement",
+      "topic": "Redis AOF everysec durability wording",
+      "targets": [
+        {
+          "itemId": "case-real-2025年上半年-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "最多丢失1秒数据"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://redis.io/docs/latest/management/persistence/",
+          "title": "Redis persistence",
+          "publisher": "Redis official documentation",
+          "sourceKind": "vendor-official-documentation",
+          "checkedOn": "2026-10-13",
+          "supports": "Redis 文档说明 appendfsync everysec 会每秒同步一次；发生灾难时可能丢失约一秒写入。",
+          "limitations": "“可能丢失一秒”是对该刷盘策略的说明，不是对所有文件系统、存储设备、内核缓存和故障类型的无条件严格上限。不同 Redis 托管产品的持久化说明不可直接互相套用。"
+        }
+      ],
+      "conclusion": "原解析中“最多丢失1秒”将配置策略描述成绝对上限，措辞过强。",
+      "recommendedAction": "改成“appendfsync everysec 会按秒执行 fsync；按 Redis 文档说明，灾难故障时可能丢失约一秒写入。实际结果受故障与存储栈影响，不把它当作严格的全场景上限”。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "tls-latency-and-encryption-microbenchmark",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Unqualified TLS latency and encryption overhead estimates",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "TLS加密（不影响业务延迟）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "增加10-50ms的延迟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "将加密延迟控制在1-5ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“TLS 加密不影响业务延迟”是无条件断言；10–50ms 和 1–5ms 没有设备、TLS 版本、握手复用、网络路径、负载、实现库或测量方法，不能被视为一般性性能事实。",
+      "recommendedAction": "改为“TLS 会带来与握手、连接复用、加密实现和网络路径有关的开销，具体影响须在目标环境做端到端基准测试”。删除 10–50ms/1–5ms 数字，或给出可复现测试设置与原始结果。",
+      "answerVerification": "not-established"
+    },
+    {
       "recordId": "wbs-100-percent-rule",
       "disposition": "supported-with-scope",
       "topic": "WBS 100% rule",
@@ -92,75 +279,6 @@
       "conclusion": "来源支持解析中关于 WBS 100% 规则的核心命题，并支持反对无限细分的方向。",
       "recommendedAction": "可以保留这条概念解释；若声称其为历年真题或完整答案已核验，还需要独立的原题出处及逐项核对。",
       "answerVerification": "not-established"
-    },
-    {
-      "recordId": "availability-mtbf-definition-conflict",
-      "disposition": "internal-definition-conflict",
-      "topic": "MTBF / MTTF / MTTR availability formula",
-      "targets": [
-        {
-          "itemId": "mock-2026年5月-模拟卷5-002",
-          "field": "analysis",
-          "claimNeedle": "稳态可用性 = MTBF/(MTBF+MTTR)"
-        },
-        {
-          "itemId": "mock-2026年5月-模拟卷5-002",
-          "field": "analysis",
-          "claimNeedle": "MTBF = MTTF + MTTR"
-        }
-      ],
-      "sourceEvidence": [],
-      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，一边又称 MTBF=MTTF+MTTR 并改用 A=MTTF/(MTTF+MTTR)。这混用了不同的 MTBF 定义口径。题目给的数值可在“MTBF 指运行时间间隔”约定下得到 99.9%，但解析内部需先统一定义。",
-      "recommendedAction": "明确 MTBF 在该题中是“运行时间间隔”还是“包括修复时间的平均两次故障间隔”；若前者，保留 999/(999+1) 并删除冲突解释；若后者，则题干应提供 MTTF 或改正数据。该题暂不记为已核验。",
-      "answerVerification": "not-established"
-    },
-    {
-      "recordId": "cpu-execution-time-calculation",
-      "disposition": "calculation-reproduced",
-      "topic": "CPU execution time arithmetic",
-      "targets": [
-        {
-          "itemId": "mock-2026年5月-模拟卷6-007",
-          "field": "analysis",
-          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒"
-        }
-      ],
-      "sourceEvidence": [],
-      "conclusion": "独立复算：执行时间 = 总时钟周期数 / 主频 = 6×10⁹ cycles ÷ 2.4×10⁹ cycles/s = 2.5 s，单位相消一致。",
-      "recommendedAction": "计算结果与题面数值一致；这是对解析算术的复现，不等于原卷来源或整道题的独立权威核验。",
-      "answerVerification": "calculation-only"
-    },
-    {
-      "recordId": "amdahl-limit-calculation",
-      "disposition": "calculation-reproduced",
-      "topic": "Amdahl's law upper bound",
-      "targets": [
-        {
-          "itemId": "mock-2026年5月-模拟卷7-056",
-          "field": "analysis",
-          "claimNeedle": "1/0.2=5"
-        }
-      ],
-      "sourceEvidence": [],
-      "conclusion": "在可并行部分 f=0.8、处理器数 N 趋于无穷且不另计额外开销时，S=1/((1-f)+f/N) 的极限为 1/(1-0.8)=5。",
-      "recommendedAction": "可保留该计算，但保留“理论上限”和模型假设；这是独立公式复算，不是原题出处或经验性能承诺的核验。",
-      "answerVerification": "calculation-only"
-    },
-    {
-      "recordId": "cache-binary-unit-assumption",
-      "disposition": "assumption-sensitive-calculation",
-      "topic": "Cache address-bit calculation and GB unit convention",
-      "targets": [
-        {
-          "itemId": "mock-2026年5月-模拟卷3-006",
-          "field": "analysis",
-          "claimNeedle": "主存4GB = 2^32"
-        }
-      ],
-      "sourceEvidence": [],
-      "conclusion": "后续位数计算在 1 GB=2^30 bytes、1 KB=2^10 bytes 的二进制约定下内部一致；若按 SI 十进制 GB 理解，4 GB 并非 2^32 bytes。",
-      "recommendedAction": "在题干或解析开头明确使用的二进制单位约定，避免把默认约定写成普遍定义。",
-      "answerVerification": "calculation-only"
     }
   ]
 }
