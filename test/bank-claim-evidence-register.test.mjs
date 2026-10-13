@@ -304,3 +304,34 @@ test('位示图计算需要显式声明二进制单位，CPU 周期数运算只�
   assert.equal(report.counts.recordsWithExternalSources, 1);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('Kafka 消费者默认超时参数应限定版本，协作式再均衡需兼容迁移', () => {
+  const bank = {
+    choices: [],
+    cases: [{ id: 'kafka-rebalance', subQuestions: [{ question_label: '问题1', reference_answer: '消费者心跳超时，超过session.timeout.ms（默认10s）；两次poll()调用间隔超过max.poll.interval.ms（默认5min）。使用Kafka 2.4+的CooperativeStickyAssignor（协作式粘性分配器），支持增量Rebalance。' }] }],
+    essays: [],
+  };
+  const records = [{
+    recordId: 'kafka-timeouts', disposition: 'supported-with-scope',
+    targets: [
+      { itemId: 'kafka-rebalance:问题1', field: 'reference_answer', claimNeedle: 'session.timeout.ms（默认10s）' },
+      { itemId: 'kafka-rebalance:问题1', field: 'reference_answer', claimNeedle: 'max.poll.interval.ms（默认5min）' },
+      { itemId: 'kafka-rebalance:问题1', field: 'reference_answer', claimNeedle: 'Kafka 2.4+的CooperativeStickyAssignor' },
+    ],
+    sourceEvidence: [
+      { url: 'https://kafka.apache.org/24/generated/consumer_config.html', title: 'Consumer Configurations (Apache Kafka 2.4)', publisher: 'Apache Kafka project', sourceKind: 'official-project-documentation', checkedOn: '2026-10-13', supports: '2.4 default session timeout is 10s, max poll interval is 5min.', limitations: 'Version-specific defaults only.' },
+      { url: 'https://kafka.apache.org/40/generated/consumer_config.html', title: 'Consumer Configurations (Apache Kafka 4.0)', publisher: 'Apache Kafka project', sourceKind: 'official-project-documentation', checkedOn: '2026-10-13', supports: '4.0 classic protocol default session timeout is 45s, max poll interval is 5min.', limitations: 'Depends on protocol and overrides.' },
+      { url: 'https://kafka.apache.org/24/getting-started/upgrade/', title: 'Upgrading to Kafka 2.4', publisher: 'Apache Kafka project', sourceKind: 'official-project-documentation', checkedOn: '2026-10-13', supports: 'Cooperative assignor uses staged rolling compatibility migration.', limitations: 'Not an instant single-consumer toggle.' },
+    ],
+    answerVerification: 'not-established',
+  }];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 3);
+  assert.equal(report.counts.exactTextTargetsMatched, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 1);
+  assert.equal(report.counts.recordsWithAllowedVerification, 1);
+  assert.equal(report.counts.sourceEntries, 3);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});

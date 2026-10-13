@@ -3,19 +3,19 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 31,
-    "targetClaims": 47,
-    "exactTextTargetsMatched": 47,
+    "records": 32,
+    "targetClaims": 50,
+    "exactTextTargetsMatched": 50,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 16,
-    "recordsWithExternalSources": 13,
-    "recordsWithAllowedDisposition": 31,
-    "recordsWithAllowedVerification": 31,
+    "sourceEntries": 19,
+    "recordsWithExternalSources": 14,
+    "recordsWithAllowedDisposition": 32,
+    "recordsWithAllowedVerification": 32,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 6,
       "internal-definition-conflict": 1,
-      "supported-with-scope": 4,
+      "supported-with-scope": 5,
       "assumption-sensitive-calculation": 2,
       "retired-technology-needs-context": 1,
       "overgeneralized": 4,
@@ -928,6 +928,60 @@
         }
       ],
       "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "kafka-consumer-timeout-default-version-scope",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 3,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "session.timeout.ms（默认10s）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "max.poll.interval.ms（默认5min）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Kafka 2.4+的CooperativeStickyAssignor",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
       "answerVerificationAllowed": true
     }
   ],

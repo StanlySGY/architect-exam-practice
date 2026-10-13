@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 31 个审查记录、47 个原文目标定位；其中 13 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 32 个审查记录、50 个原文目标定位；其中 14 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -34,7 +34,7 @@
 
 ### 此批次的边界
 
-- 本次累计 31 条审查记录、47 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本次累计 32 条审查记录、50 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
 - 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
 - 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。
 
@@ -78,3 +78,7 @@
 
 - `bitmap-block-count-binary-prefix-assumption`：300GB 磁盘、4MB 物理块的位示图答案 2,400 字，在 1GB=1,024MB 的二进制换算约定下算术成立。BIPM 的 SI 前缀中 G=10⁹、M=10⁶；NIST 另列出 Gi/Mi 等二进制前缀。因此题目省略单位约定会产生歧义，应在解析明确写出采用的换算规则。来源：[BIPM — SI prefixes](https://www.bipm.org/en/measurement-units/si-prefixes)、[NIST — binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)。
 - `cpu-clock-cycle-time-calculation`：6×10⁹ 个周期 ÷ 2.4×10⁹ 周期/秒 = 2.5 秒，算术和量纲一致；该计算仅复核题面给定值，不验证周期数来源或实际程序运行时间。
+
+## 续查批次：Kafka Consumer 默认参数版本差异（2026-10-13）
+
+- `kafka-consumer-timeout-default-version-scope`：Kafka 2.4 官方消费者配置将 `session.timeout.ms` 默认值列为 10,000 ms，Kafka 3.0/4.0 文档则已是 45,000 ms（经典组协议）；Kafka 4.0 的新 consumer group protocol 由 broker 配置 session timeout。`max.poll.interval.ms` 的 300,000 ms（5 分钟）默认值在 Kafka 2.4 与 4.0 文档中均有支持。CooperativeStickyAssignor 可用于协作式再均衡，但官方升级文档要求兼容滚动迁移，而不是只切换单个成员。应把版本和协议写进解析。来源：[Kafka 2.4 consumer configs](https://kafka.apache.org/24/generated/consumer_config.html)、[Kafka 4.0 consumer configs](https://kafka.apache.org/40/generated/consumer_config.html)、[Kafka 2.4 upgrade guide](https://kafka.apache.org/24/getting-started/upgrade/)。
