@@ -3,14 +3,14 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 21,
-    "targetClaims": 31,
-    "exactTextTargetsMatched": 31,
+    "records": 24,
+    "targetClaims": 37,
+    "exactTextTargetsMatched": 37,
     "targetClaimsUnmatched": 0,
     "sourceEntries": 10,
     "recordsWithExternalSources": 9,
-    "recordsWithAllowedDisposition": 21,
-    "recordsWithAllowedVerification": 21,
+    "recordsWithAllowedDisposition": 24,
+    "recordsWithAllowedVerification": 24,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 5,
@@ -21,7 +21,7 @@
       "overgeneralized": 2,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 5,
+      "unsubstantiated-performance-claim": 8,
       "unsupported-exam-frequency-prediction": 1
     }
   },
@@ -620,6 +620,96 @@
           "itemId": "essay-mock-2026年5月-模拟卷4-4",
           "field": "writingPoints",
           "claimNeedle": "RTO < 30秒、RPO = 0、年可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-cloudnative-results-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2020年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率提升10倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-real-2020年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-distributed-transaction-results-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2024年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "订单数据一致性达到99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-real-2024年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统吞吐量提升40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-load-balancing-capacity-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年上半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "支撑百万级QPS",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-real-2025年上半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "99.99%可用性",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

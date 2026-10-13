@@ -417,6 +417,45 @@
       "conclusion": "模拟论文思路里的 RTO 小于 30 秒、RPO 为 0 和 99.99% 年可用性是结果性指标，但当前没有提供部署拓扑、同步复制/提交语义、灾备演练或监控证据来支持这些结果。",
       "recommendedAction": "作为设计目标时需标为目标而非已实现结果；作为实施成效时应附演练记录、数据一致性验证、SLA 计算窗口和排除项，并说明 RPO=0 的适用故障范围。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-cloudnative-results-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative cloud-native essay outcome metrics",
+      "targets": [
+        { "itemId": "essay-real-2020年下半年-3", "field": "writingPoints", "claimNeedle": "发布频率提升10倍" },
+        { "itemId": "essay-real-2020年下半年-3", "field": "writingPoints", "claimNeedle": "可用性99.99%" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "这两个数字位于真题主题条目的写作提纲/范文思路中，而不是题面给出的实测结果；当前没有部署记录、发布口径或可用性监控数据支持它们作为已实现的项目成效。",
+      "recommendedAction": "教学中应标记为示例假设，要求考生替换成本人有依据的数据；如保留数字，补充发布频率的统计区间、可用性计量窗口和数据来源。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-distributed-transaction-results-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative distributed-transaction essay outcome metrics",
+      "targets": [
+        { "itemId": "essay-real-2024年下半年-4", "field": "writingPoints", "claimNeedle": "订单数据一致性达到99.99%" },
+        { "itemId": "essay-real-2024年下半年-4", "field": "writingPoints", "claimNeedle": "系统吞吐量提升40%" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "99.99% 一致性与吞吐量提升 40% 出现在答题参考思路的项目实践段落中，但没有一致性判定定义、统计分母、基线版本、压测环境或原始报告，无法复核为真实项目成绩。",
+      "recommendedAction": "标为示例结果；用于真实案例时提供一致性错误计数/分母、压测前后同负载测试结果和测试环境。不要把建议写作的指标误记为官方考试给出的事实。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-load-balancing-capacity-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative load-balancing capacity and availability figures",
+      "targets": [
+        { "itemId": "essay-real-2025年上半年-3", "field": "writingPoints", "claimNeedle": "支撑百万级QPS" },
+        { "itemId": "essay-real-2025年上半年-3", "field": "writingPoints", "claimNeedle": "99.99%可用性" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“百万级 QPS”和“99.99% 可用性”属于写作思路中的能力/成果示例，目前没有请求定义、压力模型、拓扑、故障情景、时间窗口或观测数据支撑为已验证结果。",
+      "recommendedAction": "明确 QPS 是峰值还是持续值、请求形态和延迟分位数，并给出压测/生产流量证据；可用性指标应说明统计窗口与排除项。若仅作为练习范例，要醒目标记为虚构示例数据。",
+      "answerVerification": "not-established"
     }
   ]
 }

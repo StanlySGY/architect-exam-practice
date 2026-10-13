@@ -163,3 +163,23 @@ test('模拟论文成果数字在无项目证据时只能作为示例，不提�
   assert.equal(report.counts.recordsWithAllowedVerification, 3);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('真题主题写作提纲里的容量与成效指标必须标为示例或补充可复核证据', () => {
+  const bank = { choices: [], cases: [], essays: [
+    { id: 'cloudnative', writingPoints: '效果：发布频率提升10倍、可用性99.99%' },
+    { id: 'transactions', writingPoints: '订单数据一致性达到99.99%，系统吞吐量提升40%' },
+    { id: 'loadbalance', writingPoints: '效果：支撑百万级QPS、99.99%可用性' },
+  ] };
+  const records = [
+    { recordId: 'cloudnative', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'cloudnative', field: 'writingPoints', claimNeedle: '发布频率提升10倍' }, { itemId: 'cloudnative', field: 'writingPoints', claimNeedle: '可用性99.99%' }], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'transactions', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'transactions', field: 'writingPoints', claimNeedle: '订单数据一致性达到99.99%' }, { itemId: 'transactions', field: 'writingPoints', claimNeedle: '系统吞吐量提升40%' }], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'loadbalance', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'loadbalance', field: 'writingPoints', claimNeedle: '支撑百万级QPS' }, { itemId: 'loadbalance', field: 'writingPoints', claimNeedle: '99.99%可用性' }], sourceEvidence: [], answerVerification: 'not-established' },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 3);
+  assert.equal(report.counts.targetClaims, 6);
+  assert.equal(report.counts.exactTextTargetsMatched, 6);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 3);
+  assert.equal(report.counts.recordsWithAllowedVerification, 3);
+  assert.equal(report.counts.invalidRecords, 0);
+});
