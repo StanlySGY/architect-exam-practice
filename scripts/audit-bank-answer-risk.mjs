@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const RULES = [
   { code: "unsupported-quantified-claim", label: "需要核对来源的量化断言", pattern: /(?:\d+(?:\.\d+)?\s*(?:-|–|至|到)\s*\d+(?:\.\d+)?\s*(?:ms|毫秒|秒|分钟|小时|%|％|GB|TB|MB|倍|条|次|年|天)|\d+(?:\.\d+)?\s*(?:ms|毫秒|秒|分钟|小时|%|％|GB|TB|MB|倍|条\/秒|次\/秒))/iu, guidance: "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。" },
-  { code: "absolute-or-exam-trend-claim", label: "绝对化或考试趋势断言", pattern: /(?:每年必考|历年必考|考试趋势|唯一(?:的)?(?:方式|方法|方案|原因)|绝对(?:安全|可靠|不会)|完全(?:不|无需|避免)|一定(?:能够|会|不会)|必然(?:导致|发生)|保证(?:不|一定|必然)|不影响(?:业务|性能|延迟))/iu, guidance: "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。" },
+  { code: "absolute-or-exam-trend-claim", label: "绝对化或考试趋势断言", pattern: /(?:每年必考|历年必考|考试趋势|唯一(?:的)?(?:方式|方法|方案|原因)|绝对(?:安全|可靠|不会)|完全(?:不(?!同)|无需|避免)|一定(?:能够|会|不会)|必然(?:导致|发生)|保证(?:不|一定|必然)|不影响(?:业务|性能|延迟))/iu, guidance: "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。" },
 ];
 
 function textFields(bank) {
@@ -23,19 +23,37 @@ function assessSourceLocator(values) {
   return { hasSourceLocator: false, sourceLocatorAssessment: present.length ? "placeholder-only" : "missing" };
 }
 
+function firstRelevantMatch(text, rule) {
+  const flags = rule.pattern.flags.includes("g") ? rule.pattern.flags : rule.pattern.flags + "g";
+  const pattern = new RegExp(rule.pattern.source, flags);
+  for (const match of text.matchAll(pattern)) {
+    const value = match[0];
+    const index = match.index ?? 0;
+    // A year-to-year date range is context, not a performance/quantity claim.
+    if (rule.code === "unsupported-quantified-claim" && /^(?:19|20)\d{2}\s*(?:-|–|至|到)\s*(?:19|20)\d{2}\s*年$/u.test(value)) continue;
+    if (rule.code === "absolute-or-exam-trend-claim") {
+      const prefix = text.slice(Math.max(0, index - 16), index);
+      // Do not flag a claim that explicitly warns against treating the phrase as guaranteed.
+      if (/(?:不保证|不能保证|并不意味着|不代表|未必|不一定).{0,10}$/u.test(prefix)) continue;
+    }
+    return { match: value, index };
+  }
+  return null;
+}
+
 export function auditAnswerRisk(bank) {
   const rows = textFields(bank);
   const findings = [];
   const ruleCounts = Object.fromEntries(RULES.map((rule) => [rule.code, 0]));
   for (const row of rows) for (const rule of RULES) {
-    const match = rule.pattern.exec(row.text);
-    if (!match) continue;
+    const result = firstRelevantMatch(row.text, rule);
+    if (!result) continue;
     ruleCounts[rule.code] += 1;
-    const index = match.index;
+    const { match, index } = result;
     const sourceLocator = assessSourceLocator(row.sources);
-    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match[0], context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match[0].length + 120)).replace(/\s+/g, " ").trim(), ...sourceLocator, answerSource: row.answerSource, guidance: rule.guidance });
+    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match, context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match.length + 120)).replace(/\s+/g, " ").trim(), ...sourceLocator, answerSource: row.answerSource, guidance: rule.guidance });
   }
-  return { reportVersion: 2, readOnly: true, counts: { choices: (bank?.choices ?? []).length, cases: (bank?.cases ?? []).length, essays: (bank?.essays ?? []).length, scannedTextFields: rows.length, findings: findings.length }, ruleCounts, note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。脚本不修改题库。", findings };
+  return { reportVersion: 3, readOnly: true, counts: { choices: (bank?.choices ?? []).length, cases: (bank?.cases ?? []).length, essays: (bank?.essays ?? []).length, scannedTextFields: rows.length, findings: findings.length }, ruleCounts, note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。已过滤明确的年份区间和常见否定语境，仍可能存在误报与漏报；脚本不修改题库。", findings };
 }
 
 async function main() {

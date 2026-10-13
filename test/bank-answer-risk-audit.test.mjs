@@ -21,9 +21,22 @@ test("答案风险审计会标记量化与绝对化断言，但只生成只读�
   assert.equal(report.findings.some((item) => item.item.id === "q2"), false);
 });
 
+test("风险扫描忽略年份区间、否定语境和“完全不同”措辞", () => {
+  const report = auditAnswerRisk({ choices: [
+    { id: "year-range", analysis: "RAG是2025-2026年热门技术方向。" },
+    { id: "qualified", analysis: "责任链模式不保证请求一定会被处理；所有处理者都不处理时请求会被丢弃。" },
+    { id: "note", analysis: "该回忆版内容与批次一完全不同。" },
+    { id: "real-absolute", analysis: "该方案完全不影响业务延迟。" },
+  ] });
+  assert.equal(report.findings.some((item) => item.item.id === "year-range"), false);
+  assert.equal(report.findings.some((item) => item.item.id === "qualified"), false);
+  assert.equal(report.findings.some((item) => item.item.id === "note"), false);
+  assert.equal(report.findings.some((item) => item.item.id === "real-absolute" && item.rule === "absolute-or-exam-trend-claim"), true);
+});
+
 test("答案风险审计区分来源字段存在与来源事实核验", () => {
   const withUrl = auditAnswerRisk({ choices: [{ id: "q1", analysis: "延迟为10-50ms。", sourceUrl: "https://example.com" }] });
-  assert.equal(withUrl.reportVersion, 2);
+  assert.equal(withUrl.reportVersion, 3);
   assert.equal(withUrl.findings[0].hasSourceLocator, true);
   assert.equal(withUrl.findings[0].sourceLocatorAssessment, "url-present-not-verified");
   const withPlaceholder = auditAnswerRisk({ choices: [{ id: "q2", analysis: "延迟为10-50ms。", sourceCitation: "待核验" }] });

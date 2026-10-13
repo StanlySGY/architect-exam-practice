@@ -1,18 +1,18 @@
 {
-  "reportVersion": 2,
+  "reportVersion": 3,
   "readOnly": true,
   "counts": {
     "choices": 1947,
     "cases": 132,
     "essays": 104,
     "scannedTextFields": 2399,
-    "findings": 161
+    "findings": 157
   },
   "ruleCounts": {
-    "unsupported-quantified-claim": 151,
-    "absolute-or-exam-trend-claim": 10
+    "unsupported-quantified-claim": 149,
+    "absolute-or-exam-trend-claim": 8
   },
-  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。脚本不修改题库。",
+  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。已过滤明确的年份区间和常见否定语境，仍可能存在误报与漏报；脚本不修改题库。",
   "findings": [
     {
       "rule": "unsupported-quantified-claim",
@@ -189,25 +189,6 @@
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
-        "id": "mock-2026年5月-模拟卷5-060",
-        "kind": "choice",
-        "term": "2026年5月 模拟卷5",
-        "paper": "模拟卷5",
-        "questionNo": 60,
-        "field": "analysis"
-      },
-      "matchedText": "2025-2026年",
-      "context": "G = 检索（Retrieval）+ 增强（Augmented）+ 生成（Generation）。先从外部知识库检索相关文档，将其拼接到提示词中作为上下文，再由LLM生成回答。 押题理由: RAG是2025-2026年AI落地最热门的技术方案，预计2026首次入考。",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
-    },
-    {
-      "rule": "unsupported-quantified-claim",
-      "label": "需要核对来源的量化断言",
-      "item": {
         "id": "mock-2026年5月-模拟卷5-065",
         "kind": "choice",
         "term": "2026年5月 模拟卷5",
@@ -222,25 +203,6 @@
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
-    },
-    {
-      "rule": "unsupported-quantified-claim",
-      "label": "需要核对来源的量化断言",
-      "item": {
-        "id": "mock-2026年5月-模拟卷5-066",
-        "kind": "choice",
-        "term": "2026年5月 模拟卷5",
-        "paper": "模拟卷5",
-        "questionNo": 66,
-        "field": "analysis"
-      },
-      "matchedText": "2025-2026年",
-      "context": "raft模型自回归生成多个候选Token，然后大模型一次性并行验证这些Token，接受正确的、拒绝错误的。可以在不损失质量的情况下加速推理。 押题理由: 推理加速是大模型工程化的核心挑战，投机解码是2025-2026年热门优化技术。",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
@@ -336,25 +298,6 @@
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
       "triageCategory": "technical-number-or-calculation-review"
-    },
-    {
-      "rule": "absolute-or-exam-trend-claim",
-      "label": "绝对化或考试趋势断言",
-      "item": {
-        "id": "mock-2026年5月-模拟卷7-035",
-        "kind": "choice",
-        "term": "2026年5月 模拟卷7",
-        "paper": "模拟卷7",
-        "questionNo": 35,
-        "field": "analysis"
-      },
-      "matchedText": "一定会",
-      "context": "责任链模式的优点是将请求的发送者和接收者解耦，请求沿着责任链传递直到某个处理者处理它。但不保证请求一定会被处理（如果链上所有处理者都不处理则请求被丢弃）。",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
-      "triageCategory": "absolute-language-needs-context"
     },
     {
       "rule": "unsupported-quantified-claim",
@@ -2048,25 +1991,6 @@
       "triageCategory": "outcome-metric-needs-evidence"
     },
     {
-      "rule": "absolute-or-exam-trend-claim",
-      "label": "绝对化或考试趋势断言",
-      "item": {
-        "id": "case-real-2025年下半年-5:问题3",
-        "kind": "case",
-        "term": "2025年下半年",
-        "paper": "2025年下半年",
-        "questionNo": "问题3",
-        "field": "reference_answer"
-      },
-      "matchedText": "完全不",
-      "context": "SDN/博客园回忆版本） > 数据来源: CSDN博主phmatthaus、cui_yonghua等考后回忆整理 > 验证状态: ⚠️ 回忆版，已通过多个博主交叉验证 > 说明: 此批次内容与批次一完全不同，为不同考试批次的题目 ---",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对来源与前提；无依据的绝对化表述应改为有条件、可验证的说法。",
-      "triageCategory": "absolute-language-needs-context"
-    },
-    {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
@@ -3076,9 +3000,9 @@
   ],
   "sourcePath": "../architect-exam-bank/data/bank.json",
   "triageCounts": {
-    "quantified-claim-context-review": 28,
+    "quantified-claim-context-review": 26,
     "technical-number-or-calculation-review": 56,
-    "absolute-language-needs-context": 6,
+    "absolute-language-needs-context": 4,
     "exam-prediction-needs-source": 4,
     "outcome-metric-needs-evidence": 67
   }
