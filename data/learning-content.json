@@ -15355,7 +15355,8 @@
       ],
       "selfChecks": [
         "一个程序有多个模块，但运行时并非每个模块都会被调用。为什么不能简单地把所有模块可靠性相乘？请指出需要描述的结构信息和概率假设。",
-        "系统调用图中有多个分支与共享模块。要由局部可靠性推断整体可靠性，还需要哪些路径/转移概率信息，以及哪些独立性或同质性假设？"
+        "系统调用图中有多个分支与共享模块。要由局部可靠性推断整体可靠性，还需要哪些路径/转移概率信息，以及哪些独立性或同质性假设？",
+        "Cheung 用户导向模型把模块可靠性与模块间转移概率结合起来，架构驱动模型也会显式处理组件使用剖面和执行环境。若某模块只被少数实际请求调用，除了它自身的可靠性，还必须知道哪些使用/转移信息才能估计用户实际感知的系统可靠性？"
       ],
       "evidence": [
         {
@@ -15375,6 +15376,15 @@
           "scope": "支持一个以模块和转换概率为基础的 Markov 结构模型及其用户剖面前提；不单独定义目标教材中整个程序结构分析模型类别。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Architecture-Based Reliability Prediction with the Palladio Component Model",
+          "url": "https://ieeexplore.ieee.org/document/6018968/",
+          "sourceAuthority": "IEEE Transactions on Software Engineering, 38(6), 1319–1339 (2012); DOI 10.1109/TSE.2011.94",
+          "supportedClaim": "该架构驱动可靠性预测方法显式建模软件系统的使用剖面与执行环境，并自动推导组件使用剖面；论文通过敏感性分析和两个案例研究展示其建模与预测应用。",
+          "scope": "支持一种具体架构驱动可靠性预测方法将组件结构、使用剖面和执行环境结合起来；不证明目标教材“程序结构分析模型”的完整分类或公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },
@@ -15438,6 +15448,15 @@
           "scope": "支持输入域分区、运行剖面不确定性和可靠性预测之间的关系；不证明目标教材模型分类、特定抽样公式或任何一个项目的真实剖面已被准确测得。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "An extended operational profile model",
+          "url": "https://doi.org/10.1109/ISSRE.2004.8",
+          "sourceAuthority": "IEEE International Symposium on Software Reliability Engineering (ISSRE 2004); DOI 10.1109/ISSRE.2004.8",
+          "supportedClaim": "该论文指出传统操作剖面常被定义为可执行操作集合及其在用户场景中的出现概率，并认为只关注操作本身对许多工业应用的使用表征可能过于有限；论文提出扩展该模型。",
+          "scope": "支持操作剖面定义和扩展动机这一有限命题；不证明目标教材输入域模型的分类名称、抽样公式，亦不代表操作概率可替代异常/边界测试。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },
@@ -15446,7 +15465,7 @@
       "verificationPendingClaims": ["确认目标教材所指的执行路径模型及 Shooman 分解法的对应关系；核对执行路径概率、错误路径概率的组合方式和可靠性计算前提。"],
       "what": "已有路径型可靠性预测研究会从软件架构/通信顺序进程轨迹推导执行路径，并据此构造组件化嵌入式软件的可靠性预测模型；该论文仅支持一种路径建模方案，不等于指定教材分类的完整定义。",
       "why": "执行路径分析把程序可能经过的逻辑路径、路径出现概率以及路径执行是否成功联系起来，用于估计目标使用场景下的软件可靠性。覆盖到所有路径不等于按真实使用比例测试过，也不证明每条路径的成功概率已被准确估计。",
-      "how": "从控制流图识别分支、循环和关键路径，说明路径爆炸与不可达路径问题。",
+      "how": "从控制流图识别分支、循环和关键路径，说明路径爆炸与不可达路径问题。对 Shooman 路径型估计，应区分路径使用频率与单次路径失效概率，并确认使用频率的归一化/统计口径；路径覆盖率本身不能替代路径发生权重。",
       "confusions": "语句、分支和路径覆盖不等价；高覆盖率也不证明无缺陷。",
       "scenarios": "情境练习（非教材原例）：测试支付流程的超时、重复请求和补偿失败路径。",
       "examples": "自拟练习（非教材原例）：测试支付流程的超时、重复请求和补偿失败路径。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
@@ -15471,7 +15490,8 @@
       ],
       "selfChecks": [
         "支付流程的回滚路径测试覆盖率达到 100%，但真实用户很少触发它。为什么这既不自动证明整体可靠性，也不意味着该路径可以忽略？请区分路径覆盖、执行概率和条件成功率。",
-        "请写出用路径执行概率和路径条件成功率进行系统可靠性推理所需的前提。路径覆盖率、路径发生概率与路径内正确执行概率分别回答什么问题？"
+        "请写出用路径执行概率和路径条件成功率进行系统可靠性推理所需的前提。路径覆盖率、路径发生概率与路径内正确执行概率分别回答什么问题？",
+        "Shooman 路径模型在路径使用频率与每次执行失效概率已知时，以使用频率对路径失效概率加权。为什么不能把未归一化的测试次数直接当成概率？如果程序含循环，实测到的有限条路径是否一定覆盖所有长期可能路径？"
       ],
       "evidence": [
         {
@@ -15500,6 +15520,15 @@
           "scope": "官方元数据确认论文标题、作者、卷期页码和 DOI；摘要支持一种具体路径分析模型。该页面不证明目标教材的分类原文、Shooman 分解法对应关系或本教材公式和假设。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "How Different Architecture Based Software Reliability Models Are Related?",
+          "url": "https://community.wvu.edu/~kagoseva/Papers/ISSRE-2000.pdf",
+          "sourceAuthority": "K. Goseva-Popstojanova, K. S. Trivedi and A. P. Mathur; ISSRE 2000 conference paper",
+          "supportedClaim": "该论文将 Shooman 方法列为路径型架构可靠性模型：假设不同执行路径的使用频率和每次执行的失效概率已知，并用按路径使用频率加权的路径失效概率估计单次执行的系统失效概率；论文同时讨论路径型与状态型模型的差别。",
+          "scope": "支持该论文对 Shooman 路径模型假设和路径/状态模型区别的综述；不能代替原始论文或目标教材核实精确术语、输入量定义、公式及循环处理细节。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },
@@ -15572,6 +15601,15 @@
           "scope": "用于说明 NHPP 的适用性必须通过具体数据与模型诊断检验；不证明所有软件失效过程均不服从 NHPP，也不替代目标教材的分类、公式和假设核对。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "An imperfect debugging model with two types of hazard rates for software reliability measurement and assessment",
+          "url": "https://doi.org/10.1016/S0895-7177(00)00105-9",
+          "sourceAuthority": "Mathematical and Computer Modelling, 31(10–12), 343–352 (2000); K. Tokuno and S. Yamada; Elsevier",
+          "supportedClaim": "该研究区分测试前潜伏故障与测试期间随机再生的故障，分别采用几何递减和常数危险率描述其故障发生过程；模型还显式允许调试不完美，并用 Markov 过程建模已成功修复的累计故障数。",
+          "scope": "支持这一特定不完美调试模型的故障类型、危险率和过程表示；不证明所有 NHPP 子模型都采用相同假设，也不证明目标教材的模型清单或公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },
@@ -15644,6 +15682,15 @@
           "scope": "出版社记录直接支持这一个 Markov 结构模型的对象与假设；不证明目标教材所列线性死亡模型、故障计数模型或其转移矩阵/公式。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "Software reliability measurement in imperfect debugging environment and its application",
+          "url": "https://doi.org/10.1016/0951-8320(93)90104-7",
+          "sourceAuthority": "Reliability Engineering & System Safety, 40(2), 139–147 (1993); Shigeru Yamada, Koichi Tokuno and Shunji Osaki; Elsevier",
+          "supportedClaim": "该研究强调测试期间检测到的故障并非总能被正确修复并移除，并使用 semi-Markov 过程构造不完美调试环境下的软件可靠性增长模型，再从模型推导可靠性测量指标。",
+          "scope": "支持不完美调试可以通过特定 semi-Markov 过程建模这一技术实例；不证明目标教材所称线性死亡模型的状态、转移矩阵或具体公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },
@@ -15716,6 +15763,15 @@
           "scope": "出版社摘要直接支持 Littlewood–Verrall 这一具体模型的观测单位、修复规则和不建模程序内部结构的范围；不证明目标教材采用相同模型、先验分布或后验公式。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-12"
+        },
+        {
+          "sourceTitle": "A Bayesian model averaging method for software reliability modeling and assessment",
+          "url": "https://doi.org/10.1002/qre.3273",
+          "sourceAuthority": "Quality and Reliability Engineering International; Qiumin Yu et al.; first published 29 January 2023; DOI 10.1002/qre.3273",
+          "supportedClaim": "该研究提出软件可靠性贝叶斯模型平均方法：对候选可靠性模型计算后验模型概率，并用这些概率作为权重组合模型；论文研究 MCMC 与 EM 两种模型后验概率估计方法。",
+          "scope": "支持贝叶斯模型平均是一种显式处理候选模型不确定性的研究方案；不证明它属于目标教材所列的具体 Bayesian 模型，也不证明该方法对所有数据集都更优。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
         }
       ]
     },

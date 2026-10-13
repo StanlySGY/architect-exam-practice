@@ -921,3 +921,13 @@
 - 同一单元补入 Kapur 与 Younes 的论文（*Microelectronics Reliability*, 36(5), 645–650, 1996，DOI <https://doi.org/10.1016/0026-2714(95)00157-3>）：论文将完美调试与“观测失效和移除错误一一对应”联系起来，并研究可能引入新错误的不完美调试。证据范围限定于该论文讨论的模型，不将其外推为所有增长曲线的通则。
 - `9.2.3.4` 新增曲线初始形态的针对性自检：公开资料给出 Goel–Okumoto 均值函数 `m(t)=a(1−e^(−bt))` 和延迟 S 形均值函数 `m(t)=a[1−(1+bt)e^(−bt)]`。在 `a,b>0` 下，两者 `t=0` 时的导数分别为 `ab` 与 `0`；这是由公开公式直接求导所得，用于辨析曲线起始形态，并非教材原题或分类证据。参考 National Academies Press：<https://www.nationalacademies.org/read/18987/chapter/11>。
 - 已为以上来源范围、课程自检和 `partial` 状态增加回归断言。上述证据支持不完美调试与增长曲线的一般技术边界，但不关闭目标教材关于模型成员、分类顺序和公式口径的缺口；11 项待核队列应继续保留。
+
+## 本轮继续：架构/路径模型、操作剖面与不完美调试边界（2026-10-13）
+
+- `9.2.3.5` 增补 IEEE 论文《Architecture-Based Reliability Prediction with the Palladio Component Model》（DOI <https://doi.org/10.1109/TSE.2011.94>），支持一种架构驱动方法显式结合组件结构、系统使用剖面与执行环境。它不是目标教材程序结构分析类别的完整定义。
+- `9.2.3.6` 增补 IEEE ISSRE 2004《An extended operational profile model》（DOI <https://doi.org/10.1109/ISSRE.2004.8>）：论文认为只用“操作集合 + 操作出现概率”表征工业软件使用场景可能过于有限。该来源用于界定传统操作剖面的范围，不取代目标教材对输入域抽样或边界测试的表述。
+- `9.2.3.7` 增补 Goseva-Popstojanova、Trivedi 与 Mathur 的《How Different Architecture Based Software Reliability Models Are Related?》（ISSRE 2000，<https://community.wvu.edu/~kagoseva/Papers/ISSRE-2000.pdf>）。文中把 Shooman 模型归为路径型模型，给出路径使用频率和每次执行失效概率已知的前提，并比较路径型与状态型方法。课程新自检专门检查频率权重、路径概率与循环处理边界；由于这是模型综述而非本教材正文，Shooman 公式仍待指定教材/原始论文核对。
+- `9.2.3.8` 增补 Elsevier 不完美调试双危险率模型（Tokuno、Yamada，2000，DOI <https://doi.org/10.1016/S0895-7177(00)00105-9>）：区分初始潜伏故障与测试期再生故障、各自的危险率行为，并以 Markov 过程建模修复过程。此结果仅属于该特定模型，不能推及所有 NHPP。
+- `9.2.3.9` 增补 Elsevier 半 Markov 不完美调试模型（Yamada、Tokuno、Osaki，1993，DOI <https://doi.org/10.1016/0951-8320(93)90104-7>）：说明测试中发现的故障并非都能成功修复，且可用 semi-Markov 过程刻画这种调试环境。该模型不替代教材所列线性死亡模型的状态与转移公式。
+- `9.2.3.10` 增补 Bayesian model averaging 论文（2023，DOI <https://doi.org/10.1002/qre.3273>），用于区分单一候选模型内部的参数后验与不同候选模型的后验权重/模型平均；研究方法不作为指定教材模型清单的证据。
+- 已新增覆盖上述六个单元的回归断言，并仅将相关自检扩展到架构使用剖面和 Shooman 路径加权。所有单元仍为 `partial`，11 项教材正文待核队列不减少；外部来源只能支持其明确范围内的技术命题。

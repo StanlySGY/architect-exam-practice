@@ -268,7 +268,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.6','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? 3 : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
@@ -559,6 +559,32 @@ test('reliability model units document imperfect-debugging assumptions and curve
   assert.ok(report.queue.some(unit => unit.id === '9.2.3.4'));
   assert.equal(content.units['9.2.3.2'].status, 'partial');
   assert.equal(content.units['9.2.3.4'].status, 'partial');
+});
+test('remaining reliability model families have scoped architecture, profile, path, debugging and Bayesian-model evidence', () => {
+  const cases = [
+    ['9.2.3.5', 'https://ieeexplore.ieee.org/document/6018968/', '使用剖面', '不证明目标教材'],
+    ['9.2.3.6', 'https://doi.org/10.1109/ISSRE.2004.8', '工业应用', '不证明目标教材'],
+    ['9.2.3.7', 'https://community.wvu.edu/~kagoseva/Papers/ISSRE-2000.pdf', 'Shooman', '不能代替原始论文'],
+    ['9.2.3.8', 'https://doi.org/10.1016/S0895-7177(00)00105-9', '再生的故障', '不证明所有 NHPP'],
+    ['9.2.3.9', 'https://doi.org/10.1016/0951-8320(93)90104-7', 'semi-Markov', '不证明目标教材'],
+    ['9.2.3.10', 'https://doi.org/10.1002/qre.3273', '后验模型概率', '不证明它属于目标教材']
+  ];
+  for (const [id, url, claimFragment, scopeFragment] of cases) {
+    const unit = content.units[id];
+    const evidence = unit.evidence.find(e => e.url === url);
+    assert.equal(unit.status, 'partial', id);
+    assert.ok(unit.verificationPendingClaims?.length > 0, id);
+    assert.ok(evidence, id + ': missing source ' + url);
+    assert.equal(evidence.reviewStatus, 'source-supports-bounded-claim', id);
+    assert.equal(evidence.reviewedOn, '2026-10-13', id);
+    assert.ok(evidence.supportedClaim.includes(claimFragment), id);
+    assert.ok(evidence.scope.includes(scopeFragment), id);
+  }
+  assert.ok(content.units['9.2.3.5'].selfChecks.some(q => q.includes('使用剖面') && q.includes('组件')));
+  assert.ok(content.units['9.2.3.7'].selfChecks.some(q => q.includes('Shooman') && q.includes('加权')));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  for (const [id] of cases) assert.ok(report.queue.some(item => item.id === id), id);
 });
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
