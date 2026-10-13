@@ -3,14 +3,14 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 32,
-    "targetClaims": 50,
-    "exactTextTargetsMatched": 50,
+    "records": 33,
+    "targetClaims": 54,
+    "exactTextTargetsMatched": 54,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 21,
-    "recordsWithExternalSources": 15,
-    "recordsWithAllowedDisposition": 32,
-    "recordsWithAllowedVerification": 32,
+    "sourceEntries": 24,
+    "recordsWithExternalSources": 17,
+    "recordsWithAllowedDisposition": 33,
+    "recordsWithAllowedVerification": 33,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 6,
@@ -18,7 +18,7 @@
       "supported-with-scope": 5,
       "assumption-sensitive-calculation": 2,
       "retired-technology-needs-context": 1,
-      "overgeneralized": 4,
+      "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 9,
@@ -309,9 +309,15 @@
       "dispositionAllowed": true,
       "targetCount": 3,
       "targetsOk": true,
-      "sourceCount": 0,
+      "sourceCount": 1,
       "sourceMetadataOk": true,
-      "sourceChecks": [],
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
       "targetChecks": [
         {
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
@@ -987,6 +993,63 @@
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
           "field": "reference_answer",
           "claimNeedle": "Kafka 2.4+的CooperativeStickyAssignor",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "aes-round-count-performance-and-quantum-strength-scope",
+      "disposition": "overgeneralized",
+      "dispositionAllowed": true,
+      "targetCount": 4,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-real-2025年下半年-6:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "14轮加密（AES-128为10轮）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-real-2025年下半年-6:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "计算量约比AES-128慢40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-real-2025年下半年-6:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "2^256密钥空间暴力破解不可行",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-real-2025年下半年-6:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "抗量子计算有效安全强度128位",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

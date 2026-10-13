@@ -305,6 +305,52 @@ test('位示图计算需要显式声明二进制单位，CPU 周期数运算只�
   assert.equal(report.counts.invalidRecords, 0);
 });
 
+test('TLS latency estimates and AES speed/quantum claims require scope, benchmarks, and standards evidence', () => {
+  const bank = {
+    choices: [],
+    cases: [
+      { id: 'tls-case', subQuestions: [{ question_label: '问题2', reference_answer: '对传输中的数据采用TLS加密（不影响业务延迟）。解密操作会增加10-50ms的延迟，将加密延迟控制在1-5ms。' }] },
+      { id: 'aes-case', subQuestions: [{ question_label: '问题2', reference_answer: 'AES-256密钥256位，14轮加密（AES-128为10轮），计算量约比AES-128慢40%；2^256密钥空间暴力破解不可行；抗量子计算有效安全强度128位。' }] },
+    ],
+    essays: [],
+  };
+  const records = [
+    {
+      recordId: 'tls', disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'tls-case:问题2', field: 'reference_answer', claimNeedle: 'TLS加密（不影响业务延迟）' },
+        { itemId: 'tls-case:问题2', field: 'reference_answer', claimNeedle: '增加10-50ms的延迟' },
+        { itemId: 'tls-case:问题2', field: 'reference_answer', claimNeedle: '将加密延迟控制在1-5ms' },
+      ],
+      sourceEvidence: [{ url: 'https://www.rfc-editor.org/rfc/rfc8446', title: 'RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3', publisher: 'RFC Editor / IETF', sourceKind: 'official-standard-guidance', checkedOn: '2026-10-13', supports: 'TLS 1.3 distinguishes full handshake and PSK resumption, including 0-RTT early data.', limitations: 'No universal millisecond performance penalty is specified; latency depends on deployment and measurement conditions.' }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'aes', disposition: 'overgeneralized',
+      targets: [
+        { itemId: 'aes-case:问题2', field: 'reference_answer', claimNeedle: '14轮加密（AES-128为10轮）' },
+        { itemId: 'aes-case:问题2', field: 'reference_answer', claimNeedle: '计算量约比AES-128慢40%' },
+        { itemId: 'aes-case:问题2', field: 'reference_answer', claimNeedle: '2^256密钥空间暴力破解不可行' },
+        { itemId: 'aes-case:问题2', field: 'reference_answer', claimNeedle: '抗量子计算有效安全强度128位' },
+      ],
+      sourceEvidence: [
+        { url: 'https://csrc.nist.gov/pubs/fips/197/final', title: 'FIPS 197: Advanced Encryption Standard', publisher: 'NIST', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: 'AES-128 has 10 rounds and AES-256 has 14 rounds.', limitations: 'The specification does not prove a universal 40% speed difference.' },
+        { url: 'https://csrc.nist.gov/Projects/post-quantum-cryptography/faqs', title: 'Post-Quantum Cryptography FAQ', publisher: 'NIST', sourceKind: 'government-standard-guidance', checkedOn: '2026-10-13', supports: 'Discusses Grover-style square-root search in a model with explicit assumptions.', limitations: 'Does not certify an unconditional exact 128-bit effective security rating for the full cipher under every quantum resource model.' },
+      ],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 2);
+  assert.equal(report.counts.targetClaims, 7);
+  assert.equal(report.counts.exactTextTargetsMatched, 7);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 2);
+  assert.equal(report.counts.recordsWithAllowedVerification, 2);
+  assert.equal(report.counts.sourceEntries, 3);
+  assert.equal(report.counts.recordsWithExternalSources, 2);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
 test('Kafka 消费者默认超时参数应限定版本，协作式再均衡需兼容迁移', () => {
   const bank = {
     choices: [],

@@ -265,9 +265,17 @@
           "claimNeedle": "将加密延迟控制在1-5ms"
         }
       ],
-      "sourceEvidence": [],
-      "conclusion": "“TLS 加密不影响业务延迟”是无条件断言；10–50ms 和 1–5ms 没有设备、TLS 版本、握手复用、网络路径、负载、实现库或测量方法，不能被视为一般性性能事实。",
-      "recommendedAction": "改为“TLS 会带来与握手、连接复用、加密实现和网络路径有关的开销，具体影响须在目标环境做端到端基准测试”。删除 10–50ms/1–5ms 数字，或给出可复现测试设置与原始结果。",
+      "sourceEvidence": [{
+        "url": "https://www.rfc-editor.org/rfc/rfc8446",
+        "title": "RFC 8446: The Transport Layer Security (TLS) Protocol Version 1.3",
+        "publisher": "RFC Editor / IETF",
+        "sourceKind": "official-standard-guidance",
+        "checkedOn": "2026-10-13",
+        "supports": "TLS 1.3 specifies a full handshake and PSK-resumption handshakes; ordinary full handshake completion depends on protocol messages and network round trips. The RFC permits 0-RTT early data in resumption but documents weaker security properties and replay considerations.",
+        "limitations": "The protocol specification does not give a universal application latency penalty in milliseconds. Actual overhead depends on connection reuse, resumption, network path, payload sizes, implementation, hardware and load; it cannot substantiate the 10–50 ms or 1–5 ms figures without measurements."
+      }],
+      "conclusion": "“TLS 加密不影响业务延迟”是无条件断言；TLS 建连/握手与加解密可能引入网络往返及计算开销。RFC 8446 对完整握手和恢复连接有所区分，也说明 0-RTT 恢复数据存在额外重放风险；它不支持“零延迟”或通用的 10–50ms、1–5ms 性能数字。",
+      "recommendedAction": "改为“TLS 会带来与握手、连接复用、加密实现和网络路径有关的开销，具体影响须在目标环境做端到端基准测试”。删除 10–50ms/1–5ms 数字，或给出可复现测试设置与原始结果。来源：[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)。",
       "answerVerification": "not-established"
     },
     {
@@ -654,6 +662,40 @@
       ],
       "conclusion": "“默认10s”是 Kafka 2.4 时代可成立的版本信息；Kafka 3.0/4.x 文档已将经典消费者协议的默认值列为 45 秒，Kafka 4.0 的新 consumer group protocol 则由 broker 配置 session timeout。max.poll.interval.ms 默认 5 分钟在这些版本中仍有官方支持。CooperativeStickyAssignor 从 2.4 时代起可用，但组内消费者要按兼容升级步骤迁移，因此这段答案应标注适用版本与协议，而不是直接称所有数字错误。",
       "recommendedAction": "把 session.timeout.ms 的默认值标成“Kafka 2.4/2.6 等旧版为 10 秒；Kafka 3.0+ 经典协议默认 45 秒，具体以版本、group.protocol 与 broker 配置为准”；将 max.poll.interval.ms 的 5 分钟保留为版本化默认值；说明 CooperativeStickyAssignor 需要所有成员支持并按官方升级流程滚动迁移。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "aes-round-count-performance-and-quantum-strength-scope",
+      "disposition": "overgeneralized",
+      "topic": "AES-128/AES-256 round count versus speed and simplified quantum-security claims",
+      "targets": [
+        { "itemId": "case-real-2025年下半年-6:问题2", "field": "reference_answer", "claimNeedle": "14轮加密（AES-128为10轮）" },
+        { "itemId": "case-real-2025年下半年-6:问题2", "field": "reference_answer", "claimNeedle": "计算量约比AES-128慢40%" },
+        { "itemId": "case-real-2025年下半年-6:问题2", "field": "reference_answer", "claimNeedle": "2^256密钥空间暴力破解不可行" },
+        { "itemId": "case-real-2025年下半年-6:问题2", "field": "reference_answer", "claimNeedle": "抗量子计算有效安全强度128位" }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://csrc.nist.gov/pubs/fips/197/final",
+          "title": "FIPS 197: Advanced Encryption Standard (AES)",
+          "publisher": "National Institute of Standards and Technology (NIST)",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-13",
+          "supports": "NIST specifies AES-128 with 10 rounds and AES-256 with 14 rounds; the suffix identifies key length in bits.",
+          "limitations": "The standard specifies the algorithm and rounds, not a general benchmark claiming AES-256 is exactly 40 percent slower than AES-128 on all implementations."
+        },
+        {
+          "url": "https://csrc.nist.gov/Projects/post-quantum-cryptography/faqs",
+          "title": "Post-Quantum Cryptography FAQ",
+          "publisher": "National Institute of Standards and Technology (NIST)",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-13",
+          "supports": "NIST discusses Grover-style quantum search as reducing brute-force work quadratically in an idealized model, while emphasizing assumptions and stating that this does not make current AES use immediately unsafe.",
+          "limitations": "The phrase “128-bit effective strength” is shorthand for a generic square-root search model, not an unconditional NIST certification of AES-256's complete quantum security; practical cost also depends on quantum circuit depth, parallelization and resource assumptions."
+        }
+      ],
+      "conclusion": "NIST FIPS 197 supports the key-size/round-count fact (AES-128: 10 rounds; AES-256: 14) and AES-256 has a 256-bit key space. It does not support a workload-independent 40% performance penalty. “Quantum-effective 128 bits” is a simplified generic Grover-search heuristic and should not be stated as an unconditional cipher security rating; NIST's PQC FAQ stresses attack-model/resource assumptions and notes AES remains safe under current guidance.",
+      "recommendedAction": "保留轮数和密钥长度；删除无基准条件的“慢 40%”，或附具体处理器、AES-NI/库版本、模式、数据长度与基准测试。量子安全说明应明确为通用 Grover 搜索的近似工作量解释，并避免写成 NIST 已保证的精确有效强度。",
       "answerVerification": "not-established"
     }
   ]

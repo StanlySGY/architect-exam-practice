@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 32 个审查记录、50 个原文目标定位；其中 15 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 33 个审查记录、54 个原文目标定位；其中 17 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -30,7 +30,8 @@
 | `redis-aof-everysec-loss-bound` | `case-real-2025年上半年-3:问题3` | Redis 官方文档称 `appendfsync everysec` 每秒 fsync，灾难故障时可能丢失约一秒写入；这不应被包装为任何存储栈/故障情形下的严格绝对上限。 | 将“最多丢失1秒”改为“按秒刷盘，灾难故障时可能丢失约一秒写入”，并保留配置与故障模型限定。来源：[Redis persistence](https://redis.io/docs/latest/management/persistence/)。 |
 | `codepush-retirement-and-archive` | `case-mock-2026年5月-模拟卷3-5:问题3` | Microsoft 官方资料确认 App Center 的非 Analytics/Diagnostics 功能及 CodePush 托管服务于 2025-03-31 退役；独立 CodePush Server 仓库在 2025-05-20 归档只读。自托管 fork 并非不存在，但原服务不应作为当前活跃托管方案宣传。 | 把 CodePush 标成历史/自行维护的自托管方案；删除没有测试口径的“5分钟内修复 bug”保证。来源：[Microsoft retirement notice](https://learn.microsoft.com/en-us/appcenter/retirement)、[archived upstream repository](https://github.com/microsoft/code-push-server)。 |
 | `nyt-ec2-historical-throughput` | `real-2022年下半年-015` | AWS 官方 2008 年文章支持纽约时报用数百台机器在少于 36 小时内处理数据，并列出 405,000 张 TIFF、3.3 million SGML、405,000 XML 文件的工作量；该页面未在正文中直接量化输入总字节为 TB。 | 保留带年份的历史例子；将文件规模改用来源可支持的描述，或另补原始一手来源证明“TB级”容量。来源：[AWS News Blog — New York Times TimesMachine](https://aws.amazon.com/blogs/aws/new-york-times/)。 |
-| `tls-latency-and-encryption-microbenchmark` | `case-mock-2026年5月-模拟卷1-1:问题2` | “TLS 加密不影响业务延迟”是绝对断言；同段的 10–50ms、1–5ms 没有硬件、TLS 版本、握手、连接复用、负载或测量依据。本条没有把无来源数字伪装成已查证事实。 | 改为目标环境的端到端基准测试建议；移除无条件数字，或附具体环境、测量方法与原始数据。 |
+| `tls-latency-and-encryption-microbenchmark` | `case-mock-2026年5月-模拟卷1-1:问题2` | “TLS 加密不影响业务延迟”是绝对断言；RFC 8446 描述完整握手的消息/往返过程和恢复连接的 0-RTT 风险，但不给出普适毫秒数。该题的 10–50ms、1–5ms 没有测试前提。 | 改为目标环境的端到端基准测试建议；移除无条件数字，或附具体环境、测量方法与原始数据。来源：[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)。 |
+| `aes-round-count-performance-and-quantum-strength-scope` | `case-real-2025年下半年-6:问题2` | NIST 支持 AES-128 为 10 轮、AES-256 为 14 轮；不支持把 AES-256 一概写成慢 40%。“量子有效 128 位”应注明为通用 Grover 搜索的简化估算，而非无条件安全强度认证。 | 保留轮数和密钥长度；性能百分比需附可复现基准；量子安全说法需限定模型。来源：[NIST FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)、[NIST PQC FAQ](https://csrc.nist.gov/Projects/post-quantum-cryptography/faqs)。 |
 
 ### 此批次的边界
 
@@ -82,3 +83,8 @@
 ## 续查批次：Kafka Consumer 默认参数版本差异（2026-10-13）
 
 - `kafka-consumer-timeout-default-version-scope`：Kafka 2.4 官方消费者配置将 `session.timeout.ms` 默认值列为 10,000 ms，Kafka 3.0/4.0 文档则已是 45,000 ms（经典组协议）；Kafka 4.0 的新 consumer group protocol 由 broker 配置 session timeout。`max.poll.interval.ms` 的 300,000 ms（5 分钟）默认值在 Kafka 2.4 与 4.0 文档中均有支持。CooperativeStickyAssignor 可用于协作式再均衡，但官方升级文档要求兼容滚动迁移，而不是只切换单个成员。应把版本和协议写进解析。来源：[Kafka 2.4 consumer configs](https://kafka.apache.org/24/generated/consumer_config.html)、[Kafka 4.0 consumer configs](https://kafka.apache.org/40/generated/consumer_config.html)、[Kafka 2.4 upgrade guide](https://kafka.apache.org/24/getting-started/upgrade/)。
+
+## 续查批次：AES 性能/量子安全表述与 TLS 延迟断言（2026-10-13）
+
+- `tls-latency-and-encryption-microbenchmark`：RFC 8446 支持 TLS 1.3 的完整握手、恢复连接与 0-RTT 的区分；完整握手涉及网络往返，而 0-RTT 有额外重放风险。该标准没有给出 TLS 普适的毫秒级延迟，不能支持“完全不影响业务延迟”或具体 10–50ms、1–5ms 数字。来源：[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)。
+- `aes-round-count-performance-and-quantum-strength-scope`：NIST FIPS 197 明确 AES-128 为 10 轮、AES-256 为 14 轮；它没有给出任何实现中 AES-256 一定比 AES-128 慢 40% 的结论。NIST 的后量子 FAQ 讨论 Grover 搜索的平方根工作量与资源假设，因此“量子有效 128 位”应被解释为特定通用暴力搜索模型的简化说法，而非不带条件的完整安全评级。应保留可核事实，删除未经基准的性能百分比并限定量子安全表述。来源：[NIST FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)、[NIST PQC FAQ](https://csrc.nist.gov/Projects/post-quantum-cryptography/faqs)。
