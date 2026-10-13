@@ -500,6 +500,59 @@
       "conclusion": "范文思路中的“每年必考”与“2024 年从 10 条增加到 12 条”没有配套官方历年原卷样本、年份覆盖范围、条目计数规则或复核统计。前者是无依据的考试频率预测，后者是当前不可复现的定量比较。",
       "recommendedAction": "删除确定性预测，改为“属于需要重点掌握的常见知识点”并明确这是复习建议；若保留年度比较，应逐年引用官方试题、附抽样范围和一致的条目分类/统计方法。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cqrs-query-share-stat-needs-provenance",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Unsupported assertion that over 80 percent of order queries are user-scoped",
+      "targets": [
+        { "itemId": "case-mock-2026年5月-模拟卷1-2:问题1", "field": "reference_answer", "claimNeedle": "80%以上的订单查询场景是" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“80%以上”是该模拟系统的工作负载比例，但没有提供业务埋点、查询分布统计或样本窗口。该数字可以作为案例假设来驱动 user_id 分片设计，但不能泛化成电商系统的已知事实。",
+      "recommendedAction": "在案例开头明确“假定该系统 80% 以上订单查询按用户维度进行”并将其作为题设前提；如要声称是生产统计，补充查询日志统计区间、分类规则和分母。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cqrs-read-model-lag-and-isolation-overgeneralization",
+      "disposition": "overgeneralized",
+      "topic": "CQRS eventual-consistency lag and zero-impact isolation claim",
+      "targets": [
+        { "itemId": "case-mock-2026年5月-模拟卷1-2:问题2", "field": "reference_answer", "claimNeedle": "同步延迟通常在1秒以内（最终一致性）" },
+        { "itemId": "case-mock-2026年5月-模拟卷1-2:问题2", "field": "reference_answer", "claimNeedle": "完全与在线业务隔离，不影响MySQL性能" }
+      ],
+      "sourceEvidence": [{
+        "url": "https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs",
+        "title": "Command Query Responsibility Segregation (CQRS) pattern",
+        "publisher": "Microsoft Learn / Azure Architecture Center",
+        "sourceKind": "official-architecture-guidance",
+        "checkedOn": "2026-10-13",
+        "supports": "CQRS can separate read/write models and optimize/scaling them independently. When stores are separated, they must be synchronized; eventual consistency means read data can be stale, and messaging/outbox/idempotency need explicit handling.",
+        "limitations": "The guidance does not promise read-model lag under one second and does not mean synchronization has zero resource impact on the source database. The observed lag depends on workload, connector, queues, indexing, failures and catch-up behavior."
+      }],
+      "conclusion": "CQRS 可以把在线查询和写模型的查询负载分离并允许不同扩缩容，但不能由此推出同步通常一定小于 1 秒，更不能声称同步链路对 MySQL 完全没有性能影响。",
+      "recommendedAction": "将“1 秒以内”改成项目目标或实测 SLA，并注明 P95/P99、负载、持续时间和积压恢复测试；把“完全隔离、不影响性能”改为“降低在线查询对主库的直接压力，但 CDC/binlog、网络与同步组件仍会消耗资源，需监测与压测”。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "kafka-exactly-once-boundary",
+      "disposition": "overgeneralized",
+      "topic": "Kafka exactly-once processing scope and external destination caveat",
+      "targets": [
+        { "itemId": "case-mock-2026年5月-模拟卷1-3:问题2", "field": "reference_answer", "claimNeedle": "实现端到端精确一次语义" }
+      ],
+      "sourceEvidence": [{
+        "url": "https://kafka.apache.org/design/",
+        "title": "Design — Apache Kafka",
+        "publisher": "Apache Kafka project",
+        "sourceKind": "official-project-documentation",
+        "checkedOn": "2026-10-13",
+        "supports": "Kafka documents exactly-once delivery for Kafka Streams and for transactional read-process-write flows involving Kafka topics with transactional producers and read_committed consumers.",
+        "limitations": "The design page explicitly says exactly-once delivery to other destination systems generally requires cooperation from those systems, such as coordinating output persistence and consumed offsets or using destination-side idempotency/transactions. The primitives alone do not guarantee arbitrary external side effects are executed exactly once."
+      }],
+      "conclusion": "Kafka 0.11+ 引入的事务与幂等机制可为 Kafka 内部读—处理—写主题提供精确一次能力；若结果写入外部数据库、HTTP 服务或其他系统，必须由目标系统协同事务、原子保存 offset/结果或幂等去重，不能笼统宣称组合参数就保证任意端到端精确一次。",
+      "recommendedAction": "把答案范围明确为“Kafka 主题内读、处理、写可借助事务实现精确一次；对外部系统需目标存储协同事务或幂等处理”。若用“端到端”，必须写清起止系统与事务边界。",
+      "answerVerification": "not-established"
     }
   ]
 }

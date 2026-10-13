@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 26 个审查记录、40 个原文目标定位；其中 10 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 29 个审查记录、44 个原文目标定位；其中 12 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -34,7 +34,7 @@
 
 ### 此批次的边界
 
-- 本次累计 26 条审查记录、40 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
+- 本次累计 29 条审查记录、44 个原文目标定位。`npm run audit:claim-evidence` 支持将逐项审计结果写入 `docs/audits/bank-claim-evidence-audit-2026-10-13.json`。
 - 本批次只把来源能直接支持的范围记录为支持；“历史案例有来源”不等于整道真题答案已核验，“上游仓库归档”也不等于所有社区 fork 不可运行。
 - 所有新增记录的 `answerVerification` 均保持 `not-established`；没有修改外部题库、没有自动批准题目。
 
@@ -67,3 +67,9 @@
 
 - `content-coupling-principle-needs-scope`：低耦合与避免内容耦合是合理的设计原则，但“完全避免”应理解为规范性目标，而非任何真实系统都保证零耦合。Martin Fowler 的设计讨论指出模块必须通信，耦合需要控制而不是被当作一概可消除；软件工程学习指南也将设计原则定位为启发式而非不变定律。来源：[Reducing Coupling](https://martinfowler.com/ieeeSoftware/coupling.pdf)、[Software design principles](https://software-engineering-guide.github.io/chapters/02-02-software-design-principles/)。
 - `unsupported-quality-attribute-exam-trend`：写作思路中“质量属性分析是每年必考题”和“需求条目数量从 2024 年 10 条增加到 12 条”没有官方历年原卷样本、计数规则或可复核统计；应删除确定性预测，年度比较则须给出年份范围与分类方法。
+
+## 续查批次：CQRS 指标与 Kafka 精确一次语义边界（2026-10-13）
+
+- `cqrs-query-share-stat-needs-provenance`：模拟案例里“80% 以上的订单查询是按用户维度”没有日志、统计窗口或分类口径支撑。可作为明确的题设假设用于解释 user_id 分片，但不能推广为所有电商系统的事实。
+- `cqrs-read-model-lag-and-isolation-overgeneralization`：Microsoft CQRS 指南指出读写数据存储分离后需要同步且可能出现陈旧读；没有承诺同步通常小于 1 秒，也不意味着 CDC/binlog 和同步链路对 MySQL 的资源开销为零。应把 1 秒写成带测量窗口/分位数的目标或实测指标，把“完全不影响”改为“降低直接查询压力，仍需监测同步成本”。来源：[Microsoft Learn — CQRS pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs)。
+- `kafka-exactly-once-boundary`：Apache Kafka 文档限定精确一次语义的范围：Kafka Streams 或使用事务生产者与 `read_committed` 消费者的 Kafka 主题内读—处理—写可以实现精确一次；写入外部数据库/服务通常还需要目标系统参与协同，或用事务/幂等去重。应在参考答案里明示事务边界。来源：[Apache Kafka — Design](https://kafka.apache.org/design/)。

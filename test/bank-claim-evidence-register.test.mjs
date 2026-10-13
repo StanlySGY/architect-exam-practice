@@ -220,3 +220,48 @@ test('设计原则的绝对措辞保留考试语义，但不代表真实系统�
   assert.equal(report.counts.recordsWithExternalSources, 1);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('CQRS 的工作负载与延迟数字不得泛化，Kafka exactly-once 必须限定事务边界', () => {
+  const bank = {
+    choices: [],
+    cases: [
+      { id: 'cqrs-case', subQuestions: [
+        { question_label: '问题1', reference_answer: '电商系统80%以上的订单查询场景是用户查询自己的订单。' },
+        { question_label: '问题2', reference_answer: '同步延迟通常在1秒以内（最终一致性）。批量统计走ClickHouse，完全与在线业务隔离，不影响MySQL性能。' },
+      ] },
+      { id: 'kafka-case', subQuestions: [{ question_label: '问题2', reference_answer: 'Kafka 0.11+引入幂等生产者（enable.idempotence=true）+ 事务API（transactional.id），结合消费端的事务性offset提交，实现端到端精确一次语义。' }] },
+    ],
+    essays: [],
+  };
+  const records = [
+    {
+      recordId: 'cqrs-share', disposition: 'unsubstantiated-performance-claim',
+      targets: [{ itemId: 'cqrs-case:问题1', field: 'reference_answer', claimNeedle: '80%以上的订单查询场景是' }],
+      sourceEvidence: [], answerVerification: 'not-established',
+    },
+    {
+      recordId: 'cqrs-lag', disposition: 'overgeneralized',
+      targets: [
+        { itemId: 'cqrs-case:问题2', field: 'reference_answer', claimNeedle: '同步延迟通常在1秒以内（最终一致性）' },
+        { itemId: 'cqrs-case:问题2', field: 'reference_answer', claimNeedle: '完全与在线业务隔离，不影响MySQL性能' },
+      ],
+      sourceEvidence: [{ url: 'https://learn.microsoft.com/en-us/azure/architecture/patterns/cqrs', title: 'CQRS pattern', publisher: 'Microsoft Learn / Azure Architecture Center', sourceKind: 'official-architecture-guidance', checkedOn: '2026-10-13', supports: '读写存储分离需同步，读模型可能陈旧。', limitations: '不保证延迟小于一秒，也不保证同步链路零资源开销。' }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'kafka-eos', disposition: 'overgeneralized',
+      targets: [{ itemId: 'kafka-case:问题2', field: 'reference_answer', claimNeedle: '实现端到端精确一次语义' }],
+      sourceEvidence: [{ url: 'https://kafka.apache.org/design/', title: 'Design', publisher: 'Apache Kafka project', sourceKind: 'official-project-documentation', checkedOn: '2026-10-13', supports: 'Kafka 主题内事务读处理写可实现精确一次。', limitations: '外部目标系统需要自身协同或幂等性。' }],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 3);
+  assert.equal(report.counts.targetClaims, 4);
+  assert.equal(report.counts.exactTextTargetsMatched, 4);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 3);
+  assert.equal(report.counts.recordsWithAllowedVerification, 3);
+  assert.equal(report.counts.sourceEntries, 2);
+  assert.equal(report.counts.recordsWithExternalSources, 2);
+  assert.equal(report.counts.invalidRecords, 0);
+});
