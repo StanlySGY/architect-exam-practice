@@ -5433,8 +5433,18 @@
     },
     "9.1.5": {
       "status": "partial",
-      "verificationPendingClaims": ["从出版社可核验版本确认第311页广义/狭义定义原文；现有官方页面仅确认小节标题和页码，公开官方样章只覆盖第1章。","确认教材是否明确要求按运行剖面发生概率抽样；独立研究支持概率引导测试，但不能替代教材措辞。"],
-      "what": "该单元需区分可靠性测试的广义与狭义口径。相关可靠性文献将广义口径放在最终评价所需的建模、统计、试验、分析与评价过程中，将狭义口径放在预期使用环境中按预先确定的测试用例获取可靠性数据；指定教材的准确表述及抽样要求仍待正式文本核对。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第311页将广义软件可靠性测试定义为以最终评价软件系统可靠性为目标、综合运用建模、统计、试验、分析和评价等手段的过程；狭义测试是为获取可靠性数据，按预先确定的测试用例，在软件预期使用环境中实施的测试，也称软件可靠性试验。原文定义本身未把“按运行剖面概率随机抽样”写成必要条件；运行剖面用于代表性测试属于测试设计相关内容。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [326],
+        "printedPages": [311],
+        "claimScope": "本地 PDF 副本第311页可读文本明确区分广义可靠性测试（综合建模、统计、试验、分析与评价，以最终可靠性评价为目标）和狭义可靠性测试（按预定测试用例在预期使用环境中获取可靠性数据，也称软件可靠性试验）。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "区分广义与狭义口径，有助于说明可靠性测试究竟指完整的可靠性评价活动，还是在规定使用条件下获取可靠性数据的测试环节。答题时应对齐题干、试验环境、测试用例和评价目标，不能擅自添加教材未明确规定的抽样条件。",
       "how": "对照广义和狭义定义时，分别记录目的、活动范围、测试用例如何确定、运行环境和输出数据；再核对教材是否明确要求依据运行剖面概率选取样本。把“可用运行剖面指导代表性测试”与“狭义测试的定义必然包含概率随机抽样”分开判断。",
       "confusions": "不要把运行剖面用于测试设计的建议，直接改写成狭义可靠性测试定义中必然存在的概率随机抽样要求；也不要把一次可靠性试验与包含建模、分析和评价的全过程混为一谈。精确分类以指定版教材为准。",
@@ -5467,6 +5477,15 @@
         "如果用于测试的运行剖面与上线后的真实使用比例不同，或者用户操作分布随版本变化，测试成功率为什么可能无法准确预测线上可靠性？提出至少两项监测或再评估措施。"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第326页/印刷第311页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第311页可读文本区分广义可靠性测试（综合建模、统计、试验、分析和评价，以最终可靠性评价为目标）与狭义可靠性测试（按预定测试用例在预期使用环境中获取可靠性数据，也称软件可靠性试验）。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "NIST CSRC Reliability Glossary",
           "url": "https://csrc.nist.gov/glossary/term/reliability",
@@ -15057,8 +15076,18 @@
     },
     "9.2.3.1": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材的术语与分类口径；逐项核对残余错误估计式、置信区间/样本方案，以及种子与原生错误的可比性、故障遮蔽等条件。"],
-      "what": "故障播种/标记模型可采用捕获—再捕获思路：向软件人工植入已知故障，再依据测试后仍未发现的植入故障比例评估测试效果；教材所用术语、精确估计公式及假设仍待核对。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第314页将种子法模型列入软件可靠性模型的十类之一，并说明利用捕获—再捕获抽样估计程序错误数：先有意植入已知种子，再依据测试发现的原生错误数和发现的诱导错误比例估计残留错误；教材同时指出种子错误与原生错误之间的可比性难以估量。本单元的数值示例为外部简化练习，不是该页给出的教材公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [329],
+        "printedPages": [314],
+        "claimScope": "本地 PDF 副本第314页将种子法作为十类之一，并明确说明捕获—再捕获估计、预先人工播种、利用原生错误与诱导错误发现比例估计残留错误，以及两类错误可比性难以估量。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "种子法模型关注测试中可发现多少已植入的已知故障，并据此估计未发现的原生故障。它的实用价值在于评估测试发现能力；可信度则取决于种子故障与原生故障的可发现性是否可比、是否存在故障遮蔽等条件。",
       "how": "先记录植入的已知故障数 S、测试发现的种子故障数 s，以及测试发现的原生故障数 n；再说明估计未发现原生故障所依赖的可发现性可比、抽样和独立性前提。教材原公式未核对前，演算必须标成简化示例，不得伪装为教材公式。",
       "confusions": "种子法估计的是难以直接观测的残余故障数量或测试有效性，不是直接测量软件失效率；种子与原生故障若难度、位置或可发现性不同，估计可能偏差。",
@@ -15090,6 +15119,15 @@
       ],
       "evidence": [
         {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第329页/印刷第314页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第314页将种子法模型列为十类之一，并说明其利用捕获—再捕获估计错误数，比较测试发现的原生错误和人工播种错误以估计残留错误。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
+        {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
           "sourceAuthority": "National Research Council / The National Academies Press (2015)",
@@ -15111,8 +15149,18 @@
     },
     "9.2.3.2": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材在“失效率类模型”下列出的确切模型名称、中文术语和顺序；独立技术文献讨论了 Moranda geometric de-eutrophication、Schick–Wolverton、Goel–Okumoto 等不同模型，但外部文献的分类不能证明它们在目标教材中的归属；仍需核对各模型的失效率/故障间隔公式、参数估计和完全/不完全调试假设。"],
-      "what": "软件可靠性研究会利用测试阶段的失效历史建立增长/预测模型，但模型对故障时间、故障过程和调试效果的假设不同；课程树“失效率类模型”的准确分类及公式尚待指定教材核实。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页将以下模型列入“失效率类模型”：Jelinski–Moranda 的 De-eutrophication 模型、其几何 De-eutrophication 模型、Schick–Wolverton 模型、改进的 Schick–Wolverton 模型、Moranda 的几何泊松模型，以及 Goel–Okumoto 不完全排错模型。该分类段主要列出名称，未逐一给出这些模型的完整公式；本单元额外加入的模型公式/概率式均为单独标注的外部技术示例。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页列出了教材“失效率类模型”的六个名称及顺序；该页分类列表本身不提供这六个模型的完整方程。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "失效率类模型试图根据故障发生时间、故障间隔或失效强度描述软件在测试过程中的变化。选择模型前，应先判断观测数据是什么、测试条件是否稳定、修复后是否可能引入新故障；相似的趋势并不意味着可以直接套用同一个模型。",
       "how": "先区分故障计数、运行时间和失效间隔等观测量，再核对模型对初始故障数、故障间隔分布及调试效果的假设。经典 Jelinski–Moranda 设定涉及完美调试假设；若修复不完全或修复可能引入新故障，应检查不完美调试变体，而不是直接沿用基础模型。",
       "confusions": "失效率、故障密度和平均失效间隔不同；失效率下降不自动保证可用性。外部综述中的“故障计数”“可靠性增长”和课程目录中的“失效率类”不是天然等价的分类；分类依据可能不同，同一模型也可能同时具有多个标签。",
@@ -15144,6 +15192,15 @@
         "国家科学院出版社的综述把模型归纳为 Markov、NHPP、Bayesian、统计分析、输入域、故障播种和软件度量等广义类别。为什么不能把这份七类清单直接当作本课程“失效率类模型”的子目清单？请指出两种不同的分类依据。"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页列出失效率类六个模型名称及顺序：Jelinski–Moranda 两种 De-eutrophication、Schick–Wolverton 及其改进模型、Moranda 几何泊松、Goel–Okumoto 不完全排错。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Software reliability",
           "url": "https://www.sciencedirect.com/science/chapter/handbook/abs/pii/S016971618807004X",
@@ -15211,8 +15268,18 @@
     },
     "9.2.3.3": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材是否把曲线拟合单列为模型类别，以及是否区分参数/非参数方法；核对教材指定的变量、拟合函数、参数估计和适用前提。"],
-      "what": "软件可靠性增长曲线可把测试时间与累计观测故障数联系起来，并用非参数回归拟合。相关研究指出，不完美调试和修复时引入新故障会令部分传统增长模型及其参数估计更复杂；标准最大似然估计在某些模型上可能难以正确估计参数。因此必须同时检查拟合和估计程序，而不能把“拟合出曲线”视为模型假设已成立或未来预测可靠。指定教材的类别名称和公式仍待核对。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页将“曲线拟合类模型”单列为一种分类，说明其用回归分析研究软件复杂性、程序中的缺陷数、失效率及失效间隔时间，并区分参数方法和非参数方法。教材该段未指定一个通用拟合函数；有关非参数回归、参数估计困难与样本外验证的扩展说明来自另行标明的技术文献。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页明确将曲线拟合单列为一类，列举其研究对象并区分参数与非参数方法。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "曲线拟合把观测到的测试时间、累计故障数或其他指标转换为可比较的趋势描述，便于检查拟合效果与预测范围。拟合优度只能说明曲线在给定样本上的表现，不能单独证明机理正确，也不能保证样本范围之外的预测可靠。",
       "how": "先定义时间与累计故障的统计口径，说明模型假设和参数估计方法；检查算法是否收敛、参数是否可辨识、残差是否有系统模式，再通过保留的时间窗口或后续数据评估样本外预测。对不完美调试或可能引入新故障的数据，不能默认传统模型及最大似然估计都适用。",
       "confusions": "拟合曲线不是因果解释；测试环境变化可能使旧关系失效。曲线拟合/回归是分析或估计方法，NHPP 是对失效过程的概率假设，可靠性增长是研究目标或现象；三者处于不同分类维度，不能互相替代。",
@@ -15245,6 +15312,15 @@
       ],
       "evidence": [
         {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页将曲线拟合类单列为一类，指出用回归研究软件复杂性、缺陷数、失效率和失效间隔时间，并包含参数和非参数方法。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
+        {
           "sourceTitle": "Fitting software reliability growth curves using nonparametric regression methods",
           "url": "https://doi.org/10.1016/j.stamet.2009.10.007",
           "sourceAuthority": "Statistical Methodology, Vol. 7, Issue 2 (2010)",
@@ -15266,8 +15342,18 @@
     },
     "9.2.3.4": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材采用的增长曲线子类及顺序，并为每个子类核对公式、测试/调试假设和可外推范围；其他文献中的 Duane、Weibull 或 S-shaped 模型仅作为对照。"],
-      "what": "软件可靠性增长模型用测试失效历史分析可靠性随开发/测试过程的变化；增长并不保证单调，因为修复可能引入新缺陷，且模型外推受使用剖面和环境影响。具体教材子类与公式仍待核对。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页将可靠性增长模型描述为用增长函数刻画检错过程中的可靠性改进，并依次列出 Duane 模型、Weibull 模型、Wagoner 的 Weibull 改进模型、Yamada 与 Osaki 的逻辑增长曲线、Gompertz 增长曲线。该分类列表只给出模型名称与概述；本单元提到的 Goel–Okumoto/S 形公式属于外部模型对照，并非该页所列公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页确认可靠性增长模型的用途和五个子模型名称/顺序；不把外部公式当成这页的教材公式。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "可靠性增长模型用于分析测试、排错和修复推进过程中可靠性指标如何变化，支持发布风险判断与后续测试计划。增长不是必然单调的：修复可能引入新缺陷，需求或运行环境变化也可能使旧模型不再适用。",
       "how": "区分故障发现、修复和模型更新，核对测试代表性与模型假设。比较增长曲线时，先确认纵轴是否表示累计检测故障的均值，再检查曲线初始斜率、拐点与渐近行为；曲线形态可帮助表达不同检测过程，但本身不能证明教材采用的分类清单。",
       "confusions": "测试时间变长不代表可靠性必然上升；新功能可能改变故障分布。可靠性增长曲线描述观测趋势，但曲线形态本身不能确定模型类别；不同增长模型可能采用不同随机过程假设，S 形也不是某一个模型名称的充分证据。",
@@ -15299,6 +15385,15 @@
         "一份综述把 NHPP 列作一种随机过程模型，另一资料把 S 形视作增长曲线形态。为什么“NHPP”与“S 形”不是同一个分类层级？回答时区分失效过程假设、均值函数与观测曲线形态。"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页列出可靠性增长子模型：Duane、Weibull、Wagoner 改进 Weibull、Yamada–Osaki 逻辑增长曲线、Gompertz 增长曲线。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
@@ -15339,8 +15434,18 @@
     },
     "9.2.3.5": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材把哪些模型归入程序结构分析类别，并核对模块/接口可靠性、转移概率与独立性假设；Littlewood 或 Cheung 的单个模型不能代表整个分类。"],
-      "what": "已有模块化程序可靠性模型显式建模模块间控制转移、模块自身失效及接口失效，并为整体程序失效率推导近似；这是一个具体结构模型，不足以单独定义指定教材中的整类“程序结构分析模型”。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页把程序结构分析模型描述为依据程序/子程序调用关系形成可靠性分析网络，以模块为结点、执行顺序为有向弧；假定各结点可靠性相互独立，并结合结点可靠性、结点间转换可靠性和网络转换概率推导整体可靠性。该页列出的具体模型是 Littlewood 马尔可夫结构模型和 Cheung 面向用户的马尔可夫模型。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页直接支持程序结构分析模型的网络表示、独立性假设、节点/转换可靠性与转换概率，以及 Littlewood/Cheung 两个模型名称。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "程序结构分析模型把模块、调用关系和执行转移纳入系统级可靠性推理，帮助分析局部失效怎样沿程序结构影响整体行为。结构复杂度或覆盖率本身不是可靠性概率；计算还依赖模块可靠性、实际转移概率与相应独立性假设。",
       "how": "先画出模块与接口的调用/控制转移结构，再说明模块可靠性、模块间转移概率、接口失效和使用剖面怎样进入整体推理。若采用 Markov 或半 Markov 结构模型，须明示状态定义、独立性/时间假设以及是否考虑循环、共享模块和并行组件；复杂度或覆盖率不能直接当作可靠性概率。",
       "confusions": "结构复杂度、覆盖率和可靠性概率是不同量，不能直接互换。",
@@ -15372,6 +15477,15 @@
       ],
       "evidence": [
         {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页描述程序结构分析网络、节点独立性及节点可靠性/转换可靠性/转换概率，并列出 Littlewood Markov 结构模型与 Cheung 面向用户的 Markov 模型。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
+        {
           "sourceTitle": "Software Reliability Model for Modular Program Structure",
           "url": "https://doi.org/10.1109/TR.1979.5220576",
           "sourceAuthority": "IEEE Transactions on Reliability; Bev Littlewood (1979)",
@@ -15402,8 +15516,18 @@
     },
     "9.2.3.6": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材所列输入域模型及采样/概率分布要求；核对输入域、输出域和运行剖面如何定义，以及其可行性边界。"],
-      "what": "输入域模型可构造软件输入域与输出域，并根据测试结果识别输入到输出映射中的故障；操作剖面还可用操作及发生概率辅助选择测试重点，但这不证明指定教材的分类名称和特定抽样公式。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页列出“输入域分类模型”：从软件输入域选择样本点运行程序，依据样本在实际使用环境中的使用概率和测试运行时的成功/失效率推断使用可靠性；该页将输入域概率分布和软件运行剖面的正确描述指出为关键难点。所列模型为 Nelson 模型和 Bastani 基于输入域的随机过程模型。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页确认输入域分类模型的定义、使用概率/成功失效数据、运行剖面难点，以及 Nelson/Bastani 模型名称。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "输入域模型把测试输入空间划分为类别或子域，并通过样本测试推断软件在目标使用条件下的表现。测试分配应考虑各类输入的实际出现概率与边界风险；等量抽样方便比较，却不一定能直接代表生产环境的使用可靠性。",
       "how": "定义输入类别和权重来源，覆盖边界/异常输入，并比较测试与生产分布。",
       "confusions": "等比例测试不必然代表真实使用分布；操作剖面和边界覆盖互补。",
@@ -15434,6 +15558,15 @@
         "一篇针对 Web 服务的实证研究指出，若真实运行剖面与测试所用剖面不同，或剖面会随时间变化，运行可靠性预测可能不准确。输入域分层与运行剖面权重分别解决什么问题？还需要监测什么变化？"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页定义输入域分类模型，涉及输入样本、实际使用概率、测试成功/失效率和运行剖面，并列出 Nelson 与 Bastani 输入域随机过程模型。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
@@ -15474,8 +15607,18 @@
     },
     "9.2.3.7": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材所指的执行路径模型及 Shooman 分解法的对应关系；核对执行路径概率、错误路径概率的组合方式和可靠性计算前提。"],
-      "what": "已有路径型可靠性预测研究会从软件架构/通信顺序进程轨迹推导执行路径，并据此构造组件化嵌入式软件的可靠性预测模型；该论文仅支持一种路径建模方案，不等于指定教材分类的完整定义。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第315页将“执行路径分析方法模型”定义为先计算程序各逻辑路径的执行概率和错误路径的执行概率，再综合推导软件使用可靠性，并明确说明 Shooman 分解模型属于此类。路径概率加权的数值练习是对这一概念的自拟说明，不宣称是教材中的完整计算公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [330],
+        "printedPages": [315],
+        "claimScope": "本地 PDF 副本印刷第315页直接确认执行路径分析的两类概率和组合目的，以及 Shooman 分解模型的分类归属。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "执行路径分析把程序可能经过的逻辑路径、路径出现概率以及路径执行是否成功联系起来，用于估计目标使用场景下的软件可靠性。覆盖到所有路径不等于按真实使用比例测试过，也不证明每条路径的成功概率已被准确估计。",
       "how": "从控制流图识别分支、循环和关键路径，说明路径爆炸与不可达路径问题。对 Shooman 路径型估计，应区分路径使用频率与单次路径失效概率，并确认使用频率的归一化/统计口径；路径覆盖率本身不能替代路径发生权重。",
       "confusions": "语句、分支和路径覆盖不等价；高覆盖率也不证明无缺陷。",
@@ -15506,6 +15649,15 @@
         "Shooman 路径模型在路径使用频率与每次执行失效概率已知时，以使用频率对路径失效概率加权。为什么不能把未归一化的测试次数直接当成概率？如果程序含循环，实测到的有限条路径是否一定覆盖所有长期可能路径？"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第330页/印刷第315页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第315页说明执行路径分析需要计算逻辑路径执行概率和错误路径概率以推导使用可靠性，并明确将 Shooman 分解模型归入此类。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "An Improved Path-Based Reliability Prediction Model for Component-Based Embedded Software",
           "url": "https://doi.org/10.1109/FCST.2009.83",
@@ -15546,8 +15698,18 @@
     },
     "9.2.3.8": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材采用的 NHPP 子模型清单；逐项核对均值函数 m(t)、失效率函数 λ(t)、参数意义和调试假设，避免把 Goel–Okumoto 或 S-shaped 例子当成完整清单。"],
-      "what": "NHPP 软件可靠性模型以非齐次泊松过程描述失效过程，其均值函数表示截至给定时点的预期累计失效数；不同子模型使用不同均值函数和参数。NHPP 是需要用数据检验的建模假设，不是所有软件失效过程必然遵守的普遍规律；受控实验研究曾报告其样本不符合该假设及 Goel–Okumoto 模型。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第316页将 NHPP 描述为以测试过程中单位时间失效次数的独立泊松随机变量来预测未来某使用时间点的软件累计失效数，并列出 Musa 指数模型、Goel–Okumoto NHPP 模型、S 型可靠性增长模型、超指数增长模型、Pham 改进 NHPP 模型。NHPP 是需要用具体数据检验的建模假设，并非所有软件失效过程必然遵守的普遍规律；其余关于均值函数和模型适用性反例的讲解来自外部技术来源，不作为该页列出的教材公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [331],
+        "printedPages": [316],
+        "claimScope": "本地 PDF 副本印刷第316页确认 NHPP 的教材定义框架与五类子模型名称/顺序。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "NHPP 用随时间变化的失效强度来描述累计故障过程。阅读模型时要区分累计均值函数 m(t) 与瞬时强度函数 λ(t)，并把公式、参数和假设绑定到具体子模型；同时检查数据与模型假设是否相符，不能只因某条曲线贴合累计失效数均值就认定过程服从 NHPP，也不能把单篇反例扩大成所有项目都不适用。",
       "how": "先明确累计均值函数、强度函数、时间变量与过程假设；再比较预测和观测，并检查均值、方差、残差及外推表现。对 NHPP 假设的接受或拒绝都应限定在具体数据集和检验范围内。",
       "confusions": "NHPP是过程家族，不是单一可靠性模型；不同均值函数对应不同模型。",
@@ -15578,6 +15740,15 @@
         "一项受控实验报告其样本中的失效过程不符合 NHPP。这个结果能否推出所有软件都不符合 NHPP？讨论均值与方差、数据范围和模型诊断如何影响结论边界。"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第331页/印刷第316页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第316页列出 NHPP 子模型：Musa 指数、Goel–Okumoto NHPP、S 型可靠性增长、超指数增长、Pham 改进 NHPP。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
@@ -15627,8 +15798,18 @@
     },
     "9.2.3.9": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材具体模型名称（如完全/不完全改错的线性死亡模型及非静态变体）、状态定义、时间设定、转移参数和公式；通用 Markov 定义不能替代这些细节。"],
-      "what": "马尔可夫是描述状态转移或随机过程的建模框架，并非单一的软件可靠性模型。原始研究实例包括让子系统按连续参数 Markov 链切换、并允许子系统和切换过程中发生 Poisson 失效（Littlewood，1975），也包括用跳跃强度递减的 Markov 过程描述软件故障检测（Xie，1990）；二者的建模对象和假设不同。教材采用的具体模型仍需单独核对。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第316页列出三个马尔可夫过程模型：完全改错的线性死亡模型、不完全改错的线性死亡模型、完全改错的非静态线性死亡模型。Littlewood 的 Markov 结构模型和 Xie 的故障检测模型是外部文献中的其他具体模型，不应替代上述教材列名或混用其状态/转移公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [331],
+        "printedPages": [316],
+        "claimScope": "本地 PDF 副本印刷第316页直接确认三种马尔可夫过程模型的名称。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "马尔可夫方法可用于系统状态切换，也可用于把故障检测过程表示为随机跳跃；看见“Markov”这个名称并不意味着模型状态、转移参数或失效机制可以互换。若状态划分丢失影响未来转移的信息，或独立性、时间设定等假设与数据不符，模型推断就可能失真。",
       "how": "先说清模型对象是子系统切换结构还是故障检测过程；随后分别核对状态/转移链、失效事件位置、转移概率或跳跃强度、连续/离散时间和独立性假设，并用实际失效记录检验这些假设。不要把一种具体 Markov 模型的公式直接套到另一种模型。",
       "confusions": "马尔可夫性是建模假设；现实系统未必天然满足。",
@@ -15659,6 +15840,15 @@
         "Littlewood 的结构模型研究子系统切换及其失效，Xie 的模型研究故障检测过程的跳跃强度。两者都含 Markov 过程，为何不能据此认定它们具有同一状态空间、失效假设或可靠性公式？"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第331页/印刷第316页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第316页列出完全改错线性死亡、不完全改错线性死亡、完全改错非静态线性死亡三个 Markov 过程模型。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",
@@ -15708,8 +15898,18 @@
     },
     "9.2.3.10": {
       "status": "partial",
-      "verificationPendingClaims": ["确认目标教材列出的 Bayesian 模型及其先验、似然、后验和参数估计式；其他文献中的 Gamma/Beta 先验或 Shock 模型只能作为核对参照。"],
-      "what": "贝叶斯软件可靠性模型将先验信息与失效观测数据结合进行参数推断和预测，但模型细节并不统一。Littlewood–Verrall（1973）的一个具体模型以两次失效/修复之间的连续运行时间为分析数据，并显式规定失效后的修复规则；该模型不试图刻画程序内部结构。不能把这个特例当作所有 Bayesian 软件可靠性模型的共同形式。",
+      "verificationPendingClaims": [],
+      "what": "教材本地 PDF 副本印刷第316页说明贝叶斯模型利用失效率的试验前分布和当前测试失效信息评估软件可靠性，并列出“连续时间的离散型马尔可夫链”和“Shock 模型”。Littlewood–Verrall 连续运行时长模型、一般 Shock 模型及 Bayesian model averaging 是外部文献示例；不能据此声称它们的具体公式就是本页的教材公式。",
+      "textbookCrossCheck": {
+        "edition": "系统架构设计师教程（第2版）",
+        "reviewedOn": "2026-10-13",
+        "sourceKind": "local-pdf-page-cross-check",
+        "localPdfSha256": "552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005",
+        "pdfPhysicalPages": [331],
+        "printedPages": [316],
+        "claimScope": "本地 PDF 副本印刷第316页确认贝叶斯模型的一般描述及两项列名（连续时间的离散型马尔可夫链、Shock 模型）。",
+        "provenanceCaveat": "本地 PDF 副本的来源真实性尚未获得出版社独立认证；出版社公开目录只能交叉确认版次、章节标题和印刷页码，并未公开该章正文。此记录表示该本地副本的页级核对，不作为把学习单元升级为 verified 的单独依据。"
+      },
       "why": "贝叶斯模型能把先验知识与当前失效证据结合，并通过后验分布表达参数不确定性。但后验不是不受假设影响的客观保证：先验、观测模型、修复规则和数据质量都会影响结论；旧版本与新版本若在功能、运行剖面或修复过程上差异很大，历史信息不应未经论证就直接迁移。",
       "how": "先明确数据单位（例如失效间运行时长或累计失效计数）、先验、似然/观测模型和修复规则；再区分参数后验估计与未来失效预测，并改变合理的先验设定做敏感性分析。跨版本使用历史数据时，还应论证两个版本的数据生成与修复机制具有可比性。",
       "confusions": "贝叶斯更新不会自动把主观判断变成事实；先验和模型设定都会影响结论。",
@@ -15741,6 +15941,15 @@
         "Xie 的 1987 年一般 Shock 模型将 Jelinski–Moranda 模型放进冲击模型框架并推导其他特例。仅凭它是 Shock 模型，能否认定它就是目标教材所说的 Bayesian Shock 模型？还需要核对哪些先验、似然与后验定义？"
       ],
       "evidence": [
+        {
+          "sourceTitle": "本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）",
+          "url": "https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101",
+          "sourceAuthority": "本地 PDF 副本 SHA-256 552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005；PDF物理第331页/印刷第316页；出版社官方目录仅用于交叉确认版次与目录页码，未公开正文。",
+          "supportedClaim": "本地 PDF 副本印刷第316页描述贝叶斯模型用失效率试验前分布和当前测试失效信息评估可靠性，并列出连续时间的离散型马尔可夫链和 Shock 模型。",
+          "scope": "正文命题是从本地 PDF 副本的相应页逐页核对；链接的出版社目录本身不能证明此副本来源真实，也不提供该页正文。副本来源尚未获得出版社独立认证；此证据记录只证明本地副本中可定位的内容，不足以将单元升级为 verified。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-10-13"
+        },
         {
           "sourceTitle": "Reliability Growth: Enhancing Defense System Reliability, Chapter 9: Software Reliability Growth",
           "url": "https://www.nationalacademies.org/read/18987/chapter/11",

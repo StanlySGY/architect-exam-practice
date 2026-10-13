@@ -22,6 +22,8 @@ export function buildVerificationQueue(content) {
   return { id, status: unit?.status ?? '(missing)', chapter: String(id).split('.')[0], what: String(unit?.what ?? ''), evidenceCount: validEvidence.length, pendingClaims, missing, nextAction };
  });
  const fullyCovered = queue.filter(unit => unit.evidenceCount > 0 && unit.missing.length === 0).length;
+ const localPdfCrossChecks = units.filter(([, unit]) => unit?.textbookCrossCheck?.sourceKind === 'local-pdf-page-cross-check' && /^[a-f0-9]{64}$/u.test(String(unit.textbookCrossCheck.localPdfSha256 ?? '')) && Array.isArray(unit.textbookCrossCheck.pdfPhysicalPages) && Array.isArray(unit.textbookCrossCheck.printedPages));
+ const localPdfProvenanceUnverified = localPdfCrossChecks.filter(([, unit]) => unit?.status === 'partial' && /尚未获得出版社独立认证/u.test(String(unit.textbookCrossCheck.provenanceCaveat ?? ''))).map(([id]) => id);
  return {
   reportVersion: 2,
   readOnly: true,
@@ -31,8 +33,10 @@ export function buildVerificationQueue(content) {
   unitsWithCompleteClaimEvidence: fullyCovered,
   unitsMissingEvidence: queue.filter(unit => unit.missing.length > 0).length,
   verifiedWithoutEvidence: queue.filter(unit => unit.status === 'verified' && unit.evidenceCount === 0).map(unit => unit.id),
+  unitsWithLocalPdfCrossCheck: localPdfCrossChecks.length,
+  unitsWithUnverifiedLocalPdfProvenance: localPdfProvenanceUnverified,
   queue: queue.filter(unit => unit.missing.length > 0).sort((a, b) => a.chapter.localeCompare(b.chapter, undefined, { numeric: true }) || a.id.localeCompare(b.id, undefined, { numeric: true })),
-  note: 'A URL alone is not proof. A unit can have evidence for one bounded claim while other material claims remain unresolved; verificationPendingClaims keeps these units in the queue until those gaps are addressed. Partial units remain partial until all material claims are adequately reviewed.'
+  note: 'A URL alone is not proof. verificationPendingClaims tracks unresolved material claims. unitsWithLocalPdfCrossCheck separately counts units cross-checked against a locally available PDF copy; unitsWithUnverifiedLocalPdfProvenance marks copies whose publisher origin is not independently authenticated. Such units must remain partial and must not be upgraded to verified solely from a local copy, even when their claim-level queue is empty.'
  };
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

@@ -23,20 +23,20 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course keeps broad background references out of claim-level evidence counts',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,324); assert.equal(report.unitsWithCompleteClaimEvidence,313); assert.equal(report.unitsMissingEvidence,11); assert.deepEqual(report.verifiedWithoutEvidence,[]);
- assert.deepEqual(report.queue.map(unit=>unit.id),['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,324); assert.equal(report.unitsWithCompleteClaimEvidence,324); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ assert.deepEqual(report.queue.map(unit=>unit.id),[]);
 });
 
 test('normal-form evidence makes distinct claims and reliability-model background is not misclassified as claim proof',()=>{
  const claims={ '6.2.3.1':'first normal form', '6.2.3.2':'second normal form', '6.2.3.3':'third normal form' };
  for(const [id,phrase] of Object.entries(claims)){const e=content.units[id].evidence[0];assert.ok(e.supportedClaim.toLowerCase().includes(phrase),id);assert.equal(e.reviewStatus,'source-supports-bounded-claim',id);}
   const reliabilityIds=['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
- for(const id of reliabilityIds){const unit=content.units[id];assert.equal(unit.status,'partial',id);assert.ok(unit.verificationPendingClaims?.length>0,id);assert.ok(unit.evidence.some(e=>e.reviewStatus==='source-supports-bounded-claim'&&e.supportedClaim&&e.scope),id);}
+ for(const id of reliabilityIds){const unit=content.units[id];assert.equal(unit.status,'partial',id);assert.deepEqual(unit.verificationPendingClaims,[],id);assert.ok(unit.textbookCrossCheck,id);assert.ok(unit.evidence.some(e=>e.reviewStatus==='source-supports-bounded-claim'&&e.supportedClaim&&e.scope),id);}
  assert.ok(content.units['9.1.5'].evidence.some(e=>e.reviewStatus==='background-only-needs-textbook-verification'));
- const current=buildVerificationQueue(content);assert.deepEqual(current.queue.map(unit=>unit.id),reliabilityIds);
+ const current=buildVerificationQueue(content);assert.deepEqual(current.queue.map(unit=>unit.id),[]);
 });
 
-test('reliability model claims use direct technical sources while textbook-specific gaps remain open',()=>{
+test('reliability model claims use direct technical sources with explicit local textbook page cross-checks',()=>{
  const reliabilityIds=['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
  const sources=[
   ['9.1.5','https://doi.org/10.1016/S0377-2217(02)00461-7','operational profile'],
@@ -54,16 +54,16 @@ test('reliability model claims use direct technical sources while textbook-speci
  for(const [id,url,claim] of sources){
   const unit=content.units[id];
   assert.equal(unit.status,'partial',id);
-  assert.ok(unit.verificationPendingClaims?.length>0,id);
+  assert.deepEqual(unit.verificationPendingClaims,[],id);assert.ok(unit.textbookCrossCheck,id);
   assert.ok(unit.evidence.some(e=>e.url===url&&e.reviewStatus==='source-supports-bounded-claim'&&e.scope&&e.supportedClaim.toLowerCase().includes(claim.toLowerCase())),`${id}: ${url}`);
  }
  assert.ok(!content.units['9.1.5'].what.includes('狭义测试按运行剖面随机抽样'));
  const report=buildVerificationQueue(content);
- assert.equal(report.unitsWithClaimLevelEvidence,324);assert.equal(report.unitsWithCompleteClaimEvidence,313);assert.equal(report.unitsMissingEvidence,11);
- assert.deepEqual(report.queue.map(unit=>unit.id),reliabilityIds);
+ assert.equal(report.unitsWithClaimLevelEvidence,324);assert.equal(report.unitsWithCompleteClaimEvidence,324);assert.equal(report.unitsMissingEvidence,0);
+ assert.deepEqual(report.queue.map(unit=>unit.id),[]);
 });
 
-test('supplemental reliability sources support bounded claims without closing textbook-specific gaps', () => {
+test('supplemental reliability sources remain bounded alongside local textbook page cross-checks', () => {
   const reliabilityIds = ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
   const supplementalSources = [
     ['9.2.3.3', 'https://www.nationalacademies.org/read/18987/chapter/11', '回归方法'],
@@ -77,7 +77,7 @@ test('supplemental reliability sources support bounded claims without closing te
 
   for (const id of reliabilityIds) {
     assert.equal(content.units[id].status, 'partial', id);
-    assert.ok(content.units[id].verificationPendingClaims?.length > 0, id);
+    assert.deepEqual(content.units[id].verificationPendingClaims, [], id); assert.ok(content.units[id].textbookCrossCheck, id);
   }
   for (const [id, url, claimFragment] of supplementalSources) {
     const unit = content.units[id];
@@ -97,35 +97,35 @@ test('supplemental reliability sources support bounded claims without closing te
   const report = buildVerificationQueue(content);
   assert.equal(report.unitCount, 324);
   assert.equal(report.unitsWithClaimLevelEvidence, 324);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 313);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.deepEqual(report.queue.map(unit => unit.id), reliabilityIds);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 324);
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.deepEqual(report.queue.map(unit => unit.id), []);
 });
 
-test('NHPP evidence includes a critical empirical counterexample without closing textbook verification', () => {
+test('NHPP evidence retains a critical empirical counterexample after the taxonomy cross-check', () => {
   const unit = content.units['9.2.3.8'];
   const empirical = unit.evidence.find(e => e.url === 'https://doi.org/10.1016/j.infsof.2007.12.001');
   assert.equal(unit.status, 'partial');
-  assert.ok(unit.verificationPendingClaims?.length > 0);
+  assert.deepEqual(unit.verificationPendingClaims, []); assert.ok(unit.textbookCrossCheck);
   assert.ok(empirical, 'peer-reviewed controlled-experiment source should be recorded');
   assert.equal(empirical.reviewStatus, 'source-supports-bounded-claim');
   assert.equal(empirical.reviewedOn, '2026-10-12');
   assert.ok(empirical.supportedClaim.includes('均值与方差'));
   assert.ok(empirical.scope.includes('不证明所有软件失效过程'));
-  assert.ok(unit.what.includes('不是所有软件失效过程必然遵守'));
+  assert.ok(unit.what.includes('并非所有软件失效过程必然遵守'));
   assert.ok(unit.selfChecks.some(q => q.includes('受控实验') && q.includes('所有软件')));
   assert.ok(audit.includes('NHPP 模型适用性的反例与边界核验'));
   assert.ok(audit.includes('https://doi.org/10.1016/j.infsof.2007.12.001'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.ok(report.queue.some(item => item.id === '9.2.3.8'));
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.ok(unit.textbookCrossCheck);
 });
 
 test('official journal abstracts distinguish specific Markov and Bayesian software reliability models', () => {
   const markov = content.units['9.2.3.9'];
   const markovPublisher = markov.evidence.find(e => e.url === 'https://academic.oup.com/jrsssc/article/24/2/172/6953465');
   assert.equal(markov.status, 'partial');
-  assert.ok(markov.verificationPendingClaims?.length > 0);
+  assert.deepEqual(markov.verificationPendingClaims, []); assert.ok(markov.textbookCrossCheck);
   assert.ok(markovPublisher);
   assert.equal(markovPublisher.reviewStatus, 'source-supports-bounded-claim');
   assert.equal(markovPublisher.reviewedOn, '2026-10-12');
@@ -136,7 +136,7 @@ test('official journal abstracts distinguish specific Markov and Bayesian softwa
   const bayes = content.units['9.2.3.10'];
   const bayesPublisher = bayes.evidence.find(e => e.url === 'https://academic.oup.com/jrsssc/article/22/3/332/6882722');
   assert.equal(bayes.status, 'partial');
-  assert.ok(bayes.verificationPendingClaims?.length > 0);
+  assert.deepEqual(bayes.verificationPendingClaims, []); assert.ok(bayes.textbookCrossCheck);
   assert.ok(bayesPublisher);
   assert.equal(bayesPublisher.reviewStatus, 'source-supports-bounded-claim');
   assert.equal(bayesPublisher.reviewedOn, '2026-10-12');
@@ -145,16 +145,16 @@ test('official journal abstracts distinguish specific Markov and Bayesian softwa
   assert.ok(bayes.selfChecks.some(q => q.includes('失效间连续运行时长') || q.includes('连续运行时长')));
 
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.ok(report.queue.some(unit => unit.id === '9.2.3.9'));
-  assert.ok(report.queue.some(unit => unit.id === '9.2.3.10'));
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.ok(markov.textbookCrossCheck);
+  assert.ok(bayes.textbookCrossCheck);
 });
 
 test('operational-profile uncertainty, seeding bias, and curve-estimation limits carry bounded evidence', () => {
   const operational = content.units['9.1.5'];
   const operationalEvidence = operational.evidence.find(e => e.url === 'https://doi.org/10.1016/j.ress.2020.107193');
   assert.equal(operational.status, 'partial');
-  assert.ok(operational.verificationPendingClaims?.length > 0);
+  assert.deepEqual(operational.verificationPendingClaims, []); assert.ok(operational.textbookCrossCheck);
   assert.ok(operationalEvidence);
   assert.equal(operationalEvidence.reviewStatus, 'source-supports-bounded-claim');
   assert.ok(operationalEvidence.supportedClaim.includes('随时间变化'));
@@ -186,8 +186,8 @@ test('operational-profile uncertainty, seeding bias, and curve-estimation limits
   assert.ok(audit.includes('https://doi.org/10.1016/j.ress.2020.107193'));
   assert.ok(audit.includes('https://doi.org/10.1016/j.stamet.2009.10.007'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  for (const id of ['9.1.5','9.2.3.1','9.2.3.3','9.2.3.6']) assert.ok(report.queue.some(unit => unit.id === id), id);
+  assert.equal(report.unitsMissingEvidence, 0);
+  for (const id of ['9.1.5','9.2.3.1','9.2.3.3','9.2.3.6']) assert.ok(content.units[id].textbookCrossCheck, id);
 });
 
 test('official publisher catalog confirms only the headings and page locations, not chapter-body verification', () => {
@@ -198,8 +198,8 @@ test('official publisher catalog confirms only the headings and page locations, 
   assert.ok(audit.includes('第314页'));
   assert.ok(audit.includes('目录页未展开列出 9.2.3 下的十类模型名称、段落、公式或模型假设'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.deepEqual(report.queue.map(unit => unit.id), ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.deepEqual(report.queue.map(unit => unit.id), []);
 });
 
 test('Fuzhou University journal record verifies the component-reliability paper metadata and only its bounded claim', () => {
@@ -213,21 +213,21 @@ test('Fuzhou University journal record verifies the component-reliability paper 
   assert.match(journalRecord.supportedClaim, /操作剖面.*构件使用上下文.*系统功能路径划分/);
   assert.match(journalRecord.scope, /不证明目标教材的分类原文/);
   assert.equal(unit.status, 'partial');
-  assert.ok(unit.verificationPendingClaims.some(claim => /Shooman/.test(claim)));
+  assert.deepEqual(unit.verificationPendingClaims, []); assert.ok(unit.textbookCrossCheck);
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.ok(report.queue.some(item => item.id === '9.2.3.7'));
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.ok(unit.textbookCrossCheck);
 });
-test('publisher-provided preview and third-party reposts cannot substitute for target textbook chapter evidence', () => {
+test('official preview and repost metadata do not authenticate the locally available PDF copy', () => {
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/upload/books/yz/091901-01.pdf'));
   assert.ok(audit.includes('样章共 23 页'));
   assert.ok(audit.includes('出版社页面同时标明“暂无网络资源”'));
   assert.ok(audit.includes('不能证明待核公式与分类成员'));
   assert.ok(audit.includes('不能证明转载授权、具体版次及转写准确性'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
+  assert.equal(report.unitsMissingEvidence, 0);
   assert.ok(report.queue.every(unit => unit.status === 'partial'));
-  assert.ok(report.queue.every(unit => unit.missing.some(item => item.startsWith('unresolved material claim:'))));
+  assert.deepEqual(report.queue, []);
 });
 
 test('NASA and peer-reviewed reliability papers support bounded failure-rate model claims without proving textbook taxonomy', () => {
@@ -245,12 +245,12 @@ test('NASA and peer-reviewed reliability papers support bounded failure-rate mod
   assert.match(elsevier.supportedClaim, /failure-counting models/);
   assert.match(elsevier.scope, /不是同义关系/);
   assert.equal(unit.status, 'partial');
-  assert.ok(unit.verificationPendingClaims.some(claim => /中文术语和顺序/.test(claim)));
+  assert.deepEqual(unit.verificationPendingClaims, []); assert.ok(unit.textbookCrossCheck);
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.ok(report.queue.some(item => item.id === '9.2.3.2'));
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.ok(unit.textbookCrossCheck);
 });
-test('reliability-model self-checks are model-specific while textbook evidence gaps stay open', () => {
+test('reliability-model self-checks remain model-specific after local textbook page cross-check', () => {
   const expected = {
     '9.2.3.1': ['可发现性', '故障遮蔽'],
     '9.2.3.2': ['失效间隔', '失效率'],
@@ -266,7 +266,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
   for (const [id, terms] of Object.entries(expected)) {
     const unit = content.units[id];
     assert.equal(unit.status, 'partial', id);
-    assert.ok(unit.verificationPendingClaims?.length > 0, id);
+    assert.deepEqual(unit.verificationPendingClaims, [], id); assert.ok(unit.textbookCrossCheck, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
     assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? (['9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.10'].includes(id) ? 4 : 3) : 2, id);
     for (const term of terms) {
@@ -279,8 +279,8 @@ test('reliability-model self-checks are model-specific while textbook evidence g
   assert.ok(seed.includes('48×(24−16)/16=24'));
   assert.ok(seed.includes('不是目标教材公式的核验结果'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.deepEqual(report.queue.map(unit => unit.id), ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']);
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.deepEqual(report.queue.map(unit => unit.id), []);
 });
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
@@ -534,7 +534,7 @@ test('reliability model units document imperfect-debugging assumptions and curve
   const jmModelSource = jm.evidence.find(e => e.url === 'https://doi.org/10.3233/MAS-2010-0127');
   const debuggingSource = jm.evidence.find(e => e.url === 'https://doi.org/10.1016/0026-2714(95)00157-3');
   assert.equal(jm.status, 'partial');
-  assert.ok(jm.verificationPendingClaims?.length > 0);
+  assert.deepEqual(jm.verificationPendingClaims, []); assert.ok(jm.textbookCrossCheck);
   assert.ok(jmModelSource);
   assert.equal(jmModelSource.reviewStatus, 'source-supports-bounded-claim');
   assert.equal(jmModelSource.reviewedOn, '2026-10-13');
@@ -546,7 +546,7 @@ test('reliability model units document imperfect-debugging assumptions and curve
   const growth = content.units['9.2.3.4'];
   const growthSource = growth.evidence.find(e => e.url === 'https://doi.org/10.1016/0026-2714(95)00157-3');
   assert.equal(growth.status, 'partial');
-  assert.ok(growth.verificationPendingClaims?.length > 0);
+  assert.deepEqual(growth.verificationPendingClaims, []); assert.ok(growth.textbookCrossCheck);
   assert.ok(growthSource);
   assert.equal(growthSource.reviewStatus, 'source-supports-bounded-claim');
   assert.ok(growthSource.scope.includes('不证明目标教材'));
@@ -554,9 +554,9 @@ test('reliability model units document imperfect-debugging assumptions and curve
   assert.ok(growth.evidence.some(e => e.url === 'https://www.nationalacademies.org/read/18987/chapter/11' && e.supportedClaim.includes('m(t)=a[1−(1+bt)e^(−bt)]') && e.supportedClaim.includes('S-shaped')));
 
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  assert.ok(report.queue.some(unit => unit.id === '9.2.3.2'));
-  assert.ok(report.queue.some(unit => unit.id === '9.2.3.4'));
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.ok(jm.textbookCrossCheck);
+  assert.ok(growth.textbookCrossCheck);
   assert.equal(content.units['9.2.3.2'].status, 'partial');
   assert.equal(content.units['9.2.3.4'].status, 'partial');
 });
@@ -573,7 +573,7 @@ test('remaining reliability model families have scoped architecture, profile, pa
     const unit = content.units[id];
     const evidence = unit.evidence.find(e => e.url === url);
     assert.equal(unit.status, 'partial', id);
-    assert.ok(unit.verificationPendingClaims?.length > 0, id);
+    assert.deepEqual(unit.verificationPendingClaims, [], id); assert.ok(unit.textbookCrossCheck, id);
     assert.ok(evidence, id + ': missing source ' + url);
     assert.equal(evidence.reviewStatus, 'source-supports-bounded-claim', id);
     assert.equal(evidence.reviewedOn, '2026-10-13', id);
@@ -583,8 +583,8 @@ test('remaining reliability model families have scoped architecture, profile, pa
   assert.ok(content.units['9.2.3.5'].selfChecks.some(q => q.includes('使用剖面') && q.includes('组件')));
   assert.ok(content.units['9.2.3.7'].selfChecks.some(q => q.includes('Shooman') && q.includes('加权')));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
-  for (const [id] of cases) assert.ok(report.queue.some(item => item.id === id), id);
+  assert.equal(report.unitsMissingEvidence, 0);
+  for (const [id] of cases) assert.ok(content.units[id].textbookCrossCheck, id);
 });
 test('software reliability model taxonomy crosswalk distinguishes classification axes without upgrading textbook verification', () => {
   const jm = content.units['9.2.3.2'];
@@ -593,7 +593,7 @@ test('software reliability model taxonomy crosswalk distinguishes classification
   assert.equal(jm.status, 'partial');
   assert.equal(curve.status, 'partial');
   assert.equal(growth.status, 'partial');
-  for (const unit of [jm, curve, growth]) assert.ok(unit.verificationPendingClaims?.length > 0);
+  for (const unit of [jm, curve, growth]) { assert.deepEqual(unit.verificationPendingClaims, []); assert.ok(unit.textbookCrossCheck); }
 
   const taxonomy = jm.evidence.find(e =>
     e.url === 'https://www.nationalacademies.org/read/18987/chapter/11' &&
@@ -611,14 +611,16 @@ test('software reliability model taxonomy crosswalk distinguishes classification
   assert.ok(growth.selfChecks.some(q => q.includes('分类层级') && q.includes('观测曲线形态')));
 
   assert.ok(audit.includes('软件可靠性模型分类口径交叉核验'));
-  assert.ok(audit.includes('11 个待核单元全部保持 partial'));
+  assert.ok(audit.includes('本地 PDF 页级交叉核对'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
+  assert.equal(report.unitsMissingEvidence, 0);
   for (const id of ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']) {
-    assert.ok(report.queue.some(item => item.id === id), id);
+    assert.equal(content.units[id].status, 'partial', id);
+    assert.deepEqual(content.units[id].verificationPendingClaims, [], id);
+    assert.ok(content.units[id].textbookCrossCheck, id);
   }
 });
-test('reliability model worked examples remain bounded and textbook gaps stay open', () => {
+test('reliability model worked examples stay bounded after the textbook taxonomy cross-check', () => {
   const failureRate = content.units['9.2.3.2'];
   assert.ok(failureRate.examples.includes('λ_i=λ_0 q^i'));
   assert.ok(failureRate.examples.includes('exp(−λ_iΔt)'));
@@ -646,18 +648,67 @@ test('reliability model worked examples remain bounded and textbook gaps stay op
 
   for (const unit of [failureRate,inputDomain,pathModel,bayes]) {
     assert.equal(unit.status, 'partial');
-    assert.ok(unit.verificationPendingClaims?.length > 0);
+    assert.deepEqual(unit.verificationPendingClaims, []);
+    assert.ok(unit.textbookCrossCheck);
   }
   assert.ok(audit.includes('验证正规电子书访问边界'));
   assert.ok(audit.includes('https://wqbook.wqxuetang.com/book/3242210'));
   assert.ok(audit.includes('本轮未绕过账号或购买权限'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsMissingEvidence, 11);
+  assert.equal(report.unitsMissingEvidence, 0);
   for (const id of ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']) {
-    assert.ok(report.queue.some(item => item.id === id), id);
+    assert.equal(content.units[id].status, 'partial', id);
+    assert.deepEqual(content.units[id].verificationPendingClaims, [], id);
+    assert.ok(content.units[id].textbookCrossCheck, id);
   }
 });
 
+test('local PDF page cross-check resolves taxonomy claims while source provenance keeps all units partial', () => {
+  const sha = '552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005';
+  const cases = [
+    ['9.1.5', 311, 326, '广义软件可靠性测试', '狭义测试'],
+    ['9.2.3.1', 314, 329, '捕获—再捕获', '残留错误'],
+    ['9.2.3.2', 315, 330, 'Moranda 的几何泊松模型', 'Goel–Okumoto 不完全排错模型'],
+    ['9.2.3.3', 315, 330, '参数方法和非参数方法', '失效间隔时间'],
+    ['9.2.3.4', 315, 330, 'Wagoner 的 Weibull 改进模型', 'Gompertz 增长曲线'],
+    ['9.2.3.5', 315, 330, 'Littlewood 马尔可夫结构模型', 'Cheung 面向用户的马尔可夫模型'],
+    ['9.2.3.6', 315, 330, 'Nelson 模型', 'Bastani 基于输入域的随机过程模型'],
+    ['9.2.3.7', 315, 330, 'Shooman 分解模型', '错误路径的执行概率'],
+    ['9.2.3.8', 316, 331, 'Musa 指数模型', 'Pham 改进 NHPP 模型'],
+    ['9.2.3.9', 316, 331, '完全改错的非静态线性死亡模型', '不完全改错的线性死亡模型'],
+    ['9.2.3.10', 316, 331, '连续时间的离散型马尔可夫链', 'Shock 模型']
+  ];
+  for (const [id, printedPage, physicalPage, ...phrases] of cases) {
+    const unit = content.units[id];
+    const cross = unit.textbookCrossCheck;
+    assert.equal(unit.status, 'partial', id);
+    assert.deepEqual(unit.verificationPendingClaims, [], id);
+    assert.ok(cross, id);
+    assert.equal(cross.edition, '系统架构设计师教程（第2版）', id);
+    assert.equal(cross.reviewedOn, '2026-10-13', id);
+    assert.equal(cross.localPdfSha256, sha, id);
+    assert.deepEqual(cross.printedPages, [printedPage], id);
+    assert.deepEqual(cross.pdfPhysicalPages, [physicalPage], id);
+    assert.ok(cross.provenanceCaveat.includes('尚未获得出版社独立认证'), id);
+    for (const phrase of phrases) assert.ok(unit.what.includes(phrase), id + ': ' + phrase);
+    const evidence = unit.evidence.find(e => e.sourceTitle === '本地 PDF 页级交叉核对（系统架构设计师教程第2版副本）');
+    assert.ok(evidence, id + ': local page evidence missing');
+    assert.equal(evidence.reviewStatus, 'source-supports-bounded-claim', id);
+    assert.equal(evidence.reviewedOn, '2026-10-13', id);
+    assert.equal(evidence.url, 'https://www.tup.tsinghua.edu.cn/bookscenter/bookcatalog?id=09190101', id);
+    assert.ok(evidence.scope.includes('不足以将单元升级为 verified'), id);
+  }
+  assert.ok(audit.includes('本地 PDF 页级交叉核对'));
+  assert.ok(audit.includes(sha));
+  assert.ok(audit.includes('尚未获得出版社独立认证'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitCount, 324);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 324);
+  assert.equal(report.unitsMissingEvidence, 0);
+  assert.equal(report.unitsWithLocalPdfCrossCheck, 11);
+  assert.deepEqual([...report.unitsWithUnverifiedLocalPdfProvenance].sort(), cases.map(([id]) => id).sort());
+  assert.deepEqual(report.queue, []);
+});
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
  assert.ok(count>0);
