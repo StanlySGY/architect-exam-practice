@@ -143,3 +143,23 @@ test('Kafka 调优需保留版本和性能权衡；三个性能计算只核验�
   assert.equal(report.counts.invalidRecords, 0);
   assert.equal(report.counts.sourceEntries, 1);
 });
+
+test('模拟论文成果数字在无项目证据时只能作为示例，不提升为已核实成果', () => {
+  const bank = { choices: [], cases: [], essays: [
+    { id: 'resilience', writingPoints: '年可用性从99.95%提升至99.99%，平均故障恢复时间从15分钟降至3分钟。' },
+    { id: 'consistency', writingPoints: '交易数据零差错（3年0资损），日均处理1000万+笔交易。' },
+    { id: 'dr', writingPoints: 'RTO < 30秒、RPO = 0、年可用性99.99%。' },
+  ] };
+  const records = [
+    { recordId: 'resilience', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'resilience', field: 'writingPoints', claimNeedle: '年可用性从99.95%提升至99.99%' }, { itemId: 'resilience', field: 'writingPoints', claimNeedle: '平均故障恢复时间从15分钟降至3分钟' }], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'consistency', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'consistency', field: 'writingPoints', claimNeedle: '交易数据零差错（3年0资损）' }, { itemId: 'consistency', field: 'writingPoints', claimNeedle: '日均处理1000万+笔交易' }], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'dr', disposition: 'unsubstantiated-performance-claim', targets: [{ itemId: 'dr', field: 'writingPoints', claimNeedle: 'RTO < 30秒、RPO = 0、年可用性99.99%' }], sourceEvidence: [], answerVerification: 'not-established' },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 3);
+  assert.equal(report.counts.targetClaims, 5);
+  assert.equal(report.counts.exactTextTargetsMatched, 5);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 3);
+  assert.equal(report.counts.recordsWithAllowedVerification, 3);
+  assert.equal(report.counts.invalidRecords, 0);
+});

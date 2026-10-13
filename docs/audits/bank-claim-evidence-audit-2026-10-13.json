@@ -3,14 +3,14 @@
   "readOnly": true,
   "checkedOn": "2026-10-13",
   "counts": {
-    "records": 18,
-    "targetClaims": 26,
-    "exactTextTargetsMatched": 26,
+    "records": 21,
+    "targetClaims": 31,
+    "exactTextTargetsMatched": 31,
     "targetClaimsUnmatched": 0,
     "sourceEntries": 10,
     "recordsWithExternalSources": 9,
-    "recordsWithAllowedDisposition": 18,
-    "recordsWithAllowedVerification": 18,
+    "recordsWithAllowedDisposition": 21,
+    "recordsWithAllowedVerification": 21,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 5,
@@ -21,7 +21,7 @@
       "overgeneralized": 2,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 2,
+      "unsubstantiated-performance-claim": 5,
       "unsupported-exam-frequency-prediction": 1
     }
   },
@@ -544,6 +544,88 @@
         }
       ],
       "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-resilience-outcome-metrics",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "年可用性从99.95%提升至99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "平均故障恢复时间从15分钟降至3分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-consistency-outcomes-unsubstantiated",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "交易数据零差错（3年0资损）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "日均处理1000万+笔交易",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-dr-targets-unsubstantiated",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-4",
+          "field": "writingPoints",
+          "claimNeedle": "RTO < 30秒、RPO = 0、年可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
       "answerVerificationAllowed": true
     }
   ],

@@ -379,6 +379,44 @@
       "conclusion": "给定到达率 λ=4/分钟、服务率 μ=5/分钟，满足稳定条件 λ<μ。M/M/1 平均逗留时间 W=1/(μ−λ)=1 分钟；平均排队等待时间 Wq=λ/[μ(μ−λ)]=4/5 分钟=0.8 分钟；平均服务时间 1/μ=0.2 分钟，W=Wq+1/μ。",
       "recommendedAction": "保留时需说明适用 M/M/1 假设、稳定条件与时间单位；这只是模型计算，不是具体生产系统的实测响应时间。",
       "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "mock-essay-resilience-outcome-metrics",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative chaos-engineering essay metrics without project evidence",
+      "targets": [
+        { "itemId": "essay-mock-2026年5月-模拟卷7-3", "field": "writingPoints", "claimNeedle": "年可用性从99.95%提升至99.99%" },
+        { "itemId": "essay-mock-2026年5月-模拟卷7-3", "field": "writingPoints", "claimNeedle": "平均故障恢复时间从15分钟降至3分钟" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟论文范文中的可用性提升与故障恢复时间下降数字未关联具体项目、指标口径、观察区间或原始监控记录。作为假设场景示例可以使用，但不能被当作已证明的真实项目结果。",
+      "recommendedAction": "在学习页面明确标注“示例数据/须替换为本人项目真实数据”；如用于真实案例，补充计算口径、监控来源、测量窗口和故障样本。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-consistency-outcomes-unsubstantiated",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative distributed-consistency essay outcome metrics",
+      "targets": [
+        { "itemId": "essay-mock-2026年5月-模拟卷3-4", "field": "writingPoints", "claimNeedle": "交易数据零差错（3年0资损）" },
+        { "itemId": "essay-mock-2026年5月-模拟卷3-4", "field": "writingPoints", "claimNeedle": "日均处理1000万+笔交易" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“三年零资损”和“日均千万笔交易”出现在模拟论文范文的假设项目里，没有对应系统、数据口径、审计记录或公开案例来源，因此目前无法将其视作已核实的实际成果。",
+      "recommendedAction": "将数字标注为虚构示例或要求考生替换为本人可说明来源的项目数据；不要把练习模板数字背诵成真实案例。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-dr-targets-unsubstantiated",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Illustrative disaster-recovery target metrics without evidence",
+      "targets": [
+        { "itemId": "essay-mock-2026年5月-模拟卷4-4", "field": "writingPoints", "claimNeedle": "RTO < 30秒、RPO = 0、年可用性99.99%" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟论文思路里的 RTO 小于 30 秒、RPO 为 0 和 99.99% 年可用性是结果性指标，但当前没有提供部署拓扑、同步复制/提交语义、灾备演练或监控证据来支持这些结果。",
+      "recommendedAction": "作为设计目标时需标为目标而非已实现结果；作为实施成效时应附演练记录、数据一致性验证、SLA 计算窗口和排除项，并说明 RPO=0 的适用故障范围。",
+      "answerVerification": "not-established"
     }
   ]
 }
