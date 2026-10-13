@@ -268,7 +268,7 @@ test('reliability-model self-checks are model-specific while textbook evidence g
     assert.equal(unit.status, 'partial', id);
     assert.ok(unit.verificationPendingClaims?.length > 0, id);
     assert.ok(!unit.why.includes('有助于把该知识点与实际设计或维护决策联系起来'), id);
-    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? (['9.2.3.2','9.2.3.3','9.2.3.4'].includes(id) ? 4 : 3) : 2, id);
+    assert.equal(unit.selfChecks.length, ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'].includes(id) ? (['9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.10'].includes(id) ? 4 : 3) : 2, id);
     for (const term of terms) {
       assert.ok(unit.selfChecks.some(q => q.includes(term)), id + ': missing targeted prompt term ' + term);
     }
@@ -618,6 +618,46 @@ test('software reliability model taxonomy crosswalk distinguishes classification
     assert.ok(report.queue.some(item => item.id === id), id);
   }
 });
+test('reliability model worked examples remain bounded and textbook gaps stay open', () => {
+  const failureRate = content.units['9.2.3.2'];
+  assert.ok(failureRate.examples.includes('λ_i=λ_0 q^i'));
+  assert.ok(failureRate.examples.includes('exp(−λ_iΔt)'));
+  assert.ok(failureRate.examples.includes('不能据此推断目标教材'));
+
+  const inputDomain = content.units['9.2.3.6'];
+  assert.ok(inputDomain.examples.includes('0.80×0.99 + 0.15×0.95 + 0.05×0.80'));
+  assert.ok(inputDomain.examples.includes('97.45%'));
+  assert.ok(inputDomain.examples.includes('91.33%'));
+  assert.ok(inputDomain.evidence.some(e => e.url === 'https://doi.org/10.1016/0026-2714(78)91139-3'));
+
+  const pathModel = content.units['9.2.3.7'];
+  assert.ok(pathModel.examples.includes('0.70×0.01 + 0.20×0.04 + 0.10×0.20'));
+  assert.ok(pathModel.examples.includes('3.5%'));
+  assert.ok(pathModel.examples.includes('路径集合完备'));
+
+  const bayes = content.units['9.2.3.10'];
+  const shock = bayes.evidence.find(e => e.url === 'https://doi.org/10.1016/0026-2714(87)90018-7');
+  assert.ok(shock);
+  assert.equal(shock.reviewStatus, 'source-supports-bounded-claim');
+  assert.equal(shock.reviewedOn, '2026-10-13');
+  assert.ok(shock.supportedClaim.includes('一般 Shock 模型'));
+  assert.ok(shock.scope.includes('不能证明目标教材'));
+  assert.ok(bayes.selfChecks.some(q => q.includes('一般 Shock 模型') && q.includes('Bayesian Shock 模型')));
+
+  for (const unit of [failureRate,inputDomain,pathModel,bayes]) {
+    assert.equal(unit.status, 'partial');
+    assert.ok(unit.verificationPendingClaims?.length > 0);
+  }
+  assert.ok(audit.includes('验证正规电子书访问边界'));
+  assert.ok(audit.includes('https://wqbook.wqxuetang.com/book/3242210'));
+  assert.ok(audit.includes('本轮未绕过账号或购买权限'));
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsMissingEvidence, 11);
+  for (const id of ['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10']) {
+    assert.ok(report.queue.some(item => item.id === id), id);
+  }
+});
+
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
  assert.ok(count>0);
