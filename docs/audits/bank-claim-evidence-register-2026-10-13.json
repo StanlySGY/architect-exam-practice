@@ -697,6 +697,19 @@
       "conclusion": "NIST FIPS 197 supports the key-size/round-count fact (AES-128: 10 rounds; AES-256: 14) and AES-256 has a 256-bit key space. It does not support a workload-independent 40% performance penalty. “Quantum-effective 128 bits” is a simplified generic Grover-search heuristic and should not be stated as an unconditional cipher security rating; NIST's PQC FAQ stresses attack-model/resource assumptions and notes AES remains safe under current guidance.",
       "recommendedAction": "保留轮数和密钥长度；删除无基准条件的“慢 40%”，或附具体处理器、AES-NI/库版本、模式、数据长度与基准测试。量子安全说明应明确为通用 Grover 搜索的近似工作量解释，并避免写成 NIST 已保证的精确有效强度。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "lora-popularity-and-exam-necessity-prediction",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "topic": "LoRA popularity claim and exam-necessity prediction for 2025–2026",
+      "targets": [
+        { "itemId": "mock-2026年5月-模拟卷5-065", "field": "analysis", "claimNeedle": "LoRA是2025-2026年最流行的高效微调技术" },
+        { "itemId": "mock-2026年5月-模拟卷5-065", "field": "analysis", "claimNeedle": "是大模型实际应用的必备知识" }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "该句位于模拟题解析中的“押题理由”，既没有界定“最流行”的衡量范围，也没有给出模型/框架采用率、年度调查方法或官方历年试题统计，因此不能作为可核事实或考试必考结论。LoRA 原始论文能够支持方法机制与特定实验结果，但不能由此推出它在 2025–2026 年所有方法中最流行，也不能证明它是考试必考内容。",
+      "recommendedAction": "删除“最流行”“必备知识”这种无证据的确定性判断，改为“LoRA 是参数高效微调的代表方法之一，建议掌握其冻结基座权重、训练低秩适配矩阵及适用边界”；若提出考试趋势，需附官方历年原题范围和明确统计口径。",
+      "answerVerification": "not-established"
     }
   ]
 }

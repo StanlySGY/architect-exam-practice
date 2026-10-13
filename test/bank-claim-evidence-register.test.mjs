@@ -221,6 +221,26 @@ test('设计原则的绝对措辞保留考试语义，但不代表真实系统�
   assert.equal(report.counts.invalidRecords, 0);
 });
 
+test('LoRA popularity and exam-necessity statements are classified as unsupported trend predictions', () => {
+  const bank = { choices: [{ id: 'lora', analysis: 'LoRA冻结预训练模型权重，在每个目标层旁边注入低秩矩阵（A和B），只训练A和B的参数（通常不到原模型参数的1%）。\n\n押题理由: LoRA是2025-2026年最流行的高效微调技术，是大模型实际应用的必备知识。' }], cases: [], essays: [] };
+  const records = [{
+    recordId: 'lora-trend', disposition: 'unsupported-exam-frequency-prediction',
+    targets: [
+      { itemId: 'lora', field: 'analysis', claimNeedle: 'LoRA是2025-2026年最流行的高效微调技术' },
+      { itemId: 'lora', field: 'analysis', claimNeedle: '是大模型实际应用的必备知识' },
+    ],
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-13', records });
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 2);
+  assert.equal(report.counts.exactTextTargetsMatched, 2);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 1);
+  assert.equal(report.counts.recordsWithAllowedVerification, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
 test('CQRS 的工作负载与延迟数字不得泛化，Kafka exactly-once 必须限定事务边界', () => {
   const bank = {
     choices: [],
