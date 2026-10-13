@@ -22,7 +22,9 @@ test("只读题库审计区分结构完整、出处缺失和重复题干候选",
   assert.equal(report.choices.exactSameStemAndOptionsGroupsAcrossPapers, 0);
   assert.equal(report.cases.answerSourceMissing, 1);
   assert.equal(report.essays.glmReviewedLabel, 1);
+  assert.equal(report.essays.modelReviewedNotHumanVerified, 1);
   assert.ok(report.warnings.some((warning) => warning.includes("非官方整理")));
+  assert.ok(report.warnings.some((warning) => warning.includes("不代表人工事实核验")));
 });
 
 test("来源路径审计区分远程 URL、可解析文件、未解析路径和越界路径", () => {

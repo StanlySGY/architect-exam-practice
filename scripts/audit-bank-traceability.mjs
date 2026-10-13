@@ -35,6 +35,7 @@ function summarizeSubjective(items) {
     answerSourceDistribution: distribution(items, (item) => item.answerSource),
     answerSourceMissing: items.filter((item) => !String(item.answerSource ?? "").trim()).length,
     glmReviewedLabel: items.filter((item) => item.answerSource === "glm-5.2-reviewed").length,
+    modelReviewedNotHumanVerified: items.filter((item) => item.answerSource === "glm-5.2-reviewed").length,
   };
 }
 
@@ -87,6 +88,7 @@ export function auditBank(bank, { sourcePath = null } = {}) {
   if (report.choices.answerTrustMetadataComplete < choices.length) report.warnings.push("选择题没有完整的 answerTrust 元数据，不能按题目区分官方答案、第三方整理或未核验状态。");
   if (report.choices.repeatedMockStemGroupsAcrossPapers) report.warnings.push("模拟卷之间存在重复题干候选；脚本不自动删除，需比较选项、答案和知识考点。");
   if (cases.some((item) => !String(item.answerSource ?? "").trim()) || essays.some((item) => !String(item.answerSource ?? "").trim())) report.warnings.push("部分案例/论文没有 answerSource 标记；这表示来源元数据缺失，不直接推断答案缺失或错误。");
+  if (report.cases.modelReviewedNotHumanVerified + report.essays.modelReviewedNotHumanVerified > 0) report.warnings.push("glm-5.2-reviewed 只是模型审查标签，不代表人工事实核验、权威答案或已验证状态；不得据此自动升级核验状态。");
   return report;
 }
 
