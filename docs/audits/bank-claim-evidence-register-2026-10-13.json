@@ -641,6 +641,26 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-4",
           "field": "writingPoints",
           "claimNeedle": "日均处理1000万+笔交易"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "实现交易数据零差错"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性99.99%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "日交易量1000万+笔"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "用户规模5000万+"
         }
       ],
       "sourceEvidence": [],
@@ -3086,6 +3106,11 @@
           "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
           "field": "reference_answer",
           "claimNeedle": "Confidence: 90%（功能相对独立）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Confidence: 90%（功能相对独立）"
         }
       ],
       "sourceEvidence": [],
@@ -3241,6 +3266,106 @@
       "sourceEvidence": [],
       "conclusion": "The one-minute/200% vibration trigger is an example threshold, not a universal industrial alarm setting. Suitability depends on sensor units, sampling rate, baseline noise, device class, startup/transient behavior, and whether “increase by 200%” means absolute difference or relative change.",
       "recommendedAction": "Label it as an example. Define the calculation and reference baseline, validate against historical labeled normal/fault data for each asset class, use noise filtering/hysteresis or persistence to limit alert storms, and document escalation consequences.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "istio-canary-ten-percent-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Ten-percent Istio canary traffic is an example rollout stage, not a universal safe percentage",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "按用户比例10%的流量导入v2"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/",
+          "title": "Traffic Shifting",
+          "publisher": "Istio official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "Istio supports configuring weighted traffic shifts for gradual rollout and demonstrates configurable percentages.",
+          "limitations": "The example percentages are routing settings, not a universal safe canary ratio. The ratio and observation window depend on traffic volume, risk, and the service SLO."
+        }
+      ],
+      "conclusion": "The 10% canary ratio is an example configuration. A fixed percentage is not by itself evidence of safe rollout; low traffic may yield too few samples, while a high-risk change may require a smaller initial exposure.",
+      "recommendedAction": "Label 10% as illustrative. Set the initial ratio and hold period from expected request volume and error-budget/risk policy, and specify promotion/rollback indicators such as error rate, latency, business correctness and minimum sample count.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "exclusive-gpu-utilization-20-percent-needs-workload-measurement",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Twenty-percent GPU utilization under exclusive assignment is a scenario illustration, not a general measured rate",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "资源浪费（GPU利用率20%）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The 20% GPU utilization figure appears as an illustrative drawback of exclusive GPU assignment. Utilization depends on model size, batching, sequence lengths, arrival distribution, preprocessing, memory constraints and measurement methodology; it cannot be generalized to all single-tenant workloads.",
+      "recommendedAction": "Keep it labelled as a hypothetical example or provide a reproducible benchmark: GPU/model/precision, request mix, batch size, concurrency, duration, throughput and utilization measurement source. Compare with a workload-equivalent sharing baseline.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-chaos-engineering-baseline-slos-are-examples",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Chaos-engineering steady-state success-rate and P99 numbers are example hypotheses, not measured results",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "请求成功率>99.9%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99延迟<500ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "These figures are explicitly introduced as examples of a steady-state hypothesis in the chaos-engineering outline. They are not universal reliability targets and do not establish that any actual service meets them.",
+      "recommendedAction": "Label them as sample SLOs and replace them with observed baseline values for the chosen service, measurement window and request class. Define success criteria before the experiment and compare results during/after fault injection.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-quality-response-measures-are-examples",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Generic response-measure examples are not verified SLOs or achieved outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "延迟<2s"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.99%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "Latency under two seconds and 99.99% availability are given as examples of how to express a response measure for an architecture quality-attribute scenario. They are not evidence of an implemented system, a universally suitable target, or an achieved availability result.",
+      "recommendedAction": "Retain them as illustrative metric syntax. For a real requirement, specify request scope, percentile/window, exclusions, dependencies and service criticality; for an achievement, add monitoring/incident evidence covering the stated measurement period.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-unit-test-coverage-over-80-percent-is-project-goal",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Unit-test coverage above 80 percent is a project practice target, not a universal standard",
+      "targets": [
+        {
+          "itemId": "essay-real-2025年上半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "单元测试（覆盖率>80%）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The more-than-80% unit-test coverage figure appears as a suggested practice in a supplementary essay outline, not as a requirement supplied by the historical exam prompt or a universal industry standard. Coverage percentage alone also does not prove adequate assertion quality or risk coverage.",
+      "recommendedAction": "Phrase it as a project/team target and state the measurement type (line, statement, branch or condition coverage). Choose thresholds from criticality and risk, and pair coverage with mutation tests, assertion quality and high-risk path coverage.",
       "answerVerification": "not-established"
     }
   ]

@@ -1633,3 +1633,107 @@ test('MQTT QoS 2、Redis幂等TTL与Flink异常阈值均保留协议或场景边
   assert.equal(report.counts.invalidRecords, 0);
   assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
 });
+
+test('灰度比例、GPU利用率、论文SLO和项目成果均区分示例与实测', () => {
+  const cases = [
+    { id: 'istio', subQuestions: [{ question_label: '问题3', reference_answer: '按用户比例10%的流量导入v2。' }] },
+    { id: 'gpu', subQuestions: [{ question_label: '问题3', reference_answer: '独占GPU的缺点是资源浪费（GPU利用率20%）。' }] },
+    { id: 'rice', subQuestions: [
+      { question_label: '问题1', reference_answer: 'Confidence: 90%（功能相对独立）。' },
+      { question_label: '问题2', reference_answer: 'Confidence: 90%（功能相对独立）。' },
+    ] },
+  ];
+  const essays = [
+    { id: 'chaos', writingPoints: '建立稳态假设：请求成功率>99.9%、P99延迟<500ms。' },
+    { id: 'quality', writingPoints: '响应度量可以写成延迟<2s、可用性99.99%。' },
+    { id: 'test-coverage', writingPoints: '单元测试（覆盖率>80%）。' },
+    { id: 'consistency', writingPoints: '项目背景：日交易量1000万+笔；用户规模5000万+；核心成果：实现交易数据零差错，系统可用性99.99%。' },
+  ];
+  const records = [
+    {
+      recordId: 'istio',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'istio:问题3', field: 'reference_answer', claimNeedle: '按用户比例10%的流量导入v2' }],
+      sourceEvidence: [{
+        url: 'https://istio.io/latest/docs/tasks/traffic-management/traffic-shifting/',
+        title: 'Traffic Shifting',
+        publisher: 'Istio official documentation',
+        sourceKind: 'official-project-documentation',
+        checkedOn: '2026-10-14',
+        supports: 'Istio supports percentage-weighted traffic shifts for staged rollouts.',
+        limitations: 'No universal canary ratio is prescribed.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'gpu',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'gpu:问题3', field: 'reference_answer', claimNeedle: '资源浪费（GPU利用率20%）' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'chaos',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'chaos', field: 'writingPoints', claimNeedle: '请求成功率>99.9%' },
+        { itemId: 'chaos', field: 'writingPoints', claimNeedle: 'P99延迟<500ms' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'quality',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'quality', field: 'writingPoints', claimNeedle: '延迟<2s' },
+        { itemId: 'quality', field: 'writingPoints', claimNeedle: '可用性99.99%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'coverage',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'test-coverage', field: 'writingPoints', claimNeedle: '单元测试（覆盖率>80%）' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'consistency-outcomes',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'consistency', field: 'writingPoints', claimNeedle: '实现交易数据零差错' },
+        { itemId: 'consistency', field: 'writingPoints', claimNeedle: '系统可用性99.99%' },
+        { itemId: 'consistency', field: 'writingPoints', claimNeedle: '日交易量1000万+笔' },
+        { itemId: 'consistency', field: 'writingPoints', claimNeedle: '用户规模5000万+' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'rice',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'rice:问题1', field: 'reference_answer', claimNeedle: 'Confidence: 90%（功能相对独立）' },
+        { itemId: 'rice:问题2', field: 'reference_answer', claimNeedle: 'Confidence: 90%（功能相对独立）' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 7);
+  assert.equal(report.counts.targetClaims, 13);
+  assert.equal(report.counts.exactTextTargetsMatched, 13);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 1);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 7);
+  assert.equal(report.counts.recordsWithAllowedVerification, 7);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});

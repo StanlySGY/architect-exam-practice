@@ -3,16 +3,16 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 117,
-    "targetClaims": 316,
-    "exactTextTargetsMatched": 316,
+    "records": 122,
+    "targetClaims": 328,
+    "exactTextTargetsMatched": 328,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 38,
-    "recordsWithExternalSources": 29,
-    "recordsWithAllowedDisposition": 117,
-    "recordsWithAllowedVerification": 117,
+    "sourceEntries": 39,
+    "recordsWithExternalSources": 30,
+    "recordsWithAllowedDisposition": 122,
+    "recordsWithAllowedVerification": 122,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
@@ -25,7 +25,7 @@
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 53,
       "unsupported-exam-frequency-prediction": 5,
-      "illustrative-parameter-needs-context": 25,
+      "illustrative-parameter-needs-context": 30,
       "unverified-source-completeness-estimate": 1
     }
   },
@@ -890,7 +890,7 @@
       "recordId": "mock-essay-consistency-outcomes-unsubstantiated",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 6,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -909,6 +909,42 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-4",
           "field": "writingPoints",
           "claimNeedle": "日均处理1000万+笔交易",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "实现交易数据零差错",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "日交易量1000万+笔",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-4",
+          "field": "writingPoints",
+          "claimNeedle": "用户规模5000万+",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -4508,7 +4544,7 @@
       "recordId": "rice-confidence-90-percent-is-subjective-prioritization-input",
       "disposition": "illustrative-parameter-needs-context",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 2,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -4516,6 +4552,15 @@
       "targetChecks": [
         {
           "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Confidence: 90%（功能相对独立）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题2",
           "field": "reference_answer",
           "claimNeedle": "Confidence: 90%（功能相对独立）",
           "targetExists": true,
@@ -4723,6 +4768,145 @@
           "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
           "field": "reference_answer",
           "claimNeedle": "1分钟内振动值增长200%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "istio-canary-ten-percent-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "按用户比例10%的流量导入v2",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "exclusive-gpu-utilization-20-percent-needs-workload-measurement",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "资源浪费（GPU利用率20%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-chaos-engineering-baseline-slos-are-examples",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "请求成功率>99.9%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99延迟<500ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-quality-response-measures-are-examples",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "延迟<2s",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-unit-test-coverage-over-80-percent-is-project-goal",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年上半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "单元测试（覆盖率>80%）",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
