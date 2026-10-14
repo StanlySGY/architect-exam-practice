@@ -265,6 +265,11 @@
           "itemId": "case-real-2025年下半年-4:问题2",
           "field": "reference_answer",
           "claimNeedle": "最多丢失1秒数据"
+        },
+        {
+          "itemId": "case-real-2023年下半年-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "最多只丢失1秒数据"
         }
       ],
       "sourceEvidence": [
@@ -2774,6 +2779,125 @@
       "sourceEvidence": [],
       "conclusion": "5%灰度比例是模拟规则引擎发布流程中的初始阶段示例，不是适用于所有流量规模和风险等级的标准。低流量业务可能因样本量不足无法发现问题；高风险规则可能需要更小步进、更长观察窗或按业务分层。",
       "recommendedAction": "保留为可配置例子，并定义升级/回滚指标，例如保费差异、错误率、投诉、样本数、观察周期和自动回滚阈值。应按风险、流量和统计功效选择每阶段比例，而不是硬编码为5%。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-mtbf-target-values-are-illustrative",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Reliability essay guide: MTBF target examples are not universal requirements",
+      "targets": [
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "确定可靠性目标（如MTBF ≥ 1000小时）"
+        },
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "目标设定：MTBF ≥ 500小时"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "MTBF ≥ 1000小时和≥500小时出现在论文写作指导的可靠性目标/目标设定例子中，是用于讲解目标设计的示例值，不是历年真题的统一门槛，也不是已经测得的项目MTBF。",
+      "recommendedAction": "明确标记为目标设定示例；实际项目应按业务风险、系统边界、故障定义与观测数据提出可验证的MTBF目标，且区分目标值与实测值。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "fraud-risk-multiplier-threshold-needs-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Fraud score: three-times-history threshold is a tunable heuristic",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“超过用户历史平均3倍”是模拟风控特征中的启发式阈值，不能当作普遍有效的欺诈判定界线；其效能取决于用户基线分布、季节性、冷启动、误报/漏报成本及模型评估结果。",
+      "recommendedAction": "标为可调示例规则；在真实系统里通过带标签的历史样本验证阈值、分群表现、误报率/召回率及漂移，并配套人工复核与申诉机制。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "llm-routing-tier-sla-values-need-benchmark",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "LLM routing service-tier P99, throughput and availability are example SLAs",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "路由分级表中的P99低于100ms、吞吐大于1000 req/s、可用性99.99%是示例服务等级目标，未提供请求/响应token长度、并发、硬件/模型、计量窗口、错误预算或压测数据，不能读作已实现的线上性能。",
+      "recommendedAction": "将其标为示例SLO；如用于真实承诺，应定义端到端计时边界和可用性窗口，说明模型、输入/输出长度、并发/批处理、错误率及代表性负载，并提供可复现基准与监控数据。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "third-party-exam-reconstruction-percentage-is-self-reported",
+      "disposition": "unverified-source-completeness-estimate",
+      "topic": "Third-party source claim of 90% reconstruction completeness is not an official completeness rating",
+      "targets": [
+        {
+          "itemId": "case-real-2024年上半年-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "2024上半年真题-复原程度90%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "参考答案的来源清单把一条第三方CSDN资源描述为“复原程度90%”，但没有给出百分比的作者、统计方法、完整题目对照表或官方认证。该表述至多是二手资料作者的自述/标题，不能当作考试机构确认的真题完整度。",
+      "recommendedAction": "将该百分比标为第三方自述且未经独立核验；来源质量应另按是否提供可核对题目、原卷/扫描件、其他独立来源相互印证来评估，而不是直接采用90%作为置信分值。",
       "answerVerification": "not-established"
     }
   ]

@@ -3,16 +3,16 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 100,
-    "targetClaims": 272,
-    "exactTextTargetsMatched": 272,
+    "records": 104,
+    "targetClaims": 288,
+    "exactTextTargetsMatched": 288,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
     "sourceEntries": 32,
     "recordsWithExternalSources": 23,
-    "recordsWithAllowedDisposition": 100,
-    "recordsWithAllowedVerification": 100,
+    "recordsWithAllowedDisposition": 104,
+    "recordsWithAllowedVerification": 104,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
@@ -25,7 +25,8 @@
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 53,
       "unsupported-exam-frequency-prediction": 5,
-      "illustrative-parameter-needs-context": 10
+      "illustrative-parameter-needs-context": 13,
+      "unverified-source-completeness-estimate": 1
     }
   },
   "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；同一 itemId/field/claimNeedle 被跨记录重复登记会被标为无效。来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
@@ -348,7 +349,7 @@
       "recordId": "redis-aof-everysec-loss-bound",
       "disposition": "durability-bound-overstatement",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 3,
       "targetsOk": true,
       "sourceCount": 1,
       "sourceMetadataOk": true,
@@ -373,6 +374,15 @@
           "itemId": "case-real-2025年下半年-4:问题2",
           "field": "reference_answer",
           "claimNeedle": "最多丢失1秒数据",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-real-2023年下半年-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "最多只丢失1秒数据",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -4052,6 +4062,197 @@
           "itemId": "case-mock-2026年5月-模拟卷3-2:问题3",
           "field": "reference_answer",
           "claimNeedle": "第一阶段：5%流量使用新规则",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-mtbf-target-values-are-illustrative",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "确定可靠性目标（如MTBF ≥ 1000小时）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "目标设定：MTBF ≥ 500小时",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "fraud-risk-multiplier-threshold-needs-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "超过用户历史平均3倍时↑风险",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "llm-routing-tier-sla-values-need-benchmark",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 9,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "Gold    P99<100ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": ">1000req/s",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "third-party-exam-reconstruction-percentage-is-self-reported",
+      "disposition": "unverified-source-completeness-estimate",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-real-2024年上半年-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "2024上半年真题-复原程度90%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,

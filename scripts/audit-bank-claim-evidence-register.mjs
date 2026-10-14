@@ -14,6 +14,7 @@ const ALLOWED_DISPOSITIONS = new Set([
   'unsubstantiated-performance-claim',
   'unsupported-exam-frequency-prediction',
   'illustrative-parameter-needs-context',
+  'unverified-source-completeness-estimate',
 ]);
 const ALLOWED_VERIFICATIONS = new Set(['not-established', 'calculation-only']);
 const COLLECTIONS = ['choices', 'cases', 'essays'];

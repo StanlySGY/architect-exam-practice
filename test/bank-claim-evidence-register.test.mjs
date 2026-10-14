@@ -1351,3 +1351,69 @@ test('大模型权重容量、量化表现、特征时延与沙箱限额区分�
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('可靠性目标、风控阈值、服务SLO与第三方真题复原率均保留证据边界', () => {
+  const cases = [
+    { id: 'redis', subQuestions: [{ question_label: '问题1', reference_answer: 'everysec策略下最多只丢失1秒数据。' }] },
+    { id: 'fraud', subQuestions: ['问题1', '问题2', '问题3'].map(question_label => ({ question_label, reference_answer: '超过用户历史平均3倍时↑风险。' })) },
+    { id: 'llm', subQuestions: ['问题1', '问题2', '问题3'].map(question_label => ({ question_label, reference_answer: 'Gold    P99<100ms，>1000req/s，99.99%可用性。' })) },
+    { id: 'source', subQuestions: [{ question_label: '问题3', reference_answer: 'CSDN页面标题：2024上半年真题-复原程度90%。' }] },
+  ];
+  const essays = [{ id: 'mtbf', writingPoints: '确定可靠性目标（如MTBF ≥ 1000小时）；目标设定：MTBF ≥ 500小时。' }];
+  const records = [
+    {
+      recordId: 'redis',
+      disposition: 'durability-bound-overstatement',
+      targets: [{ itemId: 'redis:问题1', field: 'reference_answer', claimNeedle: '最多只丢失1秒数据' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'mtbf',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'mtbf', field: 'writingPoints', claimNeedle: '确定可靠性目标（如MTBF ≥ 1000小时）' },
+        { itemId: 'mtbf', field: 'writingPoints', claimNeedle: '目标设定：MTBF ≥ 500小时' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'fraud',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: ['问题1', '问题2', '问题3'].map(q => ({ itemId: 'fraud:' + q, field: 'reference_answer', claimNeedle: '超过用户历史平均3倍时↑风险' })),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'llm-slo',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: ['问题1', '问题2', '问题3'].flatMap(q => [
+        { itemId: 'llm:' + q, field: 'reference_answer', claimNeedle: 'Gold    P99<100ms' },
+        { itemId: 'llm:' + q, field: 'reference_answer', claimNeedle: '>1000req/s' },
+        { itemId: 'llm:' + q, field: 'reference_answer', claimNeedle: '99.99%' },
+      ]),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'source-completeness',
+      disposition: 'unverified-source-completeness-estimate',
+      targets: [{ itemId: 'source:问题3', field: 'reference_answer', claimNeedle: '2024上半年真题-复原程度90%' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 5);
+  assert.equal(report.counts.targetClaims, 16);
+  assert.equal(report.counts.exactTextTargetsMatched, 16);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 5);
+  assert.equal(report.counts.recordsWithAllowedVerification, 5);
+  assert.equal(report.counts.invalidRecords, 0);
+});
