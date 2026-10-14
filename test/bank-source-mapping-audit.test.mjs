@@ -76,13 +76,14 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 30);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 30);
-  assert.equal(review.sameNumberExactContentReviews.length, 30);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 30);
+  assert.equal(review.summary.sameNumberExactContentReviews, 44);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 44);
+  assert.equal(review.sameNumberExactContentReviews.length, 44);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 44);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
+  assert.equal(review.summary.sameNumberFifthBatchReviewed, 14);
   assert.equal(review.summary.sharedStemPairReviews, 4);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 4);
   assert.equal(review.sharedStemPairReviews.length, 4);
