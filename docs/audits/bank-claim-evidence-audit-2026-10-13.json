@@ -3,14 +3,14 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 57,
-    "targetClaims": 119,
-    "exactTextTargetsMatched": 119,
+    "records": 61,
+    "targetClaims": 139,
+    "exactTextTargetsMatched": 139,
     "targetClaimsUnmatched": 0,
     "sourceEntries": 25,
     "recordsWithExternalSources": 18,
-    "recordsWithAllowedDisposition": 57,
-    "recordsWithAllowedVerification": 57,
+    "recordsWithAllowedDisposition": 61,
+    "recordsWithAllowedVerification": 61,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 6,
@@ -21,8 +21,8 @@
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 32,
-      "unsupported-exam-frequency-prediction": 3
+      "unsubstantiated-performance-claim": 35,
+      "unsupported-exam-frequency-prediction": 4
     }
   },
   "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
@@ -1128,7 +1128,7 @@
       "recordId": "mock-essay-event-platform-outcome-metrics",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 5,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -1146,6 +1146,30 @@
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
           "field": "writingPoints",
           "claimNeedle": "响应延迟降低80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "日处理事件5亿+",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "端到端延迟P99<500ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统扩展到20+微服务零耦合",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true
@@ -1340,7 +1364,7 @@
       "recordId": "mock-essay-legal-rag-outcomes",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 3,
+      "targetCount": 4,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -1366,6 +1390,14 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
           "field": "writingPoints",
           "claimNeedle": "日均服务1000+律师咨询",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "律师满意度92%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true
@@ -1912,6 +1944,190 @@
           "itemId": "essay-mock-2026年5月-模拟卷7-1",
           "field": "writingPoints",
           "claimNeedle": "MTBF>48小时",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "unsupported-mock-essay-exam-predictions",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "dispositionAllowed": true,
+      "targetCount": 6,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-3",
+          "field": "writingPoints",
+          "claimNeedle": "大模型应用架构是2026年最可能出现的新方向题目",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "事件驱动架构在2025年已考过，2026年可能以不同角度再出（如结合微服务、IoT）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据治理是2026年预测热点方向",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-3",
+          "field": "writingPoints",
+          "claimNeedle": "多Agent系统是2026年最前沿的考试方向之一，结合大模型热点",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-1",
+          "field": "writingPoints",
+          "claimNeedle": "云原生是近年高频考点，2025下已考Serverless，2026年大概率考更广泛的云原生架构",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "RAG是2026年AI方向最可能出的论文题之一",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-resilience-availability-dr-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 4,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性达到99.99%（年停机时间<52.6分钟），零重大故障",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "年可用性99.99%，核心业务RTO<30秒、RPO=0",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "MTBF（>8760小时）、MTTR（<30分钟）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "运行3年无重大故障，可用性99.995%，灾备切换时间<15秒",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-llm-inference-optimization-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "推理吞吐量提升4倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99延迟降低60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "GPU利用率从30%提升到85%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-platform-migration-performance-compliance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "性能下降15-30%的调优",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "核心业务性能达到原系统的95%+",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "通过等保三级认证",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

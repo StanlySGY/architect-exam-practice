@@ -590,3 +590,74 @@ test('AI、零信任、实时架构与训练集群模拟成果数字需证据支
   assert.equal(report.counts.recordsWithAllowedVerification, 5);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('模拟论文的确定性考试趋势预测缺少历年统计时标记为未证实', () => {
+  const essays = [
+    { id: 'llm', writingPoints: '大模型应用架构是2026年最可能出现的新方向题目。' },
+    { id: 'event', writingPoints: '事件驱动架构在2025年已考过，2026年可能以不同角度再出（如结合微服务、IoT）。' },
+    { id: 'data', writingPoints: '数据治理是2026年预测热点方向。' },
+    { id: 'agent', writingPoints: '多Agent系统是2026年最前沿的考试方向之一，结合大模型热点。' },
+    { id: 'cloud', writingPoints: '云原生是近年高频考点，2025下已考Serverless，2026年大概率考更广泛的云原生架构。' },
+    { id: 'rag', writingPoints: 'RAG是2026年AI方向最可能出的论文题之一。' },
+  ];
+  const ids = ['llm', 'event', 'data', 'agent', 'cloud', 'rag'];
+  const needles = [
+    '大模型应用架构是2026年最可能出现的新方向题目',
+    '事件驱动架构在2025年已考过，2026年可能以不同角度再出（如结合微服务、IoT）',
+    '数据治理是2026年预测热点方向',
+    '多Agent系统是2026年最前沿的考试方向之一，结合大模型热点',
+    '云原生是近年高频考点，2025下已考Serverless，2026年大概率考更广泛的云原生架构',
+    'RAG是2026年AI方向最可能出的论文题之一',
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records: [{
+      recordId: 'exam-trends',
+      disposition: 'unsupported-exam-frequency-prediction',
+      targets: ids.map((id, i) => ({ itemId: id, field: 'writingPoints', claimNeedle: needles[i] })),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    }] },
+  );
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 6);
+  assert.equal(report.counts.exactTextTargetsMatched, 6);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 1);
+  assert.equal(report.counts.recordsWithAllowedVerification, 1);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
+test('模拟可靠性、推理和迁移成果需运行记录或可复现基准', () => {
+  const groups = [
+    ['reliability', [
+      '系统可用性达到99.99%（年停机时间<52.6分钟），零重大故障',
+      '年可用性99.99%，核心业务RTO<30秒、RPO=0',
+      'MTBF（>8760小时）、MTTR（<30分钟）',
+      '运行3年无重大故障，可用性99.995%，灾备切换时间<15秒',
+    ]],
+    ['event', ['日处理事件5亿+', '端到端延迟P99<500ms', '系统扩展到20+微服务零耦合']],
+    ['rag', ['律师满意度92%']],
+    ['inference', ['推理吞吐量提升4倍', 'P99延迟降低60%', 'GPU利用率从30%提升到85%']],
+    ['migration', ['性能下降15-30%的调优', '核心业务性能达到原系统的95%+', '通过等保三级认证']],
+  ];
+  const essays = groups.map(([id, needles]) => ({ id, writingPoints: needles.join('；') }));
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 5);
+  assert.equal(report.counts.targetClaims, 14);
+  assert.equal(report.counts.exactTextTargetsMatched, 14);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 5);
+  assert.equal(report.counts.recordsWithAllowedVerification, 5);
+  assert.equal(report.counts.invalidRecords, 0);
+});

@@ -937,11 +937,26 @@
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
           "field": "writingPoints",
           "claimNeedle": "响应延迟降低80%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "日处理事件5亿+"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "端到端延迟P99<500ms"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统扩展到20+微服务零耦合"
         }
       ],
       "sourceEvidence": [],
-      "conclusion": "该记录位于模拟论文写作提纲中，没有基线版本、负载模型、测量窗口、硬件/集群规模或压测报告来支持 10 倍与 80% 两个成果数字；它们应被视为练习情景中的示例数据，而不是已证实的系统结果。",
-      "recommendedAction": "可保留为明确标记的虚构/示例情景，但应提醒考生替换为本人项目可佐证的数字；如要当作实际成果，需补充原始压测与监控证据、统计口径及对比基线。",
+      "conclusion": "该记录位于模拟论文写作提纲中，没有基线版本、负载模型、测量窗口、硬件/集群规模或压测报告来支持 10 倍与 80% 两个成果数字；它们应被视为练习情景中的示例数据，而不是已证实的系统结果。 同一提纲中的日处理事件5亿+、P99低于500ms和扩展到20多个微服务也缺少流量分布、端到端压测、服务边界定义；“零耦合”应视为理想化表达而非可证明的字面零依赖。",
+      "recommendedAction": "可保留为明确标记的虚构/示例情景，但应提醒考生替换为本人项目可佐证的数字；如要当作实际成果，需补充原始压测与监控证据、统计口径及对比基线。 对日处理量和 P99 延迟提供压力测试、流量模型与持续时间；“零耦合”改成边界清晰、耦合受控等可论证表述。",
       "answerVerification": "not-established"
     },
     {
@@ -1088,11 +1103,16 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
           "field": "writingPoints",
           "claimNeedle": "日均服务1000+律师咨询"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "律师满意度92%"
         }
       ],
       "sourceEvidence": [],
-      "conclusion": "模拟法律RAG论文中的问答准确率、法律引用准确率与日均咨询量没有评估集、引用核对协议、统计窗口或运营记录支撑。",
-      "recommendedAction": "明确标记为模拟项目数据；真实陈述需说明测试集、准确率判定规则、评估样本量与时间段，并区分压测能力和真实咨询量。",
+      "conclusion": "模拟法律RAG论文中的问答准确率、法律引用准确率与日均咨询量没有评估集、引用核对协议、统计窗口或运营记录支撑。 提纲另称律师满意度92%，但未给出问卷题项、样本量、响应率、打分阈值或调查周期。",
+      "recommendedAction": "明确标记为模拟项目数据；真实陈述需说明测试集、准确率判定规则、评估样本量与时间段，并区分压测能力和真实咨询量。 满意度应明确问卷方法、样本量、回收率与时间窗。",
       "answerVerification": "not-established"
     },
     {
@@ -1468,6 +1488,130 @@
       "sourceEvidence": [],
       "conclusion": "模拟大模型训练集群提纲中的GPU MFU 55%+、日均训练100B+ tokens和MTBF大于48小时没有训练配置/硬件规模、计数范围、作业日志、故障分类或观测窗口。MFU也需明确分母和统计口径。",
       "recommendedAction": "明确标注为练习情景；真实项目需提供GPU型号/数量、模型与序列长度、MFU计算口径、训练Token统计规则，以及节点/作业故障日志与MTBF定义。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "unsupported-mock-essay-exam-predictions",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "topic": "Mock essay: deterministic 2026 exam-trend forecasts",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-3",
+          "field": "writingPoints",
+          "claimNeedle": "大模型应用架构是2026年最可能出现的新方向题目"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "事件驱动架构在2025年已考过，2026年可能以不同角度再出（如结合微服务、IoT）"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据治理是2026年预测热点方向"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-3",
+          "field": "writingPoints",
+          "claimNeedle": "多Agent系统是2026年最前沿的考试方向之一，结合大模型热点"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-1",
+          "field": "writingPoints",
+          "claimNeedle": "云原生是近年高频考点，2025下已考Serverless，2026年大概率考更广泛的云原生架构"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "RAG是2026年AI方向最可能出的论文题之一"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "这些句子位于模拟论文提纲/备考建议中，使用“最可能”“大概率”“预测热点”“高频考点”等措辞，但没有给出完整的官方历年试卷样本、主题分类方法、统计窗口和可复核的概率估计。关于往年是否考过某主题的分句，也应单独核对题目出处，不能由预测句本身证明。",
+      "recommendedAction": "把确定性押题语气改为“可关注/建议理解的方向”，明确这只是作者的备考判断，不是官方预测或统计结论；涉及历年题目事实时，另附准确年份、试卷题目及可靠来源定位。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-resilience-availability-dr-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: availability, reliability and disaster-recovery outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性达到99.99%（年停机时间<52.6分钟），零重大故障"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "年可用性99.99%，核心业务RTO<30秒、RPO=0"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "MTBF（>8760小时）、MTTR（<30分钟）"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-4",
+          "field": "writingPoints",
+          "claimNeedle": "运行3年无重大故障，可用性99.995%，灾备切换时间<15秒"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟可靠性论文中的99.99%/99.995%可用性、年停机低于52.6分钟、零重大故障、RTO/RPO目标、MTBF/MTTR阈值及灾备切换小于15秒等数字没有可复核的运行记录、测量窗口、计划维护排除项或灾备演练报告。",
+      "recommendedAction": "清楚标记为模拟示例；真实项目需提供时间窗口、可用性计算口径、故障/重大故障定义、RTO/RPO演练结果以及MTBF/MTTR的数据来源。把“零故障”等表述限定到观测期和事件定义。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-llm-inference-optimization-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: LLM inference throughput, latency and GPU utilization",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "推理吞吐量提升4倍"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99延迟降低60%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-3",
+          "field": "writingPoints",
+          "claimNeedle": "GPU利用率从30%提升到85%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟大模型推理优化提纲中的吞吐量提升4倍、P99延迟下降60%、GPU利用率从30%上升到85%没有基准模型/版本、硬件、并发与输入长度、吞吐定义或原始压测结果。",
+      "recommendedAction": "标记为示例结果；真实项目需给出硬件与模型配置、输入输出长度、并发与批处理参数、tokens/s 或 requests/s 的定义，以及端到端 p50/p95/p99 数据。GPU 利用率需注明监控指标及采样窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-platform-migration-performance-compliance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: database/platform migration performance retention and compliance",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "性能下降15-30%的调优"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "核心业务性能达到原系统的95%+"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-4",
+          "field": "writingPoints",
+          "claimNeedle": "通过等保三级认证"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟平台迁移提纲将性能下降15–30%、迁移后核心性能达到旧系统95%以上以及通过等保三级认证列为实施挑战/结果，但没有同负载基准、业务性能指标、兼容性测试报告或合规测评材料。",
+      "recommendedAction": "明确标注为模拟案例；真实迁移项目需对原系统与目标系统采用相同负载和环境做回归基准，说明性能指标/统计分位数，并提供认证测评的真实文件或准确名称。",
       "answerVerification": "not-established"
     }
   ]
