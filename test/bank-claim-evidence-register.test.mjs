@@ -1271,3 +1271,83 @@ test('软件维护类型分布比例标记为历史教学估计，并保留来�
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('同一案例参考答案挂载到多个小问时，各子题中的风险文本都可单独定位', () => {
+  const answer = '该服务的部署工具在2025年3月31日退役；不能将5分钟内修复bug视为有依据的交付保证。';
+  const bank = {
+    choices: [],
+    cases: [{
+      id: 'case',
+      subQuestions: [
+        { question_label: '问题1', reference_answer: answer },
+        { question_label: '问题2', reference_answer: answer },
+        { question_label: '问题3', reference_answer: '其他内容' },
+      ],
+    }],
+    essays: [],
+  };
+  const report = auditClaimEvidenceRegister(bank, { records: [{
+    recordId: 'retired-dependency',
+    disposition: 'retired-technology-needs-context',
+    targets: [
+      { itemId: 'case:问题1', field: 'reference_answer', claimNeedle: '5分钟内修复bug' },
+      { itemId: 'case:问题2', field: 'reference_answer', claimNeedle: '5分钟内修复bug' },
+    ],
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }] });
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 2);
+  assert.equal(report.counts.exactTextTargetsMatched, 2);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.duplicateTargetTuples, 0);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
+test('大模型权重容量、量化表现、特征时延与沙箱限额区分计算和实测', () => {
+  const cases = [
+    { id: 'llm', subQuestions: [{ question_label: '问题1', reference_answer: '原始：70B模型 × 4字节/参数 = 280GB显存需求（单卡A100仅80GB）；INT8：70B模型 × 1字节/参数 = 70GB显存；INT4：70B模型 × 0.5字节/参数 = 35GB显存；INT8速度2-3x、精度损失0.5-1%；INT4速度4-5x、精度损失2-3%。' }] },
+    { id: 'feature', subQuestions: [{ question_label: '问题2', reference_answer: '响应时间：p50 < 10ms, p99 < 50ms' }] },
+    { id: 'realtime', subQuestions: [{ question_label: '问题1', reference_answer: 'result = mlModel.predict(df) // 100ms内返回' }] },
+    { id: 'judge', subQuestions: [{ question_label: '问题2', reference_answer: '每次代码执行限制CPU时间（如5秒）和Wall时间（如10秒）；限制进程内存使用（如256MB）。' }] },
+    { id: 'canary', subQuestions: [{ question_label: '问题3', reference_answer: '第一阶段：5%流量使用新规则' }] },
+  ];
+  const records = [
+    { recordId: 'weights', disposition: 'assumption-sensitive-calculation', targets: [
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: '原始：70B模型 × 4字节/参数 = 280GB显存需求' },
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: 'INT8：70B模型 × 1字节/参数 = 70GB显存' },
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: 'INT4：70B模型 × 0.5字节/参数 = 35GB显存' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'quantization', disposition: 'unsubstantiated-performance-claim', targets: [
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: '2-3x' },
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: '0.5-1%' },
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: '4-5x' },
+      { itemId: 'llm:问题1', field: 'reference_answer', claimNeedle: '2-3%' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'feature-store', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'feature:问题2', field: 'reference_answer', claimNeedle: 'p50 < 10ms' },
+      { itemId: 'feature:问题2', field: 'reference_answer', claimNeedle: 'p99 < 50ms' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'realtime', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'realtime:问题1', field: 'reference_answer', claimNeedle: '100ms内返回' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'judge', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'judge:问题2', field: 'reference_answer', claimNeedle: 'CPU时间（如5秒）' },
+      { itemId: 'judge:问题2', field: 'reference_answer', claimNeedle: 'Wall时间（如10秒）' },
+      { itemId: 'judge:问题2', field: 'reference_answer', claimNeedle: '限制进程内存使用（如256MB）' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'canary', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'canary:问题3', field: 'reference_answer', claimNeedle: '第一阶段：5%流量使用新规则' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+  ];
+  const report = auditClaimEvidenceRegister({ choices: [], cases, essays: [] }, { reviewedOn: '2026-10-14', records });
+  assert.equal(report.counts.records, 6);
+  assert.equal(report.counts.targetClaims, 14);
+  assert.equal(report.counts.exactTextTargetsMatched, 14);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 6);
+  assert.equal(report.counts.recordsWithAllowedVerification, 6);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});

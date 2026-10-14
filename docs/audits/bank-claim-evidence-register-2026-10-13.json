@@ -127,6 +127,26 @@
           "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
           "field": "reference_answer",
           "claimNeedle": "CodePush (React Native)"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "5分钟内修复bug"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "5分钟内修复bug"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "CodePush (React Native)"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "CodePush (React Native)"
         }
       ],
       "sourceEvidence": [
@@ -286,6 +306,16 @@
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
           "field": "reference_answer",
           "claimNeedle": "TLS加密（不影响业务延迟）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "增加10-50ms的延迟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "将加密延迟控制在1-5ms"
         }
       ],
       "sourceEvidence": [
@@ -464,6 +494,26 @@
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "增大linger.ms（如0→20ms）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "增大batch.size（如64KB→256KB）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "增大batch.size（如64KB→256KB）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "增大linger.ms（如0→20ms）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题2",
           "field": "reference_answer",
           "claimNeedle": "增大linger.ms（如0→20ms）"
         }
@@ -716,6 +766,16 @@
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
           "field": "reference_answer",
           "claimNeedle": "需求条目数量从2024年的10条增加到12条"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "质量属性分析是每年必考题"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "需求条目数量从2024年的10条增加到12条"
         }
       ],
       "sourceEvidence": [],
@@ -753,6 +813,16 @@
           "itemId": "case-mock-2026年5月-模拟卷1-2:问题2",
           "field": "reference_answer",
           "claimNeedle": "完全与在线业务隔离，不影响MySQL性能"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "同步延迟通常在1秒以内（最终一致性）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "完全与在线业务隔离，不影响MySQL性能"
         }
       ],
       "sourceEvidence": [
@@ -777,6 +847,11 @@
       "targets": [
         {
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "实现端到端精确一次语义"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
           "field": "reference_answer",
           "claimNeedle": "实现端到端精确一次语义"
         }
@@ -978,6 +1053,16 @@
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷5-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "对绝大多数业务（响应时间>50ms）影响可忽略"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Envoy Sidecar单跳额外延迟通常在0.5-2ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题1",
           "field": "reference_answer",
           "claimNeedle": "对绝大多数业务（响应时间>50ms）影响可忽略"
         }
@@ -2222,6 +2307,26 @@
           "itemId": "case-mock-2026年5月-模拟卷2-2:问题3",
           "field": "reference_answer",
           "claimNeedle": "经过超时时间（如30秒）后，自动进入半开状态"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "失败率超过阈值（如50%）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "失败率超过阈值（如50%）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "经过超时时间（如30秒）后，自动进入半开状态"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "经过超时时间（如30秒）后，自动进入半开状态"
         }
       ],
       "sourceEvidence": [
@@ -2263,6 +2368,26 @@
           "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
           "field": "reference_answer",
           "claimNeedle": "任务执行超时（5分钟）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "每个Agent每30秒向Orchestrator发送心跳消息"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "连续3次未收到心跳（90秒）判定Agent故障"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "编码任务5分钟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "任务执行超时（5分钟）"
         }
       ],
       "sourceEvidence": [],
@@ -2277,6 +2402,16 @@
       "targets": [
         {
           "itemId": "case-mock-2026年5月-模拟卷2-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "相似度超过阈值（如85%）标记为可疑"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "相似度超过阈值（如85%）标记为可疑"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题2",
           "field": "reference_answer",
           "claimNeedle": "相似度超过阈值（如85%）标记为可疑"
         }
@@ -2308,6 +2443,16 @@
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "定期（如每5分钟）上报设备安全状态"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "缩短会话有效期（如30分钟）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题1",
           "field": "reference_answer",
           "claimNeedle": "定期（如每5分钟）上报设备安全状态"
         }
@@ -2366,6 +2511,11 @@
           "itemId": "case-mock-2026年5月-模拟卷5-1:问题2",
           "field": "reference_answer",
           "claimNeedle": "跨洲网络延迟高达100-300ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "跨洲网络延迟高达100-300ms"
         }
       ],
       "sourceEvidence": [],
@@ -2387,6 +2537,26 @@
           "itemId": "case-mock-2026年5月-模拟卷5-2:问题2",
           "field": "reference_answer",
           "claimNeedle": "每个执行器处理约10万商户的账单"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "理论耗时降至12分钟左右"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "理论耗时降至12分钟左右"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "每个执行器处理约10万商户的账单"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "每个执行器处理约10万商户的账单"
         }
       ],
       "sourceEvidence": [],
@@ -2401,6 +2571,16 @@
       "targets": [
         {
           "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "容量为100MB"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "容量为100MB"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
           "field": "reference_answer",
           "claimNeedle": "容量为100MB"
         }
@@ -2458,6 +2638,142 @@
       ],
       "conclusion": "20/25/50/5是常见的教学近似分布，但分类和来源口径并不完全一致。University at Albany 的维护演化教学参考指出，类似比例基于20世纪80年代初的研究，并列出21/25/50/4的分类；因此这些比例不能作为不分行业、年代、产品或维护活动分类的普遍定律。",
       "recommendedAction": "保留“约”字并注明这是一种历史/教学估计；建议给出来源与历史时间边界。若在实际项目中使用维护活动比例，应基于本组织的工单、工时与分类口径重新统计，并解释应急/预防工作如何归类。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "llm-70b-weight-memory-estimates-are-not-total-vram",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "70B parameter-count weight footprint under FP32/INT8/INT4 excludes runtime overhead",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "原始：70B模型 × 4字节/参数 = 280GB显存需求"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "INT8：70B模型 × 1字节/参数 = 70GB显存"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "INT4：70B模型 × 0.5字节/参数 = 35GB显存"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按纯权重存储的理论计算，70B参数×4 bytes≈280 GB，INT8每参数1 byte≈70 GB，INT4理想每参数0.5 byte≈35 GB。实际推理显存还要容纳量化元数据/缩放因子、KV cache、运行时缓冲、框架开销和并发请求；不同硬件及量化格式的实际占用也不一定等于理论权重字节数。",
+      "recommendedAction": "保留它作为“权重占用下限/近似值”的算术估算，避免标为完整的模型推理显存需求。若要判断单卡能否运行，应给出具体模型结构、量化格式、上下文长度、批大小、KV cache 配置及框架实测显存。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "llm-quantization-speed-and-quality-numbers-need-benchmark",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "INT8/INT4 speedup and accuracy-loss percentages are hardware/model-dependent",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "2-3x"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "0.5-1%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "4-5x"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "2-3%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“INT8 速度2–3倍、精度损失0.5–1%；INT4速度4–5倍、精度损失2–3%”未注明模型、GPU/推理引擎、量化方案、任务、评测集或基准实现。速度收益与质量损失随硬件内核、量化粒度、校准数据、上下文和任务而变化，这些百分比不能视为量化方法的通用固定结果。",
+      "recommendedAction": "将数字标成某一实验环境下的示例预期，或删除固定倍数/百分比。应报告模型版本、量化工具和配置、GPU及推理引擎、吞吐/时延测试条件，以及任务相关的质量评测集和基线。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "feature-store-p50-p99-targets-need-load-test",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Feature Store p50/p99 latency are target SLOs, not verified measurements",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "p50 < 10ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "p99 < 50ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "p50<10ms 与 p99<50ms 出现在特征 API 的架构设计说明中，但没有压测结果；它们应被理解为目标 SLO 或示例约束，而不是已经测得的性能。实际延迟取决于网络位置、缓存命中率、请求批量、存储后端、并发和特征计算路径。",
+      "recommendedAction": "明确标记为目标值。若作为性能承诺，提供代表性负载、并发和请求分布、缓存命中率、部署拓扑、测试持续时间、错误率及 p50/p95/p99 原始分布。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "realtime-feature-prediction-100ms-target-needs-benchmark",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Realtime feature/model prediction within 100 ms is a target, not a proven outcome",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "100ms内返回"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“100ms内返回”出现在架构伪代码的注释中，未指定计时起止点、特征获取、网络往返、模型推理、并发与尾延迟。因此它只能作为目标要求或示例注释，不能直接视为平台已达到的延迟。",
+      "recommendedAction": "说明是单个模型调用、特征 API 还是端到端请求延迟，并给出负载模型、模型硬件、缓存/网络条件和 p95/p99 基准；否则标为待验目标。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "online-judge-sandbox-limits-are-configurable-examples",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Online judge CPU/wall-time/memory caps are per-platform and per-problem settings",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "CPU时间（如5秒）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Wall时间（如10秒）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "限制进程内存使用（如256MB）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "5秒 CPU、10秒 wall time 和256MB内存均以“如”标为示例值，不是所有在线评测平台、题目或编程语言都适用的统一限额。时间/内存边界还受运行时、编译开销、资源隔离方式、硬件和题目约束影响。",
+      "recommendedAction": "明确作为沙箱策略示例；为每类题目/语言校准限制，并在隔离环境中测试正常解、极端合法输入、超时与内存耗尽行为。区分CPU时间和墙钟时间，且报告判题环境与超限处理方式。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "rule-engine-five-percent-canary-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Five-percent canary traffic is an example rollout stage, not a universal rule",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "第一阶段：5%流量使用新规则"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "5%灰度比例是模拟规则引擎发布流程中的初始阶段示例，不是适用于所有流量规模和风险等级的标准。低流量业务可能因样本量不足无法发现问题；高风险规则可能需要更小步进、更长观察窗或按业务分层。",
+      "recommendedAction": "保留为可配置例子，并定义升级/回滚指标，例如保费差异、错误率、投诉、样本数、观察周期和自动回滚阈值。应按风险、流量和统计功效选择每阶段比例，而不是硬编码为5%。",
       "answerVerification": "not-established"
     }
   ]

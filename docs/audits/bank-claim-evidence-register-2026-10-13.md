@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 94 个审查记录、222 个原文目标定位；其中 23 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 100 个审查记录、272 个原文目标定位；其中 23 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -249,3 +249,23 @@
 
 - software-maintenance-effort-distribution-needs-historical-scope：写作提纲将改正性维护约20%、适应性约25%、完善性约50%、预防性约5%列作维护工作量分布。University at Albany 的维护演化教学参考指出，传统教材中的类似分布是完善性50%、适应性25%、改正性21%、预防性4%，并注明这些比例基于20世纪80年代初的研究，未必反映当前情况；另一份课程笔记以约20/25/50/5呈现该教学估计。
 - 处置建议：保留“约”及历史/教学估计的边界，不将其写成所有项目通用的事实；具体组织应基于工单、工时和维护类别定义重新统计。来源：https://www.albany.edu/faculty/offutt/classes/maintEssays/maintEvolutionOverview.html 以及 https://www.dequidt.me/teaching/software-maintenance/lectures/010_intro/
+
+## 续查批次：案例参考答案的跨小问重复文本定位（2026-10-14）
+
+- 本批没有新增命题风险类别，而是将已登记的高风险声明补齐到同一案例中其他小问参考答案里，避免同一段综合参考答案因重复挂载在不同子题下而在定位审计中漏报。
+- 本次新增 36 个精确定位，其中覆盖 CodePush 退役与修复时效、TLS 延迟绝对断言、Kafka 批处理参数、架构质量属性押题、CQRS 同步时延、Kafka exactly-once、熔断参数、Agent 心跳/超时、反作弊相似度、Envoy Sidecar 延迟、零信任会话、跨洲链路时延、分片账单理想时间与车辆离线缓冲容量。
+- 这些扩展只增加 itemId/field/claimNeedle 的追踪位置，不新增审查记录，不改变结论或答案核验状态；外部题库仍保持只读。
+## 续查批次：模型显存、在线评测限制与特征服务性能目标（2026-10-14）
+
+- llm-70b-weight-memory-estimates-are-not-total-vram：70B 参数按 FP32/INT8/理想 INT4 权重分别估算为280/70/35GB，字节数计算可复算，但只表示权重近似占用，不包括KV cache、量化元数据、激活、运行时缓冲和并发开销。
+- llm-quantization-speed-and-quality-numbers-need-benchmark：INT8加速2–3倍且精度损失0.5–1%、INT4加速4–5倍且损失2–3%没有注明模型、硬件、推理引擎、量化配置或评测集，不可视为通用固定收益。
+- feature-store-p50-p99-targets-need-load-test：特征API的p50<10ms与p99<50ms是设计目标示例，没有压测数据支撑；如作为SLO承诺需报告代表性负载与原始分布。
+- realtime-feature-prediction-100ms-target-needs-benchmark：伪代码里的100ms内返回未定义计时边界，不能作为平台已达到的端到端时延结果。
+- online-judge-sandbox-limits-are-configurable-examples：CPU 5秒、wall time 10秒、内存256MB是在线评测沙箱示例限额，需按题目、语言、硬件和隔离方案校准。
+- rule-engine-five-percent-canary-is-configurable：规则灰度的5%流量是示例阶梯，不是通用最佳值；应结合风险、请求量、观察窗口和自动回滚阈值校准。
+
+本批中权重容量按参数量×每参数字节数复算为 calculation-only；速度、质量和延迟目标均没有独立测量证据，答案状态保持 not-established。
+
+### 共享案例参考答案的重复定位
+
+部分案例子题的 reference_answer 包含重复的长篇参考内容；本轮把已有审计目标扩展定位到这些文本确实重复出现的子题字段。新增定位用于明确字段覆盖，不应简单解释为独立缺陷数量。
