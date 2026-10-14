@@ -3,16 +3,16 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 104,
-    "targetClaims": 288,
-    "exactTextTargetsMatched": 288,
+    "records": 113,
+    "targetClaims": 304,
+    "exactTextTargetsMatched": 304,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 32,
-    "recordsWithExternalSources": 23,
-    "recordsWithAllowedDisposition": 104,
-    "recordsWithAllowedVerification": 104,
+    "sourceEntries": 35,
+    "recordsWithExternalSources": 26,
+    "recordsWithAllowedDisposition": 113,
+    "recordsWithAllowedVerification": 113,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
@@ -25,7 +25,7 @@
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 53,
       "unsupported-exam-frequency-prediction": 5,
-      "illustrative-parameter-needs-context": 13,
+      "illustrative-parameter-needs-context": 22,
       "unverified-source-completeness-estimate": 1
     }
   },
@@ -119,7 +119,7 @@
       "recordId": "aws-lambda-timeout-scope",
       "disposition": "supported-with-scope",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 2,
       "targetsOk": true,
       "sourceCount": 1,
       "sourceMetadataOk": true,
@@ -135,6 +135,15 @@
           "itemId": "mock-2026年5月-模拟卷2-029",
           "field": "analysis",
           "claimNeedle": "如AWS Lambda 15分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "单次函数执行时间有上限（如15分钟）",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -4253,6 +4262,285 @@
           "itemId": "case-real-2024年上半年-5:问题3",
           "field": "reference_answer",
           "claimNeedle": "2024上半年真题-复原程度90%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "v2x-20ms-latency-target-needs-scenario-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "本地MQTT Broker转发区域内V2V消息（延迟<20ms）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "紧急制动预警要求端到端<20ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "| P0（紧急） | 紧急制动预警、碰撞告警 | — | <20ms |",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "distributed-trace-10-percent-head-sampling-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷7-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "采样率10%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷7-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "采样率10%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "flink-sliding-window-five-minute-one-minute-is-workload-specific",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Flink滑动窗口：5分钟窗口，1分钟滑动步长",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Flink滑动窗口：5分钟窗口，1分钟滑动步长",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "predictive-maintenance-80-percent-failure-probability-threshold-needs-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "预测某设备7天内故障概率>80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "large-tenant-five-percent-share-is-scenario-assumption",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "大租户（用户数>1000，约占5%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "大租户（用户数>1000，约占5%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "two-second-slow-query-alert-threshold-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "对超过2秒的查询自动告警",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "exam-preload-and-autoscale-lead-times-need-traffic-model",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "考试开始前10分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "在考试前30分钟自动扩容",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "rice-confidence-90-percent-is-subjective-prioritization-input",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Confidence: 90%（功能相对独立）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "reliability-mtbf-1000-hour-value-is-example-goal",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "MTBF ≥ 1000小时",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,

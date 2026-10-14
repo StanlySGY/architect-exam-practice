@@ -1417,3 +1417,116 @@ test('可靠性目标、风控阈值、服务SLO与第三方真题复原率均�
   assert.equal(report.counts.recordsWithAllowedVerification, 5);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('车联网、采样、流处理和运维阈值均保留情境边界', () => {
+  const cases = [
+    { id: 'v2x', subQuestions: [
+      { question_label: '问题1', reference_answer: '本地MQTT Broker转发区域内V2V消息（延迟<20ms）。' },
+      { question_label: '问题2', reference_answer: '紧急制动预警要求端到端<20ms。' },
+      { question_label: '问题3', reference_answer: '| P0（紧急） | 紧急制动预警、碰撞告警 | — | <20ms |' },
+    ] },
+    { id: 'tracing', subQuestions: [
+      { question_label: '问题1', reference_answer: '头部采样可采用概率采样（如采样率10%）。' },
+      { question_label: '问题2', reference_answer: '头部采样可采用概率采样（如采样率10%）。' },
+    ] },
+    { id: 'flink', subQuestions: [
+      { question_label: '问题1', reference_answer: 'Flink滑动窗口：5分钟窗口，1分钟滑动步长。' },
+      { question_label: '问题2', reference_answer: 'Flink滑动窗口：5分钟窗口，1分钟滑动步长。' },
+    ] },
+    { id: 'prediction', subQuestions: [{ question_label: '问题3', reference_answer: '预测某设备7天内故障概率>80%。' }] },
+    { id: 'tenant', subQuestions: [
+      { question_label: '问题1', reference_answer: '大租户（用户数>1000，约占5%）。' },
+      { question_label: '问题2', reference_answer: '大租户（用户数>1000，约占5%）。' },
+    ] },
+    { id: 'slow-query', subQuestions: [{ question_label: '问题3', reference_answer: '对超过2秒的查询自动告警。' }] },
+    { id: 'preload', subQuestions: [{ question_label: '问题1', reference_answer: '考试开始前10分钟预加载试卷，在考试前30分钟自动扩容。' }] },
+    { id: 'rice', subQuestions: [{ question_label: '问题1', reference_answer: 'Confidence: 90%（功能相对独立）。' }] },
+  ];
+  const essays = [
+    { id: 'maintenance', writingPoints: '确定可靠性目标（如MTBF ≥ 1000小时）。' },
+    { id: 'faas', writingPoints: '单次函数执行时间有上限（如15分钟）。' },
+  ];
+  const choices = [{ id: 'lambda', analysis: '例如AWS Lambda 15分钟。' }];
+  const records = [
+    { recordId: 'v2x', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'v2x:问题1', field: 'reference_answer', claimNeedle: '本地MQTT Broker转发区域内V2V消息（延迟<20ms）' },
+      { itemId: 'v2x:问题2', field: 'reference_answer', claimNeedle: '紧急制动预警要求端到端<20ms' },
+      { itemId: 'v2x:问题3', field: 'reference_answer', claimNeedle: '| P0（紧急） | 紧急制动预警、碰撞告警 | — | <20ms |' },
+    ], sourceEvidence: [{
+      url: 'https://www.etsi.org/deliver/etsi_ts/122100_122199/122186/16.02.00_60/ts_122186v160200p.pdf',
+      title: 'Service requirements for enhanced V2X scenarios',
+      publisher: 'ETSI / 3GPP',
+      sourceKind: 'technical-standard',
+      checkedOn: '2026-10-14',
+      supports: '不同V2X场景具有不同最大端到端时延要求，包括部分场景10ms、20ms以及更大的值。',
+      limitations: '不能据此证明所有MEC/MQTT路径通用达到20ms。',
+    }], answerVerification: 'not-established' },
+    { recordId: 'tracing', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'tracing:问题1', field: 'reference_answer', claimNeedle: '采样率10%' },
+      { itemId: 'tracing:问题2', field: 'reference_answer', claimNeedle: '采样率10%' },
+    ], sourceEvidence: [{
+      url: 'https://opentelemetry.io/docs/languages/js/sampling/',
+      title: 'Sampling',
+      publisher: 'OpenTelemetry official documentation',
+      sourceKind: 'official-project-documentation',
+      checkedOn: '2026-10-14',
+      supports: 'TraceIdRatioBasedSampler支持配置采样比例，例如10%。',
+      limitations: '比例可配置，SDK默认行为并不统一；10%并非所有服务的最佳比例。',
+    }], answerVerification: 'not-established' },
+    { recordId: 'flink', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'flink:问题1', field: 'reference_answer', claimNeedle: 'Flink滑动窗口：5分钟窗口，1分钟滑动步长' },
+      { itemId: 'flink:问题2', field: 'reference_answer', claimNeedle: 'Flink滑动窗口：5分钟窗口，1分钟滑动步长' },
+    ], sourceEvidence: [{
+      url: 'https://nightlies.apache.org/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/windowing/assigners/SlidingEventTimeWindows.html',
+      title: 'SlidingEventTimeWindows',
+      publisher: 'Apache Flink official documentation',
+      sourceKind: 'official-project-documentation',
+      checkedOn: '2026-10-14',
+      supports: '滑动窗口显式配置窗口大小与滑动间隔。',
+      limitations: '文档不规定5分钟/1分钟是所有流处理场景的最佳值。',
+    }], answerVerification: 'not-established' },
+    { recordId: 'prediction', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'prediction:问题3', field: 'reference_answer', claimNeedle: '预测某设备7天内故障概率>80%' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'tenant', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'tenant:问题1', field: 'reference_answer', claimNeedle: '大租户（用户数>1000，约占5%）' },
+      { itemId: 'tenant:问题2', field: 'reference_answer', claimNeedle: '大租户（用户数>1000，约占5%）' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'slow-query', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'slow-query:问题3', field: 'reference_answer', claimNeedle: '对超过2秒的查询自动告警' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'preload', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'preload:问题1', field: 'reference_answer', claimNeedle: '考试开始前10分钟' },
+      { itemId: 'preload:问题1', field: 'reference_answer', claimNeedle: '在考试前30分钟自动扩容' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'rice', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'rice:问题1', field: 'reference_answer', claimNeedle: 'Confidence: 90%（功能相对独立）' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'maintenance', disposition: 'illustrative-parameter-needs-context', targets: [
+      { itemId: 'maintenance', field: 'writingPoints', claimNeedle: 'MTBF ≥ 1000小时' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'faas', disposition: 'supported-with-scope', targets: [
+      { itemId: 'lambda', field: 'analysis', claimNeedle: 'AWS Lambda 15分钟' },
+      { itemId: 'faas', field: 'writingPoints', claimNeedle: '单次函数执行时间有上限（如15分钟）' },
+    ], sourceEvidence: [{
+      url: 'https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html',
+      title: 'Lambda quotas',
+      publisher: 'AWS official documentation',
+      sourceKind: 'vendor-documentation',
+      checkedOn: '2026-10-14',
+      supports: 'AWS Lambda普通函数超时上限是15分钟。',
+      limitations: '该限制不能推广为所有FaaS平台或所有Lambda执行模式的通用限制。',
+    }], answerVerification: 'not-established' },
+  ];
+  const report = auditClaimEvidenceRegister({ choices, cases, essays }, { reviewedOn: '2026-10-14', records });
+  assert.equal(report.counts.records, 10);
+  assert.equal(report.counts.targetClaims, 17);
+  assert.equal(report.counts.exactTextTargetsMatched, 17);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 4);
+  assert.equal(report.counts.recordsWithExternalSources, 4);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 10);
+  assert.equal(report.counts.recordsWithAllowedVerification, 10);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});

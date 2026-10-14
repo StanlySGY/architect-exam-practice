@@ -80,6 +80,11 @@
           "itemId": "mock-2026年5月-模拟卷2-029",
           "field": "analysis",
           "claimNeedle": "如AWS Lambda 15分钟"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "单次函数执行时间有上限（如15分钟）"
         }
       ],
       "sourceEvidence": [
@@ -2898,6 +2903,210 @@
       "sourceEvidence": [],
       "conclusion": "参考答案的来源清单把一条第三方CSDN资源描述为“复原程度90%”，但没有给出百分比的作者、统计方法、完整题目对照表或官方认证。该表述至多是二手资料作者的自述/标题，不能当作考试机构确认的真题完整度。",
       "recommendedAction": "将该百分比标为第三方自述且未经独立核验；来源质量应另按是否提供可核对题目、原卷/扫描件、其他独立来源相互印证来评估，而不是直接采用90%作为置信分值。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "v2x-20ms-latency-target-needs-scenario-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "V2X latency budgets differ by standardized use case and measurement path",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "本地MQTT Broker转发区域内V2V消息（延迟<20ms）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "紧急制动预警要求端到端<20ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "| P0（紧急） | 紧急制动预警、碰撞告警 | — | <20ms |"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://www.etsi.org/deliver/etsi_ts/122100_122199/122186/16.02.00_60/ts_122186v160200p.pdf",
+          "title": "ETSI TS 122 186 V16.2.0 / 3GPP TS 22.186 Release 16: Service requirements for enhanced V2X scenarios",
+          "publisher": "ETSI / 3GPP",
+          "sourceKind": "technical-standard",
+          "checkedOn": "2026-10-14",
+          "supports": "TS 22.186 sets scenario-specific maximum end-to-end latency requirements, including 10 ms for cooperative collision avoidance and 20 ms for selected cooperative-lane-change/platooning scenarios, while other scenarios have different requirements.",
+          "limitations": "The standard does not mean that every V2X, MEC, MQTT, or cloud path universally meets 20 ms. Applicability depends on the specific use case, message load, communication interface, reliability requirement, and where latency is measured."
+        }
+      ],
+      "conclusion": "20 ms can be an appropriate budget for selected safety-critical V2X scenarios but is not a universal latency characteristic of a generic MEC/MQTT design. The learning answer mixes local broker latency, direct radio path, and end-to-end use-case latency, which must be clearly distinguished.",
+      "recommendedAction": "Label the value as a scenario-specific target. State whether the clock covers application processing, radio transmission, MEC forwarding, and receiver processing; measure under the specified payload, message rate, mobility and reliability conditions. Do not imply an architecture description itself proves this SLO is met.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "distributed-trace-10-percent-head-sampling-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "A 10 percent head-sampling ratio is an example setting, not a universal default",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷7-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "采样率10%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷7-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "采样率10%"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://opentelemetry.io/docs/languages/js/sampling/",
+          "title": "Sampling",
+          "publisher": "OpenTelemetry official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "OpenTelemetry supports a configurable TraceIdRatioBasedSampler; a ratio of 0.1 means sampling 10% of traces in the documented JavaScript SDK.",
+          "limitations": "The page also documents that the JavaScript SDK default samples all traces. A 10% ratio is a configurable example, not a universal default or best ratio for every service."
+        }
+      ],
+      "conclusion": "The answer presents 10% as a common probability-sampling example, which is a valid configurable value but not a universal recommendation. Appropriate sampling depends on traffic volume, telemetry cost, retention policy, error/slow-trace capture needs and whether head-based or tail-based sampling is used.",
+      "recommendedAction": "Keep the percentage explicitly illustrative. In production, set the ratio using observed volume/cost and coverage goals; pair head sampling with separate strategies for retaining errors and slow traces where needed.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "flink-sliding-window-five-minute-one-minute-is-workload-specific",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Flink sliding-window size and slide interval are explicit workload settings",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Flink滑动窗口：5分钟窗口，1分钟滑动步长"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Flink滑动窗口：5分钟窗口，1分钟滑动步长"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://nightlies.apache.org/flink/flink-docs-stable/api/java/org/apache/flink/streaming/api/windowing/assigners/SlidingEventTimeWindows.html",
+          "title": "SlidingEventTimeWindows",
+          "publisher": "Apache Flink official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "Flink sliding windows explicitly take a window size and a slide interval; these are parameters of the window assigner.",
+          "limitations": "The API does not prescribe five minutes/one minute as universal defaults or as an optimum for all stream workloads. Event-time/processing-time semantics, lateness, data rate and alert requirements affect selection."
+        }
+      ],
+      "conclusion": "Five-minute windows with one-minute slides are a valid configurable example; they are not a universal monitoring rule. A one-minute slide implies overlapping window computations and must meet the desired detection delay without excessive compute or duplicate-alert noise.",
+      "recommendedAction": "Mark these intervals as example values. Select window/slide from signal frequency, tolerated detection delay, event-time lateness, compute cost and false-alarm behavior; test the selected event-time and late-data semantics.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "predictive-maintenance-80-percent-failure-probability-threshold-needs-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "An 80 percent predicted-failure threshold is a decision-policy example requiring calibration",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "预测某设备7天内故障概率>80%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The 80% threshold within a seven-day horizon is an example rule for opening a maintenance work order, not a validated decision threshold. Its utility depends on calibrated probabilities, base failure rate, false-negative/false-positive costs, maintenance lead time and work-order capacity.",
+      "recommendedAction": "Keep the condition marked as an example policy. Calibrate against time-based validation data, report precision/recall and calibration by horizon, and choose the threshold based on expected maintenance cost and missed-failure risk.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "large-tenant-five-percent-share-is-scenario-assumption",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "The share of large tenants is a scenario assumption, not an observed universal distribution",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "大租户（用户数>1000，约占5%）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "大租户（用户数>1000，约占5%）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The “about 5%” large-tenant proportion is an assumed distribution for the tiered database design example. Without tenant census/usage data, it cannot be generalized to SaaS products or used as a reliable cost/operations forecast.",
+      "recommendedAction": "State it as a hypothetical planning assumption. For a real system, calculate the tenant share using an explicit threshold and snapshot period, and validate it against storage, request rate, connection count and workload skew rather than tenant count alone.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "two-second-slow-query-alert-threshold-is-configurable",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "A two-second slow-query alert threshold depends on query class and service objectives",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "对超过2秒的查询自动告警"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "Two seconds is a sample threshold in the tenant-isolation case. It may be useful for some workload classes but too loose for interactive APIs or too noisy for long-running analytical queries; it is not a universal database threshold.",
+      "recommendedAction": "Label as an example and define separate thresholds by query/workload class, latency SLO and baseline percentile. Use query plans, rows examined, resource saturation and rate of slow queries in addition to a single duration cutoff.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "exam-preload-and-autoscale-lead-times-need-traffic-model",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Exam preload and autoscaling lead times should be derived from measured startup and distribution times",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "考试开始前10分钟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "在考试前30分钟自动扩容"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "Preloading 10 minutes before the exam and scaling 30 minutes before start are scenario values rather than proven optimal lead times. Suitability depends on CDN propagation/cache warmup, startup and readiness distributions, the registration schedule, forecast concurrency and capacity ramp limits.",
+      "recommendedAction": "Mark both lead times as examples. Determine them from load tests of content distribution, cache-hit readiness and autoscaling warmup at expected exam concurrency; add safety margins for p95/p99 startup and validate no burst is shifted onto authentication or answer-save services.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "rice-confidence-90-percent-is-subjective-prioritization-input",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "RICE confidence score is an estimate for prioritization, not necessarily a calibrated probability",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Confidence: 90%（功能相对独立）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The 90% confidence value is an illustrative RICE score input. Unless backed by a defined calibration method, historical outcomes and consistent rating rubric, it should not be interpreted as a statistically calibrated 90% probability that the project estimate is correct.",
+      "recommendedAction": "Mark the value as a hypothetical scoring input. Use a consistent rubric (e.g., high/medium/low mapped to percentages), state what uncertainty the confidence represents and review estimates against actual reach/impact after delivery.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "reliability-mtbf-1000-hour-value-is-example-goal",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "MTBF of at least 1000 hours is a sample reliability goal, not a measured result",
+      "targets": [
+        {
+          "itemId": "essay-real-2023年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "MTBF ≥ 1000小时"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The phrase appears as an example reliability objective in the supplementary writing outline, not in the original exam prompt and not as a tested system result. A meaningful MTBF target depends on failure definition, operating exposure, population and statistical confidence.",
+      "recommendedAction": "Label as a hypothetical target. If stated as an achieved outcome, provide a consistent failure definition, accumulated operating hours, event count, observation period and confidence interval or estimation method.",
       "answerVerification": "not-established"
     }
   ]

@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 104 个审查记录、288 个原文目标定位；其中 23 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 113 个审查记录、304 个原文目标定位；其中 23 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -279,3 +279,17 @@
 - third-party-exam-reconstruction-percentage-is-self-reported：2024年上半年案例来源清单引用第三方页面“复原程度90%”，但没有说明计分方法、完整题目对照或官方认证；应标记为第三方自述，不把90%当作独立验证的真题完整率。
 
 新增来源质量类别为 unverified-source-completeness-estimate，用于区分第三方来源自述与考试机构/原卷的权威确认。
+## 续查批次：车联网延迟、采样比例和运维策略参数（2026-10-14）
+
+- v2x-20ms-latency-target-needs-scenario-scope：20ms对于部分V2X安全/协同场景可能是合适目标，但不同场景标准约束存在10/20/100ms等差异；需明确是本地MEC转发、直接V2V无线链路还是端到端测量，并注明负载、消息大小和可靠性条件。来源：ETSI/3GPP TS 22.186 Release 16。
+- distributed-trace-10-percent-head-sampling-is-configurable：OpenTelemetry支持可配置的trace比例采样，10%是可用配置示例；不是所有SDK的默认值，也不是所有业务的最佳比例。来源：OpenTelemetry JavaScript Sampling文档。
+- flink-sliding-window-five-minute-one-minute-is-workload-specific：Flink的窗口大小和滑动间隔是显式配置参数；5分钟窗口和1分钟滑动步长是示例，需要根据事件频率、告警延迟、迟到数据和计算成本选择。来源：Apache Flink SlidingEventTimeWindows API。
+- predictive-maintenance-80-percent-failure-probability-threshold-needs-calibration：七天内故障概率超过80%才生成工单是策略示例，需要概率校准、误报/漏报代价与维护能力支持。
+- large-tenant-five-percent-share-is-scenario-assumption：用户数超过1000的“大租户约占5%”是分级租户方案的假设，需用实际租户分布、存储和请求负载核实。
+- two-second-slow-query-alert-threshold-is-configurable：2秒慢查询阈值应依查询类型、SLO和实际延迟分布配置，不是通用数据库标准。
+- exam-preload-and-autoscale-lead-times-need-traffic-model：考前10分钟预加载、考前30分钟扩容应由CDN传播、缓存预热、启动时间和预计并发压测决定。
+- rice-confidence-90-percent-is-subjective-prioritization-input：RICE示例里的90% Confidence是优先级评估输入；没有校准和历史数据时，不能当作统计意义上的90%成功概率。
+- reliability-mtbf-1000-hour-value-is-example-goal：真题主题写作提纲里的MTBF≥1000小时是示例可靠性目标，不是官方题面事实或测量结果；实际陈述需给出运行小时数、故障定义、观察期和估计方法。
+- aws-lambda-timeout-scope已增加对essay-real-2025年下半年-1的定位：写作提纲把15分钟作为一般FaaS执行时间例子；AWS Lambda官方资料只支持特定Lambda执行模式的限制，不能据此推广为所有FaaS平台的通用上限。
+
+新增的参数阈值均保持 answerVerification=not-established；官方标准/产品文档只用于界定适用范围，不自动验证整道题答案。
