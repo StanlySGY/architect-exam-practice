@@ -417,6 +417,16 @@
           "itemId": "mock-2026年5月-模拟卷7-057",
           "field": "analysis",
           "claimNeedle": "525960×0.0001≈52.6分钟"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-057",
+          "field": "analysis",
+          "claimNeedle": "99.99%可用性意味着0.01%的不可用时间"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-057",
+          "field": "analysis",
+          "claimNeedle": "每年=365.25×24×60≈525960分钟"
         }
       ],
       "sourceEvidence": [],
@@ -1913,6 +1923,106 @@
       "conclusion": "百万级QPS、零超卖与可用性99.99%是写作提纲里的项目效果数字，没有压测请求模型/错误率、超卖对账和故障窗口/可用性统计。",
       "recommendedAction": "标记为示例；真实陈述应有压测报告、库存一致性审计、峰值流量定义、监控和可用性计量窗口。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cache-tag-binary-prefix-calculation",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Direct-mapped cache Tag-bit calculation and binary MB/KB convention",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "Cache共有2^19/2^6=2^13个块"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "标记位=28-13-6=9位"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按题目常见的二进制容量约定，256MB=2^28 B、512KB=2^19 B、64B=2^6 B；Cache 有 2^13 行，主存地址标记位为 28−13−6=9 位，选项 A 与该约定一致。若将 MB/KB 解作十进制 SI 单位，位数前提不同，题目应明示约定。",
+      "recommendedAction": "标记为带二进制单位前提的计算复核；建议在解析明确 1MB=2^20 B、1KB=2^10 B，而不是把缩写约定当作无歧义定义。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "round-robin-timeslice-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Round-robin CPU time per process over a 100 ms cycle",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-001",
+          "field": "analysis",
+          "claimNeedle": "5×20=100ms"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷6-001",
+          "field": "analysis",
+          "claimNeedle": "每个进程在100ms内获得1个时间片即20ms的CPU时间"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "不计进程切换开销且 5 个进程均在就绪队列轮流得到一个完整时间片时，一轮为 5×20ms=100ms，每个进程在此轮获得 20ms CPU 时间，答案 B 与题设一致。",
+      "recommendedAction": "保留题设前提“不考虑切换开销”和“5 个进程都持续就绪”；计算复核不证明题源或其他调度细节。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "mttf-990-mttr-10-availability-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Availability calculation from MTTF 990 h and MTTR 10 h",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-055",
+          "field": "analysis",
+          "claimNeedle": "990 / (990 + 10) = 990/1000 = 99%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按 A=MTTF/(MTTF+MTTR) 的给定口径，990/(990+10)=990/1000=0.99，即 99%，与选项 A 一致。",
+      "recommendedAction": "保留公式与给定时间口径；此项仅复核算术和常用稳态可用性模型内的答案，不替代题源核验。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "two-level-index-file-size-binary-prefix-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Two-level file index capacity under 4 KiB blocks",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-007",
+          "field": "analysis",
+          "claimNeedle": "4KB/4B=1024个地址"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-007",
+          "field": "analysis",
+          "claimNeedle": "最大文件=1024×1024×4KB=1024²×4KB=4GB"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按 4 KiB 数据/索引块和 4-byte block address，单个索引块可放 1024 个地址，二级索引覆盖 1024² 个数据块，总容量 1024²×4 KiB=4 GiB。数值与选项 A 在二进制单位习惯下吻合，但题目使用 KB/GB 缩写时需说明是否按 1024 换算。",
+      "recommendedAction": "明确采用 KiB/GiB 或写出 1KB=1024B 的题设约定；若“二级索引”含义在教材中有不同定义，应同步说明这是两层索引块的解释。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "real-2020-break-even-point-calculation",
+      "disposition": "calculation-reproduced",
+      "topic": "Break-even sales volume under variable cost and tax assumptions",
+      "targets": [
+        {
+          "itemId": "real-2020年下半年-070",
+          "field": "analysis",
+          "claimNeedle": "可变成本比例=4000/6250=64%"
+        },
+        {
+          "itemId": "real-2020年下半年-070",
+          "field": "analysis",
+          "claimNeedle": "解得X=5000台"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按题面售价 2500 元、销量 25000 台、可变成本 4000 万元、固定成本 250 万元与税率 16% 口径，总营收 6250 万元，可变成本率 64%，贡献比例为 1−0.64−0.16=0.20。盈亏平衡销量为 250 万/(2500×0.20)=5000 台，与选项 A 一致。该推导假定单位售价、可变成本率与税率随销量保持不变。",
+      "recommendedAction": "保留上述税率/可变成本率模型假设，并说明固定成本与单位售价/可变成本按该模型处理；只复核给定数据下的算术，不扩展为普遍商业估计。",
+      "answerVerification": "calculation-only"
     }
   ]
 }

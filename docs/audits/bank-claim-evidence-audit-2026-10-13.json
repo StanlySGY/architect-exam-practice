@@ -3,22 +3,22 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 76,
-    "targetClaims": 166,
-    "exactTextTargetsMatched": 166,
+    "records": 81,
+    "targetClaims": 177,
+    "exactTextTargetsMatched": 177,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
     "sourceEntries": 25,
     "recordsWithExternalSources": 18,
-    "recordsWithAllowedDisposition": 76,
-    "recordsWithAllowedVerification": 76,
+    "recordsWithAllowedDisposition": 81,
+    "recordsWithAllowedVerification": 81,
     "invalidRecords": 0,
     "byDisposition": {
-      "calculation-reproduced": 5,
+      "calculation-reproduced": 8,
       "internal-definition-conflict": 1,
       "supported-with-scope": 5,
-      "assumption-sensitive-calculation": 2,
+      "assumption-sensitive-calculation": 4,
       "retired-technology-needs-context": 1,
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
@@ -517,7 +517,7 @@
       "recordId": "availability-four-nines-downtime-calculation",
       "disposition": "calculation-reproduced",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 3,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -527,6 +527,24 @@
           "itemId": "mock-2026年5月-模拟卷7-057",
           "field": "analysis",
           "claimNeedle": "525960×0.0001≈52.6分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-057",
+          "field": "analysis",
+          "claimNeedle": "99.99%可用性意味着0.01%的不可用时间",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-057",
+          "field": "analysis",
+          "claimNeedle": "每年=365.25×24×60≈525960分钟",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -2728,6 +2746,157 @@
         }
       ],
       "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "cache-tag-binary-prefix-calculation",
+      "disposition": "assumption-sensitive-calculation",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "Cache共有2^19/2^6=2^13个块",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "标记位=28-13-6=9位",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "round-robin-timeslice-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-001",
+          "field": "analysis",
+          "claimNeedle": "5×20=100ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷6-001",
+          "field": "analysis",
+          "claimNeedle": "每个进程在100ms内获得1个时间片即20ms的CPU时间",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mttf-990-mttr-10-availability-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷6-055",
+          "field": "analysis",
+          "claimNeedle": "990 / (990 + 10) = 990/1000 = 99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "two-level-index-file-size-binary-prefix-assumption",
+      "disposition": "assumption-sensitive-calculation",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-007",
+          "field": "analysis",
+          "claimNeedle": "4KB/4B=1024个地址",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-007",
+          "field": "analysis",
+          "claimNeedle": "最大文件=1024×1024×4KB=1024²×4KB=4GB",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-2020-break-even-point-calculation",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "real-2020年下半年-070",
+          "field": "analysis",
+          "claimNeedle": "可变成本比例=4000/6250=64%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2020年下半年-070",
+          "field": "analysis",
+          "claimNeedle": "解得X=5000台",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
       "answerVerificationAllowed": true
     }
   ],

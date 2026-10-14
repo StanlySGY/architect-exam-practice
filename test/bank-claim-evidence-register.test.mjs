@@ -763,3 +763,51 @@ test('同一题目字段与声明不得跨登记记录重复计数', () => {
   assert.ok(report.records.every(record => record.targetsOk === false));
   assert.ok(report.records.every(record => record.targetChecks[0].duplicateRegistration === true));
 });
+
+test('选择题计算审计区分纯算术复核与单位/模型敏感前提', () => {
+  const choices = [
+    { id: 'cache', analysis: 'Cache共有2^19/2^6=2^13个块。标记位=28-13-6=9位。' },
+    { id: 'rr', analysis: '5×20=100ms。每个进程在100ms内获得1个时间片即20ms的CPU时间。' },
+    { id: 'avail', analysis: '990 / (990 + 10) = 990/1000 = 99%' },
+    { id: 'index', analysis: '4KB/4B=1024个地址；最大文件=1024×1024×4KB=1024²×4KB=4GB' },
+    { id: 'break-even', analysis: '可变成本比例=4000/6250=64%；解得X=5000台' },
+    { id: 'four-nines', analysis: '99.99%可用性意味着0.01%的不可用时间；每年=365.25×24×60≈525960分钟。525960×0.0001≈52.6分钟' },
+  ];
+  const records = [
+    { recordId: 'cache', disposition: 'assumption-sensitive-calculation', targets: [
+      { itemId: 'cache', field: 'analysis', claimNeedle: 'Cache共有2^19/2^6=2^13个块' },
+      { itemId: 'cache', field: 'analysis', claimNeedle: '标记位=28-13-6=9位' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'rr', disposition: 'calculation-reproduced', targets: [
+      { itemId: 'rr', field: 'analysis', claimNeedle: '5×20=100ms' },
+      { itemId: 'rr', field: 'analysis', claimNeedle: '每个进程在100ms内获得1个时间片即20ms的CPU时间' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'avail', disposition: 'calculation-reproduced', targets: [
+      { itemId: 'avail', field: 'analysis', claimNeedle: '990 / (990 + 10) = 990/1000 = 99%' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'index', disposition: 'assumption-sensitive-calculation', targets: [
+      { itemId: 'index', field: 'analysis', claimNeedle: '4KB/4B=1024个地址' },
+      { itemId: 'index', field: 'analysis', claimNeedle: '最大文件=1024×1024×4KB=1024²×4KB=4GB' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'break-even', disposition: 'calculation-reproduced', targets: [
+      { itemId: 'break-even', field: 'analysis', claimNeedle: '可变成本比例=4000/6250=64%' },
+      { itemId: 'break-even', field: 'analysis', claimNeedle: '解得X=5000台' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+    { recordId: 'four-nines', disposition: 'calculation-reproduced', targets: [
+      { itemId: 'four-nines', field: 'analysis', claimNeedle: '99.99%可用性意味着0.01%的不可用时间' },
+      { itemId: 'four-nines', field: 'analysis', claimNeedle: '每年=365.25×24×60≈525960分钟' },
+    ], sourceEvidence: [], answerVerification: 'calculation-only' },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices, cases: [], essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 6);
+  assert.equal(report.counts.targetClaims, 11);
+  assert.equal(report.counts.exactTextTargetsMatched, 11);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 6);
+  assert.equal(report.counts.recordsWithAllowedVerification, 6);
+  assert.equal(report.counts.invalidRecords, 0);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+});
