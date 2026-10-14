@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 34 个审查记录、56 个原文目标定位；其中 17 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 38 个审查记录、64 个原文目标定位；其中 18 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -89,3 +89,15 @@
 - `tls-latency-and-encryption-microbenchmark`：RFC 8446 支持 TLS 1.3 的完整握手、恢复连接与 0-RTT 的区分；完整握手涉及网络往返，而 0-RTT 有额外重放风险。该标准没有给出 TLS 普适的毫秒级延迟，不能支持“完全不影响业务延迟”或具体 10–50ms、1–5ms 数字。来源：[RFC 8446](https://www.rfc-editor.org/rfc/rfc8446)。
 - `aes-round-count-performance-and-quantum-strength-scope`：NIST FIPS 197 明确 AES-128 为 10 轮、AES-256 为 14 轮；它没有给出任何实现中 AES-256 一定比 AES-128 慢 40% 的结论。NIST 的后量子 FAQ 讨论 Grover 搜索的平方根工作量与资源假设，因此“量子有效 128 位”应被解释为特定通用暴力搜索模型的简化说法，而非不带条件的完整安全评级。应保留可核事实，删除未经基准的性能百分比并限定量子安全表述。来源：[NIST FIPS 197](https://csrc.nist.gov/pubs/fips/197/final)、[NIST PQC FAQ](https://csrc.nist.gov/Projects/post-quantum-cryptography/faqs)。
 - `lora-popularity-and-exam-necessity-prediction`：LoRA 解析中的“2025–2026 年最流行”“大模型实际应用的必备知识”属于没有采用率调查或官方历年试题统计支撑的趋势/押题判断。LoRA 原论文支持其参数高效微调机制与特定实验结论，但不证明行业排名或考试必考。建议改为“代表性方法之一，建议掌握基本机制”，如声称考试趋势需给出范围和统计口径。
+
+## 续查批次：代理延迟基准与模拟论文成果数字（2026-10-14）
+
+- envoy-sidecar-latency-range-needs-benchmark：案例解析写出 Envoy Sidecar 单跳通常额外增加 0.5–2ms，并称对响应时间大于 50ms 的绝大多数业务可忽略。Envoy 官方基准测试指南明确指出，不存在一个可概括代理延迟开销的单一通用数值，性能取决于功能、配置、硬件、流量和测试方法。应在目标环境测量直连与代理路径，并按业务 SLO 判断开销是否可接受。来源：https://www.envoyproxy.io/docs/envoy/latest/faq/performance/how_to_benchmark_envoy
+- mock-essay-event-platform-outcome-metrics：模拟事件平台提纲里的日处理事件量提升 10 倍、响应延迟降低 80% 没有基线、负载模型或压测记录。标记为模拟范例中的示例数据；考生应替换为本人项目可佐证的指标。
+- mock-essay-data-quality-dcmm-outcome：模拟数据治理论文中的数据质量合格率从 72% 提升至 95% 缺少指标口径与统计窗口，通过 DCMM 三级认证也需要组织/证书层面的依据。仅可作为明确标记的虚构情景；真实项目陈述应核对指标与证书。
+- mock-essay-agent-development-outcome-metrics：模拟多 Agent 开发提纲中的开发效率提升 40%、代码缺陷率降低 30% 没有效率定义、缺陷分母、前后基线或观察窗口。应标为示例结果，或补充可复核的项目度量。
+
+### 本批次边界
+
+- 累计登记 38 条记录、64 个原文目标定位；不代表 38 道题已通过权威答案核验。
+- 本次只修改本项目的证据登记、审计报告和回归测试；外部题库 ../architect-exam-bank/data/bank.json 仍保持只读，所有新增记录的 answerVerification 保持 not-established。

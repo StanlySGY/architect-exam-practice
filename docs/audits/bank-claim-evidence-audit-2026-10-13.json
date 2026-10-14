@@ -1,16 +1,16 @@
 {
   "reportVersion": 1,
   "readOnly": true,
-  "checkedOn": "2026-10-13",
+  "checkedOn": "2026-10-14",
   "counts": {
-    "records": 34,
-    "targetClaims": 56,
-    "exactTextTargetsMatched": 56,
+    "records": 38,
+    "targetClaims": 64,
+    "exactTextTargetsMatched": 64,
     "targetClaimsUnmatched": 0,
-    "sourceEntries": 24,
-    "recordsWithExternalSources": 17,
-    "recordsWithAllowedDisposition": 34,
-    "recordsWithAllowedVerification": 34,
+    "sourceEntries": 25,
+    "recordsWithExternalSources": 18,
+    "recordsWithAllowedDisposition": 38,
+    "recordsWithAllowedVerification": 38,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 6,
@@ -21,7 +21,7 @@
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 9,
+      "unsubstantiated-performance-claim": 13,
       "unsupported-exam-frequency-prediction": 3
     }
   },
@@ -1080,6 +1080,132 @@
           "itemId": "mock-2026年5月-模拟卷5-065",
           "field": "analysis",
           "claimNeedle": "是大模型实际应用的必备知识",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "envoy-sidecar-latency-range-needs-benchmark",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "Envoy Sidecar单跳额外延迟通常在0.5-2ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "对绝大多数业务（响应时间>50ms）影响可忽略",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-event-platform-outcome-metrics",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统日处理事件量提升10倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-1",
+          "field": "writingPoints",
+          "claimNeedle": "响应延迟降低80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-data-quality-dcmm-outcome",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据质量合格率从72%提升至95%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-2",
+          "field": "writingPoints",
+          "claimNeedle": "通过DCMM三级认证",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-agent-development-outcome-metrics",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-3",
+          "field": "writingPoints",
+          "claimNeedle": "开发效率提升40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-3",
+          "field": "writingPoints",
+          "claimNeedle": "代码缺陷率降低30%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

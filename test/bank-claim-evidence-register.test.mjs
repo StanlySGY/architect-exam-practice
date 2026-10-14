@@ -436,3 +436,59 @@ test('可用性公式的公开证据保留模型假设，不掩盖 MTBF/MTTF 术
   assert.equal(report.counts.recordsWithExternalSources, 1);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('Envoy 延迟估计需环境基准，模拟论文绩效数字需标为示例', () => {
+  const bank = {
+    choices: [],
+    cases: [{ id: 'envoy-case', subQuestions: [{
+      question_label: '问题2',
+      reference_answer: 'Envoy Sidecar单跳额外延迟通常在0.5-2ms；对绝大多数业务（响应时间>50ms）影响可忽略。',
+    }] }],
+    essays: [
+      { id: 'events', writingPoints: '系统日处理事件量提升10倍，响应延迟降低80%。' },
+      { id: 'quality', writingPoints: '数据质量合格率从72%提升至95%，通过DCMM三级认证。' },
+      { id: 'agent', writingPoints: '开发效率提升40%，代码缺陷率降低30%。' },
+    ],
+  };
+  const records = [
+    {
+      recordId: 'envoy',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'envoy-case:问题2', field: 'reference_answer', claimNeedle: 'Envoy Sidecar单跳额外延迟通常在0.5-2ms' },
+        { itemId: 'envoy-case:问题2', field: 'reference_answer', claimNeedle: '对绝大多数业务（响应时间>50ms）影响可忽略' },
+      ],
+      sourceEvidence: [{
+        url: 'https://www.envoyproxy.io/docs/envoy/latest/faq/performance/how_to_benchmark_envoy',
+        title: 'What are best practices for benchmarking Envoy?',
+        publisher: 'Envoy project official documentation',
+        sourceKind: 'official-project-documentation',
+        checkedOn: '2026-10-14',
+        supports: '不存在可概括代理延迟开销的单一通用数值，测试必须结合配置与工作负载。',
+        limitations: '不为任何部署提供统一毫秒级延迟保证。',
+      }],
+      answerVerification: 'not-established',
+    },
+    { recordId: 'events', disposition: 'unsubstantiated-performance-claim', targets: [
+      { itemId: 'events', field: 'writingPoints', claimNeedle: '系统日处理事件量提升10倍' },
+      { itemId: 'events', field: 'writingPoints', claimNeedle: '响应延迟降低80%' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'quality', disposition: 'unsubstantiated-performance-claim', targets: [
+      { itemId: 'quality', field: 'writingPoints', claimNeedle: '数据质量合格率从72%提升至95%' },
+      { itemId: 'quality', field: 'writingPoints', claimNeedle: '通过DCMM三级认证' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+    { recordId: 'agent', disposition: 'unsubstantiated-performance-claim', targets: [
+      { itemId: 'agent', field: 'writingPoints', claimNeedle: '开发效率提升40%' },
+      { itemId: 'agent', field: 'writingPoints', claimNeedle: '代码缺陷率降低30%' },
+    ], sourceEvidence: [], answerVerification: 'not-established' },
+  ];
+  const report = auditClaimEvidenceRegister(bank, { reviewedOn: '2026-10-14', records });
+  assert.equal(report.counts.records, 4);
+  assert.equal(report.counts.targetClaims, 8);
+  assert.equal(report.counts.exactTextTargetsMatched, 8);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 1);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 4);
+  assert.equal(report.counts.recordsWithAllowedVerification, 4);
+  assert.equal(report.counts.invalidRecords, 0);
+});
