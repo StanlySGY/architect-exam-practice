@@ -3,19 +3,19 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 84,
-    "targetClaims": 192,
-    "exactTextTargetsMatched": 192,
+    "records": 89,
+    "targetClaims": 212,
+    "exactTextTargetsMatched": 212,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 26,
-    "recordsWithExternalSources": 19,
-    "recordsWithAllowedDisposition": 84,
-    "recordsWithAllowedVerification": 84,
+    "sourceEntries": 30,
+    "recordsWithExternalSources": 22,
+    "recordsWithAllowedDisposition": 89,
+    "recordsWithAllowedVerification": 89,
     "invalidRecords": 0,
     "byDisposition": {
-      "calculation-reproduced": 8,
+      "calculation-reproduced": 9,
       "internal-definition-conflict": 1,
       "supported-with-scope": 5,
       "assumption-sensitive-calculation": 5,
@@ -24,7 +24,8 @@
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 51,
-      "unsupported-exam-frequency-prediction": 5
+      "unsupported-exam-frequency-prediction": 5,
+      "illustrative-parameter-needs-context": 4
     }
   },
   "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；同一 itemId/field/claimNeedle 被跨记录重复登记会被标为无效。来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
@@ -33,7 +34,7 @@
       "recordId": "amdahl-limit-calculation",
       "disposition": "calculation-reproduced",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 2,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -47,6 +48,15 @@
           "fieldExists": true,
           "exactTextStillPresent": true,
           "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-056",
+          "field": "analysis",
+          "claimNeedle": "即使使用无限多处理器，加速比也不超过5倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -56,7 +66,7 @@
       "recordId": "availability-mtbf-definition-conflict",
       "disposition": "internal-definition-conflict",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 3,
       "targetsOk": true,
       "sourceCount": 2,
       "sourceMetadataOk": true,
@@ -86,6 +96,15 @@
           "itemId": "mock-2026年5月-模拟卷5-002",
           "field": "analysis",
           "claimNeedle": "MTBF = MTTF + MTTR",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "999/(999+1) = 99.9%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -468,7 +487,7 @@
       "recordId": "security-attack-prevention-percentage-unsubstantiated",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 6,
+      "targetCount": 12,
       "targetsOk": true,
       "sourceCount": 1,
       "sourceMetadataOk": true,
@@ -528,6 +547,60 @@
         {
           "itemId": "real-2019年下半年-017",
           "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-012",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-013",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-014",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-015",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-016",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-017",
+          "field": "analysis",
           "claimNeedle": "防止99%的黑客攻击",
           "targetExists": true,
           "fieldExists": true,
@@ -1015,7 +1088,7 @@
       "recordId": "bitmap-block-count-binary-prefix-assumption",
       "disposition": "assumption-sensitive-calculation",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 3,
       "targetsOk": true,
       "sourceCount": 2,
       "sourceMetadataOk": true,
@@ -1045,6 +1118,15 @@
           "itemId": "real-2020年下半年-003",
           "field": "analysis",
           "claimNeedle": "位示图大小=76800/32=2400个字",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2020年下半年-003",
+          "field": "analysis",
+          "claimNeedle": "磁盘容量300GB，物理块4MB",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -2833,7 +2915,7 @@
       "recordId": "cache-tag-binary-prefix-calculation",
       "disposition": "assumption-sensitive-calculation",
       "dispositionAllowed": true,
-      "targetCount": 2,
+      "targetCount": 3,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -2852,6 +2934,15 @@
           "itemId": "mock-2026年5月-模拟卷4-008",
           "field": "analysis",
           "claimNeedle": "标记位=28-13-6=9位",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "主存256MB=2^28字节",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -3073,6 +3164,189 @@
           "itemId": "case-mock-2026年5月-模拟卷4-3:问题1",
           "field": "reference_answer",
           "claimNeedle": "冷启动延迟通常为1-10秒",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "round-robin-jobs-minimum-completion-220ms",
+      "disposition": "calculation-reproduced",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "real-2024年下半年-013",
+          "field": "analysis",
+          "claimNeedle": "最短完成时间为220ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "circuit-breaker-example-parameters-need-implementation-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "失败率超过阈值（如50%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "经过超时时间（如30秒）后，自动进入半开状态",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "agent-heartbeat-and-task-timeout-examples-need-fault-model",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 4,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "每个Agent每30秒向Orchestrator发送心跳消息",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "连续3次未收到心跳（90秒）判定Agent故障",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "编码任务5分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "任务执行超时（5分钟）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "anti-cheating-similarity-threshold-needs-validation",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "相似度超过阈值（如85%）标记为可疑",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "zero-trust-session-and-device-posture-intervals-need-context",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "缩短会话有效期（如30分钟）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "定期（如每5分钟）上报设备安全状态",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,

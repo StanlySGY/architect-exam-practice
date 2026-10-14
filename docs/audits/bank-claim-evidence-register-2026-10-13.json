@@ -14,6 +14,11 @@
           "itemId": "mock-2026年5月-模拟卷7-056",
           "field": "analysis",
           "claimNeedle": "1/0.2=5"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-056",
+          "field": "analysis",
+          "claimNeedle": "即使使用无限多处理器，加速比也不超过5倍"
         }
       ],
       "sourceEvidence": [],
@@ -35,6 +40,11 @@
           "itemId": "mock-2026年5月-模拟卷5-002",
           "field": "analysis",
           "claimNeedle": "MTBF = MTTF + MTTR"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷5-002",
+          "field": "analysis",
+          "claimNeedle": "999/(999+1) = 99.9%"
         }
       ],
       "sourceEvidence": [
@@ -394,6 +404,36 @@
         {
           "itemId": "real-2019年下半年-017",
           "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-012",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-013",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-014",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-015",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-016",
+          "field": "analysis",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-017",
+          "field": "analysis",
           "claimNeedle": "防止99%的黑客攻击"
         }
       ],
@@ -770,6 +810,11 @@
           "itemId": "real-2020年下半年-003",
           "field": "analysis",
           "claimNeedle": "位示图大小=76800/32=2400个字"
+        },
+        {
+          "itemId": "real-2020年下半年-003",
+          "field": "analysis",
+          "claimNeedle": "磁盘容量300GB，物理块4MB"
         }
       ],
       "sourceEvidence": [
@@ -1983,6 +2028,11 @@
           "itemId": "mock-2026年5月-模拟卷4-008",
           "field": "analysis",
           "claimNeedle": "标记位=28-13-6=9位"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷4-008",
+          "field": "analysis",
+          "claimNeedle": "主存256MB=2^28字节"
         }
       ],
       "sourceEvidence": [],
@@ -2140,6 +2190,224 @@
       ],
       "conclusion": "“冷启动延迟通常为1–10秒”未限定平台，且把一个宽泛估计写成普遍范围。AWS Lambda 官方文档给出的冷启动耗时可从低于100毫秒到超过1秒，强调实现与初始化内容会影响耗时，因此无法支持该句作为所有FaaS的统一通用值。",
       "recommendedAction": "限定为目标平台/运行时并引用相应官方文档；更稳妥的写法是冷启动延迟差异较大，需按运行时、依赖包大小、初始化代码、内存/CPU配置及是否使用预置并发或快照技术进行测量。不要将1–10秒推广至所有FaaS。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "round-robin-jobs-minimum-completion-220ms",
+      "disposition": "calculation-reproduced",
+      "topic": "Two-job CPU/I-O overlap scheduling minimum completion time",
+      "targets": [
+        {
+          "itemId": "real-2024年下半年-013",
+          "field": "analysis",
+          "claimNeedle": "最短完成时间为220ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "按题目给定执行顺序且不计调度与切换开销：P1 在 0–40ms 使用 CPU、40–100ms 做 I/O；P2 在 20ms 到达，40–140ms 使用 CPU，140–180ms 做 I/O；P1 可在 140–160ms 完成最后 20ms CPU 计算，P2 随后在 180–220ms 完成最后 40ms CPU 计算。因此整个作业集在 220ms 完成，选项 D 与该调度一致。",
+      "recommendedAction": "保留给定的到达时刻、串行CPU和可并行I/O假设，并说明不考虑调度/切换开销；这只是按题面时间线的计算复核。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "circuit-breaker-example-parameters-need-implementation-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Circuit-breaker failure-rate and open-state wait are implementation-specific settings",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "失败率超过阈值（如50%）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-2:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "经过超时时间（如30秒）后，自动进入半开状态"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://resilience4j.readme.io/docs/circuitbreaker",
+          "title": "CircuitBreaker",
+          "publisher": "Resilience4j official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "Resilience4j documents configurable circuit-breaker properties and lists a 50% failure-rate threshold as the default. Its implementation documents a 60-second default open-state wait duration.",
+          "limitations": "The cited values are defaults for Resilience4j, not universal defaults across all circuit-breaker libraries or business systems. A 30-second wait can be a deliberate custom setting and needs workload/fault-recovery justification."
+        }
+      ],
+      "conclusion": "50% failure rate and 30 seconds open-state wait are presented as example values. Resilience4j uses 50% as a default failure-rate threshold but a 60-second default wait duration; circuit-breaker defaults differ by implementation and can be configured. This evidence does not make 30 seconds incorrect, but it cannot be presented as a universal standard.",
+      "recommendedAction": "Name the intended library/version and treat 50%/30s as example settings. Tune the threshold, minimum calls/window, slow-call thresholds and wait duration using downstream failure behavior, traffic volume and recovery SLOs; verify with fault-injection tests.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "agent-heartbeat-and-task-timeout-examples-need-fault-model",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Agent heartbeat interval, missed-heartbeat count, and task timeout are design choices",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "每个Agent每30秒向Orchestrator发送心跳消息"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "连续3次未收到心跳（90秒）判定Agent故障"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "编码任务5分钟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "任务执行超时（5分钟）"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "30-second heartbeat, three missed heartbeats/90 seconds, and five-minute task timeouts are plausible example settings, not universal reliability rules. Their suitability depends on execution duration distribution, scheduling pauses, network variance, clock/lease behavior, task idempotency and the cost of false failure detection.",
+      "recommendedAction": "Label these as sample configuration rather than fixed requirements. Choose heartbeat interval and miss threshold using expected detection time and tolerated false positives; choose task timeouts from observed duration percentiles and define retry, cancellation, idempotency and dead-letter handling together.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "anti-cheating-similarity-threshold-needs-validation",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "An 85% text-similarity score is a screening heuristic, not a universal cheating verdict",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "相似度超过阈值（如85%）标记为可疑"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://helpcenter.turnitin.com/hc/en-us/articles/27811925295501-Plagiarism-and-what-are-acceptable-similarity-scores",
+          "title": "Plagiarism and what are acceptable similarity scores?",
+          "publisher": "Turnitin official help center",
+          "sourceKind": "vendor-official-guidance",
+          "checkedOn": "2026-10-14",
+          "supports": "Turnitin explains that a similarity score indicates how much text matches sources in its database and is not itself a determination that plagiarism occurred; an educator must review the context.",
+          "limitations": "Turnitin uses its own comparison corpus and algorithm. It does not validate this project’s SimHash/TF-IDF method or provide an official universal 85% threshold."
+        }
+      ],
+      "conclusion": "The answer explicitly frames 85% as an example threshold. It is not a standard threshold across similarity algorithms, question types or answer lengths, and a high score alone does not prove cheating. False positives can arise from shared prompts, standard terminology, citations or common solution patterns.",
+      "recommendedAction": "Retain only as a configurable example. Calibrate against labeled benign and suspicious submissions, stratify by question type/answer length, document false-positive/false-negative rates and route flags to human review rather than automatic penalties.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "zero-trust-session-and-device-posture-intervals-need-context",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Zero-trust session expiry and device-posture reporting intervals are risk-based settings",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "缩短会话有效期（如30分钟）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "定期（如每5分钟）上报设备安全状态"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://pages.nist.gov/800-63-4/sp800-63b/session/",
+          "title": "Session Management",
+          "publisher": "NIST",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-14",
+          "supports": "NIST SP 800-63B describes overall and inactivity timeouts and says their limits depend on factors including authentication assurance level, environment, endpoint/device management and application nature.",
+          "limitations": "It does not prescribe a universal 30-minute timeout for all zero-trust systems or applications."
+        },
+        {
+          "url": "https://csrc.nist.gov/pubs/sp/800/207/final",
+          "title": "Zero Trust Architecture (SP 800-207)",
+          "publisher": "NIST",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-14",
+          "supports": "Zero-trust architecture uses policy decisions and access to resources based on current identity/context; device and session risk should be evaluated as part of access policy.",
+          "limitations": "The publication does not establish a universal five-minute device-posture polling interval; intervals must reflect threat model, telemetry freshness and operational cost."
+        }
+      ],
+      "conclusion": "The 30-minute session lifetime and five-minute device-posture polling interval are illustrative values, not universal zero-trust requirements. NIST’s session guidance makes timeouts context-dependent and SP 800-207 does not prescribe a universal polling interval.",
+      "recommendedAction": "Label both intervals as examples. Define overall/inactivity session limits from assurance level and application risk, require reauthentication for high-risk actions, and choose posture freshness intervals based on device risk, telemetry latency, network/load overhead and the desired response time to a compromised device.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "edge-telemetry-volume-reduction-needs-benchmark",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Edge telemetry design claims more than 100x data-volume reduction",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "将数据量降低100倍以上"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "将数据量降低100倍以上"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "边缘预处理与特征提取可以减少上行数据，但“降低100倍以上”没有传感器采样率、原始/特征载荷大小、保留原始数据比例、压缩配置或实测前后字节数作为依据。该数字只能作为设计预估，不能当作普遍效果。",
+      "recommendedAction": "明确这是模拟场景中的目标/示例估计；用具体传感器数量、采样率、窗口、原始报文及特征输出大小计算压缩/过滤比例，并报告精度或信息损失影响。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cross-continent-network-latency-range-needs-topology-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Cross-continent data-center latency range as a design assumption",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "跨洲网络延迟高达100-300ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "100–300ms 是跨洲链路的情景估计，不是任何两个数据中心之间固定的网络延迟范围。地理距离、路由、运营商、链路类型及测量方向（单向时延或 RTT）都会影响结果。",
+      "recommendedAction": "明确作为容量规划的初始假设；选定具体 region/site 后以代表性线路测量 RTT 与尾延迟，并注明网络路径、样本期和是否包含应用处理时间。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "sharded-billing-parallel-time-is-idealized",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Ten-way billing sharding reduces a two-hour task to twelve minutes only under ideal linear scaling",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "理论耗时降至12分钟左右"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-2:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "每个执行器处理约10万商户的账单"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "100万商户按10个执行器均分，每个约10万；若单节点串行耗时2小时且工作量完全均匀、并行近乎线性，理想时间为120分钟/10=12分钟。实际时间还受分片倾斜、I/O、锁竞争、协调/合并、重试和下游容量影响。",
+      "recommendedAction": "把12分钟标成理想线性缩放估算；若作为预计完成时间，应补充负载分布、资源配置、协调开销及可复现的基准测试。",
+      "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "vehicle-offline-buffer-capacity-needs-workload-model",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "100 MB vehicle-edge offline buffer capacity as an illustrative setting",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "容量为100MB"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "100MB 是案例中缓冲区容量的配置示例；是否足够取决于车辆数、消息频率、平均消息大小、最大离线时长、优先级/丢弃策略和持久化开销。",
+      "recommendedAction": "标记为示例参数；按车辆量×消息频率×平均载荷×目标离线时长估算容量，并预留索引、重试、复制和峰值裕量，验证满盘/恢复后的积压回放行为。",
       "answerVerification": "not-established"
     }
   ]

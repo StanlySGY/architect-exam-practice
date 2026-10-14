@@ -973,3 +973,250 @@ test('案例题的TLS绝对化措辞、零信任押题与FaaS冷启动范围均�
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('真实题解析中的重复安全百分比、单位前提与作业时间线均精确映射', () => {
+  const choices = Array.from({ length: 6 }, (_, index) => ({
+    id: 'real-2019-' + String(index + 12),
+    stem: '系统应能够防止99%的黑客攻击。',
+    analysis: '解析指出系统应能够防止99%的黑客攻击。',
+  }));
+  choices.push(
+    { id: 'bitmap', analysis: '磁盘容量300GB，物理块4MB。物理块数=300×1024/4=76800个，位示图大小=76800/32=2400个字。' },
+    { id: 'cache', analysis: '主存256MB=2^28字节。Cache共有2^19/2^6=2^13个块。标记位=28-13-6=9位。' },
+    { id: 'availability', analysis: '稳态可用性 = MTBF/(MTBF+MTTR)；MTBF = MTTF + MTTR；999/(999+1) = 99.9%' },
+    { id: 'amdahl', analysis: '当N趋于无穷时S=1/(1-f)=1/(1-0.8)=1/0.2=5。因此即使使用无限多处理器，加速比也不超过5倍。' },
+    { id: 'schedule', analysis: '按题面执行顺序计算后，最短完成时间为220ms。' },
+  );
+  const records = [
+    {
+      recordId: 'security',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: choices.slice(0, 6).flatMap(choice => [
+        { itemId: choice.id, field: 'stem', claimNeedle: '防止99%的黑客攻击' },
+        { itemId: choice.id, field: 'analysis', claimNeedle: '防止99%的黑客攻击' },
+      ]),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'bitmap',
+      disposition: 'assumption-sensitive-calculation',
+      targets: [
+        { itemId: 'bitmap', field: 'analysis', claimNeedle: '磁盘容量300GB，物理块4MB' },
+        { itemId: 'bitmap', field: 'analysis', claimNeedle: '物理块数=300×1024/4=76800个' },
+        { itemId: 'bitmap', field: 'analysis', claimNeedle: '位示图大小=76800/32=2400个字' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'calculation-only',
+    },
+    {
+      recordId: 'cache',
+      disposition: 'assumption-sensitive-calculation',
+      targets: [
+        { itemId: 'cache', field: 'analysis', claimNeedle: '主存256MB=2^28字节' },
+        { itemId: 'cache', field: 'analysis', claimNeedle: 'Cache共有2^19/2^6=2^13个块' },
+        { itemId: 'cache', field: 'analysis', claimNeedle: '标记位=28-13-6=9位' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'calculation-only',
+    },
+    {
+      recordId: 'availability',
+      disposition: 'internal-definition-conflict',
+      targets: [
+        { itemId: 'availability', field: 'analysis', claimNeedle: '稳态可用性 = MTBF/(MTBF+MTTR)' },
+        { itemId: 'availability', field: 'analysis', claimNeedle: 'MTBF = MTTF + MTTR' },
+        { itemId: 'availability', field: 'analysis', claimNeedle: '999/(999+1) = 99.9%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'amdahl',
+      disposition: 'calculation-reproduced',
+      targets: [
+        { itemId: 'amdahl', field: 'analysis', claimNeedle: '1/0.2=5' },
+        { itemId: 'amdahl', field: 'analysis', claimNeedle: '即使使用无限多处理器，加速比也不超过5倍' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'calculation-only',
+    },
+    {
+      recordId: 'schedule',
+      disposition: 'calculation-reproduced',
+      targets: [{ itemId: 'schedule', field: 'analysis', claimNeedle: '最短完成时间为220ms' }],
+      sourceEvidence: [],
+      answerVerification: 'calculation-only',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices, cases: [], essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 6);
+  assert.equal(report.counts.targetClaims, 24);
+  assert.equal(report.counts.exactTextTargetsMatched, 24);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 6);
+  assert.equal(report.counts.recordsWithAllowedVerification, 6);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
+test('案例中的熔断、Agent超时、反作弊相似度和零信任时限均按示例参数记录', () => {
+  const cases = [
+    { id: 'circuit', subQuestions: [{ question_label: '问题3', reference_answer: '失败率超过阈值（如50%）；经过超时时间（如30秒）后，自动进入半开状态。' }] },
+    { id: 'agent', subQuestions: [{ question_label: '问题2', reference_answer: '每个Agent每30秒向Orchestrator发送心跳消息；连续3次未收到心跳（90秒）判定Agent故障；编码任务5分钟；任务执行超时（5分钟）。' }] },
+    { id: 'cheating', subQuestions: [{ question_label: '问题3', reference_answer: '相似度超过阈值（如85%）标记为可疑。' }] },
+    { id: 'zero-trust', subQuestions: [{ question_label: '问题2', reference_answer: '缩短会话有效期（如30分钟），定期（如每5分钟）上报设备安全状态。' }] },
+  ];
+  const records = [
+    {
+      recordId: 'circuit',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'circuit:问题3', field: 'reference_answer', claimNeedle: '失败率超过阈值（如50%）' },
+        { itemId: 'circuit:问题3', field: 'reference_answer', claimNeedle: '经过超时时间（如30秒）后，自动进入半开状态' },
+      ],
+      sourceEvidence: [{
+        url: 'https://resilience4j.readme.io/docs/circuitbreaker',
+        title: 'CircuitBreaker',
+        publisher: 'Resilience4j official documentation',
+        sourceKind: 'official-project-documentation',
+        checkedOn: '2026-10-14',
+        supports: '50% is the default failure-rate threshold for Resilience4j.',
+        limitations: 'Defaults differ by implementation; the documentation does not make 30 seconds a universal open-state wait duration.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'agent',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'agent:问题2', field: 'reference_answer', claimNeedle: '每个Agent每30秒向Orchestrator发送心跳消息' },
+        { itemId: 'agent:问题2', field: 'reference_answer', claimNeedle: '连续3次未收到心跳（90秒）判定Agent故障' },
+        { itemId: 'agent:问题2', field: 'reference_answer', claimNeedle: '编码任务5分钟' },
+        { itemId: 'agent:问题2', field: 'reference_answer', claimNeedle: '任务执行超时（5分钟）' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'cheating',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'cheating:问题3', field: 'reference_answer', claimNeedle: '相似度超过阈值（如85%）标记为可疑' }],
+      sourceEvidence: [{
+        url: 'https://helpcenter.turnitin.com/hc/en-us/articles/27811925295501-Plagiarism-and-what-are-acceptable-similarity-scores',
+        title: 'Plagiarism and what are acceptable similarity scores?',
+        publisher: 'Turnitin official help center',
+        sourceKind: 'vendor-official-guidance',
+        checkedOn: '2026-10-14',
+        supports: 'Similarity score reflects matching text and is not itself a determination of plagiarism.',
+        limitations: 'Turnitin’s score does not validate the project’s SimHash/TF-IDF algorithm or a universal 85% threshold.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'zero-trust',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'zero-trust:问题2', field: 'reference_answer', claimNeedle: '缩短会话有效期（如30分钟）' },
+        { itemId: 'zero-trust:问题2', field: 'reference_answer', claimNeedle: '定期（如每5分钟）上报设备安全状态' },
+      ],
+      sourceEvidence: [
+        {
+          url: 'https://pages.nist.gov/800-63-4/sp800-63b/session/',
+          title: 'Session Management',
+          publisher: 'NIST',
+          sourceKind: 'government-standard-guidance',
+          checkedOn: '2026-10-14',
+          supports: 'Session timeout limits depend on assurance level, environment, endpoint/device and application.',
+          limitations: 'No universal 30-minute timeout is prescribed for all zero-trust systems.',
+        },
+        {
+          url: 'https://csrc.nist.gov/pubs/sp/800/207/final',
+          title: 'Zero Trust Architecture (SP 800-207)',
+          publisher: 'NIST',
+          sourceKind: 'government-standard-guidance',
+          checkedOn: '2026-10-14',
+          supports: 'Zero-trust decisions consider identity and context when controlling resource access.',
+          limitations: 'It does not define a universal five-minute device-posture reporting interval.',
+        },
+      ],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 4);
+  assert.equal(report.counts.targetClaims, 9);
+  assert.equal(report.counts.exactTextTargetsMatched, 9);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 4);
+  assert.equal(report.counts.recordsWithExternalSources, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 4);
+  assert.equal(report.counts.recordsWithAllowedVerification, 4);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+  assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
+});
+
+test('边缘数据量缩减、跨洲网络延迟、分片线性估算和离线缓冲均保留适用前提', () => {
+  const cases = [
+    { id: 'edge-a', subQuestions: [{ question_label: '问题1', reference_answer: '边缘预处理可将数据量降低100倍以上。' }] },
+    { id: 'edge-b', subQuestions: [{ question_label: '问题2', reference_answer: '边缘预处理可将数据量降低100倍以上。' }] },
+    { id: 'latency', subQuestions: [{ question_label: '问题2', reference_answer: '三个数据中心的跨洲网络延迟高达100-300ms。' }] },
+    { id: 'billing', subQuestions: [{ question_label: '问题2', reference_answer: '每个执行器处理约10万商户的账单，理论耗时降至12分钟左右。' }] },
+    { id: 'vehicle', subQuestions: [{ question_label: '问题3', reference_answer: '车辆离线消息缓冲区容量为100MB。' }] },
+  ];
+  const records = [
+    {
+      recordId: 'edge-reduction',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'edge-a:问题1', field: 'reference_answer', claimNeedle: '将数据量降低100倍以上' },
+        { itemId: 'edge-b:问题2', field: 'reference_answer', claimNeedle: '将数据量降低100倍以上' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'cross-region',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'latency:问题2', field: 'reference_answer', claimNeedle: '跨洲网络延迟高达100-300ms' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'billing',
+      disposition: 'assumption-sensitive-calculation',
+      targets: [
+        { itemId: 'billing:问题2', field: 'reference_answer', claimNeedle: '每个执行器处理约10万商户的账单' },
+        { itemId: 'billing:问题2', field: 'reference_answer', claimNeedle: '理论耗时降至12分钟左右' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'calculation-only',
+    },
+    {
+      recordId: 'vehicle-buffer',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [{ itemId: 'vehicle:问题3', field: 'reference_answer', claimNeedle: '容量为100MB' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 4);
+  assert.equal(report.counts.targetClaims, 6);
+  assert.equal(report.counts.exactTextTargetsMatched, 6);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 4);
+  assert.equal(report.counts.recordsWithAllowedVerification, 4);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});

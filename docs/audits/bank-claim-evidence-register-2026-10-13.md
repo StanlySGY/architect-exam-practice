@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 84 个审查记录、192 个原文目标定位；其中 18 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 93 个审查记录、218 个原文目标定位；其中 22 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -194,7 +194,7 @@
 ## 续查批次：重复真题声明与性能曲线推断边界（2026-10-14）
 
 - redis-aof-everysec-loss-bound：将同一条“最多丢失1秒数据”的 AOF everysec 说法补齐到 case-real-2025年下半年-4:问题2。已有 Redis 官方来源只支持“灾难故障时可能丢失约一秒写入”，不应当作所有存储栈/故障情形下的严格上限。
-- security-attack-prevention-percentage-unsubstantiated：将“防止99%的黑客攻击”在 2019 年下半年重复编号的 012–017 六条选择题题干全部映射；百分比缺少攻击分类、威胁模型、分母、观察窗口和测试方法。NIST 度量指南不建立 99% 的通用攻击拦截保证。
+- security-attack-prevention-percentage-unsubstantiated：将“防止99%的黑客攻击”在 2019 年下半年重复编号的 012–017 六条选择题题干及解析重复表述全部映射；百分比缺少攻击分类、威胁模型、分母、观察窗口和测试方法。NIST 度量指南不建立 99% 的通用攻击拦截保证。
 - performance-curve-single-point-does-not-prove-inflection：200ms 到 800ms 的响应时间比值为4倍，算术正确；但单个 90% 负载点不能单独确定完整曲线的拐点位置，需明确题目曲线模型或补充其他负载观测点。
 - mock-essay-traffic-architecture-quality-outcomes：补充模拟交通调度提纲里的“实时延迟<200ms”和“安全加密增加30ms延迟”。二者没有测试环境、负载模型、延迟分位数或加密前后基准，仍只作未核实的示例指标。
 
@@ -206,3 +206,42 @@
 - faas-cold-start-range-needs-platform-scope：案例解析称“冷启动延迟通常为1–10秒”。AWS Lambda 官方文档说明冷启动时间可从低于100ms到超过1秒，受运行时、依赖包和初始化工作影响；这不支持把1–10秒写成所有 FaaS 的通用范围。来源：https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html
 
 本批强调平台与测量条件的范围边界，新增的答案状态均保持 not-established。
+## 续查批次：补齐计算声明映射与安全百分比重复解析（2026-10-14）
+
+- security-attack-prevention-percentage-unsubstantiated：除六条重复真题的题干外，补齐其解析中重复出现的“防止99%的黑客攻击”文本，避免风险队列因 field=analysis 而错误显示为未映射。
+- bitmap-block-count-binary-prefix-assumption：补齐“磁盘容量300GB，物理块4MB”的原始单位前提，计算仍依赖题目按1024进位的常见二进制约定。
+- cache-tag-binary-prefix-calculation：补齐主存256MB按2^28字节处理的中间假设，避免只覆盖后续标记位结果而遗漏单位前提。
+- availability-mtbf-definition-conflict：补齐 999/(999+1)=99.9% 的算式结果；该计算符合解析采用的 MTBF/(MTBF+MTTR) 口径，但解析中的 MTBF/MTTF 术语冲突仍需单独澄清。
+- amdahl-limit-calculation：补齐“无限多处理器也不超过5倍”的结论目标；其成立前提是题设可并行比例80%和Amdahl定律模型。
+- round-robin-jobs-minimum-completion-220ms：按 P1/P2 给定的 CPU 与 I/O 时间线复算，考虑两者 I/O 与另一个作业 CPU 可重叠、不计调度开销，最短完成时间为220ms。
+
+## 续查批次：案例中的示例参数与通用规则边界（2026-10-14）
+
+- circuit-breaker-example-parameters-need-implementation-scope：示例将失败率阈值写为50%、打开等待写为30秒。Resilience4j 文档把50%列为其默认失败率阈值，但默认打开等待时间是60秒；不同实现/系统可配置不同值。应注明库与版本，依故障模型、流量、最小样本数和恢复SLO调参。
+- agent-heartbeat-and-task-timeout-examples-need-fault-model：Agent 每30秒心跳、连续3次遗漏按90秒判故障、任务5分钟超时是设计例值，取决于任务时长分布、调度暂停、网络抖动、误判代价、幂等与重试策略。
+- anti-cheating-similarity-threshold-needs-validation：85%文本相似度是可调的筛查启发式，不是通用标准或自动作弊结论。Turnitin 官方说明相似度分数表示匹配比例，不等于判定抄袭；该来源不验证本系统采用的 SimHash/TF-IDF 阈值。
+- zero-trust-session-and-device-posture-intervals-need-context：30分钟会话时限和5分钟设备态势上报是示例参数。NIST SP 800-63B 表明会话超时取决于认证级别、终端、环境和应用；SP 800-207 不规定统一的五分钟轮询周期。
+
+以上值可以用于解释设计思路，但应明确标为示例配置；实际应用需依据平台实现、风险模型、运行观测与误报代价进行校准。所有新增记录的 answerVerification 保持 not-established。
+## 续查批次：计算推导细节与案例配置参数的适用范围（2026-10-14）
+
+- amdahl-limit-calculation：补充定位“即使使用无限多处理器，加速比也不超过5倍”，使理论上限公式、数字推导和结论均能单独追溯；前提仍是并行比例为80%、忽略额外开销。
+- availability-mtbf-definition-conflict：补充定位 999/(999+1)=99.9% 的算术片段，继续保留 MTBF/MTTF 定义冲突，不把一段算对等同于整份解析通过核验。
+- availability-four-nines-downtime-calculation：补充99.99%可用性对应0.01%不可用比例和年分钟数中间步骤，52.6分钟的结果仍依赖365.25天计量约定。
+- bitmap-block-count-binary-prefix-assumption：补充定位“磁盘容量300GB，物理块4MB”，提示GB/MB若采用二进制换算应在题目中明示。
+- cache-tag-binary-prefix-calculation：补充定位“主存256MB=2^28字节”，标记位9位结果依赖MB/KB均按二进制容量换算。
+- round-robin-jobs-minimum-completion-220ms：题面多道作业的最短完成时间220ms，仅在题设资源分配和执行时间假设下成立；它是计算复核，不是实际作业调度测量。
+- circuit-breaker-example-parameters-need-implementation-scope：Resilience4j官方文档将50%列为默认失败率阈值，但默认打开等待时间为60秒；案例给出的30秒可作为自定义参数，不是通用默认值。
+- agent-heartbeat-and-task-timeout-examples-need-fault-model：30秒心跳、连续3次未收到（90秒）判故障、5分钟任务超时是示例设计值；应结合任务时长、网络抖动、误判代价、幂等和重试策略校准。
+- anti-cheating-similarity-threshold-needs-validation：85%相似度应仅作可调筛查阈值；Turnitin官方说明相似度分数表示文本匹配比例，而不是自动判定抄袭或作弊，且其评分体系不验证本项目的SimHash/TF-IDF实现。
+- zero-trust-session-and-device-posture-intervals-need-context：30分钟会话有效期和5分钟设备状态上报是示例参数；NIST指出会话超时取决于认证保障级别、环境、终端和应用，不存在适用于所有场景的单一时限。
+
+本批登记总数以生成后的JSON审计报告为准；新增的配置参数记录统一使用 illustrative-parameter-needs-context，所有答案状态仍为 not-established。
+## 续查批次：边缘数据压缩、跨洲时延与容量/并行估算（2026-10-14）
+
+- edge-telemetry-volume-reduction-needs-benchmark：案例答案称边缘预处理可将数据量降低100倍以上，但没有采样率、原始/特征载荷、过滤策略或实测前后字节数，不能视作普遍效果。
+- cross-continent-network-latency-range-needs-topology-scope：跨洲数据中心100–300ms属于规划估计；实际链路延迟取决于站点、路由、运营商、链路及是否按RTT计量。应在目标网络测量并注明条件。
+- sharded-billing-parallel-time-is-idealized：100万商户分给10个执行器，每个约10万；两小时÷10=12分钟只代表无开销且线性缩放的理想值，真实时长受分片倾斜、I/O、协调和下游容量影响。
+- vehicle-offline-buffer-capacity-needs-workload-model：车载离线缓存100MB是示例容量，需用车辆规模、消息频率、载荷大小和最大离线时长估算，再验证满盘与恢复回放行为。
+
+新增条目均区分设计示例、理想计算与实测结果，没有将这些参数提升为通用事实或已核实项目成绩。
