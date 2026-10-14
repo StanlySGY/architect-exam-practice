@@ -1737,3 +1737,105 @@ test('灰度比例、GPU利用率、论文SLO和项目成果均区分示例与�
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('跨框架性能、数据库验收门槛、切换时间和示例业务数字需限定证据边界', () => {
+  const cases = [
+    { id: 'rn', subQuestions: [{ question_label: '问题1', reference_answer: 'Flutter：帧时间：16ms以内；React Native：序列化数据：1ms；Bridge传输：1-2ms；Native处理：5ms；帧时间：20-25ms；Flutter性能 > React Native。' }] },
+    { id: 'db', subQuestions: [{ question_label: '问题1', reference_answer: '国产DB性能应达到Oracle的 ≥ 80%，关键业务 ≥ 95%。' }] },
+    { id: 'failover', subQuestions: [{ question_label: '问题2', reference_answer: '主备故障切换需要30秒-数分钟；多活模式秒级切换。' }] },
+    { id: 'sales', subQuestions: [{ question_label: '问题3', reference_answer: 'Q1总销售额1.2亿元，同比增长15%。' }] },
+  ];
+  const essays = [
+    { id: 'coverage', writingPoints: '单元测试（覆盖率>80%）；实践标准：核心业务逻辑要求分支覆盖≥80%。' },
+  ];
+  const records = [
+    {
+      recordId: 'rn-performance',
+      disposition: 'retired-technology-needs-context',
+      targets: [
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: '帧时间：16ms以内' },
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: '序列化数据：1ms' },
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: 'Bridge传输：1-2ms' },
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: 'Native处理：5ms' },
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: '帧时间：20-25ms' },
+        { itemId: 'rn:问题1', field: 'reference_answer', claimNeedle: 'Flutter性能 > React Native' },
+      ],
+      sourceEvidence: [
+        {
+          url: 'https://docs.flutter.dev/tools/devtools/performance',
+          title: 'Use the Performance view',
+          publisher: 'Flutter official documentation',
+          sourceKind: 'official-project-documentation',
+          checkedOn: '2026-10-14',
+          supports: 'About 16.7 ms is the frame budget for 60 Hz rendering.',
+          limitations: 'This does not prove a specific app will render every frame within that budget.',
+        },
+        {
+          url: 'https://reactnative.dev/architecture/landing-page',
+          title: 'React Native New Architecture',
+          publisher: 'React Native official documentation',
+          sourceKind: 'official-project-documentation',
+          checkedOn: '2026-10-14',
+          supports: 'The New Architecture replaces the old asynchronous bridge with JSI and other changes.',
+          limitations: 'This does not verify fixed bridge overheads or a universal framework performance ranking.',
+        },
+      ],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'db-migration',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'db:问题1', field: 'reference_answer', claimNeedle: '国产DB性能应达到Oracle的 ≥ 80%' },
+        { itemId: 'db:问题1', field: 'reference_answer', claimNeedle: '关键业务 ≥ 95%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'failover',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'failover:问题2', field: 'reference_answer', claimNeedle: '故障切换需要30秒-数分钟' },
+        { itemId: 'failover:问题2', field: 'reference_answer', claimNeedle: '秒级切换' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'sales',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'sales:问题3', field: 'reference_answer', claimNeedle: 'Q1总销售额1.2亿元' },
+        { itemId: 'sales:问题3', field: 'reference_answer', claimNeedle: '同比增长15%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'coverage',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'coverage', field: 'writingPoints', claimNeedle: '单元测试（覆盖率>80%）' },
+        { itemId: 'coverage', field: 'writingPoints', claimNeedle: '分支覆盖≥80%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 5);
+  assert.equal(report.counts.targetClaims, 14);
+  assert.equal(report.counts.exactTextTargetsMatched, 14);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 2);
+  assert.equal(report.counts.recordsWithExternalSources, 1);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 5);
+  assert.equal(report.counts.recordsWithAllowedVerification, 5);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+  assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
+});

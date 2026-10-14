@@ -3361,11 +3361,139 @@
           "itemId": "essay-real-2025年上半年-2",
           "field": "writingPoints",
           "claimNeedle": "单元测试（覆盖率>80%）"
+        },
+        {
+          "itemId": "essay-real-2024年上半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "分支覆盖≥80%"
         }
       ],
       "sourceEvidence": [],
-      "conclusion": "The more-than-80% unit-test coverage figure appears as a suggested practice in a supplementary essay outline, not as a requirement supplied by the historical exam prompt or a universal industry standard. Coverage percentage alone also does not prove adequate assertion quality or risk coverage.",
-      "recommendedAction": "Phrase it as a project/team target and state the measurement type (line, statement, branch or condition coverage). Choose thresholds from criticality and risk, and pair coverage with mutation tests, assertion quality and high-risk path coverage.",
+      "conclusion": "The more-than-80% unit-test coverage figure and branch-coverage ≥80% figure appear as suggested practices in supplementary essay outlines, not as requirements supplied by the historical exam prompts or universal industry standards. Coverage percentage alone does not prove assertion quality or risk coverage.",
+      "recommendedAction": "Phrase them as project/team targets and state the measurement type (line, statement, branch or condition coverage). Choose thresholds from criticality and risk, and pair coverage with mutation tests, assertion quality and high-risk path coverage.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "cross-platform-ui-frame-budget-and-bridge-overhead-need-benchmark",
+      "disposition": "retired-technology-needs-context",
+      "topic": "React Native bridge overhead and Flutter-versus-React-Native frame-time comparisons require architecture/version scope",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "帧时间：16ms以内"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "序列化数据：1ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Bridge传输：1-2ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Native处理：5ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "帧时间：20-25ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Flutter性能 > React Native"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://docs.flutter.dev/tools/devtools/performance",
+          "title": "Use the Performance view",
+          "publisher": "Flutter official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "Flutter performance tools explain frame timing and that a 60 Hz display provides roughly 16.7 ms per frame; frames exceeding the budget can cause jank.",
+          "limitations": "A 16 ms budget is a frame-deadline approximation, not proof that a particular UI consistently renders in that time."
+        },
+        {
+          "url": "https://reactnative.dev/architecture/landing-page",
+          "title": "React Native New Architecture",
+          "publisher": "React Native official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "React Native’s New Architecture replaces the old asynchronous bridge-based communication with JSI and other architectural changes.",
+          "limitations": "Legacy bridge-cost examples do not apply uniformly to current React Native architecture. The page does not validate the listed 1 ms/1–2 ms/5 ms values or establish universal Flutter superiority."
+        }
+      ],
+      "conclusion": "The approximately 16 ms frame budget is consistent with the timing budget for 60 Hz rendering, but the serialisation (1 ms), bridge (1–2 ms), native processing (5 ms), React Native frame (20–25 ms), and overall “Flutter > React Native” comparison are scenario-specific estimates. They lack reproducible device, framework version, build mode, workload and profiling evidence; moreover, a legacy bridge model does not describe every current React Native app.",
+      "recommendedAction": "Retain 16 ms only as an approximate 60 Hz frame budget. Label other timings as an illustrative legacy-architecture case or remove them unless backed by a reproducible same-device benchmark. State React Native version/architecture, device/GPU, release-vs-debug build, list size, scroll workload, frame-time distribution and dropped-frame count; do not generalize one test to universal framework ranking.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "database-migration-relative-performance-80-95-percent-is-policy-target",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Relative performance targets for domestic-database migration are project acceptance criteria, not universal equivalence rules",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "国产DB性能应达到Oracle的 ≥ 80%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "关键业务 ≥ 95%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The ≥80% overall and ≥95% key-business figures are suggested acceptance thresholds for this migration scenario. They are not universal database-independence standards: relative results depend on transaction mix, query plans, schema compatibility, concurrency, hardware, consistency settings, and the chosen latency/throughput metric.",
+      "recommendedAction": "Label the percentages as scenario-specific acceptance targets. Define workload-equivalent baselines, data volume, concurrency, latency percentiles, throughput, error rate and resource cost; validate critical business transactions separately and define explicit rollback criteria.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "multi-region-failover-times-need-topology-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Primary-standby failover in tens of seconds and active-active failover in seconds are topology-dependent estimates",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "故障切换需要30秒-数分钟"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "秒级切换"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The primary-standby range “30 seconds to several minutes” and active-active “second-level” switch-over are architectural scenario estimates, not guaranteed timings. Real recovery time depends on failure detection, DNS/client caches, leader or database promotion, route convergence, health checks, state replication and retry behavior.",
+      "recommendedAction": "Treat the ranges as planning examples. For an actual RTO commitment, define the start/end event, test loss of a region/site/dependency with representative clients, and report p50/p95/p99 recovery time, data loss/RPO, retry success and split-brain prevention.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-report-sales-numbers-need-dataset-evidence",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Sales totals and year-over-year growth in a mock Agent report are example output, not verified business data",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "Q1总销售额1.2亿元"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "同比增长15%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The amounts appear inside a sample “report generated and sent” response in a mock Agent architecture answer. No underlying sales dataset, SQL result, prior-year comparison window or data lineage is supplied, so these numbers are illustrative output rather than verified revenue or growth.",
+      "recommendedAction": "Make clear that the response is synthetic demonstration content. For a real reporting agent, expose the source dataset/window, query and aggregation logic, numerator/denominator, freshness timestamp and traceable evidence; never present generated sample business figures as actual company results.",
       "answerVerification": "not-established"
     }
   ]

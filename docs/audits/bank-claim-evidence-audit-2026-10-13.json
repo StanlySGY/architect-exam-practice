@@ -3,29 +3,29 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 122,
-    "targetClaims": 328,
-    "exactTextTargetsMatched": 328,
+    "records": 126,
+    "targetClaims": 341,
+    "exactTextTargetsMatched": 341,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 39,
-    "recordsWithExternalSources": 30,
-    "recordsWithAllowedDisposition": 122,
-    "recordsWithAllowedVerification": 122,
+    "sourceEntries": 41,
+    "recordsWithExternalSources": 31,
+    "recordsWithAllowedDisposition": 126,
+    "recordsWithAllowedVerification": 126,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
       "internal-definition-conflict": 1,
       "supported-with-scope": 6,
       "assumption-sensitive-calculation": 7,
-      "retired-technology-needs-context": 1,
+      "retired-technology-needs-context": 2,
       "overgeneralized": 7,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 53,
+      "unsubstantiated-performance-claim": 54,
       "unsupported-exam-frequency-prediction": 5,
-      "illustrative-parameter-needs-context": 30,
+      "illustrative-parameter-needs-context": 32,
       "unverified-source-completeness-estimate": 1
     }
   },
@@ -4897,7 +4897,7 @@
       "recordId": "real-essay-unit-test-coverage-over-80-percent-is-project-goal",
       "disposition": "illustrative-parameter-needs-context",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 2,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -4907,6 +4907,190 @@
           "itemId": "essay-real-2025年上半年-2",
           "field": "writingPoints",
           "claimNeedle": "单元测试（覆盖率>80%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2024年上半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "分支覆盖≥80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "cross-platform-ui-frame-budget-and-bridge-overhead-need-benchmark",
+      "disposition": "retired-technology-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 6,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "帧时间：16ms以内",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "序列化数据：1ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Bridge传输：1-2ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Native处理：5ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "帧时间：20-25ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "Flutter性能 > React Native",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "database-migration-relative-performance-80-95-percent-is-policy-target",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "国产DB性能应达到Oracle的 ≥ 80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷3-2:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "关键业务 ≥ 95%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "multi-region-failover-times-need-topology-scope",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "故障切换需要30秒-数分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-1:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "秒级切换",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-report-sales-numbers-need-dataset-evidence",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "Q1总销售额1.2亿元",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-4:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "同比增长15%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
