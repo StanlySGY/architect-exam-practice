@@ -271,6 +271,11 @@
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
           "field": "reference_answer",
           "claimNeedle": "将加密延迟控制在1-5ms"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-1:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "TLS加密（不影响业务延迟）"
         }
       ],
       "sourceEvidence": [
@@ -2083,6 +2088,58 @@
       "sourceEvidence": [],
       "conclusion": "给定数据的响应时间比值 800ms / 200ms = 4，算术正确。但单个 90% 负载观测点与两个响应时间值，不能单独证明完整响应时间曲线的拐点位置；该阶段判断取决于题目采用的曲线模型/定义与其他观测点。",
       "recommendedAction": "保留4倍比值计算，但将“处于拐点附近”明确为本题曲线模型下的题设推断，而非仅由这组数据普遍证明的性能规律；严谨判断应观察多个负载点的响应时间曲线。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "unsupported-case-zero-trust-exam-trend",
+      "disposition": "unsupported-exam-frequency-prediction",
+      "topic": "Mock case answers: zero-trust claims presented as an exam trend",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "零信任安全是近年来安全架构的热点方向"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "零信任安全是近年来安全架构的热点方向"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "零信任安全是近年来安全架构的热点方向"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "该句出现在模拟案例的参考答案末尾，以“考试趋势”措辞表示零信任是近年热点，但未提供官方历年试卷样本、主题分类规则或趋势统计。技术方向重要性不能直接证明考试频率或预测概率。",
+      "recommendedAction": "改成“可关注的备考主题/架构实践方向”，明确这是学习建议而非官方趋势结论；若要声称历年考查频率，另附可复核年份、卷次与题目映射。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "faas-cold-start-range-needs-platform-scope",
+      "disposition": "overgeneralized",
+      "topic": "FaaS cold-start latency quoted as a general 1–10 second range",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷4-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "冷启动延迟通常为1-10秒"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html",
+          "title": "Understanding the Lambda execution environment lifecycle",
+          "publisher": "AWS official documentation",
+          "sourceKind": "vendor-official-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "AWS Lambda 文档说明冷启动耗时可从低于100毫秒到超过1秒，且初始化延迟受运行时、代码包/依赖以及初始化工作的影响。",
+          "limitations": "该描述只针对 AWS Lambda 的文档范围，不提供适用于所有 FaaS 平台的通用区间；并不支持把“通常1–10秒”当作跨平台的固定范围。具体项目应针对目标运行时、配置和负载实测。"
+        }
+      ],
+      "conclusion": "“冷启动延迟通常为1–10秒”未限定平台，且把一个宽泛估计写成普遍范围。AWS Lambda 官方文档给出的冷启动耗时可从低于100毫秒到超过1秒，强调实现与初始化内容会影响耗时，因此无法支持该句作为所有FaaS的统一通用值。",
+      "recommendedAction": "限定为目标平台/运行时并引用相应官方文档；更稳妥的写法是冷启动延迟差异较大，需按运行时、依赖包大小、初始化代码、内存/CPU配置及是否使用预置并发或快照技术进行测量。不要将1–10秒推广至所有FaaS。",
       "answerVerification": "not-established"
     }
   ]

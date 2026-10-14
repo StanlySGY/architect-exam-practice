@@ -900,3 +900,76 @@ test('重复的Redis AOF与安全百分比声明均被映射，性能拐点推�
   assert.equal(report.records[0].targetsOk, false);
   assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
 });
+
+test('案例题的TLS绝对化措辞、零信任押题与FaaS冷启动范围均有登记', () => {
+  const cases = [
+    {
+      id: 'tls-case',
+      subQuestions: [{
+        question_label: '问题1',
+        reference_answer: '对传输中的数据采用TLS加密（不影响业务延迟），这是一项绝对化性能承诺。',
+      }],
+    },
+    {
+      id: 'zero-trust-case',
+      subQuestions: ['问题1', '问题2', '问题3'].map(question_label => ({
+        question_label,
+        reference_answer: '考试趋势：零信任安全是近年来安全架构的热点方向。',
+      })),
+    },
+    {
+      id: 'faas-case',
+      subQuestions: [{
+        question_label: '问题1',
+        reference_answer: '冷启动延迟通常为1-10秒（取决于运行时语言和包大小）。',
+      }],
+    },
+  ];
+  const records = [
+    {
+      recordId: 'tls',
+      disposition: 'overgeneralized',
+      targets: [{ itemId: 'tls-case:问题1', field: 'reference_answer', claimNeedle: 'TLS加密（不影响业务延迟）' }],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'zero-trust-trend',
+      disposition: 'unsupported-exam-frequency-prediction',
+      targets: ['问题1', '问题2', '问题3'].map(question => ({
+        itemId: 'zero-trust-case:' + question,
+        field: 'reference_answer',
+        claimNeedle: '零信任安全是近年来安全架构的热点方向',
+      })),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'faas-cold-start',
+      disposition: 'overgeneralized',
+      targets: [{ itemId: 'faas-case:问题1', field: 'reference_answer', claimNeedle: '冷启动延迟通常为1-10秒' }],
+      sourceEvidence: [{
+        url: 'https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtime-environment.html',
+        title: 'Understanding the Lambda execution environment lifecycle',
+        publisher: 'AWS official documentation',
+        sourceKind: 'vendor-official-documentation',
+        checkedOn: '2026-10-14',
+        supports: 'Lambda冷启动可从低于100毫秒到超过1秒，取决于运行时和初始化工作。',
+        limitations: '不是所有FaaS平台通用范围。',
+      }],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 3);
+  assert.equal(report.counts.targetClaims, 5);
+  assert.equal(report.counts.exactTextTargetsMatched, 5);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 3);
+  assert.equal(report.counts.recordsWithAllowedVerification, 3);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});
