@@ -3,22 +3,22 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 81,
-    "targetClaims": 177,
-    "exactTextTargetsMatched": 177,
+    "records": 82,
+    "targetClaims": 187,
+    "exactTextTargetsMatched": 187,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
     "sourceEntries": 25,
     "recordsWithExternalSources": 18,
-    "recordsWithAllowedDisposition": 81,
-    "recordsWithAllowedVerification": 81,
+    "recordsWithAllowedDisposition": 82,
+    "recordsWithAllowedVerification": 82,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 8,
       "internal-definition-conflict": 1,
       "supported-with-scope": 5,
-      "assumption-sensitive-calculation": 4,
+      "assumption-sensitive-calculation": 5,
       "retired-technology-needs-context": 1,
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
@@ -293,7 +293,7 @@
       "recordId": "redis-aof-everysec-loss-bound",
       "disposition": "durability-bound-overstatement",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 2,
       "targetsOk": true,
       "sourceCount": 1,
       "sourceMetadataOk": true,
@@ -307,6 +307,15 @@
       "targetChecks": [
         {
           "itemId": "case-real-2025年上半年-3:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "最多丢失1秒数据",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-real-2025年下半年-4:问题2",
           "field": "reference_answer",
           "claimNeedle": "最多丢失1秒数据",
           "targetExists": true,
@@ -450,7 +459,7 @@
       "recordId": "security-attack-prevention-percentage-unsubstantiated",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 1,
+      "targetCount": 6,
       "targetsOk": true,
       "sourceCount": 1,
       "sourceMetadataOk": true,
@@ -464,6 +473,51 @@
       "targetChecks": [
         {
           "itemId": "real-2019年下半年-012",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-013",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-014",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-015",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-016",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "real-2019年下半年-017",
           "field": "stem",
           "claimNeedle": "防止99%的黑客攻击",
           "targetExists": true,
@@ -1953,7 +2007,7 @@
       "recordId": "mock-essay-traffic-architecture-quality-outcomes",
       "disposition": "unsubstantiated-performance-claim",
       "dispositionAllowed": true,
-      "targetCount": 3,
+      "targetCount": 5,
       "targetsOk": true,
       "sourceCount": 0,
       "sourceMetadataOk": true,
@@ -1981,6 +2035,24 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-2",
           "field": "writingPoints",
           "claimNeedle": "系统稳定运行2年",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "实时延迟<200ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "安全加密增加30ms延迟",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
@@ -2897,6 +2969,38 @@
         }
       ],
       "answerVerification": "calculation-only",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "performance-curve-single-point-does-not-prove-inflection",
+      "disposition": "assumption-sensitive-calculation",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-058",
+          "field": "analysis",
+          "claimNeedle": "负载达到90%时响应时间从200ms急增到800ms（4倍）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-058",
+          "field": "analysis",
+          "claimNeedle": "说明处于拐点附近的重载区",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
       "answerVerificationAllowed": true
     }
   ],

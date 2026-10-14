@@ -811,3 +811,92 @@ test('选择题计算审计区分纯算术复核与单位/模型敏感前提', (
   assert.equal(report.counts.invalidRecords, 0);
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
 });
+
+test('重复的Redis AOF与安全百分比声明均被映射，性能拐点推断标记为前提敏感', () => {
+  const choices = Array.from({ length: 6 }, (_, index) => ({
+    id: 'security-' + String(index + 12),
+    stem: '该系统应能够防止99%的黑客攻击。',
+  }));
+  choices.push({
+    id: 'curve',
+    analysis: '负载达到90%时响应时间从200ms急增到800ms（4倍），说明处于拐点附近的重载区。',
+  });
+  const cases = [{
+    id: 'redis-case',
+    subQuestions: [{
+      question_label: '问题2',
+      reference_answer: 'AOF everysec策略下最多丢失1秒数据。',
+    }],
+  }];
+  const essays = [{
+    id: 'traffic-essay',
+    writingPoints: '信号控制延迟<500ms；可用性99.995%；系统稳定运行2年；实时延迟<200ms；安全加密增加30ms延迟。',
+  }];
+  const records = [
+    {
+      recordId: 'redis',
+      disposition: 'durability-bound-overstatement',
+      targets: [
+        { itemId: 'redis-case:问题2', field: 'reference_answer', claimNeedle: '最多丢失1秒数据' },
+        { itemId: 'redis-case:问题2', field: 'reference_answer', claimNeedle: '最多丢失1秒数据' },
+      ],
+      sourceEvidence: [{
+        url: 'https://redis.io/docs/latest/management/persistence/',
+        title: 'Redis persistence',
+        publisher: 'Redis official documentation',
+        sourceKind: 'vendor-official-documentation',
+        checkedOn: '2026-10-13',
+        supports: 'everysec 会按秒执行 fsync，灾难故障时可能丢失约一秒写入。',
+        limitations: '这不是所有故障/存储栈上的严格上限。',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'security',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: choices.slice(0, 6).map(choice => ({
+        itemId: choice.id,
+        field: 'stem',
+        claimNeedle: '防止99%的黑客攻击',
+      })),
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'curve',
+      disposition: 'assumption-sensitive-calculation',
+      targets: [
+        { itemId: 'curve', field: 'analysis', claimNeedle: '负载达到90%时响应时间从200ms急增到800ms（4倍）' },
+        { itemId: 'curve', field: 'analysis', claimNeedle: '说明处于拐点附近的重载区' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'traffic',
+      disposition: 'unsubstantiated-performance-claim',
+      targets: [
+        { itemId: 'traffic-essay', field: 'writingPoints', claimNeedle: '信号控制延迟<500ms' },
+        { itemId: 'traffic-essay', field: 'writingPoints', claimNeedle: '可用性99.995%' },
+        { itemId: 'traffic-essay', field: 'writingPoints', claimNeedle: '系统稳定运行2年' },
+        { itemId: 'traffic-essay', field: 'writingPoints', claimNeedle: '实时延迟<200ms' },
+        { itemId: 'traffic-essay', field: 'writingPoints', claimNeedle: '安全加密增加30ms延迟' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices, cases, essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 4);
+  assert.equal(report.counts.targetClaims, 15);
+  assert.equal(report.counts.exactTextTargetsMatched, 15);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.duplicateTargetRegistrations, 2);
+  assert.equal(report.counts.duplicateTargetTuples, 1);
+  assert.equal(report.counts.invalidRecords, 1);
+  assert.equal(report.records[0].targetsOk, false);
+  assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
+});

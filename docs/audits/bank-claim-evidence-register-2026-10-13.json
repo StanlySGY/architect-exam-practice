@@ -230,6 +230,11 @@
           "itemId": "case-real-2025年上半年-3:问题3",
           "field": "reference_answer",
           "claimNeedle": "最多丢失1秒数据"
+        },
+        {
+          "itemId": "case-real-2025年下半年-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "最多丢失1秒数据"
         }
       ],
       "sourceEvidence": [
@@ -358,6 +363,31 @@
       "targets": [
         {
           "itemId": "real-2019年下半年-012",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-013",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-014",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-015",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-016",
+          "field": "stem",
+          "claimNeedle": "防止99%的黑客攻击"
+        },
+        {
+          "itemId": "real-2019年下半年-017",
           "field": "stem",
           "claimNeedle": "防止99%的黑客攻击"
         }
@@ -1425,6 +1455,16 @@
           "itemId": "essay-mock-2026年5月-模拟卷3-2",
           "field": "writingPoints",
           "claimNeedle": "系统稳定运行2年"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "实时延迟<200ms"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "安全加密增加30ms延迟"
         }
       ],
       "sourceEvidence": [],
@@ -2023,6 +2063,27 @@
       "conclusion": "按题面售价 2500 元、销量 25000 台、可变成本 4000 万元、固定成本 250 万元与税率 16% 口径，总营收 6250 万元，可变成本率 64%，贡献比例为 1−0.64−0.16=0.20。盈亏平衡销量为 250 万/(2500×0.20)=5000 台，与选项 A 一致。该推导假定单位售价、可变成本率与税率随销量保持不变。",
       "recommendedAction": "保留上述税率/可变成本率模型假设，并说明固定成本与单位售价/可变成本按该模型处理；只复核给定数据下的算术，不扩展为普遍商业估计。",
       "answerVerification": "calculation-only"
+    },
+    {
+      "recordId": "performance-curve-single-point-does-not-prove-inflection",
+      "disposition": "assumption-sensitive-calculation",
+      "topic": "Performance curve: response time quadruples at 90% load, but one point does not prove the curve stage",
+      "targets": [
+        {
+          "itemId": "mock-2026年5月-模拟卷7-058",
+          "field": "analysis",
+          "claimNeedle": "负载达到90%时响应时间从200ms急增到800ms（4倍）"
+        },
+        {
+          "itemId": "mock-2026年5月-模拟卷7-058",
+          "field": "analysis",
+          "claimNeedle": "说明处于拐点附近的重载区"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "给定数据的响应时间比值 800ms / 200ms = 4，算术正确。但单个 90% 负载观测点与两个响应时间值，不能单独证明完整响应时间曲线的拐点位置；该阶段判断取决于题目采用的曲线模型/定义与其他观测点。",
+      "recommendedAction": "保留4倍比值计算，但将“处于拐点附近”明确为本题曲线模型下的题设推断，而非仅由这组数据普遍证明的性能规律；严谨判断应观察多个负载点的响应时间曲线。",
+      "answerVerification": "not-established"
     }
   ]
 }
