@@ -38,10 +38,25 @@ export function auditClaimEvidenceRegister(bank, register) {
 
   const duplicateRecordIds = new Set();
   const seenRecordIds = new Set();
+  const targetRegistrationCounts = new Map();
+  const targetKeyOf = (target) => JSON.stringify([
+    String(target.itemId ?? ''),
+    String(target.field ?? ''),
+    String(target.claimNeedle ?? ''),
+  ]);
   for (const record of register?.records ?? []) {
     if (seenRecordIds.has(record.recordId)) duplicateRecordIds.add(record.recordId);
     seenRecordIds.add(record.recordId);
+    for (const target of record.targets ?? []) {
+      const key = targetKeyOf(target);
+      targetRegistrationCounts.set(key, (targetRegistrationCounts.get(key) ?? 0) + 1);
+    }
   }
+  const duplicateTargetKeys = new Set(
+    [...targetRegistrationCounts]
+      .filter(([, count]) => count > 1)
+      .map(([key]) => key),
+  );
 
   const recordChecks = (register?.records ?? []).map((record) => {
     const dispositionAllowed = ALLOWED_DISPOSITIONS.has(record.disposition);
@@ -49,6 +64,7 @@ export function auditClaimEvidenceRegister(bank, register) {
     const answerVerificationAllowed = ALLOWED_VERIFICATIONS.has(answerVerification);
     const targetChecks = (record.targets ?? []).map((target) => {
       const item = itemsById.get(String(target.itemId));
+      const duplicateRegistration = duplicateTargetKeys.has(targetKeyOf(target));
       const fieldExists = Boolean(item && Object.hasOwn(item, target.field));
       const text = fieldExists ? String(item[target.field] ?? '') : '';
       const matched = Boolean(item && target.claimNeedle && text.includes(target.claimNeedle));
@@ -59,6 +75,7 @@ export function auditClaimEvidenceRegister(bank, register) {
         targetExists: Boolean(item),
         fieldExists,
         exactTextStillPresent: matched,
+        duplicateRegistration,
       };
     });
     const sourceChecks = (record.sourceEvidence ?? []).map((source) => ({
@@ -66,7 +83,7 @@ export function auditClaimEvidenceRegister(bank, register) {
       sourceMetadataComplete: Boolean(source.title && source.publisher && source.sourceKind && source.supports && source.limitations && isCalendarDate(source.checkedOn)),
       checkedOnValid: isCalendarDate(source.checkedOn),
     }));
-    const targetsOk = targetChecks.length > 0 && targetChecks.every((target) => target.exactTextStillPresent);
+    const targetsOk = targetChecks.length > 0 && targetChecks.every((target) => target.exactTextStillPresent && !target.duplicateRegistration);
     const sourcesOk = sourceChecks.every((source) => source.urlValid && source.sourceMetadataComplete);
     return {
       recordId: record.recordId,
@@ -96,6 +113,8 @@ export function auditClaimEvidenceRegister(bank, register) {
       targetClaims: allTargets.length,
       exactTextTargetsMatched: allTargets.filter((target) => target.exactTextStillPresent).length,
       targetClaimsUnmatched: allTargets.filter((target) => !target.exactTextStillPresent).length,
+      duplicateTargetTuples: duplicateTargetKeys.size,
+      duplicateTargetRegistrations: allTargets.filter((target) => target.duplicateRegistration).length,
       sourceEntries: recordChecks.reduce((sum, record) => sum + record.sourceCount, 0),
       recordsWithExternalSources: recordChecks.filter((record) => record.sourceCount > 0).length,
       recordsWithAllowedDisposition: recordChecks.filter((record) => record.dispositionAllowed).length,
@@ -103,7 +122,7 @@ export function auditClaimEvidenceRegister(bank, register) {
       invalidRecords: invalidRecords.length,
       byDisposition,
     },
-    note: '目标文本精确匹配只证明复核条目仍指向当前题库文本；来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。',
+    note: '目标文本精确匹配只证明复核条目仍指向当前题库文本；同一 itemId/field/claimNeedle 被跨记录重复登记会被标为无效。来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。',
     records: recordChecks,
   };
 }

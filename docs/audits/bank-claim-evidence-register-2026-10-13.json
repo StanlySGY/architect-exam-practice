@@ -752,22 +752,6 @@
       "answerVerification": "calculation-only"
     },
     {
-      "recordId": "cpu-clock-cycle-time-calculation",
-      "disposition": "calculation-reproduced",
-      "topic": "CPU execution time from cycle count and clock frequency",
-      "targets": [
-        {
-          "itemId": "mock-2026年5月-模拟卷6-007",
-          "field": "analysis",
-          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒"
-        }
-      ],
-      "sourceEvidence": [],
-      "conclusion": "执行时间 = 时钟周期数 / 主频 = 6×10^9 周期 ÷ 2.4×10^9 周期/秒 = 2.5 秒，数值和单位换算一致。",
-      "recommendedAction": "可作为题面给定周期数和主频的算术复核；此结果不验证周期数本身的来源，也不应与实际运行时间（受缓存、流水线、停顿及测量边界影响）混为一谈。",
-      "answerVerification": "calculation-only"
-    },
-    {
       "recordId": "kafka-consumer-timeout-default-version-scope",
       "disposition": "supported-with-scope",
       "topic": "Kafka consumer session timeout default is version-dependent",
@@ -1612,6 +1596,322 @@
       "sourceEvidence": [],
       "conclusion": "模拟平台迁移提纲将性能下降15–30%、迁移后核心性能达到旧系统95%以上以及通过等保三级认证列为实施挑战/结果，但没有同负载基准、业务性能指标、兼容性测试报告或合规测评材料。",
       "recommendedAction": "明确标注为模拟案例；真实迁移项目需对原系统与目标系统采用相同负载和环境做回归基准，说明性能指标/统计分位数，并提供认证测评的真实文件或准确名称。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2020-defect-escape-rate-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: defect escape rate example",
+      "targets": [
+        {
+          "itemId": "essay-real-2020年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "线上缺陷逃逸率降至2%以下"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "该字段是论文写作指导中的项目实践效果示例，未附真实项目缺陷记录、线上缺陷分母、观察窗口或逃逸率计算口径；试题为真题不代表该示例指标来自真题。",
+      "recommendedAction": "标为可替换的示例指标；真实项目应定义线上逃逸缺陷、统计周期、缺陷分母和版本范围，并确保数据可佐证。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2020-bigdata-query-outcomes-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: big-data scale and query speed outcomes",
+      "targets": [
+        {
+          "itemId": "essay-real-2020年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "支撑10亿级数据量"
+        },
+        {
+          "itemId": "essay-real-2020年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "查询性能提升5倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "提纲中的10亿级数据规模与查询性能提升5倍没有实际系统规模、数据分布、查询集合、基线版本或压测结果，无法据此证明真实项目表现。",
+      "recommendedAction": "明确标注为示例；真实案例需说明数据量口径、查询类型、硬件/索引条件与性能基线。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2021-aop-code-reduction-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: AOP code-volume reduction example",
+      "targets": [
+        {
+          "itemId": "essay-real-2021年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "代码量减少30%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "写作提纲把代码量减少30%作为项目效果，但未定义行数/模块范围、基线提交、生成代码是否计入或统计方法。",
+      "recommendedAction": "标记为示例或删除定量结论；真实项目需给出代码范围、统计规则与前后版本。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2021-integration-cycle-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: integration-cycle reduction example",
+      "targets": [
+        {
+          "itemId": "essay-real-2021年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "系统集成周期缩短60%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "系统集成周期缩短60%位于论文写作效果示例中，没有流程起止点、项目样本量、前后版本或周期计算口径。",
+      "recommendedAction": "标记为示例；真实案例需明确集成周期起止定义、样本和对比窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2021-release-cadence-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: monthly-to-daily release cadence example",
+      "targets": [
+        {
+          "itemId": "essay-real-2021年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率从月到日"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "“发布频率从月到日”是提纲里的效果描述，没有实际部署日志、统计窗口或发布频率定义，不构成已证实的项目成果。",
+      "recommendedAction": "标记为示例；真实项目需给出统计周期、生产发布次数及发布定义。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2022-component-reuse-outcomes-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: component reuse and productivity examples",
+      "targets": [
+        {
+          "itemId": "essay-real-2022年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "开发效率提升50%"
+        },
+        {
+          "itemId": "essay-real-2022年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "代码复用率70%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "开发效率提升50%与代码复用率70%没有效率计算方式、构件统计口径、复用分母或具体项目记录。",
+      "recommendedAction": "作为写作示例使用时清楚标识；真实项目需定义效率指标、复用计量单位及采样范围。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2022-maintenance-time-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: MTTR reduction example",
+      "targets": [
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "MTTR缩短40%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "MTTR缩短40%是写作提纲中的项目效果，没有故障样本、计时起止、修复/恢复定义或前后观察窗口。",
+      "recommendedAction": "标记为示例；真实项目应说明 MTTR 口径、故障类型、样本量和统计区间。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2022-storage-cost-query-performance-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: storage cost and query performance examples",
+      "targets": [
+        {
+          "itemId": "essay-real-2022年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "存储成本降低60%"
+        },
+        {
+          "itemId": "essay-real-2022年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "查询性能提升3倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "存储成本降低60%与查询性能提升3倍未提供成本构成、工作负载、硬件/索引、基线及实测结果。",
+      "recommendedAction": "将数值标为示例；真实项目需提供同等数据量与查询负载下的成本核算及性能对比。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2023-data-freshness-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: data freshness T+1-to-minutes example",
+      "targets": [
+        {
+          "itemId": "essay-real-2023年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "数据时效性从T+1提升到分钟级"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "数据时效性从 T+1 提升至分钟级没有端到端延迟定义、统计分位数、数据源/目标范围、负载窗口或链路测量证据。",
+      "recommendedAction": "标记为示例；真实项目需说明时效性指标的起止事件、p50/p95/p99、数据范围及观测窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2023-low-latency-bandwidth-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: latency and bandwidth outcomes",
+      "targets": [
+        {
+          "itemId": "essay-real-2023年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "响应延迟降至10ms"
+        },
+        {
+          "itemId": "essay-real-2023年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "带宽节省70%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "响应延迟降至10ms与带宽节省70%没有请求模型、网络路径、延迟分位数、流量对照或带宽计算口径。",
+      "recommendedAction": "标记为示例；真实项目需提供延迟分位数、测试环境、传输字节量定义与相同流量条件的对照结果。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2024-dev-efficiency-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: development efficiency example",
+      "targets": [
+        {
+          "itemId": "essay-real-2024年上半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "开发效率提升40%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "开发效率提升40%是写作指导中的效果指标，没有工时口径、交付基线、任务复杂度归一化或项目数据。",
+      "recommendedAction": "标记为示例；真实项目需说明效率公式、统计任务集及前后对比。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2024-cloudops-outcomes-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: CloudOps deployment, MTTR, and cost examples",
+      "targets": [
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "部署频率从月到日"
+        },
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "MTTR从小时到分钟"
+        },
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "成本降低30%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "部署频率从月到日、MTTR 从小时到分钟和成本降低30%均是写作提纲中的效果描述，未提供部署记录、故障样本、成本边界或观察窗口。",
+      "recommendedAction": "标明为示例；真实项目分别提供发布频率统计、MTTR计量口径/样本和成本核算的对比时间段。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-2025-serverless-outcomes-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real-exam essay guidance: Serverless cost and release-frequency examples",
+      "targets": [
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "成本降低60%"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率提升5倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "Serverless 成本降低60%与发布频率提升5倍没有同等流量下的费用基准、计费项、运行时长或生产发布日志。",
+      "recommendedAction": "标记为写作示例；真实项目需对比相同业务量与成本范围，并明确生产发布的统计定义和观察期。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-serverless-availability-cost-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real essay prompt outline: Serverless availability, scale and cost outcomes",
+      "targets": [
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.99%"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "扩展能力提升10倍"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "运维成本降低40%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "可用性99.99%、扩展能力提升10倍、运维成本降低40%均为写作提纲里的示例成果；无可用性计量窗口、扩缩容定义、同等负载/功能成本对照或运维工时数据。",
+      "recommendedAction": "标记为示例；真实项目应说明SLA窗口/排除项、容量基线和成本边界，并提供监控、压测及账单/工时记录。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-performance-tps-p99-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real essay prompt outline: TPS and P99 outcomes",
+      "targets": [
+        {
+          "itemId": "essay-real-2025年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "TPS提升3倍"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99响应时间降至200ms以内"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "TPS提升3倍和P99响应时间降至200ms以内出现在写作提纲，并无流量模型、硬件/配置、压测时长、成功率或原始性能报告。",
+      "recommendedAction": "明确为示例数据；真实项目须注明TPS定义、请求分布、并发、硬件、持续时间、错误率及P99测量方法。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "real-essay-flash-sale-capacity-oversell-availability-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Real essay prompt outline: flash-sale capacity and reliability outcomes",
+      "targets": [
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "支撑百万级QPS"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "零超卖"
+        },
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性99.99%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "百万级QPS、零超卖与可用性99.99%是写作提纲里的项目效果数字，没有压测请求模型/错误率、超卖对账和故障窗口/可用性统计。",
+      "recommendedAction": "标记为示例；真实陈述应有压测报告、库存一致性审计、峰值流量定义、监控和可用性计量窗口。",
       "answerVerification": "not-established"
     }
   ]

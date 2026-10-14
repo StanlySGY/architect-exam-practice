@@ -661,3 +661,105 @@ test('模拟可靠性、推理和迁移成果需运行记录或可复现基准',
   assert.equal(report.counts.recordsWithAllowedVerification, 5);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('真题论文写作提纲里的定量项目成效须与官方题面事实区分', () => {
+  const groups = [
+    ['escape', ['线上缺陷逃逸率降至2%以下']],
+    ['bigdata', ['支撑10亿级数据量', '查询性能提升5倍']],
+    ['aop', ['代码量减少30%']],
+    ['integration', ['系统集成周期缩短60%']],
+    ['release', ['发布频率从月到日']],
+    ['component', ['开发效率提升50%', '代码复用率70%']],
+    ['mttr', ['MTTR缩短40%']],
+    ['storage', ['存储成本降低60%', '查询性能提升3倍']],
+    ['freshness', ['数据时效性从T+1提升到分钟级']],
+    ['network', ['响应延迟降至10ms', '带宽节省70%']],
+    ['dev', ['开发效率提升40%']],
+    ['cloudops', ['部署频率从月到日', 'MTTR从小时到分钟', '成本降低30%']],
+    ['serverless', ['成本降低60%', '发布频率提升5倍']],
+  ];
+  const essays = groups.map(([id, needles]) => ({ id, writingPoints: needles.join('；') }));
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 13);
+  assert.equal(report.counts.targetClaims, 20);
+  assert.equal(report.counts.exactTextTargetsMatched, 20);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 13);
+  assert.equal(report.counts.recordsWithAllowedVerification, 13);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
+test('历年真题主题下的参考论文提纲成果指标不得冒充官方题面或真实项目业绩', () => {
+  const groups = [
+    ['defect', ['线上缺陷逃逸率降至2%以下']],
+    ['scale', ['支撑10亿级数据量', '查询性能提升5倍']],
+    ['aop', ['代码量减少30%']],
+    ['integration', ['系统集成周期缩短60%']],
+    ['reuse', ['开发效率提升50%', '代码复用率70%']],
+    ['warehouse', ['存储成本降低60%', '查询性能提升3倍']],
+    ['edge', ['响应延迟降至10ms', '带宽节省70%']],
+    ['model', ['开发效率提升40%']],
+    ['cloudops', ['部署频率从月到日', 'MTTR从小时到分钟', '成本降低30%']],
+    ['serverless', ['可用性99.99%', '扩展能力提升10倍', '运维成本降低40%']],
+    ['performance', ['TPS提升3倍', 'P99响应时间降至200ms以内']],
+    ['flashsale', ['支撑百万级QPS', '零超卖', '系统可用性99.99%']],
+  ];
+  const essays = groups.map(([id, needles]) => ({ id, writingPoints: needles.join('；') }));
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 12);
+  assert.equal(report.counts.targetClaims, 23);
+  assert.equal(report.counts.exactTextTargetsMatched, 23);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 12);
+  assert.equal(report.counts.recordsWithAllowedVerification, 12);
+  assert.equal(report.counts.invalidRecords, 0);
+});
+
+test('同一题目字段与声明不得跨登记记录重复计数', () => {
+  const bank = { choices: [
+    { id: 'q1', analysis: '同一条声明需要只登记一次。' },
+  ], cases: [], essays: [] };
+  const sharedTarget = { itemId: 'q1', field: 'analysis', claimNeedle: '同一条声明' };
+  const register = { records: [
+    {
+      recordId: 'first',
+      disposition: 'overgeneralized',
+      targets: [sharedTarget],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'second',
+      disposition: 'overgeneralized',
+      targets: [sharedTarget],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ] };
+  const report = auditClaimEvidenceRegister(bank, register);
+  assert.equal(report.counts.duplicateTargetTuples, 1);
+  assert.equal(report.counts.duplicateTargetRegistrations, 2);
+  assert.equal(report.counts.invalidRecords, 2);
+  assert.ok(report.records.every(record => record.targetsOk === false));
+  assert.ok(report.records.every(record => record.targetChecks[0].duplicateRegistration === true));
+});

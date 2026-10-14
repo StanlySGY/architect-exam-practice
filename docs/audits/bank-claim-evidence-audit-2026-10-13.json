@@ -3,17 +3,19 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 61,
-    "targetClaims": 139,
-    "exactTextTargetsMatched": 139,
+    "records": 76,
+    "targetClaims": 166,
+    "exactTextTargetsMatched": 166,
     "targetClaimsUnmatched": 0,
+    "duplicateTargetTuples": 0,
+    "duplicateTargetRegistrations": 0,
     "sourceEntries": 25,
     "recordsWithExternalSources": 18,
-    "recordsWithAllowedDisposition": 61,
-    "recordsWithAllowedVerification": 61,
+    "recordsWithAllowedDisposition": 76,
+    "recordsWithAllowedVerification": 76,
     "invalidRecords": 0,
     "byDisposition": {
-      "calculation-reproduced": 6,
+      "calculation-reproduced": 5,
       "internal-definition-conflict": 1,
       "supported-with-scope": 5,
       "assumption-sensitive-calculation": 2,
@@ -21,11 +23,11 @@
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 35,
+      "unsubstantiated-performance-claim": 51,
       "unsupported-exam-frequency-prediction": 4
     }
   },
-  "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
+  "note": "目标文本精确匹配只证明复核条目仍指向当前题库文本；同一 itemId/field/claimNeedle 被跨记录重复登记会被标为无效。来源元数据检查不发起网络请求，不验证 URL 可访问性、来源权威性或论断真伪。计算复算也不证明原题出处。此报告不批准、不核验整道答案，且不修改题库。",
   "records": [
     {
       "recordId": "amdahl-limit-calculation",
@@ -43,7 +45,8 @@
           "claimNeedle": "1/0.2=5",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -76,7 +79,8 @@
           "claimNeedle": "稳态可用性 = MTBF/(MTBF+MTTR)",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "mock-2026年5月-模拟卷5-002",
@@ -84,7 +88,8 @@
           "claimNeedle": "MTBF = MTTF + MTTR",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -112,7 +117,8 @@
           "claimNeedle": "如AWS Lambda 15分钟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -134,7 +140,8 @@
           "claimNeedle": "主存4GB = 2^32",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -167,7 +174,8 @@
           "claimNeedle": "5分钟内修复bug",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷3-5:问题3",
@@ -175,7 +183,8 @@
           "claimNeedle": "CodePush (React Native)",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -197,7 +206,8 @@
           "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -225,7 +235,8 @@
           "claimNeedle": "通常只有原模型的0.1%-1%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "mock-2026年5月-模拟卷3-068",
@@ -233,7 +244,8 @@
           "claimNeedle": "这使得单卡GPU即可微调大模型",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "mock-2026年5月-模拟卷5-065",
@@ -241,7 +253,8 @@
           "claimNeedle": "通常不到原模型参数的1%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -269,7 +282,8 @@
           "claimNeedle": "成百上千台AmazonEC2实例在36小时内处理TB级的文档数据",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -297,7 +311,8 @@
           "claimNeedle": "最多丢失1秒数据",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -325,7 +340,8 @@
           "claimNeedle": "TLS加密（不影响业务延迟）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
@@ -333,7 +349,8 @@
           "claimNeedle": "增加10-50ms的延迟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
@@ -341,7 +358,8 @@
           "claimNeedle": "将加密延迟控制在1-5ms",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -369,7 +387,8 @@
           "claimNeedle": "遵循100%规则（B正确）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -397,7 +416,8 @@
           "claimNeedle": "对未认证用户完全不可见",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -419,7 +439,8 @@
           "claimNeedle": "MTTF/MTTR/MTBF几乎每年必考1题",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -447,7 +468,8 @@
           "claimNeedle": "防止99%的黑客攻击",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -475,7 +497,8 @@
           "claimNeedle": "增大batch.size（如64KB→256KB）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题3",
@@ -483,7 +506,8 @@
           "claimNeedle": "增大linger.ms（如0→20ms）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -505,7 +529,8 @@
           "claimNeedle": "525960×0.0001≈52.6分钟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -527,7 +552,8 @@
           "claimNeedle": "36000 / 3600秒 = 10 TPS",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -549,7 +575,8 @@
           "claimNeedle": "W=1/(μ-λ)=1/(5-4)=1分钟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "mock-2026年5月-模拟卷7-055",
@@ -557,7 +584,8 @@
           "claimNeedle": "Wq=λ/[μ(μ-λ)]=4/[5×1]=0.8分钟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -579,7 +607,8 @@
           "claimNeedle": "年可用性从99.95%提升至99.99%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-3",
@@ -587,7 +616,8 @@
           "claimNeedle": "平均故障恢复时间从15分钟降至3分钟",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -609,7 +639,8 @@
           "claimNeedle": "交易数据零差错（3年0资损）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-4",
@@ -617,7 +648,8 @@
           "claimNeedle": "日均处理1000万+笔交易",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -639,7 +671,8 @@
           "claimNeedle": "RTO < 30秒、RPO = 0、年可用性99.99%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -661,7 +694,8 @@
           "claimNeedle": "发布频率提升10倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-real-2020年下半年-3",
@@ -669,7 +703,8 @@
           "claimNeedle": "可用性99.99%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -691,7 +726,8 @@
           "claimNeedle": "订单数据一致性达到99.99%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-real-2024年下半年-4",
@@ -699,7 +735,8 @@
           "claimNeedle": "系统吞吐量提升40%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -721,7 +758,8 @@
           "claimNeedle": "支撑百万级QPS",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-real-2025年上半年-3",
@@ -729,7 +767,8 @@
           "claimNeedle": "99.99%可用性",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -762,7 +801,8 @@
           "claimNeedle": "完全避免内容耦合",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -784,7 +824,8 @@
           "claimNeedle": "质量属性分析是每年必考题",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-1:问题2",
@@ -792,7 +833,8 @@
           "claimNeedle": "需求条目数量从2024年的10条增加到12条",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -814,7 +856,8 @@
           "claimNeedle": "80%以上的订单查询场景是",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -842,7 +885,8 @@
           "claimNeedle": "同步延迟通常在1秒以内（最终一致性）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-2:问题2",
@@ -850,7 +894,8 @@
           "claimNeedle": "完全与在线业务隔离，不影响MySQL性能",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -878,7 +923,8 @@
           "claimNeedle": "实现端到端精确一次语义",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -911,7 +957,8 @@
           "claimNeedle": "物理块数=300×1024/4=76800个",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "real-2020年下半年-003",
@@ -919,29 +966,8 @@
           "claimNeedle": "位示图大小=76800/32=2400个字",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
-        }
-      ],
-      "answerVerification": "calculation-only",
-      "answerVerificationAllowed": true
-    },
-    {
-      "recordId": "cpu-clock-cycle-time-calculation",
-      "disposition": "calculation-reproduced",
-      "dispositionAllowed": true,
-      "targetCount": 1,
-      "targetsOk": true,
-      "sourceCount": 0,
-      "sourceMetadataOk": true,
-      "sourceChecks": [],
-      "targetChecks": [
-        {
-          "itemId": "mock-2026年5月-模拟卷6-007",
-          "field": "analysis",
-          "claimNeedle": "6×10⁹ / 2.4×10⁹ = 2.5秒",
-          "targetExists": true,
-          "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "calculation-only",
@@ -979,7 +1005,8 @@
           "claimNeedle": "session.timeout.ms（默认10s）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
@@ -987,7 +1014,8 @@
           "claimNeedle": "max.poll.interval.ms（默认5min）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
@@ -995,7 +1023,8 @@
           "claimNeedle": "Kafka 2.4+的CooperativeStickyAssignor",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1028,7 +1057,8 @@
           "claimNeedle": "14轮加密（AES-128为10轮）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-real-2025年下半年-6:问题2",
@@ -1036,7 +1066,8 @@
           "claimNeedle": "计算量约比AES-128慢40%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-real-2025年下半年-6:问题2",
@@ -1044,7 +1075,8 @@
           "claimNeedle": "2^256密钥空间暴力破解不可行",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-real-2025年下半年-6:问题2",
@@ -1052,7 +1084,8 @@
           "claimNeedle": "抗量子计算有效安全强度128位",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1074,7 +1107,8 @@
           "claimNeedle": "LoRA是2025-2026年最流行的高效微调技术",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "mock-2026年5月-模拟卷5-065",
@@ -1082,7 +1116,8 @@
           "claimNeedle": "是大模型实际应用的必备知识",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1110,7 +1145,8 @@
           "claimNeedle": "Envoy Sidecar单跳额外延迟通常在0.5-2ms",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "case-mock-2026年5月-模拟卷5-3:问题2",
@@ -1118,7 +1154,8 @@
           "claimNeedle": "对绝大多数业务（响应时间>50ms）影响可忽略",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1140,7 +1177,8 @@
           "claimNeedle": "系统日处理事件量提升10倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
@@ -1148,7 +1186,8 @@
           "claimNeedle": "响应延迟降低80%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
@@ -1156,7 +1195,8 @@
           "claimNeedle": "日处理事件5亿+",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
@@ -1164,7 +1204,8 @@
           "claimNeedle": "端到端延迟P99<500ms",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
@@ -1172,7 +1213,8 @@
           "claimNeedle": "系统扩展到20+微服务零耦合",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1194,7 +1236,8 @@
           "claimNeedle": "数据质量合格率从72%提升至95%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-2",
@@ -1202,7 +1245,8 @@
           "claimNeedle": "通过DCMM三级认证",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1224,7 +1268,8 @@
           "claimNeedle": "开发效率提升40%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-3",
@@ -1232,7 +1277,8 @@
           "claimNeedle": "代码缺陷率降低30%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1254,7 +1300,8 @@
           "claimNeedle": "系统吞吐量提升5倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-1",
@@ -1262,7 +1309,8 @@
           "claimNeedle": "发布周期从月级缩短到天级",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-1",
@@ -1270,7 +1318,8 @@
           "claimNeedle": "系统可用性99.95%→99.99%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-1",
@@ -1278,7 +1327,8 @@
           "claimNeedle": "平均响应时间降低60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-1",
@@ -1286,7 +1336,8 @@
           "claimNeedle": "发布频率提升20倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1308,7 +1359,8 @@
           "claimNeedle": "系统通过等保三级认证",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-2",
@@ -1316,7 +1368,8 @@
           "claimNeedle": "响应时间<1.5s",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-2",
@@ -1324,7 +1377,8 @@
           "claimNeedle": "成功对接30+部门",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1346,7 +1400,8 @@
           "claimNeedle": "系统弹性扩展能力提升10倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-1",
@@ -1354,7 +1409,8 @@
           "claimNeedle": "运维效率提升5倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1376,7 +1432,8 @@
           "claimNeedle": "问答准确率达88%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
@@ -1384,7 +1441,8 @@
           "claimNeedle": "法律依据引用准确率95%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
@@ -1392,7 +1450,8 @@
           "claimNeedle": "日均服务1000+律师咨询",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
@@ -1400,7 +1459,8 @@
           "claimNeedle": "律师满意度92%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1422,7 +1482,8 @@
           "claimNeedle": "需求变更响应周期从2周缩短到3天",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷4-1",
@@ -1430,7 +1491,8 @@
           "claimNeedle": "缺陷率降低40%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1452,7 +1514,8 @@
           "claimNeedle": "成本降低60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷4-2",
@@ -1460,7 +1523,8 @@
           "claimNeedle": "发布频率提升5倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1482,7 +1546,8 @@
           "claimNeedle": "系统吞吐量提升5倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-1",
@@ -1490,7 +1555,8 @@
           "claimNeedle": "部署频率从月级到日级",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-1",
@@ -1498,7 +1564,8 @@
           "claimNeedle": "故障影响范围缩小80%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1520,7 +1587,8 @@
           "claimNeedle": "安全事件减少70%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-2",
@@ -1528,7 +1596,8 @@
           "claimNeedle": "VPN相关投诉下降90%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-2",
@@ -1536,7 +1605,8 @@
           "claimNeedle": "等保2.0合规达标",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1558,7 +1628,8 @@
           "claimNeedle": "文档处理效率提升10倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-3",
@@ -1566,7 +1637,8 @@
           "claimNeedle": "数据报表生成从小时级缩短到分钟级",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-3",
@@ -1574,7 +1646,8 @@
           "claimNeedle": "IT运维工单自动处理率达到60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1596,7 +1669,8 @@
           "claimNeedle": "设备故障预测准确率92%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-4",
@@ -1604,7 +1678,8 @@
           "claimNeedle": "非计划停机减少60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-4",
@@ -1612,7 +1687,8 @@
           "claimNeedle": "生产工艺优化周期从2周缩短到2天",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-4",
@@ -1620,7 +1696,8 @@
           "claimNeedle": "新员工培训时间缩短50%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷5-4",
@@ -1628,7 +1705,8 @@
           "claimNeedle": "年度维护成本降低35%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1650,7 +1728,8 @@
           "claimNeedle": "欺诈识别率提升15%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷6-1",
@@ -1658,7 +1737,8 @@
           "claimNeedle": "数据合规零风险",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1680,7 +1760,8 @@
           "claimNeedle": "发布频率从月级提升到周级",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷6-2",
@@ -1688,7 +1769,8 @@
           "claimNeedle": "系统可用性提升到99.95%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1710,7 +1792,8 @@
           "claimNeedle": "平均缺陷修复时间从5天降到1天",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷6-4",
@@ -1718,7 +1801,8 @@
           "claimNeedle": "变更引入缺陷率降低60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1740,7 +1824,8 @@
           "claimNeedle": "数据需求交付周期从3个月降至2周",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-2",
@@ -1748,7 +1833,8 @@
           "claimNeedle": "数据质量达标率从60%提升到95%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1770,7 +1856,8 @@
           "claimNeedle": "问答准确率达92%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-3",
@@ -1778,7 +1865,8 @@
           "claimNeedle": "平均响应时间<3秒",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-3",
@@ -1786,7 +1874,8 @@
           "claimNeedle": "月度推理成本降低60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1808,7 +1897,8 @@
           "claimNeedle": "通过等保三级认证",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-4",
@@ -1816,7 +1906,8 @@
           "claimNeedle": "零安全事故运行18个月",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-4",
@@ -1824,7 +1915,8 @@
           "claimNeedle": "安全事件响应时间从小时级缩短到分钟级",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-4",
@@ -1832,7 +1924,8 @@
           "claimNeedle": "零数据泄露",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1854,7 +1947,8 @@
           "claimNeedle": "信号控制延迟<500ms",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-2",
@@ -1862,7 +1956,8 @@
           "claimNeedle": "可用性99.995%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-2",
@@ -1870,7 +1965,8 @@
           "claimNeedle": "系统稳定运行2年",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1892,7 +1988,8 @@
           "claimNeedle": "缺陷检出率98.5%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷6-3",
@@ -1900,7 +1997,8 @@
           "claimNeedle": "误检率<1%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷6-3",
@@ -1908,7 +2006,8 @@
           "claimNeedle": "单次推理<50ms",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1930,7 +2029,8 @@
           "claimNeedle": "GPU MFU达到55%+",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-1",
@@ -1938,7 +2038,8 @@
           "claimNeedle": "日均训练Token数达到100B+",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-1",
@@ -1946,7 +2047,8 @@
           "claimNeedle": "MTBF>48小时",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -1968,7 +2070,8 @@
           "claimNeedle": "大模型应用架构是2026年最可能出现的新方向题目",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-1",
@@ -1976,7 +2079,8 @@
           "claimNeedle": "事件驱动架构在2025年已考过，2026年可能以不同角度再出（如结合微服务、IoT）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-2",
@@ -1984,7 +2088,8 @@
           "claimNeedle": "数据治理是2026年预测热点方向",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷2-3",
@@ -1992,7 +2097,8 @@
           "claimNeedle": "多Agent系统是2026年最前沿的考试方向之一，结合大模型热点",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-1",
@@ -2000,7 +2106,8 @@
           "claimNeedle": "云原生是近年高频考点，2025下已考Serverless，2026年大概率考更广泛的云原生架构",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷3-3",
@@ -2008,7 +2115,8 @@
           "claimNeedle": "RAG是2026年AI方向最可能出的论文题之一",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -2030,7 +2138,8 @@
           "claimNeedle": "系统可用性达到99.99%（年停机时间<52.6分钟），零重大故障",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-4",
@@ -2038,7 +2147,8 @@
           "claimNeedle": "年可用性99.99%，核心业务RTO<30秒、RPO=0",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-4",
@@ -2046,7 +2156,8 @@
           "claimNeedle": "MTBF（>8760小时）、MTTR（<30分钟）",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷1-4",
@@ -2054,7 +2165,8 @@
           "claimNeedle": "运行3年无重大故障，可用性99.995%，灾备切换时间<15秒",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -2076,7 +2188,8 @@
           "claimNeedle": "推理吞吐量提升4倍",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷4-3",
@@ -2084,7 +2197,8 @@
           "claimNeedle": "P99延迟降低60%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷4-3",
@@ -2092,7 +2206,8 @@
           "claimNeedle": "GPU利用率从30%提升到85%",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",
@@ -2114,7 +2229,8 @@
           "claimNeedle": "性能下降15-30%的调优",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-4",
@@ -2122,7 +2238,8 @@
           "claimNeedle": "核心业务性能达到原系统的95%+",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         },
         {
           "itemId": "essay-mock-2026年5月-模拟卷7-4",
@@ -2130,7 +2247,484 @@
           "claimNeedle": "通过等保三级认证",
           "targetExists": true,
           "fieldExists": true,
-          "exactTextStillPresent": true
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2020-defect-escape-rate-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2020年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "线上缺陷逃逸率降至2%以下",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2020-bigdata-query-outcomes-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2020年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "支撑10亿级数据量",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2020年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "查询性能提升5倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2021-aop-code-reduction-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2021年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "代码量减少30%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2021-integration-cycle-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2021年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "系统集成周期缩短60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2021-release-cadence-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2021年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率从月到日",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2022-component-reuse-outcomes-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2022年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "开发效率提升50%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2022年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "代码复用率70%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2022-maintenance-time-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "MTTR缩短40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2022-storage-cost-query-performance-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2022年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "存储成本降低60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2022年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "查询性能提升3倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2023-data-freshness-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2023年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "数据时效性从T+1提升到分钟级",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2023-low-latency-bandwidth-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2023年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "响应延迟降至10ms",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2023年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "带宽节省70%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2024-dev-efficiency-example",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 1,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2024年上半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "开发效率提升40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2024-cloudops-outcomes-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "部署频率从月到日",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "MTTR从小时到分钟",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2024年上半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "成本降低30%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-2025-serverless-outcomes-examples",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "成本降低60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-1",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率提升5倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-serverless-availability-cost-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "扩展能力提升10倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "运维成本降低40%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-performance-tps-p99-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "TPS提升3倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-3",
+          "field": "writingPoints",
+          "claimNeedle": "P99响应时间降至200ms以内",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "real-essay-flash-sale-capacity-oversell-availability-outcomes-illustrative",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "支撑百万级QPS",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "零超卖",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2025年下半年-4",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性99.99%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
         }
       ],
       "answerVerification": "not-established",

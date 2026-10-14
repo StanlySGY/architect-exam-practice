@@ -21,7 +21,7 @@
 
 新增 `scripts/audit-bank-claim-evidence-register.mjs` 与 `test/bank-claim-evidence-register.test.mjs`。工具检查每一条登记能否在外部题库相应字段重新精确定位、来源元数据是否完整、处置类别是否在白名单中；不发起网络请求，不修改外部题库，也不把命题证据自动映射成 `verified` 或 `approved`。
 
-登记现包含 61 个审查记录、139 个原文目标定位；其中 18 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
+登记现包含 76 个审查记录、166 个原文目标定位；其中 18 个记录关联公开来源，其他记录涉及内部定义/算术/单位约定、考试频率预测、示例论文结果及尚无实测依据的性能断言。精确定位通过只表示登记仍指向该条文字；来源支持范围内的命题也不等于整道题答案已获权威验证。独立的答案风险队列仍列出 157 条候选、来源映射队列仍列出 1,595 条候选；这两个总数尚未与本登记逐条去重对账，不能当成“剩余未审条数”。
 
 ## 续查批次：持久化、退役依赖与历史性能案例（2026-10-13）
 
@@ -148,3 +148,35 @@
 - mock-essay-legal-rag-outcomes：补充律师满意度92%目标；当前无问卷、样本量、回收率和调查周期。
 
 这些成果数字按模拟案例中的示例值登记，不代表已验证的项目成绩。
+## 续查批次：模拟成果数字、考试预测与真题主题论文提纲（2026-10-14）
+
+以下条目为当前项目新增的 16 条审计记录。凡属写作指导中的成果数据，均需与官方题面事实及可佐证的个人项目实绩严格区分。
+
+### 模拟论文成果与考试趋势
+
+- unsupported-mock-essay-exam-predictions：大模型、事件驱动、数据治理、多 Agent、云原生和 RAG 等“2026年最可能出题/大概率考”的判断缺少完整官方历年试卷样本、分类规则和统计支撑，应写成备考建议而非确定预测。
+- mock-essay-resilience-availability-dr-outcomes：模拟可靠性论文中的可用性99.99%/99.995%、年停机低于52.6分钟、零重大故障、RTO/RPO、MTBF/MTTR阈值及小于15秒灾备切换缺少运行记录和演练报告。
+- mock-essay-llm-inference-optimization-outcomes：模拟推理优化提纲的吞吐提升4倍、P99延迟下降60%、GPU利用率从30%升至85%缺少硬件/模型配置、负载模型与原始压测。
+- mock-essay-platform-migration-performance-compliance-outcomes：模拟平台迁移提纲中的15–30%性能变化、迁移后性能达到原系统95%以上及等保三级认证，缺少同负载基准测试和合规测评材料。
+- real-essay-2020-defect-escape-rate-example：缺陷逃逸率低于2%没有缺陷分母、观察窗口或真实项目记录。
+- real-essay-2020-bigdata-query-outcomes-example：10亿级数据规模与查询性能提升5倍没有规模口径、查询集合或基准测试。
+- real-essay-2021-aop-code-reduction-example：代码量减少30%没有代码范围、基线提交或统计方法。
+- real-essay-2021-integration-cycle-example：系统集成周期缩短60%没有流程起止点、样本量或对比窗口。
+- real-essay-2021-release-cadence-example：发布频率从月到日没有生产部署日志和统计窗口。
+- real-essay-2022-component-reuse-outcomes-example：开发效率提升50%、代码复用率70%没有效率公式或复用分母。
+- real-essay-2022-maintenance-time-example：MTTR缩短40%没有故障样本、起止定义或观察窗口。
+- real-essay-2022-storage-cost-query-performance-examples：存储成本降低60%、查询性能提升3倍没有同等数据量/负载的核算与压测。
+- real-essay-2023-data-freshness-example：数据时效性从 T+1 提升到分钟级没有端到端指标口径和链路实测。
+- real-essay-2023-low-latency-bandwidth-examples：延迟降至10ms、带宽节省70%没有测试路径、分位数与流量对照。
+- real-essay-2024-dev-efficiency-example：开发效率提升40%没有工时定义、任务集或项目证据。
+- real-essay-2024-cloudops-outcomes-examples：部署频率从月到日、MTTR从小时到分钟、成本降低30%没有部署/故障/成本原始记录。
+- real-essay-2025-serverless-outcomes-examples：Serverless成本降低60%、发布频率提升5倍没有同负载成本基准或生产发布记录。
+- real-essay-serverless-availability-cost-outcomes-illustrative：真题主题下的 Serverless 参考提纲中的可用性99.99%、扩展能力提升10倍、运维成本降低40%缺少计量窗口、容量定义和成本对照。
+- real-essay-performance-tps-p99-outcomes-illustrative：TPS提升3倍、P99响应时间降至200ms以内缺少可复现压测条件与原始报告。
+- real-essay-flash-sale-capacity-oversell-availability-outcomes-illustrative：百万级QPS、零超卖、可用性99.99%缺少压测报告、库存对账证据及可用性计量窗口。
+
+### 证据边界
+
+- sourceType=real 表示论文论题主题对应历年真题；writingPoints 中的“效果/成果”是附加的参考提纲，不是官方题面提供的项目业绩。
+- 所有新增登记均保持 answerVerification=not-established。精确定位只说明审计目标仍对应题库文本，不意味着论断/答案已通过权威核验。
+- 本批还合并清理了重复的 CPU 周期计算登记，避免同一目标重复统计；外部题库 ../architect-exam-bank/data/bank.json 仍保持只读。
