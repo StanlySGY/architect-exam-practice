@@ -2409,6 +2409,56 @@
       "conclusion": "100MB 是案例中缓冲区容量的配置示例；是否足够取决于车辆数、消息频率、平均消息大小、最大离线时长、优先级/丢弃策略和持久化开销。",
       "recommendedAction": "标记为示例参数；按车辆量×消息频率×平均载荷×目标离线时长估算容量，并预留索引、重试、复制和峰值裕量，验证满盘/恢复后的积压回放行为。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "software-maintenance-effort-distribution-needs-historical-scope",
+      "disposition": "supported-with-scope",
+      "topic": "Software maintenance type percentages are historical estimates, not universal proportions",
+      "targets": [
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "改正性维护（约20%）"
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "适应性维护（约25%）"
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "完善性维护（约50%）"
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "预防性维护（约5%）"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://www.albany.edu/faculty/offutt/classes/maintEssays/maintEvolutionOverview.html",
+          "title": "Overview of Software Maintenance and Evolution",
+          "publisher": "University at Albany course reference by Jeff Offutt",
+          "sourceKind": "academic-course-reference",
+          "checkedOn": "2026-10-14",
+          "supports": "该教学参考指出，传统教材中的维护工作分布约为完善性50%、适应性25%、改正性21%、预防性4%，并注明这些百分比基于20世纪80年代初的研究，未必代表当前情形。",
+          "limitations": "这是历史性统计摘要而非所有组织的现状调查；其类别比例与20/25/50/5存在约数与归类差别，不能证明当前项目或所有行业均采用该比例。"
+        },
+        {
+          "url": "https://www.dequidt.me/teaching/software-maintenance/lectures/010_intro/",
+          "title": "Introduction to Software Maintenance",
+          "publisher": "Software maintenance course notes",
+          "sourceKind": "educational-course-notes",
+          "checkedOn": "2026-10-14",
+          "supports": "课程笔记以近似符号列出完善性约50%、适应性约25%、改正性约20%、预防性约5%的常见教学分布，与该参考提纲的约数一致。",
+          "limitations": "课程笔记是教学摘要，不是独立的现代抽样调查；只能支持其作为常见历史/教学近似值使用，不能证明普遍或当前适用。"
+        }
+      ],
+      "conclusion": "20/25/50/5是常见的教学近似分布，但分类和来源口径并不完全一致。University at Albany 的维护演化教学参考指出，类似比例基于20世纪80年代初的研究，并列出21/25/50/4的分类；因此这些比例不能作为不分行业、年代、产品或维护活动分类的普遍定律。",
+      "recommendedAction": "保留“约”字并注明这是一种历史/教学估计；建议给出来源与历史时间边界。若在实际项目中使用维护活动比例，应基于本组织的工单、工时与分类口径重新统计，并解释应急/预防工作如何归类。",
+      "answerVerification": "not-established"
     }
   ]
 }

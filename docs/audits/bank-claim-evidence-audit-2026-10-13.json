@@ -3,21 +3,21 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 93,
-    "targetClaims": 218,
-    "exactTextTargetsMatched": 218,
+    "records": 94,
+    "targetClaims": 222,
+    "exactTextTargetsMatched": 222,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 30,
-    "recordsWithExternalSources": 22,
-    "recordsWithAllowedDisposition": 93,
-    "recordsWithAllowedVerification": 93,
+    "sourceEntries": 32,
+    "recordsWithExternalSources": 23,
+    "recordsWithAllowedDisposition": 94,
+    "recordsWithAllowedVerification": 94,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
       "internal-definition-conflict": 1,
-      "supported-with-scope": 5,
+      "supported-with-scope": 6,
       "assumption-sensitive-calculation": 6,
       "retired-technology-needs-context": 1,
       "overgeneralized": 6,
@@ -3457,6 +3457,67 @@
           "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
           "field": "reference_answer",
           "claimNeedle": "容量为100MB",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "software-maintenance-effort-distribution-needs-historical-scope",
+      "disposition": "supported-with-scope",
+      "dispositionAllowed": true,
+      "targetCount": 4,
+      "targetsOk": true,
+      "sourceCount": 2,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        },
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "改正性维护（约20%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "适应性维护（约25%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "完善性维护（约50%）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "essay-real-2022年下半年-2",
+          "field": "writingPoints",
+          "claimNeedle": "预防性维护（约5%）",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,

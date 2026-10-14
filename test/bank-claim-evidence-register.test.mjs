@@ -1220,3 +1220,54 @@ test('边缘数据量缩减、跨洲网络延迟、分片线性估算和离线�
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('软件维护类型分布比例标记为历史教学估计，并保留来源边界', () => {
+  const essays = [{
+    id: 'maintenance-essay',
+    writingPoints: '改正性维护（约20%）；适应性维护（约25%）；完善性维护（约50%）；预防性维护（约5%）。',
+  }];
+  const records = [{
+    recordId: 'maintenance-distribution',
+    disposition: 'supported-with-scope',
+    targets: [
+      { itemId: 'maintenance-essay', field: 'writingPoints', claimNeedle: '改正性维护（约20%）' },
+      { itemId: 'maintenance-essay', field: 'writingPoints', claimNeedle: '适应性维护（约25%）' },
+      { itemId: 'maintenance-essay', field: 'writingPoints', claimNeedle: '完善性维护（约50%）' },
+      { itemId: 'maintenance-essay', field: 'writingPoints', claimNeedle: '预防性维护（约5%）' },
+    ],
+    sourceEvidence: [
+      {
+        url: 'https://www.albany.edu/faculty/offutt/classes/maintEssays/maintEvolutionOverview.html',
+        title: 'Overview of Software Maintenance and Evolution',
+        publisher: 'University at Albany course reference by Jeff Offutt',
+        sourceKind: 'academic-course-reference',
+        checkedOn: '2026-10-14',
+        supports: '课程参考将传统教材比例说明为历史估计，并提示研究年代较早。',
+        limitations: '不证明这些比例适用于所有现代项目。',
+      },
+      {
+        url: 'https://www.dequidt.me/teaching/software-maintenance/lectures/010_intro/',
+        title: 'Introduction to Software Maintenance',
+        publisher: 'Software maintenance course notes',
+        sourceKind: 'educational-course-notes',
+        checkedOn: '2026-10-14',
+        supports: '课程笔记将该分布作为近似教学规则。',
+        limitations: '不构成现代组织的独立统计调查。',
+      },
+    ],
+    answerVerification: 'not-established',
+  }];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 1);
+  assert.equal(report.counts.targetClaims, 4);
+  assert.equal(report.counts.exactTextTargetsMatched, 4);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 2);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 1);
+  assert.equal(report.counts.recordsWithAllowedVerification, 1);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+});
