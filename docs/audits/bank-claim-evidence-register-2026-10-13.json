@@ -985,6 +985,157 @@
       "conclusion": "40% 开发效率提升与 30% 缺陷率下降属于成果量化指标；当前模拟论文没有给出效率定义、工时/交付基线、缺陷分母、观察窗口或统计材料。",
       "recommendedAction": "仅作为明确标记的示例情景使用；如作为实际经验，说明效率及缺陷率的计算公式、前后版本和观察周期，并提供可复核的项目记录。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-microservices-outcome-metrics",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: microservices migration outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统吞吐量提升5倍"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-1",
+          "field": "writingPoints",
+          "claimNeedle": "发布周期从月级缩短到天级"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性99.95%→99.99%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-1",
+          "field": "writingPoints",
+          "claimNeedle": "平均响应时间降低60%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-1",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率提升20倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "五项吞吐、发布周期、可用性、响应时间与发布频率数字位于模拟论文的虚构电商项目提纲中，没有基线、时间窗口、监控/压测数据或部署记录。",
+      "recommendedAction": "保留为明确标记的模拟案例示例；真实写作时使用本人可证明的数据，并给出可用性窗口、延迟分位数、吞吐负载模型和发布频率统计口径。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-atam-case-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: ATAM assessment outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-2",
+          "field": "writingPoints",
+          "claimNeedle": "系统通过等保三级认证"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-2",
+          "field": "writingPoints",
+          "claimNeedle": "响应时间<1.5s"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-2",
+          "field": "writingPoints",
+          "claimNeedle": "成功对接30+部门"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟架构评估论文提纲将等保三级认证、低于1.5秒响应时间和对接30多个部门作为结果，但没有实际系统、测量口径或认证材料。",
+      "recommendedAction": "仅作为明确标记的示例情景保留；真实项目表述需提供合规证书、延迟测量条件和已上线集成清单。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-cloudnative-migration-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: cloud-native migration outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统弹性扩展能力提升10倍"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-1",
+          "field": "writingPoints",
+          "claimNeedle": "运维效率提升5倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟云原生迁移提纲中的弹性扩展能力提升10倍、运维效率提升5倍未定义指标，也没有迁移前后数据。",
+      "recommendedAction": "标注为示例结果；真实项目需补充扩缩容指标、运维工时或事件处理口径、对比基线与统计期间。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-legal-rag-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: legal RAG outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "问答准确率达88%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "法律依据引用准确率95%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-3",
+          "field": "writingPoints",
+          "claimNeedle": "日均服务1000+律师咨询"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟法律RAG论文中的问答准确率、法律引用准确率与日均咨询量没有评估集、引用核对协议、统计窗口或运营记录支撑。",
+      "recommendedAction": "明确标记为模拟项目数据；真实陈述需说明测试集、准确率判定规则、评估样本量与时间段，并区分压测能力和真实咨询量。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-modifiability-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: modifiability outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-1",
+          "field": "writingPoints",
+          "claimNeedle": "需求变更响应周期从2周缩短到3天"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-1",
+          "field": "writingPoints",
+          "claimNeedle": "缺陷率降低40%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "需求变更响应周期从两周缩短至三天以及缺陷率下降40%是模拟案例量化成果，未给出变更样本、缺陷统计定义或项目记录。",
+      "recommendedAction": "作为写作练习时标明是假设示例；真实项目需交代变更单样本、周期统计规则、缺陷率分母、版本区间和观察窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-serverless-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: Serverless outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-2",
+          "field": "writingPoints",
+          "claimNeedle": "成本降低60%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷4-2",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率提升5倍"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟Serverless提纲中的成本下降60%与发布频率提升5倍没有费用口径、流量/调用量、运行时长、对照架构或发布日志。",
+      "recommendedAction": "标明为示例数据；真实项目需给出成本构成和计量窗口、同等负载对照、发布次数统计，以及是否包含开发/运维人力成本。",
+      "answerVerification": "not-established"
     }
   ]
 }

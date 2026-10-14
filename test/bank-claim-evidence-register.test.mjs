@@ -492,3 +492,40 @@ test('Envoy 延迟估计需环境基准，模拟论文绩效数字需标为示�
   assert.equal(report.counts.recordsWithAllowedVerification, 4);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('模拟论文中的多个量化成果保留示例属性，不冒充真实项目数据', () => {
+  const essays = [
+    { id: 'microservices', writingPoints: '系统吞吐量提升5倍，发布周期从月级缩短到天级，系统可用性99.95%→99.99%，平均响应时间降低60%，发布频率提升20倍。' },
+    { id: 'atam', writingPoints: '系统通过等保三级认证，响应时间<1.5s，成功对接30+部门。' },
+    { id: 'cloudnative', writingPoints: '系统弹性扩展能力提升10倍，运维效率提升5倍。' },
+    { id: 'rag', writingPoints: '问答准确率达88%，法律依据引用准确率95%，日均服务1000+律师咨询。' },
+    { id: 'modifiability', writingPoints: '需求变更响应周期从2周缩短到3天，缺陷率降低40%。' },
+    { id: 'serverless', writingPoints: '成本降低60%，发布频率提升5倍。' },
+  ];
+  const groups = [
+    ['microservices', ['系统吞吐量提升5倍', '发布周期从月级缩短到天级', '系统可用性99.95%→99.99%', '平均响应时间降低60%', '发布频率提升20倍']],
+    ['atam', ['系统通过等保三级认证', '响应时间<1.5s', '成功对接30+部门']],
+    ['cloudnative', ['系统弹性扩展能力提升10倍', '运维效率提升5倍']],
+    ['rag', ['问答准确率达88%', '法律依据引用准确率95%', '日均服务1000+律师咨询']],
+    ['modifiability', ['需求变更响应周期从2周缩短到3天', '缺陷率降低40%']],
+    ['serverless', ['成本降低60%', '发布频率提升5倍']],
+  ];
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 6);
+  assert.equal(report.counts.targetClaims, 17);
+  assert.equal(report.counts.exactTextTargetsMatched, 17);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 6);
+  assert.equal(report.counts.recordsWithAllowedVerification, 6);
+  assert.equal(report.counts.invalidRecords, 0);
+});
