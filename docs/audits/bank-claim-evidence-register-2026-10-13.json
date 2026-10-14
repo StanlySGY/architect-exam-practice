@@ -3108,6 +3108,140 @@
       "conclusion": "The phrase appears as an example reliability objective in the supplementary writing outline, not in the original exam prompt and not as a tested system result. A meaningful MTBF target depends on failure definition, operating exposure, population and statistical confidence.",
       "recommendedAction": "Label as a hypothetical target. If stated as an achieved outcome, provide a consistent failure definition, accumulated operating hours, event count, observation period and confidence interval or estimation method.",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mqtt-qos2-exactly-once-is-protocol-scoped",
+      "disposition": "overgeneralized",
+      "topic": "MQTT QoS 2 exactly-once delivery is a protocol-level guarantee, not automatic business-side-effect exactly-once",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html",
+          "title": "MQTT Version 5.0",
+          "publisher": "OASIS MQTT Technical Committee",
+          "sourceKind": "technical-standard",
+          "checkedOn": "2026-10-14",
+          "supports": "MQTT v5 defines QoS 2 as exactly-once message delivery; section 4.3 scopes the delivery protocol to an application message from one sender to one receiver.",
+          "limitations": "The protocol delivery guarantee does not by itself make arbitrary downstream database writes, actuator commands, or external side effects exactly-once. Business-level idempotency and durable state handling remain application responsibilities."
+        }
+      ],
+      "conclusion": "The statement is correct when restricted to MQTT QoS 2 protocol delivery with applicable session/protocol state, but overgeneralized if interpreted as an end-to-end exactly-once business operation or universal guarantee that a control command was physically executed. The OASIS specification describes delivery between a single sender and a single receiver.",
+      "recommendedAction": "Phrase as “MQTT QoS 2 provides exactly-once message delivery at the MQTT protocol layer.” For control commands, also use durable command IDs, application acknowledgements, idempotent command handling, persisted deduplication/state transitions and explicit behavior for session loss or replay.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "redis-idempotency-dedup-ttl-24h-needs-retry-horizon",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "Redis deduplication-key TTL of 24 hours is a configurable example, not a universal safe window",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "设置合理的过期时间（如24小时）"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "设置合理的过期时间（如24小时）"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://redis.io/docs/latest/commands/set/",
+          "title": "SET",
+          "publisher": "Redis official documentation",
+          "sourceKind": "official-project-documentation",
+          "checkedOn": "2026-10-14",
+          "supports": "Redis SET supports NX conditional creation and explicit expiration via EX (seconds) or PX (milliseconds), which can be used to implement a deduplication marker with a TTL.",
+          "limitations": "The Redis documentation does not prescribe 24 hours as a generally correct idempotency retention period. The application must choose a TTL consistent with retry/replay horizons and durable business-state handling."
+        }
+      ],
+      "conclusion": "The 24-hour TTL is introduced as an example and is technically configurable using Redis SET NX EX. It may expire too early if delayed retries, offline replay, queue redelivery, or recovery can occur after 24 hours; an overly long TTL also increases memory use. Expiry alone does not guarantee business idempotency.",
+      "recommendedAction": "Keep 24 hours clearly labeled as a sample value. Set the TTL from the maximum supported retry/redelivery/replay horizon with margin; document what happens after expiry, monitor dedup-key memory, and use durable business idempotency for high-value operations.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "flink-three-sigma-anomaly-rule-needs-baseline-validation",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "A 3-sigma anomaly threshold requires a stable baseline and distribution-aware interpretation",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "偏离3σ以上视为异常"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "偏离3σ以上视为异常"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "url": "https://itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm",
+          "title": "6.3.2. What are Variables Control Charts?",
+          "publisher": "NIST/SEMATECH e-Handbook of Statistical Methods",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-10-14",
+          "supports": "NIST describes 3-sigma control limits for process monitoring and notes that the 0.3% outside-limit probability applies under a normal-distribution assumption; it also warns that skewed distributions can make 3-sigma limits unsuitable.",
+          "limitations": "This is statistical process-control guidance, not proof that a generic IoT time-series anomaly detector should use a fixed 3-sigma rule. Baseline stability, distribution, seasonality and serial dependence must be assessed."
+        }
+      ],
+      "conclusion": "3σ is a recognized control-chart convention, but “deviation over 3σ means anomaly” is a heuristic unless the baseline and distribution assumptions are suitable. Skew, autocorrelation, seasonality, drift and repeated-window testing can produce misleading alerts.",
+      "recommendedAction": "Present 3σ as one configurable candidate rule, not a universal anomaly definition. Validate against historical labeled events, assess false-alarm rate and distribution shape, account for seasonality/autocorrelation, and combine with persistence or domain-specific rules when appropriate.",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "one-minute-vibration-200-percent-trigger-needs-sensor-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "topic": "A 200 percent vibration increase within one minute is a scenario threshold needing device-specific calibration",
+      "targets": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "1分钟内振动值增长200%"
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "1分钟内振动值增长200%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "The one-minute/200% vibration trigger is an example threshold, not a universal industrial alarm setting. Suitability depends on sensor units, sampling rate, baseline noise, device class, startup/transient behavior, and whether “increase by 200%” means absolute difference or relative change.",
+      "recommendedAction": "Label it as an example. Define the calculation and reference baseline, validate against historical labeled normal/fault data for each asset class, use noise filtering/hysteresis or persistence to limit alert storms, and document escalation consequences.",
+      "answerVerification": "not-established"
     }
   ]
 }

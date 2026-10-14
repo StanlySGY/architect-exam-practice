@@ -1530,3 +1530,106 @@ test('车联网、采样、流处理和运维阈值均保留情境边界', () =>
   assert.equal(report.counts.duplicateTargetRegistrations, 0);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('MQTT QoS 2、Redis幂等TTL与Flink异常阈值均保留协议或场景边界', () => {
+  const cases = [
+    { id: 'mqtt', subQuestions: [
+      { question_label: '问题1', reference_answer: 'MQTT QoS 2本身通过四步握手实现Exactly Once语义；MQTT QoS 2保证必达。' },
+      { question_label: '问题2', reference_answer: 'MQTT QoS 2本身通过四步握手实现Exactly Once语义；MQTT QoS 2保证必达。' },
+      { question_label: '问题3', reference_answer: 'MQTT QoS 2本身通过四步握手实现Exactly Once语义；MQTT QoS 2保证必达。' },
+    ] },
+    { id: 'redis', subQuestions: [
+      { question_label: '问题1', reference_answer: '设置合理的过期时间（如24小时）。' },
+      { question_label: '问题2', reference_answer: '设置合理的过期时间（如24小时）。' },
+    ] },
+    { id: 'flink', subQuestions: [
+      { question_label: '问题1', reference_answer: '偏离3σ以上视为异常；1分钟内振动值增长200%。' },
+      { question_label: '问题2', reference_answer: '偏离3σ以上视为异常；1分钟内振动值增长200%。' },
+    ] },
+  ];
+  const records = [
+    {
+      recordId: 'mqtt',
+      disposition: 'overgeneralized',
+      targets: [
+        { itemId: 'mqtt:问题1', field: 'reference_answer', claimNeedle: 'MQTT QoS 2本身通过四步握手' },
+        { itemId: 'mqtt:问题2', field: 'reference_answer', claimNeedle: 'MQTT QoS 2本身通过四步握手' },
+        { itemId: 'mqtt:问题3', field: 'reference_answer', claimNeedle: 'MQTT QoS 2本身通过四步握手' },
+        { itemId: 'mqtt:问题1', field: 'reference_answer', claimNeedle: 'MQTT QoS 2保证必达' },
+        { itemId: 'mqtt:问题2', field: 'reference_answer', claimNeedle: 'MQTT QoS 2保证必达' },
+        { itemId: 'mqtt:问题3', field: 'reference_answer', claimNeedle: 'MQTT QoS 2保证必达' },
+      ],
+      sourceEvidence: [{
+        url: 'https://docs.oasis-open.org/mqtt/mqtt/v5.0/mqtt-v5.0.html',
+        title: 'MQTT Version 5.0',
+        publisher: 'OASIS MQTT Technical Committee',
+        sourceKind: 'technical-standard',
+        checkedOn: '2026-10-14',
+        supports: 'QoS 2 provides exactly-once delivery at the MQTT protocol layer between one sender and one receiver.',
+        limitations: 'This does not automatically ensure exactly-once application side effects or physical command execution.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'redis-ttl',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'redis:问题1', field: 'reference_answer', claimNeedle: '设置合理的过期时间（如24小时）' },
+        { itemId: 'redis:问题2', field: 'reference_answer', claimNeedle: '设置合理的过期时间（如24小时）' },
+      ],
+      sourceEvidence: [{
+        url: 'https://redis.io/docs/latest/commands/set/',
+        title: 'SET',
+        publisher: 'Redis official documentation',
+        sourceKind: 'official-project-documentation',
+        checkedOn: '2026-10-14',
+        supports: 'Redis SET supports NX and explicit EX/PX expiration values.',
+        limitations: 'It does not prescribe 24 hours as a universal deduplication retention interval.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'flink-3sigma',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'flink:问题1', field: 'reference_answer', claimNeedle: '偏离3σ以上视为异常' },
+        { itemId: 'flink:问题2', field: 'reference_answer', claimNeedle: '偏离3σ以上视为异常' },
+      ],
+      sourceEvidence: [{
+        url: 'https://itl.nist.gov/div898/handbook/pmc/section3/pmc32.htm',
+        title: 'What are Variables Control Charts?',
+        publisher: 'NIST/SEMATECH e-Handbook of Statistical Methods',
+        sourceKind: 'government-standard-guidance',
+        checkedOn: '2026-10-14',
+        supports: 'Three-sigma control limits are used in process control and the expected outside-limit rate assumes a suitable distribution, commonly normal.',
+        limitations: 'The source does not establish a fixed 3-sigma rule for arbitrary IoT time series; skew, dependence and baseline shifts can affect false alarms.',
+      }],
+      answerVerification: 'not-established',
+    },
+    {
+      recordId: 'vibration-trigger',
+      disposition: 'illustrative-parameter-needs-context',
+      targets: [
+        { itemId: 'flink:问题1', field: 'reference_answer', claimNeedle: '1分钟内振动值增长200%' },
+        { itemId: 'flink:问题2', field: 'reference_answer', claimNeedle: '1分钟内振动值增长200%' },
+      ],
+      sourceEvidence: [],
+      answerVerification: 'not-established',
+    },
+  ];
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases, essays: [] },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 4);
+  assert.equal(report.counts.targetClaims, 12);
+  assert.equal(report.counts.exactTextTargetsMatched, 12);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.sourceEntries, 3);
+  assert.equal(report.counts.recordsWithExternalSources, 3);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 4);
+  assert.equal(report.counts.recordsWithAllowedVerification, 4);
+  assert.equal(report.counts.duplicateTargetRegistrations, 0);
+  assert.equal(report.counts.invalidRecords, 0);
+  assert.ok(report.records.every(record => record.answerVerification === 'not-established'));
+});

@@ -3,16 +3,16 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 113,
-    "targetClaims": 304,
-    "exactTextTargetsMatched": 304,
+    "records": 117,
+    "targetClaims": 316,
+    "exactTextTargetsMatched": 316,
     "targetClaimsUnmatched": 0,
     "duplicateTargetTuples": 0,
     "duplicateTargetRegistrations": 0,
-    "sourceEntries": 35,
-    "recordsWithExternalSources": 26,
-    "recordsWithAllowedDisposition": 113,
-    "recordsWithAllowedVerification": 113,
+    "sourceEntries": 38,
+    "recordsWithExternalSources": 29,
+    "recordsWithAllowedDisposition": 117,
+    "recordsWithAllowedVerification": 117,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 9,
@@ -20,12 +20,12 @@
       "supported-with-scope": 6,
       "assumption-sensitive-calculation": 7,
       "retired-technology-needs-context": 1,
-      "overgeneralized": 6,
+      "overgeneralized": 7,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
       "unsubstantiated-performance-claim": 53,
       "unsupported-exam-frequency-prediction": 5,
-      "illustrative-parameter-needs-context": 22,
+      "illustrative-parameter-needs-context": 25,
       "unverified-source-completeness-estimate": 1
     }
   },
@@ -4541,6 +4541,188 @@
           "itemId": "essay-real-2023年下半年-2",
           "field": "writingPoints",
           "claimNeedle": "MTBF ≥ 1000小时",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mqtt-qos2-exactly-once-is-protocol-scoped",
+      "disposition": "overgeneralized",
+      "dispositionAllowed": true,
+      "targetCount": 6,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2本身通过四步握手",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷5-5:问题3",
+          "field": "reference_answer",
+          "claimNeedle": "MQTT QoS 2保证必达",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "redis-idempotency-dedup-ttl-24h-needs-retry-horizon",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "设置合理的过期时间（如24小时）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷1-3:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "设置合理的过期时间（如24小时）",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "flink-three-sigma-anomaly-rule-needs-baseline-validation",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 1,
+      "sourceMetadataOk": true,
+      "sourceChecks": [
+        {
+          "urlValid": true,
+          "sourceMetadataComplete": true,
+          "checkedOnValid": true
+        }
+      ],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "偏离3σ以上视为异常",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "偏离3σ以上视为异常",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "one-minute-vibration-200-percent-trigger-needs-sensor-calibration",
+      "disposition": "illustrative-parameter-needs-context",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题1",
+          "field": "reference_answer",
+          "claimNeedle": "1分钟内振动值增长200%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true,
+          "duplicateRegistration": false
+        },
+        {
+          "itemId": "case-mock-2026年5月-模拟卷2-4:问题2",
+          "field": "reference_answer",
+          "claimNeedle": "1分钟内振动值增长200%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true,
