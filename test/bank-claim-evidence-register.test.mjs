@@ -529,3 +529,35 @@ test('模拟论文中的多个量化成果保留示例属性，不冒充真实�
   assert.equal(report.counts.recordsWithAllowedVerification, 6);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('模拟论文中其他业务成果、合规及自动化指标需要项目证据', () => {
+  const groups = [
+    ['domain', ['系统吞吐量提升5倍', '部署频率从月级到日级', '故障影响范围缩小80%']],
+    ['zeroTrust', ['安全事件减少70%', 'VPN相关投诉下降90%', '等保2.0合规达标']],
+    ['automation', ['文档处理效率提升10倍', '数据报表生成从小时级缩短到分钟级', 'IT运维工单自动处理率达到60%']],
+    ['maintenance', ['设备故障预测准确率92%', '非计划停机减少60%', '生产工艺优化周期从2周缩短到2天', '新员工培训时间缩短50%', '年度维护成本降低35%']],
+    ['federated', ['欺诈识别率提升15%', '数据合规零风险']],
+    ['migration', ['发布频率从月级提升到周级', '系统可用性提升到99.95%']],
+    ['defects', ['平均缺陷修复时间从5天降到1天', '变更引入缺陷率降低60%']],
+    ['governance', ['数据需求交付周期从3个月降至2周', '数据质量达标率从60%提升到95%']],
+  ];
+  const essays = groups.map(([id, needles]) => ({ id, writingPoints: needles.join('；') }));
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 8);
+  assert.equal(report.counts.targetClaims, 22);
+  assert.equal(report.counts.exactTextTargetsMatched, 22);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 8);
+  assert.equal(report.counts.recordsWithAllowedVerification, 8);
+  assert.equal(report.counts.invalidRecords, 0);
+});

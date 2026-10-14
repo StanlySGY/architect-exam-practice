@@ -3,14 +3,14 @@
   "readOnly": true,
   "checkedOn": "2026-10-14",
   "counts": {
-    "records": 44,
-    "targetClaims": 81,
-    "exactTextTargetsMatched": 81,
+    "records": 52,
+    "targetClaims": 103,
+    "exactTextTargetsMatched": 103,
     "targetClaimsUnmatched": 0,
     "sourceEntries": 25,
     "recordsWithExternalSources": 18,
-    "recordsWithAllowedDisposition": 44,
-    "recordsWithAllowedVerification": 44,
+    "recordsWithAllowedDisposition": 52,
+    "recordsWithAllowedVerification": 52,
     "invalidRecords": 0,
     "byDisposition": {
       "calculation-reproduced": 6,
@@ -21,7 +21,7 @@
       "overgeneralized": 5,
       "historical-case-supported-with-scope": 1,
       "durability-bound-overstatement": 1,
-      "unsubstantiated-performance-claim": 19,
+      "unsubstantiated-performance-claim": 27,
       "unsupported-exam-frequency-prediction": 3
     }
   },
@@ -1426,6 +1426,294 @@
           "itemId": "essay-mock-2026年5月-模拟卷4-2",
           "field": "writingPoints",
           "claimNeedle": "发布频率提升5倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-domain-services-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统吞吐量提升5倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "部署频率从月级到日级",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "故障影响范围缩小80%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-zero-trust-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "安全事件减少70%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "VPN相关投诉下降90%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "等保2.0合规达标",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-agent-automation-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 3,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "文档处理效率提升10倍",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "数据报表生成从小时级缩短到分钟级",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "IT运维工单自动处理率达到60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-predictive-maintenance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 5,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "设备故障预测准确率92%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "非计划停机减少60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "生产工艺优化周期从2周缩短到2天",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "新员工培训时间缩短50%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "年度维护成本降低35%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-federated-learning-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-1",
+          "field": "writingPoints",
+          "claimNeedle": "欺诈识别率提升15%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-1",
+          "field": "writingPoints",
+          "claimNeedle": "数据合规零风险",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-monolith-migration-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-2",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率从月级提升到周级",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-2",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性提升到99.95%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-maintainability-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-4",
+          "field": "writingPoints",
+          "claimNeedle": "平均缺陷修复时间从5天降到1天",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-4",
+          "field": "writingPoints",
+          "claimNeedle": "变更引入缺陷率降低60%",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        }
+      ],
+      "answerVerification": "not-established",
+      "answerVerificationAllowed": true
+    },
+    {
+      "recordId": "mock-essay-data-governance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "dispositionAllowed": true,
+      "targetCount": 2,
+      "targetsOk": true,
+      "sourceCount": 0,
+      "sourceMetadataOk": true,
+      "sourceChecks": [],
+      "targetChecks": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据需求交付周期从3个月降至2周",
+          "targetExists": true,
+          "fieldExists": true,
+          "exactTextStillPresent": true
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据质量达标率从60%提升到95%",
           "targetExists": true,
           "fieldExists": true,
           "exactTextStillPresent": true

@@ -1136,6 +1136,204 @@
       "conclusion": "模拟Serverless提纲中的成本下降60%与发布频率提升5倍没有费用口径、流量/调用量、运行时长、对照架构或发布日志。",
       "recommendedAction": "标明为示例数据；真实项目需给出成本构成和计量窗口、同等负载对照、发布次数统计，以及是否包含开发/运维人力成本。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-domain-services-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: domain-service migration outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "系统吞吐量提升5倍"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "部署频率从月级到日级"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-1",
+          "field": "writingPoints",
+          "claimNeedle": "故障影响范围缩小80%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟微服务/领域服务提纲中的吞吐提升、部署频率变化和故障影响范围缩小均没有基准版本、统计窗口、吞吐测试或故障事件数据。",
+      "recommendedAction": "仅作为模拟案例示例；真实项目应提供负载模型、发布日志、故障范围定义与前后对比。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-zero-trust-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: zero-trust and VPN outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "安全事件减少70%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "VPN相关投诉下降90%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-2",
+          "field": "writingPoints",
+          "claimNeedle": "等保2.0合规达标"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "安全事件下降70%、VPN投诉下降90%没有事件定义、分母、观察窗口或归因方法；等保2.0合规达标则需要可核验的测评/证据，不可由架构描述自动推出。",
+      "recommendedAction": "标明为模拟设定；真实陈述需给出事件分类、比较周期、投诉口径与测评机构/报告信息。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-agent-automation-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: agent automation and productivity outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "文档处理效率提升10倍"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "数据报表生成从小时级缩短到分钟级"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-3",
+          "field": "writingPoints",
+          "claimNeedle": "IT运维工单自动处理率达到60%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "文档处理效率、报表耗时和工单自动处理率是成果指标，但无任务样本、耗时分布、工单分母、人工复核规则或运行日志支撑。",
+      "recommendedAction": "作为模拟示例保留；真实项目需说明任务范围、端到端计时、自动处理成功定义及统计窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-predictive-maintenance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: predictive-maintenance accuracy and operating outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "设备故障预测准确率92%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "非计划停机减少60%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "生产工艺优化周期从2周缩短到2天"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "新员工培训时间缩短50%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷5-4",
+          "field": "writingPoints",
+          "claimNeedle": "年度维护成本降低35%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "预测准确率、停机下降、优化周期、培训时间及维护成本的多个指标没有测试集/判定规则、对照组、统计窗口或成本明细，不能被视为已实证结果。",
+      "recommendedAction": "清楚标记为假设案例；真实项目需披露预测评估方法、混淆矩阵/样本期、停机定义、培训样本与成本计算范围。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-federated-learning-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: federated learning and fraud detection outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-1",
+          "field": "writingPoints",
+          "claimNeedle": "欺诈识别率提升15%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-1",
+          "field": "writingPoints",
+          "claimNeedle": "数据合规零风险"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "欺诈识别率提升15%没有基线模型、样本分布和指标定义；“数据合规零风险”是绝对化保证，无法凭采用联邦学习和TEE的方案描述推出。",
+      "recommendedAction": "将识别率变化标明为示例或给出验证集、基线与评估指标；把零风险改为具体控制措施、威胁模型和剩余风险声明。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-monolith-migration-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: monolith migration frequency and availability outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-2",
+          "field": "writingPoints",
+          "claimNeedle": "发布频率从月级提升到周级"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-2",
+          "field": "writingPoints",
+          "claimNeedle": "系统可用性提升到99.95%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "发布频率提高和可用性达到99.95%没有部署记录、测量窗口、维护排除项或可用性监控数据，当前只能视为模拟项目成果。",
+      "recommendedAction": "标注为练习示例；真实陈述需给出版本发布统计、可用性计量口径、观察周期和排除项。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-maintainability-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: defect repair and change-induced defect outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-4",
+          "field": "writingPoints",
+          "claimNeedle": "平均缺陷修复时间从5天降到1天"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-4",
+          "field": "writingPoints",
+          "claimNeedle": "变更引入缺陷率降低60%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "缺陷修复时间变化和变更引入缺陷率降低60%没有缺陷等级、计时起止、分母、版本区间或观察窗口。",
+      "recommendedAction": "仅作为模拟结果使用；真实项目需给出缺陷样本、修复时间口径、变更引入缺陷定义与前后版本区间。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-data-governance-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: data-governance delivery cycle and quality outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据需求交付周期从3个月降至2周"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-2",
+          "field": "writingPoints",
+          "claimNeedle": "数据质量达标率从60%提升到95%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "数据需求交付周期与数据质量达标率的显著变化没有样本量、流程起止定义、质量规则、数据范围或统计期支持。",
+      "recommendedAction": "标明为模拟情景；真实成果应明确需求周期计算口径、质量规则版本、样本范围与前后测量时间。",
+      "answerVerification": "not-established"
     }
   ]
 }
