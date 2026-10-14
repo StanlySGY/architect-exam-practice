@@ -76,4 +76,18 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
+  assert.equal(review.summary.sameNumberExactContentReviews, 12);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 12);
+  assert.equal(review.sameNumberExactContentReviews.length, 12);
+  for (const record of review.sameNumberExactContentReviews) {
+    assert.equal(record.queueStatusAtReview, 'candidate-question-content-match-needs-human-review');
+    assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
+    assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
+    assert.equal(record.reproducedChecks.normalizedStemMatch, true);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+    assert.equal(record.adjudication, 'local-question-stem-options-answer-match-origin-unverified');
+  }
 });
