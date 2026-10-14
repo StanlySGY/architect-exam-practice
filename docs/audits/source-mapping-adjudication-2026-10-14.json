@@ -11,7 +11,12 @@
     "localHeadingNumberDiffers": 4,
     "officialSourceProvenanceVerified": 0,
     "answerCorrectnessReviewed": 0,
-    "bankMutated": false
+    "bankMutated": false,
+    "remoteCaseThemeChecksReviewed": 5,
+    "caseThemeLevelCorroborations": 5,
+    "fullPromptMatchesConfirmed": 0,
+    "lightsoftUrlsAttemptedThroughWebTool": 1,
+    "lightsoftUrlsAccessibleThroughWebTool": 0
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -102,6 +107,70 @@
       "adjudication": "local-content-match-question-number-differs-origin-unverified",
       "rationale": "候选文件第12题的题干、四个选项和答案与题库第15题对应；题号不一致仍未解释，官方原始来源未认证。",
       "requiredFollowUp": "保留待复核状态；不能因文本一致而将来源状态改为已确认。"
+    }
+  ],
+  "remoteCrossCheck": {
+    "checkedAt": "2026-10-14",
+    "sourceUrl": "https://www.ruantiku.com/examination/599970.html",
+    "sourceTitle": "2015年下半年系统架构设计师考试下午真题试题（案例分析）",
+    "publisher": "软题库（第三方题卷索引/练习站）",
+    "sourceRole": "secondary-theme-level-corroboration",
+    "supports": "该页面列出2015年下半年系统架构设计师案例分析，并概述5道案例主题：软件架构评估、系统设计建模、嵌入式系统可靠性设计、应用系统数据架构、Web应用系统架构设计。",
+    "limitations": "该页面不是官方原卷来源证明，展示内容只足以比较考试场次与案例主题，不能证明每个小问的逐字原文、图表、题号或答案；也不验证答案正确性。",
+    "bankLightsoftUrlCheck": {
+      "attemptedRecordId": "architect-case-real-2015年下半年-lightsoft-866851d206fc4a84a1b45ef55539e938",
+      "bankUrl": "https://www.lightsoft.tech/doquestion/doquestion?userId=null&index=0&doType=0&id=8d196ee9be0942eeafcc6bf7cdccff60&name=2015%E5%B9%B4%20%E4%B8%8B%E5%8D%8A%E5%B9%B4%20%E6%A1%88%E4%BE%8B&subjectId=5a54594b40e24123843cb0cda46eaa8a",
+      "verificationToolResult": "not-accessible-through-web-verification-tool",
+      "interpretation": "仅表示本次验证工具无法读取该URL，不等于网站已下线或用户浏览器无法访问。",
+      "similarIndexedLightsoftUrl": "https://www.lightsoft.tech/doquestion/doquestion?doType=0&id=22702c1d5caf4d3b843415c82745b322&index=0&name=2015%E5%B9%B4+%E4%B8%8B%E5%8D%8A%E5%B9%B4+%E6%A1%88%E4%BE%8B&userId=null",
+      "similarUrlLimitation": "检索结果中的Lightsoft URL具有不同的id参数；未证明其与题库存储的URL指向同一题卷记录，不能混用为同一个来源。"
+    }
+  },
+  "remoteCaseThemeReviews": [
+    {
+      "itemId": "architect-case-real-2015年下半年-lightsoft-866851d206fc4a84a1b45ef55539e938",
+      "bankCaseTitle": "试题1",
+      "bankTopicAnchor": "特种车辆管理系统；质量属性效用树、架构风险/敏感点/权衡点",
+      "secondaryPageCase": 1,
+      "secondaryTopic": "软件架构评估",
+      "decision": "theme-level-only",
+      "officialSourceProvenanceVerified": false
+    },
+    {
+      "itemId": "architect-case-real-2015年下半年-lightsoft-066d4558ca78463cbbd421ebeb03909c",
+      "bankCaseTitle": "试题2",
+      "bankTopicAnchor": "无人直升机控制；状态图和活动图",
+      "secondaryPageCase": 2,
+      "secondaryTopic": "系统设计建模",
+      "decision": "theme-level-only",
+      "officialSourceProvenanceVerified": false
+    },
+    {
+      "itemId": "architect-case-real-2015年下半年-lightsoft-3d3d47917c3f4676a2dce7c4a8fab74b",
+      "bankCaseTitle": "试题3",
+      "bankTopicAnchor": "宇航装备嵌入式系统可靠性",
+      "secondaryPageCase": 3,
+      "secondaryTopic": "嵌入式系统可靠性设计",
+      "decision": "theme-level-only",
+      "officialSourceProvenanceVerified": false
+    },
+    {
+      "itemId": "architect-case-real-2015年下半年-lightsoft-b445fb0195b9447c9b75876d7401339d",
+      "bankCaseTitle": "试题4",
+      "bankTopicAnchor": "贸易综合管理系统的数据架构和存储方式",
+      "secondaryPageCase": 4,
+      "secondaryTopic": "应用系统数据架构",
+      "decision": "theme-level-only",
+      "officialSourceProvenanceVerified": false
+    },
+    {
+      "itemId": "architect-case-real-2015年下半年-lightsoft-dd7f5d465bdc468b8a0a8124fef7b4a7",
+      "bankCaseTitle": "试题5",
+      "bankTopicAnchor": "在线投票系统；Web应用架构与数据持久层",
+      "secondaryPageCase": 5,
+      "secondaryTopic": "Web应用系统架构设计",
+      "decision": "theme-level-only",
+      "officialSourceProvenanceVerified": false
     }
   ]
 }

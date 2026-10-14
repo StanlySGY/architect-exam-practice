@@ -41,6 +41,20 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.localHeadingNumberDiffers, 4);
   assert.equal(review.summary.officialSourceProvenanceVerified, 0);
   assert.equal(review.summary.answerCorrectnessReviewed, 0);
+  assert.equal(review.summary.remoteCaseThemeChecksReviewed, 5);
+  assert.equal(review.summary.caseThemeLevelCorroborations, 5);
+  assert.equal(review.summary.fullPromptMatchesConfirmed, 0);
+  assert.equal(review.summary.lightsoftUrlsAttemptedThroughWebTool, 1);
+  assert.equal(review.summary.lightsoftUrlsAccessibleThroughWebTool, 0);
+  assert.equal(review.remoteCrossCheck.sourceRole, 'secondary-theme-level-corroboration');
+  assert.equal(review.remoteCrossCheck.bankLightsoftUrlCheck.verificationToolResult, 'not-accessible-through-web-verification-tool');
+  assert.match(review.remoteCrossCheck.bankLightsoftUrlCheck.bankUrl, /id=8d196ee9be0942eeafcc6bf7cdccff60/);
+  assert.match(review.remoteCrossCheck.bankLightsoftUrlCheck.similarIndexedLightsoftUrl, /id=22702c1d5caf4d3b843415c82745b322/);
+  assert.equal(review.remoteCaseThemeReviews.length, 5);
+  for (const entry of review.remoteCaseThemeReviews) {
+    assert.equal(entry.decision, 'theme-level-only');
+    assert.equal(entry.officialSourceProvenanceVerified, false);
+  }
   assert.equal(review.records.length, 4);
   assert.deepEqual(
     review.records.map(record => record.itemId),
