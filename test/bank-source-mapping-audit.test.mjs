@@ -76,9 +76,14 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 12);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 12);
-  assert.equal(review.sameNumberExactContentReviews.length, 12);
+  assert.equal(review.summary.sameNumberExactContentReviews, 18);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 18);
+  assert.equal(review.sameNumberExactContentReviews.length, 18);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 18);
+  assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
+  assert.equal(review.summary.sharedStemPairReviews, 4);
+  assert.equal(review.summary.sharedStemOptionAnswerMatches, 4);
+  assert.equal(review.sharedStemPairReviews.length, 4);
   for (const record of review.sameNumberExactContentReviews) {
     assert.equal(record.queueStatusAtReview, 'candidate-question-content-match-needs-human-review');
     assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
@@ -89,5 +94,17 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.officialSourceProvenanceVerified, false);
     assert.equal(record.answerCorrectnessVerified, false);
     assert.equal(record.adjudication, 'local-question-stem-options-answer-match-origin-unverified');
+  }
+  for (const record of review.sharedStemPairReviews) {
+    assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
+    assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
+    assert.equal(record.reproducedChecks.normalizedStemMatch, false);
+    assert.equal(record.reproducedChecks.sharedStemPairMapping, true);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.ok(record.pairedItemIds.includes(record.itemId));
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+    assert.equal(record.adjudication, 'paired-shared-stem-representation-variant-origin-unverified');
   }
 });
