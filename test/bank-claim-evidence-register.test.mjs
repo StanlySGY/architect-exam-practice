@@ -561,3 +561,32 @@ test('模拟论文中其他业务成果、合规及自动化指标需要项目�
   assert.equal(report.counts.recordsWithAllowedVerification, 8);
   assert.equal(report.counts.invalidRecords, 0);
 });
+
+test('AI、零信任、实时架构与训练集群模拟成果数字需证据支撑', () => {
+  const groups = [
+    ['rag', ['问答准确率达92%', '平均响应时间<3秒', '月度推理成本降低60%']],
+    ['security', ['通过等保三级认证', '零安全事故运行18个月', '安全事件响应时间从小时级缩短到分钟级', '零数据泄露']],
+    ['traffic', ['信号控制延迟<500ms', '可用性99.995%', '系统稳定运行2年']],
+    ['vision', ['缺陷检出率98.5%', '误检率<1%', '单次推理<50ms']],
+    ['training', ['GPU MFU达到55%+', '日均训练Token数达到100B+', 'MTBF>48小时']],
+  ];
+  const essays = groups.map(([id, needles]) => ({ id, writingPoints: needles.join('；') }));
+  const records = groups.map(([id, needles]) => ({
+    recordId: id,
+    disposition: 'unsubstantiated-performance-claim',
+    targets: needles.map(claimNeedle => ({ itemId: id, field: 'writingPoints', claimNeedle })),
+    sourceEvidence: [],
+    answerVerification: 'not-established',
+  }));
+  const report = auditClaimEvidenceRegister(
+    { choices: [], cases: [], essays },
+    { reviewedOn: '2026-10-14', records },
+  );
+  assert.equal(report.counts.records, 5);
+  assert.equal(report.counts.targetClaims, 16);
+  assert.equal(report.counts.exactTextTargetsMatched, 16);
+  assert.equal(report.counts.targetClaimsUnmatched, 0);
+  assert.equal(report.counts.recordsWithAllowedDisposition, 5);
+  assert.equal(report.counts.recordsWithAllowedVerification, 5);
+  assert.equal(report.counts.invalidRecords, 0);
+});

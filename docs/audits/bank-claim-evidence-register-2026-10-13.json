@@ -1334,6 +1334,141 @@
       "conclusion": "数据需求交付周期与数据质量达标率的显著变化没有样本量、流程起止定义、质量规则、数据范围或统计期支持。",
       "recommendedAction": "标明为模拟情景；真实成果应明确需求周期计算口径、质量规则版本、样本范围与前后测量时间。",
       "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-rag-agent-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: RAG+Agent accuracy, latency, and inference-cost outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-3",
+          "field": "writingPoints",
+          "claimNeedle": "问答准确率达92%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-3",
+          "field": "writingPoints",
+          "claimNeedle": "平均响应时间<3秒"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷1-3",
+          "field": "writingPoints",
+          "claimNeedle": "月度推理成本降低60%"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟 RAG+Agent 项目提纲中的 92% 问答准确率、低于3秒响应时间和推理成本下降60%没有评估集、延迟分位数/负载条件、费用基线或账单证据。",
+      "recommendedAction": "明确标记为示例数据；真实项目要说明评估集与准确率判定方法、p50/p95/p99延迟和并发条件，以及按同等请求量/模型组合计算的成本基线。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-zero-trust-security-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: zero-trust certification and security incident outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-4",
+          "field": "writingPoints",
+          "claimNeedle": "通过等保三级认证"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-4",
+          "field": "writingPoints",
+          "claimNeedle": "零安全事故运行18个月"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-4",
+          "field": "writingPoints",
+          "claimNeedle": "安全事件响应时间从小时级缩短到分钟级"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷2-4",
+          "field": "writingPoints",
+          "claimNeedle": "零数据泄露"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟零信任方案把等保三级认证、18个月零安全事故、事件响应提速和零数据泄露写作实施成果，但没有测评报告、事件分类/观察窗口、MTTA计量记录或数据泄露判定范围。零事故/零泄露属于受监测能力与口径限制的断言。",
+      "recommendedAction": "作为模拟案例保留时要标明假设；如是真实项目，应提供有效测评材料、事件定义和观察期、响应时长统计以及泄露监测/报告口径，避免用“零风险”式绝对保证。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-traffic-architecture-quality-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: traffic control latency and availability outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "信号控制延迟<500ms"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "可用性99.995%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷3-2",
+          "field": "writingPoints",
+          "claimNeedle": "系统稳定运行2年"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟交通调度架构提纲里的500ms信号控制延迟、99.995%可用性与稳定运行2年没有交通负载场景、延迟测量分位数、可用性计量窗口或运行记录支持。99.99%同时出现在需求目标部分，不应与已达成的99.995%成果混为一谈。",
+      "recommendedAction": "标出需求目标与示例结果的区别；真实项目需提供信号流量/设备条件、端到端延迟统计、故障/维护排除项及完整运行窗口。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-vision-model-inference-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: defect-detection accuracy and inference latency outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-3",
+          "field": "writingPoints",
+          "claimNeedle": "缺陷检出率98.5%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-3",
+          "field": "writingPoints",
+          "claimNeedle": "误检率<1%"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷6-3",
+          "field": "writingPoints",
+          "claimNeedle": "单次推理<50ms"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟视觉质检提纲中的98.5%检出率、低于1%误检率和低于50ms推理耗时没有独立测试集、阳性/阴性定义、样本分布、硬件信息或端到端计时结果。",
+      "recommendedAction": "标明为示例；真实指标应说明检出率与误检率公式、样本量/产品类别、置信区间、硬件与批量大小，并区分模型单次推理与整条生产链路延迟。",
+      "answerVerification": "not-established"
+    },
+    {
+      "recordId": "mock-essay-llm-training-cluster-outcomes",
+      "disposition": "unsubstantiated-performance-claim",
+      "topic": "Mock essay: GPU MFU, daily training tokens, and MTBF outcomes",
+      "targets": [
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-1",
+          "field": "writingPoints",
+          "claimNeedle": "GPU MFU达到55%+"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-1",
+          "field": "writingPoints",
+          "claimNeedle": "日均训练Token数达到100B+"
+        },
+        {
+          "itemId": "essay-mock-2026年5月-模拟卷7-1",
+          "field": "writingPoints",
+          "claimNeedle": "MTBF>48小时"
+        }
+      ],
+      "sourceEvidence": [],
+      "conclusion": "模拟大模型训练集群提纲中的GPU MFU 55%+、日均训练100B+ tokens和MTBF大于48小时没有训练配置/硬件规模、计数范围、作业日志、故障分类或观测窗口。MFU也需明确分母和统计口径。",
+      "recommendedAction": "明确标注为练习情景；真实项目需提供GPU型号/数量、模型与序列长度、MFU计算口径、训练Token统计规则，以及节点/作业故障日志与MTBF定义。",
+      "answerVerification": "not-established"
     }
   ]
 }
