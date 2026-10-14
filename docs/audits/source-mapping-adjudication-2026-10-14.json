@@ -1,0 +1,107 @@
+{
+  "reportVersion": 1,
+  "reviewedAt": "2026-10-14",
+  "readOnly": true,
+  "sourceMappingQueue": "docs/audits/source-mapping-review-queue.json",
+  "bankPath": "../architect-exam-bank/data/bank.json",
+  "candidateSourceRoot": "../ruankao-senior-architecture-designer/sources",
+  "summary": {
+    "recordsReviewed": 4,
+    "localContentMatchReproduced": 4,
+    "localHeadingNumberDiffers": 4,
+    "officialSourceProvenanceVerified": 0,
+    "answerCorrectnessReviewed": 0,
+    "bankMutated": false
+  },
+  "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
+  "records": [
+    {
+      "itemId": "real-2021年下半年-010",
+      "kind": "choice",
+      "bankQuestionNo": 10,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 2,
+      "matchedFlags": {
+        "matchedTitle": true,
+        "matchedStem": true,
+        "matchedOptions": true,
+        "matchedAnswer": true,
+        "matchedExactQuestion": false,
+        "questionNumberMismatch": true
+      },
+      "contentAnchor": "以下不属于嵌入式实时操作系统特点的是（）。",
+      "observedLocalAnswer": "C",
+      "adjudication": "local-content-match-question-number-differs-origin-unverified",
+      "rationale": "候选文件第2题的题干、四个选项和答案与题库第10题对应；但本地标题号不同，且没有独立验证候选文件是否直接来源于官方原卷。",
+      "requiredFollowUp": "保留待复核状态；需要与可认证的官方原卷或出版方版本比对后才能确认来源映射。"
+    },
+    {
+      "itemId": "real-2021年下半年-012",
+      "kind": "choice",
+      "bankQuestionNo": 12,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 3,
+      "matchedFlags": {
+        "matchedTitle": true,
+        "matchedStem": true,
+        "matchedOptions": true,
+        "matchedAnswer": true,
+        "matchedExactQuestion": false,
+        "questionNumberMismatch": true
+      },
+      "contentAnchor": "AI芯片有别于通常处理器芯片，它应具备四种关键特征。",
+      "observedLocalAnswer": "B",
+      "adjudication": "local-content-match-question-number-differs-origin-unverified",
+      "rationale": "候选文件第3题的题干、选项和答案与题库第12题对应；本地题号不同，且原始出版来源尚未独立认证。",
+      "requiredFollowUp": "保留待复核状态；官方原卷版本比对完成前，不确认来源映射。"
+    },
+    {
+      "itemId": "real-2021年下半年-014",
+      "kind": "choice",
+      "bankQuestionNo": 14,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 11,
+      "matchedFlags": {
+        "matchedTitle": true,
+        "matchedStem": true,
+        "matchedOptions": true,
+        "matchedAnswer": true,
+        "matchedExactQuestion": false,
+        "questionNumberMismatch": true
+      },
+      "contentAnchor": "Internet网络核心采取的交换方式为（ ）。",
+      "observedLocalAnswer": "A",
+      "adjudication": "local-content-match-question-number-differs-origin-unverified",
+      "rationale": "候选文件第11题的题干、四个选项和答案与题库第14题对应；目前只能确认本地文本对应关系，不能确认候选文件就是官方原卷。",
+      "requiredFollowUp": "保留待复核状态；通过官方原卷或可追溯出版物核实来源版本。"
+    },
+    {
+      "itemId": "real-2021年下半年-015",
+      "kind": "choice",
+      "bankQuestionNo": 15,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 12,
+      "matchedFlags": {
+        "matchedTitle": true,
+        "matchedStem": true,
+        "matchedOptions": true,
+        "matchedAnswer": true,
+        "matchedExactQuestion": false,
+        "questionNumberMismatch": true
+      },
+      "contentAnchor": "SDN(Software Defined Network)的网络架构中不包含（ ）。",
+      "observedLocalAnswer": "A",
+      "adjudication": "local-content-match-question-number-differs-origin-unverified",
+      "rationale": "候选文件第12题的题干、四个选项和答案与题库第15题对应；题号不一致仍未解释，官方原始来源未认证。",
+      "requiredFollowUp": "保留待复核状态；不能因文本一致而将来源状态改为已确认。"
+    }
+  ]
+}

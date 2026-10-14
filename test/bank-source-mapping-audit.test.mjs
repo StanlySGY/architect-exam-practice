@@ -29,3 +29,37 @@ test('来源映射阻止 sourceFile 路径逃逸 source root', () => {
   assert.equal(report.records[0].status, 'unsafe-source-path');
   assert.deepEqual(report.records[0].candidates, []);
 });
+
+test('题源人工复核只确认本地内容对应，不会把题号错配或候选文本升级成官方来源', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const reviewPath = new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url);
+  const review = JSON.parse(await readFile(reviewPath, 'utf8'));
+  assert.equal(review.readOnly, true);
+  assert.equal(review.summary.bankMutated, false);
+  assert.equal(review.summary.recordsReviewed, 4);
+  assert.equal(review.summary.localContentMatchReproduced, 4);
+  assert.equal(review.summary.localHeadingNumberDiffers, 4);
+  assert.equal(review.summary.officialSourceProvenanceVerified, 0);
+  assert.equal(review.summary.answerCorrectnessReviewed, 0);
+  assert.equal(review.records.length, 4);
+  assert.deepEqual(
+    review.records.map(record => record.itemId),
+    [
+      'real-2021年下半年-010',
+      'real-2021年下半年-012',
+      'real-2021年下半年-014',
+      'real-2021年下半年-015',
+    ],
+  );
+  for (const record of review.records) {
+    assert.equal(record.queueStatusAtReview, 'candidate-content-match-local-heading-number-differs');
+    assert.notEqual(record.bankQuestionNo, record.candidateQuestionNo);
+    assert.equal(record.matchedFlags.matchedTitle, true);
+    assert.equal(record.matchedFlags.matchedStem, true);
+    assert.equal(record.matchedFlags.matchedOptions, true);
+    assert.equal(record.matchedFlags.matchedAnswer, true);
+    assert.equal(record.matchedFlags.matchedExactQuestion, false);
+    assert.equal(record.matchedFlags.questionNumberMismatch, true);
+    assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
+  }
+});
