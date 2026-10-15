@@ -76,10 +76,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 125);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 125);
-  assert.equal(review.sameNumberExactContentReviews.length, 125);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 125);
+  assert.equal(review.summary.sameNumberExactContentReviews, 142);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 142);
+  assert.equal(review.sameNumberExactContentReviews.length, 142);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 142);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
@@ -92,9 +92,11 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberEleventhBatchReviewed, 2);
   assert.equal(review.summary.sameNumberTwelfthBatchReviewed, 11);
   assert.equal(review.summary.sameNumberThirteenthBatchReviewed, 13);
+  assert.equal(review.summary.sameNumberFourteenthBatchReviewed, 17);
+  assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 1);
-  assert.equal(review.contentExceptionReviews.length, 1);
+  assert.equal(review.summary.contentExceptionReviews, 3);
+  assert.equal(review.contentExceptionReviews.length, 3);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
@@ -109,14 +111,23 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
     assert.equal(record.adjudication, 'local-question-stem-options-answer-match-origin-unverified');
   }
-  const exception = review.contentExceptionReviews[0];
-  assert.equal(exception.itemId, 'real-2023年下半年-054');
-  assert.equal(exception.reproducedChecks.normalizedStemMatch, true);
-  assert.equal(exception.reproducedChecks.optionsAtoCMatchAfterArrowNormalization, true);
-  assert.equal(exception.reproducedChecks.optionDTextMatch, false);
-  assert.equal(exception.reproducedChecks.answerKeyMatch, true);
-  assert.equal(exception.officialSourceProvenanceVerified, false);
-  assert.equal(exception.answerCorrectnessVerified, false);
+  const arrowException = review.contentExceptionReviews.find(record => record.itemId === 'real-2023年下半年-054');
+  assert.equal(arrowException.reproducedChecks.normalizedStemMatch, true);
+  assert.equal(arrowException.reproducedChecks.optionsAtoCMatchAfterArrowNormalization, true);
+  assert.equal(arrowException.reproducedChecks.optionDTextMatch, false);
+  assert.equal(arrowException.reproducedChecks.answerKeyMatch, true);
+  const diagramException = review.contentExceptionReviews.find(record => record.itemId === 'real-2017年下半年-006');
+  assert.equal(diagramException.reproducedChecks.normalizedTextStemMatch, true);
+  assert.equal(diagramException.reproducedChecks.optionsAtoDMatch, true);
+  assert.equal(diagramException.reproducedChecks.candidateHasDiagramAsset, false);
+  const tableException = review.contentExceptionReviews.find(record => record.itemId === 'real-2024年上半年-068');
+  assert.equal(tableException.reproducedChecks.questionSentenceMatches, true);
+  assert.equal(tableException.reproducedChecks.bankTablePresent, true);
+  assert.equal(tableException.reproducedChecks.candidateTablePresent, false);
+  for (const exception of review.contentExceptionReviews) {
+    assert.equal(exception.officialSourceProvenanceVerified, false);
+    assert.equal(exception.answerCorrectnessVerified, false);
+  }
   for (const record of review.sharedStemPairReviews) {
     assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
