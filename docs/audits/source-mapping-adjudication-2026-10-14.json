@@ -17,12 +17,12 @@
     "fullPromptMatchesConfirmed": 0,
     "lightsoftUrlsAttemptedThroughWebTool": 1,
     "lightsoftUrlsAccessibleThroughWebTool": 0,
-    "sameNumberExactContentReviews": 99,
-    "sameNumberContentStemOptionAnswerMatches": 99,
-    "sameNumberStrictStemOptionAnswerMatches": 99,
+    "sameNumberExactContentReviews": 101,
+    "sameNumberContentStemOptionAnswerMatches": 101,
+    "sameNumberStrictStemOptionAnswerMatches": 101,
     "sameNumberSecondBatchReviewed": 10,
-    "sharedStemPairReviews": 4,
-    "sharedStemOptionAnswerMatches": 4,
+    "sharedStemPairReviews": 6,
+    "sharedStemOptionAnswerMatches": 6,
     "sameNumberThirdBatchReviewed": 4,
     "sameNumberFourthBatchReviewed": 8,
     "sameNumberFifthBatchReviewed": 14,
@@ -31,7 +31,9 @@
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
     "contentExceptionReviews": 1,
-    "sameNumberTenthBatchReviewed": 9
+    "sameNumberTenthBatchReviewed": 9,
+    "sameNumberEleventhBatchReviewed": 2,
+    "sharedStemFourthBatchReviewed": 2
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -2679,6 +2681,56 @@
       "rationale": "本地候选Markdown同题号段落中的题干、A–D选项与答案字母与题库条目通过可复现的规范化对比。此记录只证明本地文本对应，不认证候选Markdown的官方原卷出处，也不独立判断答案正确性。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2021年下半年-064",
+      "kind": "choice",
+      "term": "2021年下半年",
+      "questionNo": 64,
+      "bankQuestionNo": 64,
+      "candidateQuestionNo": 64,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 64,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B"
+      },
+      "normalization": "Unicode NFKC；去掉题库字段前缀，规范空白占位、空白和常见标点；题干大小写统一，A–D逐项归一比较。",
+      "bankStemExcerpt": "赵某购买了一款有注册商标的应用App，擅自复制成光盘出售，其行为是侵犯（）的行为。",
+      "candidateStemExcerpt": "赵某购买了一款有注册商标的应用App，擅自复制成光盘出售，其行为是侵犯（ ）的行为。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地候选Markdown对应题号中的题干、选项及答案字母与题库内容规范化后匹配；只确认本地文本对应，不认证官方来源，不独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2021年下半年-065",
+      "kind": "choice",
+      "term": "2021年下半年",
+      "questionNo": 65,
+      "bankQuestionNo": 65,
+      "candidateQuestionNo": 65,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 65,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A"
+      },
+      "normalization": "Unicode NFKC；去掉题库字段前缀，规范空白占位、空白和常见标点；题干大小写统一，A–D逐项归一比较。",
+      "bankStemExcerpt": "下列关于著作权归属的表述，正确的是（）。",
+      "candidateStemExcerpt": "下列关于著作权归属的表述，正确的是（ ）。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地候选Markdown对应题号中的题干、选项及答案字母与题库内容规范化后匹配；只确认本地文本对应，不认证官方来源，不独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
     }
   ],
   "sharedStemPairReviews": [
@@ -2809,6 +2861,70 @@
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false,
       "queueStatusAtReview": "candidate-text-match-needs-human-review"
+    },
+    {
+      "itemId": "real-2021年下半年-062",
+      "kind": "choice",
+      "term": "2021年下半年",
+      "questionNo": 62,
+      "bankQuestionNo": 62,
+      "candidateQuestionNo": 62,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "sharedStemGroup": "2021-three-tier-cs-architecture-two-questions",
+      "pairedItemIds": [
+        "real-2021年下半年-062",
+        "real-2021年下半年-063"
+      ],
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 62,
+        "normalizedStemMatch": false,
+        "sharedStemPairMapping": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A"
+      },
+      "bankStemExplanation": "题库条目保留共享题干的第一个空对应部分；候选Markdown在第62、63题均展示完整双空题干。",
+      "candidateStemExcerpt": "在三层C/S架构中，（ ）是应用的用户接口部分，负责与应用逻辑间的对话功能；（ ）是应用的本体，负责具体的业务处理逻辑。",
+      "bankStemExcerpt": "在三层C/S架构中，（）是应用的用户接口部分，负责与应用逻辑间的对话功能。",
+      "normalization": "本条按共享双空题干组处理，不要求候选整段题干等于单个题库子题的裁剪题干；选项A–D逐项归一后匹配，答案字母直接比对。",
+      "adjudication": "paired-shared-stem-representation-variant-origin-unverified",
+      "rationale": "候选题干为第62、63题共同的完整双空版本，而题库记录按小问分别保留其中一个空的片段，因此单条题干不相同；选项与答案字母匹配。本批仅记录表示差异，不认证官方来源，也不独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2021年下半年-063",
+      "kind": "choice",
+      "term": "2021年下半年",
+      "questionNo": 63,
+      "bankQuestionNo": 63,
+      "candidateQuestionNo": 63,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "sharedStemGroup": "2021-three-tier-cs-architecture-two-questions",
+      "pairedItemIds": [
+        "real-2021年下半年-062",
+        "real-2021年下半年-063"
+      ],
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 63,
+        "normalizedStemMatch": false,
+        "sharedStemPairMapping": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C"
+      },
+      "bankStemExplanation": "题库条目保留共享题干的第二个空对应部分；候选Markdown在第62、63题均展示完整双空题干。",
+      "candidateStemExcerpt": "在三层C/S架构中，（ ）是应用的用户接口部分，负责与应用逻辑间的对话功能；（ ）是应用的本体，负责具体的业务处理逻辑。",
+      "bankStemExcerpt": "（）是应用的本体，负责具体的业务处理逻辑。",
+      "normalization": "本条按共享双空题干组处理，不要求候选整段题干等于单个题库子题的裁剪题干；选项A–D逐项归一后匹配，答案字母直接比对。",
+      "adjudication": "paired-shared-stem-representation-variant-origin-unverified",
+      "rationale": "候选题干为第62、63题共同的完整双空版本，而题库记录按小问分别保留其中一个空的片段，因此单条题干不相同；选项与答案字母匹配。本批仅记录表示差异，不认证官方来源，也不独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
     }
   ],
   "contentExceptionReviews": [
