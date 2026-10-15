@@ -98,9 +98,22 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
+  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 8);
+  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 6);
+  assert.equal(review.summary.questionNumberShiftVisualExceptions, 2);
+  assert.equal(review.summary.contentException2019ShiftedAssetExceptionsReviewed, 2);
+  assert.equal(review.questionNumberShiftCrossChecks.length, 8);
+  for (const record of review.questionNumberShiftCrossChecks) {
+    assert.notEqual(record.bankQuestionNo, record.candidateQuestionNo);
+    assert.equal(record.reproducedChecks.questionNumberMismatch, true);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 9);
-  assert.equal(review.contentExceptionReviews.length, 9);
+  assert.equal(review.summary.contentExceptionReviews, 11);
+  assert.equal(review.contentExceptionReviews.length, 11);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
