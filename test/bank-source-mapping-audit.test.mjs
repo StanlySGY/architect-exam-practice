@@ -76,10 +76,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 142);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 142);
-  assert.equal(review.sameNumberExactContentReviews.length, 142);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 142);
+  assert.equal(review.summary.sameNumberExactContentReviews, 167);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 167);
+  assert.equal(review.sameNumberExactContentReviews.length, 167);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 167);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
@@ -93,6 +93,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberTwelfthBatchReviewed, 11);
   assert.equal(review.summary.sameNumberThirteenthBatchReviewed, 13);
   assert.equal(review.summary.sameNumberFourteenthBatchReviewed, 17);
+  assert.equal(review.summary.sameNumberFifteenthBatchReviewed, 25);
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionReviews, 3);
@@ -101,7 +102,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
   for (const record of review.sameNumberExactContentReviews) {
-    assert.equal(record.queueStatusAtReview, 'candidate-question-content-match-needs-human-review');
+    assert.ok(['candidate-question-content-match-needs-human-review', 'candidate-text-match-needs-human-review'].includes(record.queueStatusAtReview));
     assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
     assert.equal(record.reproducedChecks.normalizedStemMatch, true);
