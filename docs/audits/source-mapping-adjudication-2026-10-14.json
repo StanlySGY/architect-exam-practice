@@ -17,9 +17,9 @@
     "fullPromptMatchesConfirmed": 0,
     "lightsoftUrlsAttemptedThroughWebTool": 1,
     "lightsoftUrlsAccessibleThroughWebTool": 0,
-    "sameNumberExactContentReviews": 173,
-    "sameNumberContentStemOptionAnswerMatches": 173,
-    "sameNumberStrictStemOptionAnswerMatches": 173,
+    "sameNumberExactContentReviews": 178,
+    "sameNumberContentStemOptionAnswerMatches": 178,
+    "sameNumberStrictStemOptionAnswerMatches": 178,
     "sameNumberSecondBatchReviewed": 10,
     "sharedStemPairReviews": 6,
     "sharedStemOptionAnswerMatches": 6,
@@ -30,7 +30,7 @@
     "sameNumberSeventhBatchReviewed": 12,
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
-    "contentExceptionReviews": 19,
+    "contentExceptionReviews": 30,
     "sameNumberTenthBatchReviewed": 9,
     "sameNumberEleventhBatchReviewed": 2,
     "sharedStemFourthBatchReviewed": 2,
@@ -46,10 +46,11 @@
     "questionNumberShiftStrictTextMatches": 6,
     "questionNumberShiftVisualExceptions": 2,
     "contentException2019ShiftedAssetExceptionsReviewed": 2,
-    "sharedBlankMappingGroupsReviewed": 15,
-    "sharedBlankMappingItemsReviewed": 36,
-    "sharedBlankMappingExactGroups": 10,
-    "sharedBlankMappingExceptionGroups": 5
+    "sharedBlankMappingGroupsReviewed": 27,
+    "sharedBlankMappingItemsReviewed": 70,
+    "sharedBlankMappingExactGroups": 17,
+    "sharedBlankMappingExceptionGroups": 10,
+    "sameNumber2018AdditionalStandaloneReviewed": 5
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -4585,6 +4586,131 @@
       "rationale": "直接从候选Markdown对应题号块提取题干、A-D选项和答案字母，与只读题库内容逐项比对一致。本条只证明本地文本对应关系，不证明候选文件的官方原卷出处，也不等于答案正确性已经独立核验。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-013",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 13,
+      "bankQuestionNo": 13,
+      "candidateQuestionNo": 13,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 13,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B"
+      },
+      "normalization": "本地候选Markdown同题号区块直接提取题干，采用Unicode NFKC、空白/标点规范和题号占位归一；A-D逐项核对，答案字母单独核对。",
+      "bankStemExcerpt": "若信息码字为 111000110，生成多项式 G(x)=x5+x3+x+1，则计算出的 CRC 校验码为（13）。",
+      "candidateStemExcerpt": "若信息码字为111000110，生成多项式G(x)=x5+x3+x+1，则计算出的CRC校验码为（ ）。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-015",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 15,
+      "bankQuestionNo": 15,
+      "candidateQuestionNo": 15,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 15,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C"
+      },
+      "normalization": "本地候选Markdown同题号区块直接提取题干，采用Unicode NFKC、空白/标点规范和题号占位归一；A-D逐项核对，答案字母单独核对。",
+      "bankStemExcerpt": "如果发送给 DHCP 客户端的地址已经被其他 DHCP 客户端使用，客户端会向服务器发 送（15）信息包拒绝接受已经分配的地址信息。",
+      "candidateStemExcerpt": "如果发送给DHCP客户端的地址已经被其他DHCP客户端使用，客户端会向服务器发送（ ）信息包拒绝接受已经分配的地址信息。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-031",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 31,
+      "bankQuestionNo": 31,
+      "candidateQuestionNo": 31,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 31,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C"
+      },
+      "normalization": "本地候选Markdown同题号区块直接提取题干，采用Unicode NFKC、空白/标点规范和题号占位归一；A-D逐项核对，答案字母单独核对。",
+      "bankStemExcerpt": "软件概要设计包括设计软件的结构、确定系统功能模块及其相互关系，主要采用（31） 描述程序的结构。",
+      "candidateStemExcerpt": "软件概要设计包括设计软件的结构、确定系统功能模块及其相互关系，主要采用（ ）描述程序的结构。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-040",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 40,
+      "bankQuestionNo": 40,
+      "candidateQuestionNo": 40,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 40,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A"
+      },
+      "normalization": "本地候选Markdown同题号区块直接提取题干，采用Unicode NFKC、空白/标点规范和题号占位归一；A-D逐项核对，答案字母单独核对。",
+      "bankStemExcerpt": "CORBA 服务端构件模型中，（40）是 CORBA 对象的真正实现，负责完成客户端请求。",
+      "candidateStemExcerpt": "CORBA服务端构件模型中，（ ）是CORBA对象的真正实现，负责完成客户端请求。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-066",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 66,
+      "bankQuestionNo": 66,
+      "candidateQuestionNo": 66,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 66,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "D"
+      },
+      "normalization": "本地候选Markdown同题号区块直接提取题干，采用Unicode NFKC、空白/标点规范和题号占位归一；A-D逐项核对，答案字母单独核对。",
+      "bankStemExcerpt": "某软件程序员接受 X 公司（软件著作权人）委托开发一个软件，三个月后又接受 Y 公司委托开发功能类似的软件，该程序员仅将受 X 公司委托开发的软件略作修改即完成提交 给 Y 公司，此种行为（66）。",
+      "candidateStemExcerpt": "某软件程序员接受X公司（软件著作权人）委托开发一个软件，三个月后又接受Y公司委托开发功能类似的软件，该程序员仅将受X公司委托开发的软件略作修改即完成提交给Y公司，此种行为（ ）。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
     }
   ],
   "sharedStemPairReviews": [
@@ -5233,6 +5359,251 @@
         "answerKeyMatch": true,
         "originalAssetPresentInCandidate": false,
         "bankPromptReferencesTable": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-002",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 2,
+      "bankQuestionNo": 2,
+      "candidateQuestionNo": 2,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干依赖下图所示PCB组织方式，但候选Markdown题目块没有图像引用或图像数据。选项与答案虽然匹配，缺少图示仍无法确认完整题目。",
+      "adjudication": "missing-figure-asset-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesFigure": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-003",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 3,
+      "bankQuestionNo": 3,
+      "candidateQuestionNo": 3,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干依赖下图所示PCB组织方式，但候选Markdown题目块没有图像引用或图像数据。选项与答案虽然匹配，缺少图示仍无法确认完整题目。",
+      "adjudication": "missing-figure-asset-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesFigure": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-005",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 5,
+      "bankQuestionNo": 5,
+      "candidateQuestionNo": 5,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干提到“与表达式等价的SQL”，候选Markdown在“那么与表达式”和“等价的SQL语句”之间没有可见关系代数表达式。选项与答案匹配不足以证明关键题面内容完整。",
+      "adjudication": "missing-relational-expression-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "relationalExpressionVisibleInCandidate": false,
+        "bankPromptReferencesRelationalExpression": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-006",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 6,
+      "bankQuestionNo": 6,
+      "candidateQuestionNo": 6,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干提到“与表达式等价的SQL”，候选Markdown在“那么与表达式”和“等价的SQL语句”之间没有可见关系代数表达式。选项与答案匹配不足以证明关键题面内容完整。",
+      "adjudication": "missing-relational-expression-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "relationalExpressionVisibleInCandidate": false,
+        "bankPromptReferencesRelationalExpression": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-016",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 16,
+      "bankQuestionNo": 16,
+      "candidateQuestionNo": 16,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "候选共享题干与题库存在用词差异：题库写“进程/线程使用状态”，候选写“进程/线程状态”；选项和答案字母匹配。",
+      "adjudication": "shared-stem-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "wordingVariant": "进程/线程使用状态 vs 进程/线程状态"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-017",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 17,
+      "bankQuestionNo": 17,
+      "candidateQuestionNo": 17,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "候选共享题干与题库存在用词差异：题库写“进程/线程使用状态”，候选写“进程/线程状态”；选项和答案字母匹配。",
+      "adjudication": "shared-stem-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "wordingVariant": "进程/线程使用状态 vs 进程/线程状态"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-051",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 51,
+      "bankQuestionNo": 51,
+      "candidateQuestionNo": 51,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "策略游戏长题干中题库写“识别出 2 个核心质量属性场景”，候选写“识别出两个核心质量属性场景”；选项和答案字母匹配，但不按逐字一致处理。",
+      "adjudication": "shared-stem-numeral-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "wordingVariant": "2个 vs 两个"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-052",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 52,
+      "bankQuestionNo": 52,
+      "candidateQuestionNo": 52,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "策略游戏长题干中题库写“识别出 2 个核心质量属性场景”，候选写“识别出两个核心质量属性场景”；选项和答案字母匹配，但不按逐字一致处理。",
+      "adjudication": "shared-stem-numeral-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "wordingVariant": "2个 vs 两个"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-053",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 53,
+      "bankQuestionNo": 53,
+      "candidateQuestionNo": 53,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "策略游戏长题干中题库写“识别出 2 个核心质量属性场景”，候选写“识别出两个核心质量属性场景”；选项和答案字母匹配，但不按逐字一致处理。",
+      "adjudication": "shared-stem-numeral-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "wordingVariant": "2个 vs 两个"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-056",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 56,
+      "bankQuestionNo": 56,
+      "candidateQuestionNo": 56,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "issue": "设计模式共享题干和A-D选项对应，但题库第56题答案为D、同题号候选Markdown答案为B；该差异需要与可靠原卷/权威答案复核，不能直接判断哪一方正确。",
+      "adjudication": "answer-key-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": false,
+        "bankAnswer": "D",
+        "candidateAnswer": "B"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-001",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 1,
+      "bankQuestionNo": 1,
+      "candidateQuestionNo": 1,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "题干依赖下表的磁盘请求序列，但候选Markdown没有表格数据；此外选项C/D和答案字母与题库不同（候选答案C，题库D）。",
+      "adjudication": "missing-table-and-answer-option-variance-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionPerKey": {
+          "A": true,
+          "B": true,
+          "C": false,
+          "D": false
+        },
+        "optionsAtoDMatch": false,
+        "answerKeyMatch": false,
+        "bankAnswer": "D",
+        "candidateAnswer": "C",
+        "bankPromptReferencesTable": true,
+        "originalTablePresentInCandidate": false
       },
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
@@ -6582,6 +6953,1136 @@
           },
           "bankStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（49）说明当前状态，（50）在中央数据 存储上执行。",
           "candidateStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（ ）说明当前状态，（ ）在中央数据存储上执行。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-system-engineering-hall-dimensions-18-20",
+      "nos": [
+        18,
+        19,
+        20
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-018",
+          "bankQuestionNo": 18,
+          "candidateQuestionNo": 18,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（18）和反馈等进行分析，以 达到最优（19）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于 1969 年提出 了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三 维结构以时间维、（20）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各 步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可 以分为 7 ",
+          "candidateStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（ ）和反馈等进行分析，以达到最优（ ）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于1969年提出了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三维结构以时间维、（ ）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可以分为7个阶段，在（ ）阶段会做",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-019",
+          "bankQuestionNo": 19,
+          "candidateQuestionNo": 19,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（18）和反馈等进行分析，以 达到最优（19）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于 1969 年提出 了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三 维结构以时间维、（20）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各 步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可 以分为 7 ",
+          "candidateStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（ ）和反馈等进行分析，以达到最优（ ）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于1969年提出了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三维结构以时间维、（ ）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可以分为7个阶段，在（ ）阶段会做",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-020",
+          "bankQuestionNo": 20,
+          "candidateQuestionNo": 20,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（18）和反馈等进行分析，以 达到最优（19）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于 1969 年提出 了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三 维结构以时间维、（20）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各 步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可 以分为 7 ",
+          "candidateStemExcerpt": "系统工程利用计算机作为工具，对系统的结构、元素、（ ）和反馈等进行分析，以达到最优（ ）、最优设计、最优管理和最优控制的目的。霍尔（A.D. Hall）于1969年提出了系统方法的三维结构体系，通常称为霍尔三维结构，这是系统工程方法论的基础。霍尔三维结构以时间维、（ ）维、知识维组成的立体结构概括性地表示出系统工程的各阶段、各步骤以及所涉及的知识范围。其中时间维是系统的工作进程，对于一个具体的工程项目，可以分为7个阶段，在（ ）阶段会做",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-modularity-spiral-model-27-28",
+      "nos": [
+        27,
+        28
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-027",
+          "bankQuestionNo": 27,
+          "candidateQuestionNo": 27,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "系统模块化程度较高时，更适合于采用（27）方法，该方法通过使用基于构件的开 发方法获得快速开发。（28）把整个软件开发流程分成多个阶段， 每一个阶段都由目标设定、 风险分析、开发和有效性验证以及评审构成。",
+          "candidateStemExcerpt": "系统模块化程度较高时，更适合于采用（ ）方法，该方法通过使用基于构件的开发方法获得快速开发。（ ）把整个软件开发流程分成多个阶段，每一个阶段都由目标设定、风险分析、开发和有效性验证以及评审构成。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-028",
+          "bankQuestionNo": 28,
+          "candidateQuestionNo": 28,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "系统模块化程度较高时，更适合于采用（27）方法，该方法通过使用基于构件的开 发方法获得快速开发。（28）把整个软件开发流程分成多个阶段， 每一个阶段都由目标设定、 风险分析、开发和有效性验证以及评审构成。",
+          "candidateStemExcerpt": "系统模块化程度较高时，更适合于采用（ ）方法，该方法通过使用基于构件的开发方法获得快速开发。（ ）把整个软件开发流程分成多个阶段，每一个阶段都由目标设定、风险分析、开发和有效性验证以及评审构成。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-environment-integration-mechanisms-29-30",
+      "nos": [
+        29,
+        30
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-029",
+          "bankQuestionNo": 29,
+          "candidateQuestionNo": 29,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "软件开发环境应支持多种集成机制。其中，（29）用于存储与系统开发有关的信息， 并支持信息的交流与共享；（30）是实现过程集成和控制集成的基础。",
+          "candidateStemExcerpt": "软件开发环境应支持多种集成机制。其中，（ ）用于存储与系统开发有关的信息，并支持信息的交流与共享； （ ）是实现过程集成和控制集成的基础。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-030",
+          "bankQuestionNo": 30,
+          "candidateQuestionNo": 30,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "软件开发环境应支持多种集成机制。其中，（29）用于存储与系统开发有关的信息， 并支持信息的交流与共享；（30）是实现过程集成和控制集成的基础。",
+          "candidateStemExcerpt": "软件开发环境应支持多种集成机制。其中，（ ）用于存储与系统开发有关的信息，并支持信息的交流与共享； （ ）是实现过程集成和控制集成的基础。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-software-design-activities-32-34",
+      "nos": [
+        32,
+        33,
+        34
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-032",
+          "bankQuestionNo": 32,
+          "candidateQuestionNo": 32,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（32）将改善程序结构和 模块划分，降低过程复杂性；（33）的主要目标是开发一个模块化的程序结构，并表示出模 块间的控制关系；（34）描述了软件与用户之间的交互关系。",
+          "candidateStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（ ）将改善程序结构和模块划分，降低过程复杂性；（ ）的主要目标是开发一个模块化的程序结构，并表示出模块间的控制关系；（ ）描述了软件与用户之间的交互关系。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-033",
+          "bankQuestionNo": 33,
+          "candidateQuestionNo": 33,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（32）将改善程序结构和 模块划分，降低过程复杂性；（33）的主要目标是开发一个模块化的程序结构，并表示出模 块间的控制关系；（34）描述了软件与用户之间的交互关系。",
+          "candidateStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（ ）将改善程序结构和模块划分，降低过程复杂性；（ ）的主要目标是开发一个模块化的程序结构，并表示出模块间的控制关系；（ ）描述了软件与用户之间的交互关系。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-034",
+          "bankQuestionNo": 34,
+          "candidateQuestionNo": 34,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（32）将改善程序结构和 模块划分，降低过程复杂性；（33）的主要目标是开发一个模块化的程序结构，并表示出模 块间的控制关系；（34）描述了软件与用户之间的交互关系。",
+          "candidateStemExcerpt": "软件设计包括了四个既独立又相互联系的活动：高质量的（ ）将改善程序结构和模块划分，降低过程复杂性；（ ）的主要目标是开发一个模块化的程序结构，并表示出模块间的控制关系；（ ）描述了软件与用户之间的交互关系。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-ejb-component-types-36-38",
+      "nos": [
+        36,
+        37,
+        38
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-036",
+          "bankQuestionNo": 36,
+          "candidateQuestionNo": 36,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "EJB 是企业级 Java 构件，用于开发和部署多层结构的、分布式的、面向对象的 Java 应用系统。其中，（36）负责完成服务端与客户端的交互；（37）用于数据持久化来简化数据 库开发工作；（38）主要用来处理并发和异步访问操作。",
+          "candidateStemExcerpt": "EJB是企业级Java构件，用于开发和部署多层结构的、分布式的、面向对象的Java应用系统。其中，（ ）负责完成服务端与客户端的交互；（ ）用于数据持久化来简化数据库开发工作；（ ）主要用来处理并发和异步访问操作。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-037",
+          "bankQuestionNo": 37,
+          "candidateQuestionNo": 37,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "EJB 是企业级 Java 构件，用于开发和部署多层结构的、分布式的、面向对象的 Java 应用系统。其中，（36）负责完成服务端与客户端的交互；（37）用于数据持久化来简化数据 库开发工作；（38）主要用来处理并发和异步访问操作。",
+          "candidateStemExcerpt": "EJB是企业级Java构件，用于开发和部署多层结构的、分布式的、面向对象的Java应用系统。其中，（ ）负责完成服务端与客户端的交互；（ ）用于数据持久化来简化数据库开发工作；（ ）主要用来处理并发和异步访问操作。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-038",
+          "bankQuestionNo": 38,
+          "candidateQuestionNo": 38,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "EJB 是企业级 Java 构件，用于开发和部署多层结构的、分布式的、面向对象的 Java 应用系统。其中，（36）负责完成服务端与客户端的交互；（37）用于数据持久化来简化数据 库开发工作；（38）主要用来处理并发和异步访问操作。",
+          "candidateStemExcerpt": "EJB是企业级Java构件，用于开发和部署多层结构的、分布式的、面向对象的Java应用系统。其中，（ ）负责完成服务端与客户端的交互；（ ）用于数据持久化来简化数据库开发工作；（ ）主要用来处理并发和异步访问操作。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-personnel-system-quality-attributes-58-63",
+      "nos": [
+        58,
+        59,
+        60,
+        61,
+        62,
+        63
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-058",
+          "bankQuestionNo": 58,
+          "candidateQuestionNo": 58,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-059",
+          "bankQuestionNo": 59,
+          "candidateQuestionNo": 59,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-060",
+          "bankQuestionNo": 60,
+          "candidateQuestionNo": 60,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-061",
+          "bankQuestionNo": 61,
+          "candidateQuestionNo": 61,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-062",
+          "bankQuestionNo": 62,
+          "candidateQuestionNo": 62,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-063",
+          "bankQuestionNo": 63,
+          "candidateQuestionNo": 63,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中“管理系统遭遇断电后，能够在 15 秒内自动切换至备用系统并恢复正 常运行”主要与（58）质量属性相关，通常可采用（59）架构策略实现该属性；“系统正常 运行时，人员信息查询请求应该在 2 秒内返回结果”主要与（60）质量属性相关，通常可采 用（61）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统 的恶意操作行为进行",
+          "candidateStemExcerpt": "某公司欲开发一个人员管理系统，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中“管理系统遭遇断电后，能够在15秒内自动切换至备用系统并恢复正常运行”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统正常运行时，人员信息查询请求应该在2秒内返回结果”主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性；“系统需要对用户的操作情况进行记录，并对所有针对系统的恶意操作行为进行报警和记录”主要与（ ）质量属",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-digital-signature-goals-64-65",
+      "nos": [
+        64,
+        65
+      ],
+      "expected": "exact-shared-blank-group",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-064",
+          "bankQuestionNo": 64,
+          "candidateQuestionNo": 64,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "数字签名首先需要生成消息摘要，然后发送方用自己的私钥对报文摘要进行加密， 接收方用发送方的公钥验证真伪。生成消息摘要的目的是（64），对摘要进行加密的目的是 （65）。",
+          "candidateStemExcerpt": "数字签名首先需要生成消息摘要，然后发送方用自己的私钥对报文摘要进行加密， 接收方用发送方的公钥验证真伪。生成消息摘要的目的是（ ），对摘要进行加密的目的是（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-065",
+          "bankQuestionNo": 65,
+          "candidateQuestionNo": 65,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "数字签名首先需要生成消息摘要，然后发送方用自己的私钥对报文摘要进行加密， 接收方用发送方的公钥验证真伪。生成消息摘要的目的是（64），对摘要进行加密的目的是 （65）。",
+          "candidateStemExcerpt": "数字签名首先需要生成消息摘要，然后发送方用自己的私钥对报文摘要进行加密， 接收方用发送方的公钥验证真伪。生成消息摘要的目的是（ ），对摘要进行加密的目的是（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-pcb-organization-figure-2-3",
+      "nos": [
+        2,
+        3
+      ],
+      "expected": "visual-asset-missing",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-002",
+          "bankQuestionNo": 2,
+          "candidateQuestionNo": 2,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": true,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某计算机系统中的进程管理采用三态模型，那么下图所示的 PCB（进程控制块）的组 织方式采用（2），图中（3）。",
+          "candidateStemExcerpt": "某计算机系统中的进程管理采用三态模型，那么下图所示的PCB（进程控制块）的组织方式采用（ ），图中（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-003",
+          "bankQuestionNo": 3,
+          "candidateQuestionNo": 3,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": true,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某计算机系统中的进程管理采用三态模型，那么下图所示的 PCB（进程控制块）的组 织方式采用（2），图中（3）。",
+          "candidateStemExcerpt": "某计算机系统中的进程管理采用三态模型，那么下图所示的PCB（进程控制块）的组织方式采用（ ），图中（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-relational-algebra-sql-expression-5-6",
+      "nos": [
+        5,
+        6
+      ],
+      "expected": "expression-missing",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-005",
+          "bankQuestionNo": 5,
+          "candidateQuestionNo": 5,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": true,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "给定关系 R(A,B,C,D,E)与 S(A,B,C,F,G)，那么与表达式 等价的 SQL 语句如下：SELECT （5） FROM R,S WHERE （6）；",
+          "candidateStemExcerpt": "给定关系R(A,B,C,D,E)与S(A,B,C,F,G)，那么与表达式",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-006",
+          "bankQuestionNo": 6,
+          "candidateQuestionNo": 6,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": true,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "给定关系 R(A,B,C,D,E)与 S(A,B,C,F,G)，那么与表达式 等价的 SQL 语句如下：SELECT （5） FROM R,S WHERE （6）；",
+          "candidateStemExcerpt": "给定关系R(A,B,C,D,E)与S(A,B,C,F,G)，那么与表达式",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-performance-tuning-parameters-16-17",
+      "nos": [
+        16,
+        17
+      ],
+      "expected": "stem-wording-variance",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-016",
+          "bankQuestionNo": 16,
+          "candidateQuestionNo": 16,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "为了优化系统的性能，有时需要对系统进行调整。对于不同的系统，其调整参数也 不尽相同。例如，对于数据库系统，主要包括 CPU/内存使用状况、（16）、进程/线程使用状 态、日志文件大小等。对于应用系统，主要包括应用系统的可用性、响应时间、（17）、特定 应用资源占用等。",
+          "candidateStemExcerpt": "为了优化系统的性能，有时需要对系统进行调整。对于不同的系统，其调整参数也不尽相同。例如，对于数据库系统，主要包括CPU/内存使用状况、（ ）、进程/线程状态、日志文件大小等。对于应用系统，主要包括应用系统的可用性、响应时间、（ ）、特定应用的系统资源占用等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-017",
+          "bankQuestionNo": 17,
+          "candidateQuestionNo": 17,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "为了优化系统的性能，有时需要对系统进行调整。对于不同的系统，其调整参数也 不尽相同。例如，对于数据库系统，主要包括 CPU/内存使用状况、（16）、进程/线程使用状 态、日志文件大小等。对于应用系统，主要包括应用系统的可用性、响应时间、（17）、特定 应用资源占用等。",
+          "candidateStemExcerpt": "为了优化系统的性能，有时需要对系统进行调整。对于不同的系统，其调整参数也不尽相同。例如，对于数据库系统，主要包括CPU/内存使用状况、（ ）、进程/线程状态、日志文件大小等。对于应用系统，主要包括应用系统的可用性、响应时间、（ ）、特定应用的系统资源占用等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-strategy-game-quality-attributes-51-53",
+      "nos": [
+        51,
+        52,
+        53
+      ],
+      "expected": "number-wording-variance",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-051",
+          "bankQuestionNo": 51,
+          "candidateQuestionNo": 51,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自 行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（51） 架构风格最为合适。在架构设计阶段，公司的架构师识别出 2 个核心质量属性场景。其中， “在并发用户数量为 10000 人时，用户的请求需要在 1 秒内得到响应”主要与（52）质量属 性相关；“对游戏系统进行二次开发的时间不超过 3 个月”主要与（53）质量属性相关。",
+          "candidateStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（ ）架构风格最为合适。在架构设计阶段，公司的架构师识别出两个核心质量属性场景。其中，“在并发用户数量为10000人时，用户的请求需要在1秒内得到响应”主要与（ ）质量属性相关；“对游戏系统进行二次开发的时间不超过3个月”主要与（ ）质量属性相关。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-052",
+          "bankQuestionNo": 52,
+          "candidateQuestionNo": 52,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自 行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（51） 架构风格最为合适。在架构设计阶段，公司的架构师识别出 2 个核心质量属性场景。其中， “在并发用户数量为 10000 人时，用户的请求需要在 1 秒内得到响应”主要与（52）质量属 性相关；“对游戏系统进行二次开发的时间不超过 3 个月”主要与（53）质量属性相关。",
+          "candidateStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（ ）架构风格最为合适。在架构设计阶段，公司的架构师识别出两个核心质量属性场景。其中，“在并发用户数量为10000人时，用户的请求需要在1秒内得到响应”主要与（ ）质量属性相关；“对游戏系统进行二次开发的时间不超过3个月”主要与（ ）质量属性相关。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-053",
+          "bankQuestionNo": 53,
+          "candidateQuestionNo": 53,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自 行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（51） 架构风格最为合适。在架构设计阶段，公司的架构师识别出 2 个核心质量属性场景。其中， “在并发用户数量为 10000 人时，用户的请求需要在 1 秒内得到响应”主要与（52）质量属 性相关；“对游戏系统进行二次开发的时间不超过 3 个月”主要与（53）质量属性相关。",
+          "candidateStemExcerpt": "某公司欲开发一个大型多人即时战略游戏，游戏设计的目标之一是能够支持玩家自行创建战役地图，定义游戏对象的行为和对象之间的关系。针对该需求，公司应该采用（ ）架构风格最为合适。在架构设计阶段，公司的架构师识别出两个核心质量属性场景。其中，“在并发用户数量为10000人时，用户的请求需要在1秒内得到响应”主要与（ ）质量属性相关；“对游戏系统进行二次开发的时间不超过3个月”主要与（ ）质量属性相关。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-design-pattern-answer-key-54-57",
+      "nos": [
+        54,
+        55,
+        56,
+        57
+      ],
+      "expected": "answer-key-variance",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-054",
+          "bankQuestionNo": 54,
+          "candidateQuestionNo": 54,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提 供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂 模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类， 它是一种（54）模式；（55）模式将类的抽象部分和它的实现部分分离出来，使它们可以独 立变化，它属于（56）模式；（57）模式将一个请求封装为一个对象，从而可用不同的请求 对客户进行参数化，将请求排队或",
+          "candidateStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类，它是一种（ ）模式；（ ）模式将类的抽象部分和它的实现部分分离出来，使它们可以独立变化，它属于（ ）模式；（ ）模式将一个请求封装为一个对象，从而可用不同的请求对客户进行参数化，将请求排队或记录请求日志，支持",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-055",
+          "bankQuestionNo": 55,
+          "candidateQuestionNo": 55,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提 供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂 模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类， 它是一种（54）模式；（55）模式将类的抽象部分和它的实现部分分离出来，使它们可以独 立变化，它属于（56）模式；（57）模式将一个请求封装为一个对象，从而可用不同的请求 对客户进行参数化，将请求排队或",
+          "candidateStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类，它是一种（ ）模式；（ ）模式将类的抽象部分和它的实现部分分离出来，使它们可以独立变化，它属于（ ）模式；（ ）模式将一个请求封装为一个对象，从而可用不同的请求对客户进行参数化，将请求排队或记录请求日志，支持",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-056",
+          "bankQuestionNo": 56,
+          "candidateQuestionNo": 56,
+          "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": false,
+            "bankAnswer": "D",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提 供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂 模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类， 它是一种（54）模式；（55）模式将类的抽象部分和它的实现部分分离出来，使它们可以独 立变化，它属于（56）模式；（57）模式将一个请求封装为一个对象，从而可用不同的请求 对客户进行参数化，将请求排队或",
+          "candidateStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类，它是一种（ ）模式；（ ）模式将类的抽象部分和它的实现部分分离出来，使它们可以独立变化，它属于（ ）模式；（ ）模式将一个请求封装为一个对象，从而可用不同的请求对客户进行参数化，将请求排队或记录请求日志，支持",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-057",
+          "bankQuestionNo": 57,
+          "candidateQuestionNo": 57,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptContainsRelationalExpression": false,
+            "stemNormalization": "Unicode NFKC, lower-case Latin, whitespace/punctuation folding and numbered-blank normalization; answer and option variants are checked separately."
+          },
+          "bankStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提 供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂 模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类， 它是一种（54）模式；（55）模式将类的抽象部分和它的实现部分分离出来，使它们可以独 立变化，它属于（56）模式；（57）模式将一个请求封装为一个对象，从而可用不同的请求 对客户进行参数化，将请求排队或",
+          "candidateStemExcerpt": "设计模式描述了一个出现在特定设计语境中的设计再现问题，并为它的解决方案提供了一个经过充分验证的通用方案，不同的设计模式关注解决不同的问题。例如，抽象工厂模式提供一个接口，可以创建一系列相关或相互依赖的对象， 而无需指定它们具体的类，它是一种（ ）模式；（ ）模式将类的抽象部分和它的实现部分分离出来，使它们可以独立变化，它属于（ ）模式；（ ）模式将一个请求封装为一个对象，从而可用不同的请求对客户进行参数化，将请求排队或记录请求日志，支持",
           "officialSourceProvenanceVerified": false,
           "answerCorrectnessVerified": false
         }
