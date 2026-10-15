@@ -76,10 +76,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 112);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 112);
-  assert.equal(review.sameNumberExactContentReviews.length, 112);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 112);
+  assert.equal(review.summary.sameNumberExactContentReviews, 125);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 125);
+  assert.equal(review.sameNumberExactContentReviews.length, 125);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 125);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
@@ -91,6 +91,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberTenthBatchReviewed, 9);
   assert.equal(review.summary.sameNumberEleventhBatchReviewed, 2);
   assert.equal(review.summary.sameNumberTwelfthBatchReviewed, 11);
+  assert.equal(review.summary.sameNumberThirteenthBatchReviewed, 13);
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionReviews, 1);
   assert.equal(review.contentExceptionReviews.length, 1);
