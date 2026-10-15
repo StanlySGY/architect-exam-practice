@@ -99,11 +99,13 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
-  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 24);
-  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 19);
+  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 26);
+  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 20);
   assert.equal(review.summary.questionNumberShiftVisualExceptions, 4);
+  assert.equal(review.summary.questionNumberShiftNonVisualStemExceptions, 2);
   assert.equal(review.summary.questionNumberShift2016AdditionalReviewed, 8);
   assert.equal(review.summary.questionNumberShift2016SecondBatchReviewed, 8);
+  assert.equal(review.summary.questionNumberShift2016ThirdBatchReviewed, 2);
   assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 28);
   assert.equal(review.summary.sharedBlankMappingItemsReviewed, 75);
   assert.equal(review.summary.sharedBlankMappingExactGroups, 17);
@@ -127,7 +129,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 42).reproducedChecks.optionsAtoDMatch, false);
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 43).reproducedChecks.optionsAtoDMatch, true);
   assert.equal(review.summary.contentException2019ShiftedAssetExceptionsReviewed, 2);
-  assert.equal(review.questionNumberShiftCrossChecks.length, 24);
+  assert.equal(review.questionNumberShiftCrossChecks.length, 26);
   assert.equal(review.summary.questionNumberShift2016SecondBatchReviewed, 8);
   const secondBatchMappings = [
     ['real-2016年下半年-001', 3, true],
@@ -154,7 +156,25 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.reproducedChecks.textStemBeforeMissingAssetMatches, true);
     assert.equal(record.reproducedChecks.originalAssetPresentInCandidate, false);
   }
-  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.reproducedChecks.normalizedTextStemMatches === true).length, 19);
+  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.reproducedChecks.normalizedTextStemMatches === true).length, 20);
+  assert.equal(review.summary.questionNumberShift2016ThirdBatchReviewed, 2);
+  const thirdBatchMappings = [
+    ['real-2016年下半年-010', 12, false],
+    ['real-2016年下半年-011', 13, true],
+  ];
+  for (const [itemId, candidateQuestionNo, strictStemMatch] of thirdBatchMappings) {
+    const record = review.questionNumberShiftCrossChecks.find(item => item.itemId === itemId);
+    assert.ok(record, `缺少第三批题号偏移复核记录：${itemId}`);
+    assert.equal(record.candidateQuestionNo, candidateQuestionNo);
+    assert.equal(record.reproducedChecks.normalizedTextStemMatches, strictStemMatch);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  const relationSchemaException = review.questionNumberShiftCrossChecks.find(item => item.itemId === 'real-2016年下半年-010');
+  assert.deepEqual(relationSchemaException.reproducedChecks.stemVariant.bankRelationAttributes, ['A1', 'A2', 'A3', 'A4']);
+  assert.deepEqual(relationSchemaException.reproducedChecks.stemVariant.candidateRelationAttributes, ['A1', 'A2', 'A3', 'A4', 'A5']);
   for (const record of review.questionNumberShiftCrossChecks) {
     assert.notEqual(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.questionNumberMismatch, true);
@@ -251,7 +271,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   const shifted2016Notation = review.contentExceptionReviews.find(record => record.itemId === 'real-2016年下半年-009');
   assert.equal(shifted2016Notation.reproducedChecks.bankNotation, 'R ?S');
   assert.equal(shifted2016Notation.reproducedChecks.candidateNotation, 'R⋈S');
-  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.term === '2016年下半年').length, 16);
+  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.term === '2016年下半年').length, 18);
   assert.equal(q69TableAsset.reproducedChecks.originalTablePresentInCandidate, false);
   const tableException = review.contentExceptionReviews.find(record => record.itemId === 'real-2024年上半年-068');
   assert.equal(tableException.reproducedChecks.questionSentenceMatches, true);
