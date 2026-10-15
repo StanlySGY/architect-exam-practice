@@ -76,10 +76,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 82);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 82);
-  assert.equal(review.sameNumberExactContentReviews.length, 82);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 82);
+  assert.equal(review.summary.sameNumberExactContentReviews, 90);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 90);
+  assert.equal(review.sameNumberExactContentReviews.length, 90);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 90);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
@@ -87,6 +87,9 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberSixthBatchReviewed, 14);
   assert.equal(review.summary.sameNumberSeventhBatchReviewed, 12);
   assert.equal(review.summary.sameNumberEighthBatchReviewed, 12);
+  assert.equal(review.summary.sameNumberNinthBatchReviewed, 8);
+  assert.equal(review.summary.contentExceptionReviews, 1);
+  assert.equal(review.contentExceptionReviews.length, 1);
   assert.equal(review.summary.sharedStemPairReviews, 4);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 4);
   assert.equal(review.sharedStemPairReviews.length, 4);
@@ -101,6 +104,14 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
     assert.equal(record.adjudication, 'local-question-stem-options-answer-match-origin-unverified');
   }
+  const exception = review.contentExceptionReviews[0];
+  assert.equal(exception.itemId, 'real-2023年下半年-054');
+  assert.equal(exception.reproducedChecks.normalizedStemMatch, true);
+  assert.equal(exception.reproducedChecks.optionsAtoCMatchAfterArrowNormalization, true);
+  assert.equal(exception.reproducedChecks.optionDTextMatch, false);
+  assert.equal(exception.reproducedChecks.answerKeyMatch, true);
+  assert.equal(exception.officialSourceProvenanceVerified, false);
+  assert.equal(exception.answerCorrectnessVerified, false);
   for (const record of review.sharedStemPairReviews) {
     assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
