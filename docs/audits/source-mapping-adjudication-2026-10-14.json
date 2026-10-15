@@ -54,7 +54,11 @@
     "sameNumber2018AdditionalStandaloneReviewed": 6,
     "questionNumberShift2016AdditionalReviewed": 8,
     "questionNumberShift2016SecondBatchReviewed": 8,
-    "questionNumberShift2016ThirdBatchReviewed": 2
+    "questionNumberShift2016ThirdBatchReviewed": 2,
+    "ambiguousCandidateReviews": 5,
+    "ambiguousCandidateBestLocalTextMatch": 3,
+    "ambiguousCandidateUnresolved": 2,
+    "bankInternalContentInconsistenciesIdentified": 1
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -6491,6 +6495,161 @@
       },
       "adjudication": "shifted-heading-content-options-answer-match-origin-unverified",
       "rationale": "题库第11题与候选Markdown第13题的共享题干经编号空归一后匹配，A-D选项及答案字母一致。只确认本地文本对应；官方原卷来源与答案正确性仍未独立核验。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    }
+  ],
+  "ambiguousCandidateReviews": [
+    {
+      "itemId": "real-2022年下半年-001",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 1,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 1,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 3,
+          "optionsAtoDMatch": false,
+          "answerKeyMatch": true,
+          "difference": "C选项为“平合层”而非“平台层”。"
+        },
+        {
+          "candidatePath": "02-历年真题/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 15,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": null
+        }
+      ],
+      "decision": "best-local-content-match-regular-candidate-q15-origin-unverified",
+      "rationale": "两个候选都对应题干；常规候选文件第15题的A-D选项和答案字母全部对应，补充文件第1题的C选项存在可见文字差异。仅把常规文件第15题记作证据更强的本地候选，不认证官方来源。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-008",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 8,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 8,
+          "normalizedTextStemMatches": false,
+          "partialTopicMatch": true,
+          "optionsAvailable": false,
+          "answerKeyLetterSame": true,
+          "difference": "题干在关系代数表达式处截断，A-D选项文本为空，无法逐项核对。"
+        },
+        {
+          "candidatePath": "02-历年真题/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 11,
+          "normalizedTextStemMatches": false,
+          "partialTopicMatch": true,
+          "optionsAvailable": true,
+          "answerKeyLetterSame": true,
+          "difference": "该题增加了选择条件σ R.B > S.E，与题库记录的题干并不相同；题库选项本身只有“略，含图”占位，不能逐项比较。"
+        }
+      ],
+      "decision": "unresolved-incomplete-expression-or-figure",
+      "rationale": "两份候选都不足以在题干、图示/表达式、选项层面复现完整题目。答案字母相同不足以消除歧义；需要可读的原图/公式或可追溯原卷。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-009",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 9,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 9,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 2,
+          "optionsAtoDMatch": false,
+          "answerKeyMatch": true,
+          "difference": "C选项有“分布式设系统”等转录差异，D选项有引号/空格形式差异。"
+        },
+        {
+          "candidatePath": "02-历年真题/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 12,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 3,
+          "optionsAtoDMatch": false,
+          "answerKeyMatch": true,
+          "difference": "D选项引号形式与题库记录不同；A-C文字可对应。"
+        }
+      ],
+      "decision": "best-local-content-match-regular-candidate-q12-origin-unverified",
+      "rationale": "两份候选的题干与答案字母相同；常规候选第12题有3/4选项文本对应，优于补充候选第9题的2/4。D选项形式差异保留，不升级为严格全题匹配。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-011",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 11,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 11,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 3,
+          "optionsAtoDMatch": false,
+          "answerKeyMatch": true,
+          "difference": "B选项写为“PPGA”，题库和另一候选均为“FPGA”。"
+        },
+        {
+          "candidatePath": "02-历年真题/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 17,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": null
+        }
+      ],
+      "decision": "best-local-content-match-regular-candidate-q17-origin-unverified",
+      "rationale": "两份候选题干与答案字母对应；常规候选第17题的A-D选项全匹配，补充候选第11题有PPGA/FPGA转录差异。此结论只比较本地内容。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-013",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 13,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 13,
+          "normalizedStemMatch": true,
+          "candidateOptionsDescribeStem": true,
+          "bankOptionsMatchedCount": 0,
+          "answerKeyLetterSame": true
+        },
+        {
+          "candidatePath": "02-历年真题/2022年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 18,
+          "normalizedStemMatch": true,
+          "candidateOptionsDescribeStem": true,
+          "bankOptionsMatchedCount": 0,
+          "answerKeyLetterSame": true
+        }
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "题库题干询问HTTPS/HTTP，但题库A-D选项却是失效率、平均失效等待时间、平均失效间隔时间、可靠度等可靠性术语。两份候选均有HTTPS/HTTP题干及相应选项、答案D。此项首先是题库题干与选项互相不一致的问题；不根据本地候选或相同答案字母推断答案已核实。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }

@@ -56,6 +56,29 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(entry.officialSourceProvenanceVerified, false);
   }
   assert.equal(review.records.length, 4);
+  assert.equal(review.ambiguousCandidateReviews.length, 5);
+  assert.equal(review.summary.ambiguousCandidateReviews, 5);
+  assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 3);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 2);
+  assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 1);
+  for (const record of review.ambiguousCandidateReviews) {
+    assert.equal(record.queueStatusAtReview, 'ambiguous-candidates');
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  const ambiguous2022q1 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-001');
+  assert.equal(ambiguous2022q1.decision, 'best-local-content-match-regular-candidate-q15-origin-unverified');
+  assert.equal(ambiguous2022q1.candidateComparisons.find(candidate => candidate.candidateQuestionNo === 15).optionsAtoDMatch, true);
+  const ambiguous2022q8 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-008');
+  assert.equal(ambiguous2022q8.decision, 'unresolved-incomplete-expression-or-figure');
+  const ambiguous2022q9 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-009');
+  assert.equal(ambiguous2022q9.candidateComparisons.find(candidate => candidate.candidateQuestionNo === 12).optionsMatchedCount, 3);
+  const ambiguous2022q11 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-011');
+  assert.equal(ambiguous2022q11.candidateComparisons.find(candidate => candidate.candidateQuestionNo === 17).optionsAtoDMatch, true);
+  const ambiguous2022q13 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-013');
+  assert.equal(ambiguous2022q13.decision, 'bank-stem-options-internal-inconsistency-needs-owner-review');
+  assert.equal(ambiguous2022q13.candidateComparisons[0].bankOptionsMatchedCount, 0);
+
   assert.deepEqual(
     review.records.map(record => record.itemId),
     [
