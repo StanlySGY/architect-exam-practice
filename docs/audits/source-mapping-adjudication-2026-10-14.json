@@ -17,9 +17,9 @@
     "fullPromptMatchesConfirmed": 0,
     "lightsoftUrlsAttemptedThroughWebTool": 1,
     "lightsoftUrlsAccessibleThroughWebTool": 0,
-    "sameNumberExactContentReviews": 178,
-    "sameNumberContentStemOptionAnswerMatches": 178,
-    "sameNumberStrictStemOptionAnswerMatches": 178,
+    "sameNumberExactContentReviews": 179,
+    "sameNumberContentStemOptionAnswerMatches": 179,
+    "sameNumberStrictStemOptionAnswerMatches": 179,
     "sameNumberSecondBatchReviewed": 10,
     "sharedStemPairReviews": 6,
     "sharedStemOptionAnswerMatches": 6,
@@ -30,7 +30,7 @@
     "sameNumberSeventhBatchReviewed": 12,
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
-    "contentExceptionReviews": 30,
+    "contentExceptionReviews": 37,
     "sameNumberTenthBatchReviewed": 9,
     "sameNumberEleventhBatchReviewed": 2,
     "sharedStemFourthBatchReviewed": 2,
@@ -46,11 +46,11 @@
     "questionNumberShiftStrictTextMatches": 6,
     "questionNumberShiftVisualExceptions": 2,
     "contentException2019ShiftedAssetExceptionsReviewed": 2,
-    "sharedBlankMappingGroupsReviewed": 27,
-    "sharedBlankMappingItemsReviewed": 70,
+    "sharedBlankMappingGroupsReviewed": 28,
+    "sharedBlankMappingItemsReviewed": 75,
     "sharedBlankMappingExactGroups": 17,
-    "sharedBlankMappingExceptionGroups": 10,
-    "sameNumber2018AdditionalStandaloneReviewed": 5
+    "sharedBlankMappingExceptionGroups": 11,
+    "sameNumber2018AdditionalStandaloneReviewed": 6
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -4711,6 +4711,31 @@
       "rationale": "本地题库与候选Markdown在规范化题干、选项A-D及答案字母方面一致；未认证候选Markdown的官方原卷出处，也未独立核验答案正确性。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-026",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 26,
+      "bankQuestionNo": 26,
+      "candidateQuestionNo": 26,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 26,
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A"
+      },
+      "normalization": "Local same-number candidate block; Unicode NFKC, Latin case folding, blank-number normalization, whitespace/punctuation folding; options and answer key checked separately.",
+      "bankStemExcerpt": "软件开发过程模型中，（26）主要由原型开发阶段和目标软件开发阶段构成。",
+      "candidateStemExcerpt": "软件开发过程模型中，（ ）主要由原型开发阶段和目标软件开发阶段构成。",
+      "adjudication": "local-question-stem-options-answer-match-origin-unverified",
+      "rationale": "Local candidate text matches the bank after the documented normalization. This verifies local content correspondence only, not official source provenance or answer correctness.",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
     }
   ],
   "sharedStemPairReviews": [
@@ -5604,6 +5629,194 @@
         "candidateAnswer": "C",
         "bankPromptReferencesTable": true,
         "originalTablePresentInCandidate": false
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-007",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 7,
+      "bankQuestionNo": 7,
+      "candidateQuestionNo": 7,
+      "bankSourceFile": "ruankao-senior-architecture-designer/02.历年真题-清洗版/2018年下半年-系统架构设计师-综合知识.md",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "题库题干带有标注为非官方来源的关系代数公式转录，但候选Markdown对应题块中公式不可见；不能将选项/答案一致当作原始公式资产存在。",
+      "adjudication": "nonofficial-formula-transcription-without-candidate-expression",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankAddsNonOfficialFormulaTranscription": true,
+        "candidateRelationalExpressionVisible": false,
+        "bankAnswer": "B",
+        "candidateAnswer": "B"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-008",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 8,
+      "bankQuestionNo": 8,
+      "candidateQuestionNo": 8,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "题库写“数据仓库中，数据（8）”，候选写“数据仓库中数据（ ）”；内容、选项、答案对应，但逗号不同，保留为标点差异，不计入严格文字匹配。",
+      "adjudication": "punctuation-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "punctuationNormalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankAnswer": "C",
+        "candidateAnswer": "C",
+        "variant": "bank has comma after 数据仓库中; candidate omits it"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-009",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 9,
+      "bankQuestionNo": 9,
+      "candidateQuestionNo": 9,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "题干与答案字母对应，但候选题目选项中至少一项与题库登记文字不同；保留为选项文本差异。",
+      "adjudication": "option-wording-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "optionPerKey": {
+          "A": false,
+          "B": true,
+          "C": true,
+          "D": true
+        },
+        "optionsAtoDMatch": false,
+        "answerKeyMatch": true,
+        "bankAnswer": "B",
+        "candidateAnswer": "B"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-010",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 10,
+      "bankQuestionNo": 10,
+      "candidateQuestionNo": 10,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "同题号候选的A-D选项与题库对应，但答案字母不同；本记录只登记差异，不判断哪一方正确。",
+      "adjudication": "answer-key-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "punctuationNormalizedStemMatch": true,
+        "optionPerKey": {
+          "A": true,
+          "B": true,
+          "C": true,
+          "D": true
+        },
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": false,
+        "bankAnswer": "B",
+        "candidateAnswer": "C"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-069",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 69,
+      "bankQuestionNo": 69,
+      "candidateQuestionNo": 69,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "题干引用工时表，但候选Markdown题块中没有表格数据，无法复算最短工时安排；不能只靠题干/选项/答案相同确认完整原题来源。",
+      "adjudication": "missing-table-asset-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankPromptReferencesTable": true,
+        "candidateMarkdownTablePresent": false,
+        "originalTablePresentInCandidate": false,
+        "bankAnswer": "B",
+        "candidateAnswer": "B"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-072",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 72,
+      "bankQuestionNo": 72,
+      "candidateQuestionNo": 72,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "同题号候选的A-D选项与题库对应，但答案字母不同；本记录只登记差异，不判断哪一方正确。",
+      "adjudication": "answer-key-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "punctuationNormalizedStemMatch": true,
+        "optionPerKey": {
+          "A": true,
+          "B": true,
+          "C": true,
+          "D": true
+        },
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": false,
+        "bankAnswer": "C",
+        "candidateAnswer": "B"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2018年下半年-074",
+      "kind": "choice",
+      "term": "2018年下半年",
+      "questionNo": 74,
+      "bankQuestionNo": 74,
+      "candidateQuestionNo": 74,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "同题号候选的A-D选项与题库对应，但答案字母不同；本记录只登记差异，不判断哪一方正确。",
+      "adjudication": "answer-key-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "punctuationNormalizedStemMatch": true,
+        "optionPerKey": {
+          "A": true,
+          "B": true,
+          "C": true,
+          "D": true
+        },
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": false,
+        "bankAnswer": "A",
+        "candidateAnswer": "D"
       },
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
@@ -8087,6 +8300,150 @@
           "answerCorrectnessVerified": false
         }
       ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-english-storage-format-blank-71-75",
+      "title": "2018 H2 English data-storage formats, records, indexes, and integrity blanks",
+      "nos": [
+        71,
+        72,
+        73,
+        74,
+        75
+      ],
+      "expected": "punctuation-and-answer-key-variance",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-071",
+          "bankQuestionNo": 71,
+          "candidateQuestionNo": 71,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "punctuationNormalizedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "punctuationNormalization": "Unicode NFKC, lower-case Latin, numbered-blank normalization, then remove punctuation/symbols/whitespace for the long English stem only. Options and answer keys are checked separately."
+          },
+          "bankStemExcerpt": "Designing the data storage architecture is an important activity in system design.There are two main types of data storage formats: files and databases. Files areelectronic of data that have been optimized to perform a particular transaction. Thereare several ",
+          "candidateStemExcerpt": "Designing the data storage architecture is an important activity in system design. There are two main types of data storage formats: files and databases. Files are electronic of data that have been optimized to perform a particular transaction. There are sever",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-072",
+          "bankQuestionNo": 72,
+          "candidateQuestionNo": 72,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "punctuationNormalizedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": false,
+            "bankAnswer": "C",
+            "candidateAnswer": "B",
+            "punctuationNormalization": "Unicode NFKC, lower-case Latin, numbered-blank normalization, then remove punctuation/symbols/whitespace for the long English stem only. Options and answer keys are checked separately."
+          },
+          "bankStemExcerpt": "Designing the data storage architecture is an important activity in system design.There are two main types of data storage formats: files and databases. Files areelectronic of data that have been optimized to perform a particular transaction. Thereare several ",
+          "candidateStemExcerpt": "Designing the data storage architecture is an important activity in system design. There are two main types of data storage formats: files and databases. Files are electronic of data that have been optimized to perform a particular transaction. There are sever",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-073",
+          "bankQuestionNo": 73,
+          "candidateQuestionNo": 73,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "punctuationNormalizedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "punctuationNormalization": "Unicode NFKC, lower-case Latin, numbered-blank normalization, then remove punctuation/symbols/whitespace for the long English stem only. Options and answer keys are checked separately."
+          },
+          "bankStemExcerpt": "Designing the data storage architecture is an important activity in system design.There are two main types of data storage formats: files and databases. Files areelectronic of data that have been optimized to perform a particular transaction. Thereare several ",
+          "candidateStemExcerpt": "Designing the data storage architecture is an important activity in system design. There are two main types of data storage formats: files and databases. Files are electronic of data that have been optimized to perform a particular transaction. There are sever",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-074",
+          "bankQuestionNo": 74,
+          "candidateQuestionNo": 74,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "punctuationNormalizedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": false,
+            "bankAnswer": "A",
+            "candidateAnswer": "D",
+            "punctuationNormalization": "Unicode NFKC, lower-case Latin, numbered-blank normalization, then remove punctuation/symbols/whitespace for the long English stem only. Options and answer keys are checked separately."
+          },
+          "bankStemExcerpt": "Designing the data storage architecture is an important activity in system design.There are two main types of data storage formats: files and databases. Files areelectronic of data that have been optimized to perform a particular transaction. Thereare several ",
+          "candidateStemExcerpt": "Designing the data storage architecture is an important activity in system design. There are two main types of data storage formats: files and databases. Files are electronic of data that have been optimized to perform a particular transaction. There are sever",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-075",
+          "bankQuestionNo": 75,
+          "candidateQuestionNo": 75,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "punctuationNormalizedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "punctuationNormalization": "Unicode NFKC, lower-case Latin, numbered-blank normalization, then remove punctuation/symbols/whitespace for the long English stem only. Options and answer keys are checked separately."
+          },
+          "bankStemExcerpt": "Designing the data storage architecture is an important activity in system design.There are two main types of data storage formats: files and databases. Files areelectronic of data that have been optimized to perform a particular transaction. Thereare several ",
+          "candidateStemExcerpt": "Designing the data storage architecture is an important activity in system design. There are two main types of data storage formats: files and databases. Files are electronic of data that have been optimized to perform a particular transaction. There are sever",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "note": "The long English shared stem matches after punctuation normalization, but answer keys for Q72 and Q74 differ. The remaining three keys match. This is a local-text comparison only.",
       "bankMutated": false,
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false

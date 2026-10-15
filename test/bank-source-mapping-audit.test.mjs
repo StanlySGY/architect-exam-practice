@@ -76,13 +76,13 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 178);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 178);
-  assert.equal(review.sameNumberExactContentReviews.length, 178);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 178);
+  assert.equal(review.summary.sameNumberExactContentReviews, 179);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 179);
+  assert.equal(review.sameNumberExactContentReviews.length, 179);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 179);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
-  assert.equal(review.summary.sameNumber2018AdditionalStandaloneReviewed, 5);
+  assert.equal(review.summary.sameNumber2018AdditionalStandaloneReviewed, 6);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
   assert.equal(review.summary.sameNumberFifthBatchReviewed, 14);
   assert.equal(review.summary.sameNumberSixthBatchReviewed, 14);
@@ -102,11 +102,11 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 8);
   assert.equal(review.summary.questionNumberShiftStrictTextMatches, 6);
   assert.equal(review.summary.questionNumberShiftVisualExceptions, 2);
-  assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 27);
-  assert.equal(review.summary.sharedBlankMappingItemsReviewed, 70);
+  assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 28);
+  assert.equal(review.summary.sharedBlankMappingItemsReviewed, 75);
   assert.equal(review.summary.sharedBlankMappingExactGroups, 17);
-  assert.equal(review.summary.sharedBlankMappingExceptionGroups, 10);
-  assert.equal(review.sharedBlankMappingReviews.length, 27);
+  assert.equal(review.summary.sharedBlankMappingExceptionGroups, 11);
+  assert.equal(review.sharedBlankMappingReviews.length, 28);
   const matchedBlankGroups = review.sharedBlankMappingReviews.filter(group => group.expected.startsWith('exact-shared-blank'));
   assert.equal(matchedBlankGroups.length, 17);
   for (const group of matchedBlankGroups) {
@@ -135,8 +135,8 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
   }
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 30);
-  assert.equal(review.contentExceptionReviews.length, 30);
+  assert.equal(review.summary.contentExceptionReviews, 37);
+  assert.equal(review.contentExceptionReviews.length, 37);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
@@ -204,6 +204,22 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   const bankTableMismatch = review.contentExceptionReviews.find(item => item.itemId === 'real-2018年下半年-001');
   assert.equal(bankTableMismatch.reproducedChecks.originalTablePresentInCandidate, false);
   assert.equal(bankTableMismatch.reproducedChecks.answerKeyMatch, false);
+  const englishSharedGroup = review.sharedBlankMappingReviews.find(group => group.groupId === '2018h2-english-storage-format-blank-71-75');
+  assert.equal(englishSharedGroup.items.length, 5);
+  assert.equal(englishSharedGroup.items.find(item => item.bankQuestionNo === 72).reproducedChecks.answerKeyMatch, false);
+  assert.equal(englishSharedGroup.items.find(item => item.bankQuestionNo === 74).reproducedChecks.answerKeyMatch, false);
+  for (const id of ['real-2018年下半年-071','real-2018年下半年-072','real-2018年下半年-073','real-2018年下半年-074','real-2018年下半年-075']) {
+    const item = englishSharedGroup.items.find(entry => entry.itemId === id);
+    assert.equal(item.reproducedChecks.punctuationNormalizedStemMatch, true);
+    assert.equal(item.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(item.officialSourceProvenanceVerified, false);
+  }
+  const q8PunctuationVariant = review.contentExceptionReviews.find(record => record.itemId === 'real-2018年下半年-008');
+  assert.equal(q8PunctuationVariant.reproducedChecks.punctuationNormalizedStemMatch, true);
+  const q7Expression = review.contentExceptionReviews.find(record => record.itemId === 'real-2018年下半年-007');
+  assert.equal(q7Expression.reproducedChecks.candidateRelationalExpressionVisible, false);
+  const q69TableAsset = review.contentExceptionReviews.find(record => record.itemId === 'real-2018年下半年-069');
+  assert.equal(q69TableAsset.reproducedChecks.originalTablePresentInCandidate, false);
   const tableException = review.contentExceptionReviews.find(record => record.itemId === 'real-2024年上半年-068');
   assert.equal(tableException.reproducedChecks.questionSentenceMatches, true);
   assert.equal(tableException.reproducedChecks.bankTablePresent, true);
