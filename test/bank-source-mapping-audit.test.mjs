@@ -99,10 +99,11 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
-  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 16);
-  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 13);
-  assert.equal(review.summary.questionNumberShiftVisualExceptions, 2);
+  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 24);
+  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 19);
+  assert.equal(review.summary.questionNumberShiftVisualExceptions, 4);
   assert.equal(review.summary.questionNumberShift2016AdditionalReviewed, 8);
+  assert.equal(review.summary.questionNumberShift2016SecondBatchReviewed, 8);
   assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 28);
   assert.equal(review.summary.sharedBlankMappingItemsReviewed, 75);
   assert.equal(review.summary.sharedBlankMappingExactGroups, 17);
@@ -126,7 +127,34 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 42).reproducedChecks.optionsAtoDMatch, false);
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 43).reproducedChecks.optionsAtoDMatch, true);
   assert.equal(review.summary.contentException2019ShiftedAssetExceptionsReviewed, 2);
-  assert.equal(review.questionNumberShiftCrossChecks.length, 16);
+  assert.equal(review.questionNumberShiftCrossChecks.length, 24);
+  assert.equal(review.summary.questionNumberShift2016SecondBatchReviewed, 8);
+  const secondBatchMappings = [
+    ['real-2016年下半年-001', 3, true],
+    ['real-2016年下半年-005', 7, false],
+    ['real-2016年下半年-006', 8, false],
+    ['real-2016年下半年-007', 9, true],
+    ['real-2016年下半年-008', 10, true],
+    ['real-2016年下半年-012', 14, true],
+    ['real-2016年下半年-013', 15, true],
+    ['real-2016年下半年-014', 16, true],
+  ];
+  for (const [itemId, candidateQuestionNo, strictStemMatch] of secondBatchMappings) {
+    const record = review.questionNumberShiftCrossChecks.find(item => item.itemId === itemId);
+    assert.ok(record, `缺少题号偏移复核记录：${itemId}`);
+    assert.equal(record.candidateQuestionNo, candidateQuestionNo);
+    assert.equal(record.reproducedChecks.normalizedTextStemMatches, strictStemMatch);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  for (const itemId of ['real-2016年下半年-005', 'real-2016年下半年-006']) {
+    const record = review.questionNumberShiftCrossChecks.find(item => item.itemId === itemId);
+    assert.equal(record.reproducedChecks.textStemBeforeMissingAssetMatches, true);
+    assert.equal(record.reproducedChecks.originalAssetPresentInCandidate, false);
+  }
+  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.reproducedChecks.normalizedTextStemMatches === true).length, 19);
   for (const record of review.questionNumberShiftCrossChecks) {
     assert.notEqual(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.questionNumberMismatch, true);
@@ -223,7 +251,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   const shifted2016Notation = review.contentExceptionReviews.find(record => record.itemId === 'real-2016年下半年-009');
   assert.equal(shifted2016Notation.reproducedChecks.bankNotation, 'R ?S');
   assert.equal(shifted2016Notation.reproducedChecks.candidateNotation, 'R⋈S');
-  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.term === '2016年下半年').length, 8);
+  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.term === '2016年下半年').length, 16);
   assert.equal(q69TableAsset.reproducedChecks.originalTablePresentInCandidate, false);
   const tableException = review.contentExceptionReviews.find(record => record.itemId === 'real-2024年上半年-068');
   assert.equal(tableException.reproducedChecks.questionSentenceMatches, true);
