@@ -56,10 +56,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(entry.officialSourceProvenanceVerified, false);
   }
   assert.equal(review.records.length, 4);
-  assert.equal(review.ambiguousCandidateReviews.length, 22);
-  assert.equal(review.summary.ambiguousCandidateReviews, 22);
+  assert.equal(review.ambiguousCandidateReviews.length, 25);
+  assert.equal(review.summary.ambiguousCandidateReviews, 25);
   assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 10);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 12);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 15);
   assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 7);
   for (const record of review.ambiguousCandidateReviews) {
     assert.equal(record.queueStatusAtReview, 'ambiguous-candidates');
@@ -96,10 +96,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(ambiguous2022q58.decision, 'multiple-identical-local-candidates-origin-unverified');
   const ambiguous2022q63 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-063');
   assert.equal(ambiguous2022q63.decision, 'best-local-content-match-regular-candidate-q63-origin-unverified');
-  assert.equal(review.ambiguousCandidateReviews.length, 22);
-  assert.equal(review.summary.ambiguousCandidateReviews, 22);
+  assert.equal(review.ambiguousCandidateReviews.length, 25);
+  assert.equal(review.summary.ambiguousCandidateReviews, 25);
   assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 10);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 12);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 15);
   assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 7);
   const ambiguous2022q65 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-065');
   assert.equal(ambiguous2022q65.decision, 'multiple-identical-local-candidates-origin-unverified');
@@ -118,6 +118,23 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   }
   const ambiguous2022q71 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-071');
   assert.equal(ambiguous2022q71.decision, 'multiple-identical-local-candidates-origin-unverified');
+  assert.equal(review.ambiguousCandidateReviews.length, 25);
+  assert.equal(review.summary.ambiguousCandidateReviews, 25);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 15);
+  assert.equal(review.summary.essayPromptCompletenessIssuesReviewed, 3);
+  for (const id of [
+    'essay-real-2022年下半年-1',
+    'essay-real-2022年下半年-2',
+    'essay-real-2022年下半年-3',
+  ]) {
+    const record = review.ambiguousCandidateReviews.find(item => item.itemId === id);
+    assert.equal(record.kind, 'essay');
+    assert.equal(record.decision, 'multiple-local-essay-candidates-incomplete-prompt-origin-unverified');
+    assert.equal(record.candidateComparisons.every(candidate => candidate.fullPromptMatch === false), true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+
 
 
   assert.deepEqual(
