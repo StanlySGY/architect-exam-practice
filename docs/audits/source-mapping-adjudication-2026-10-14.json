@@ -55,10 +55,10 @@
     "questionNumberShift2016AdditionalReviewed": 8,
     "questionNumberShift2016SecondBatchReviewed": 8,
     "questionNumberShift2016ThirdBatchReviewed": 2,
-    "ambiguousCandidateReviews": 5,
-    "ambiguousCandidateBestLocalTextMatch": 3,
-    "ambiguousCandidateUnresolved": 2,
-    "bankInternalContentInconsistenciesIdentified": 1
+    "ambiguousCandidateReviews": 13,
+    "ambiguousCandidateBestLocalTextMatch": 4,
+    "ambiguousCandidateUnresolved": 9,
+    "bankInternalContentInconsistenciesIdentified": 6
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -6650,6 +6650,126 @@
       ],
       "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
       "rationale": "题库题干询问HTTPS/HTTP，但题库A-D选项却是失效率、平均失效等待时间、平均失效间隔时间、可靠度等可靠性术语。两份候选均有HTTPS/HTTP题干及相应选项、答案D。此项首先是题库题干与选项互相不一致的问题；不根据本地候选或相同答案字母推断答案已核实。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-019",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 19,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":22,"normalizedStemMatch":true,"candidateOptionsDescribeStem":true,"bankOptionsMatchedCount":0,"answerKeyLetterSame":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":9,"normalizedStemMatch":false,"candidateOptionsDescribeStem":false,"bankOptionsMatchedCount":4,"answerKeyLetterSame":false,"note":"这组数据备份/灾难恢复选项出现在另一道信息安全题中。"}
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "题库题干是DCMM数据管理能力域；候选第22题的选项是数据应用/维护与数据生命周期等域，题库A-D却与另一道信息安全题的选项完全相同。答案字母相同不能替代选项核对。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-032",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 32,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":32,"normalizedStemMatch":true,"candidateOptionsDescribeStem":true,"bankOptionsMatchedCount":0,"answerKeyLetterSame":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":35,"normalizedStemMatch":false,"candidateOptionsDescribeStem":false,"bankOptionsMatchedCount":3,"answerKeyLetterSame":false,"note":"题库的同步/异步/返回/创建/销毁消息列表属于UML顺序图题。"}
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "题库题干询问微服务与SOA，候选题块的选项为集中式/去中心化管理；题库选项却是UML顺序图消息类型。候选该题答案字母C与题库相同，但选项集合不属于同一道题。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-038",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 38,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":38,"normalizedStemMatch":true,"optionsMatchedCount":3,"optionsAtoDMatch":false,"answerKeyMatch":true,"difference":"D选项候选写“构建”，题库写“构件”。"},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":39,"normalizedStemMatch":true,"optionsMatchedCount":3,"optionsAtoDMatch":false,"answerKeyMatch":true,"difference":"D选项同样有“构建/构件”差异。"}
+      ],
+      "decision": "multiple-local-candidates-shared-option-transcription-difference-origin-unverified",
+      "rationale": "两份候选都有对应题干、3个选项一致且答案字母D一致；D选项均有构件/构建转录差异，无法仅凭本地文件确认哪个版本忠实于原卷。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-043",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 43,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":43,"normalizedStemMatch":true,"candidateOptionsDescribeStem":true,"bankOptionsMatchedCount":0,"answerKeyLetterSame":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":51,"normalizedStemMatch":false,"candidateOptionsDescribeStem":false,"bankOptionsMatchedCount":4,"answerKeyLetterSame":false,"note":"题库的预期复用/计划复用/资产复用/系统复用选项来自软件架构复用题。"}
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "题库题干询问遗留系统演化策略，候选第43题选项为淘汰、继承、集成、改造；题库选项却是软件架构复用术语。答案字母C恰好一致，但语义指向不同。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-053",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 53,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":53,"normalizedStemMatch":true,"candidateOptionsDescribeStem":true,"bankOptionsMatchedCount":0,"answerKeyLetterSame":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":57,"normalizedStemMatch":false,"candidateOptionsDescribeStem":false,"bankOptionsMatchedCount":4,"answerKeyLetterSame":true,"note":"可用性/性能/易用性/安全性是另一道质量属性题的选项。"}
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "DSSA题块的候选选项为领域设计、领域实现、领域分析、领域工程；题库选项却是可用性、性能、易用性、安全性，与另一道质量属性题完全相同。答案字母C不能证明选项归属正确。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-058",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 58,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":58,"normalizedStemMatch":true,"optionsAtoDMatch":true,"answerKeyMatch":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":58,"normalizedStemMatch":true,"optionsAtoDMatch":true,"answerKeyMatch":true}
+      ],
+      "decision": "multiple-identical-local-candidates-origin-unverified",
+      "rationale": "补充版和常规版第58题的题干、A-D选项和答案字母都与题库对应；文本本身可以匹配，但无法凭重复收录的本地文本判断官方原卷出处或唯一来源文件。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-060",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 60,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":60,"normalizedStemMatch":true,"candidateOptionsDescribeStem":true,"bankOptionsMatchedCount":0,"answerKeyLetterSame":true},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":62,"normalizedStemMatch":false,"candidateOptionsDescribeStem":false,"bankOptionsMatchedCount":4,"answerKeyLetterSame":true,"note":"题库的完整性/安全审计/加密性/可控性选项与安全性分析题第62题相同。"}
+      ],
+      "decision": "bank-stem-options-internal-inconsistency-needs-owner-review",
+      "rationale": "题干询问MTTF/MTBF，候选第60题提供失效指标比较选项；题库A-D却是完整性、安全审计、加密性、可控性等安全属性，并与另一道安全题的选项完全相同。答案字母D碰巧一致，不能将其视为答案已验证。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2022年下半年-063",
+      "kind": "choice",
+      "term": "2022年下半年",
+      "bankQuestionNo": 63,
+      "queueStatusAtReview": "ambiguous-candidates",
+      "candidateComparisons": [
+        {"candidatePath":"02-历年真题(补充)/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":63,"normalizedStemMatch":false,"optionsAtoDMatch":true,"answerKeyMatch":true,"difference":"题干含“简短措述”转录错字。"},
+        {"candidatePath":"02-历年真题/2022年下半年-系统架构设计师-综合知识.md","candidateQuestionNo":63,"normalizedStemMatch":false,"optionsAtoDMatch":true,"answerKeyMatch":true,"difference":"题干用“叫作”而非题库“叫做”，其余题干文字与选项对应。"}
+      ],
+      "decision": "best-local-content-match-regular-candidate-q63-origin-unverified",
+      "rationale": "两份候选的A-D选项和答案字母一致；常规版没有补充版中的“措述”转录错字，题干仅有“叫作/叫做”用词变体，因此选择常规版为证据较强的本地候选，不认证官方出处。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }

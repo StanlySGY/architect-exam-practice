@@ -56,11 +56,11 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(entry.officialSourceProvenanceVerified, false);
   }
   assert.equal(review.records.length, 4);
-  assert.equal(review.ambiguousCandidateReviews.length, 5);
-  assert.equal(review.summary.ambiguousCandidateReviews, 5);
-  assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 3);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 2);
-  assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 1);
+  assert.equal(review.ambiguousCandidateReviews.length, 13);
+  assert.equal(review.summary.ambiguousCandidateReviews, 13);
+  assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 4);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 9);
+  assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 6);
   for (const record of review.ambiguousCandidateReviews) {
     assert.equal(record.queueStatusAtReview, 'ambiguous-candidates');
     assert.equal(record.officialSourceProvenanceVerified, false);
@@ -78,6 +78,24 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   const ambiguous2022q13 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-013');
   assert.equal(ambiguous2022q13.decision, 'bank-stem-options-internal-inconsistency-needs-owner-review');
   assert.equal(ambiguous2022q13.candidateComparisons[0].bankOptionsMatchedCount, 0);
+  for (const itemId of [
+    'real-2022年下半年-019',
+    'real-2022年下半年-032',
+    'real-2022年下半年-043',
+    'real-2022年下半年-053',
+    'real-2022年下半年-060',
+  ]) {
+    const record = review.ambiguousCandidateReviews.find(item => item.itemId === itemId);
+    assert.equal(record.decision, 'bank-stem-options-internal-inconsistency-needs-owner-review');
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  const ambiguous2022q38 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-038');
+  assert.equal(ambiguous2022q38.decision, 'multiple-local-candidates-shared-option-transcription-difference-origin-unverified');
+  const ambiguous2022q58 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-058');
+  assert.equal(ambiguous2022q58.decision, 'multiple-identical-local-candidates-origin-unverified');
+  const ambiguous2022q63 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-063');
+  assert.equal(ambiguous2022q63.decision, 'best-local-content-match-regular-candidate-q63-origin-unverified');
 
   assert.deepEqual(
     review.records.map(record => record.itemId),
