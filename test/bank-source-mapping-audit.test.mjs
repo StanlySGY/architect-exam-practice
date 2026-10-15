@@ -96,6 +96,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberFifteenthBatchReviewed, 25);
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
+  assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionReviews, 9);
   assert.equal(review.contentExceptionReviews.length, 9);

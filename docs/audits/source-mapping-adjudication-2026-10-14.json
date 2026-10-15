@@ -39,7 +39,8 @@
     "sameNumberFourteenthBatchReviewed": 17,
     "contentExceptionFourthBatchReviewed": 2,
     "sameNumberFifteenthBatchReviewed": 25,
-    "contentExceptionSixthBatchReviewed": 6
+    "contentExceptionSixthBatchReviewed": 6,
+    "contentException2019SourceAssetExceptionsReviewed": 6
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
