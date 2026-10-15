@@ -101,13 +101,13 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 8);
   assert.equal(review.summary.questionNumberShiftStrictTextMatches, 6);
   assert.equal(review.summary.questionNumberShiftVisualExceptions, 2);
-  assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 11);
-  assert.equal(review.summary.sharedBlankMappingItemsReviewed, 28);
-  assert.equal(review.summary.sharedBlankMappingExactGroups, 6);
+  assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 15);
+  assert.equal(review.summary.sharedBlankMappingItemsReviewed, 36);
+  assert.equal(review.summary.sharedBlankMappingExactGroups, 10);
   assert.equal(review.summary.sharedBlankMappingExceptionGroups, 5);
-  assert.equal(review.sharedBlankMappingReviews.length, 11);
+  assert.equal(review.sharedBlankMappingReviews.length, 15);
   const matchedBlankGroups = review.sharedBlankMappingReviews.filter(group => group.expected.startsWith('exact-shared-blank'));
-  assert.equal(matchedBlankGroups.length, 6);
+  assert.equal(matchedBlankGroups.length, 10);
   for (const group of matchedBlankGroups) {
     assert.ok(group.items.length >= 2);
     for (const item of group.items) {

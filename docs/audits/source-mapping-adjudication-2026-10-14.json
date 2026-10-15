@@ -46,9 +46,9 @@
     "questionNumberShiftStrictTextMatches": 6,
     "questionNumberShiftVisualExceptions": 2,
     "contentException2019ShiftedAssetExceptionsReviewed": 2,
-    "sharedBlankMappingGroupsReviewed": 11,
-    "sharedBlankMappingItemsReviewed": 28,
-    "sharedBlankMappingExactGroups": 6,
+    "sharedBlankMappingGroupsReviewed": 15,
+    "sharedBlankMappingItemsReviewed": 36,
+    "sharedBlankMappingExactGroups": 10,
     "sharedBlankMappingExceptionGroups": 5
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
@@ -6330,6 +6330,258 @@
           },
           "bankStemExcerpt": "某工程包括 A、B、C、D 四个作业，其衔接关系、正常进度下所需天数和所需直接费 用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每 天 5 万元。据此，可以估算出完成该工程最少需要费用（69）万元，以此最低费用完成该工 程需要（70）天。",
           "candidateStemExcerpt": "某工程包括A、B、C、D四个作业，其衔接关系、正常进度下所需天数和所需直接费用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每天5万元。据此，可以估算出完成该工程最少需要费用（ ）万元，以此最低费用完成该工程需要（ ）天。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-dynamic-static-test-methods-42-43",
+      "nos": [
+        42,
+        43
+      ],
+      "title": "动态/静态测试方法",
+      "expected": "exact-shared-blank-pair",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-042",
+          "bankQuestionNo": 42,
+          "candidateQuestionNo": 42,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "软件测试一般分为两个大类：动态测试和静态测试。前者通过运行程序发现错误， 包括（42）等方法；后者采用人工和计算机辅助静态分析的手段对程序进行检测，包括（43） 等方法。",
+          "candidateStemExcerpt": "软件测试一般分为两个大类：动态测试和静态测试。前者通过运行程序发现错误，包括（ ）等方法；后者采用人工和计算机辅助静态分析的手段对程序进行检测，包括（ ）等方法。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-043",
+          "bankQuestionNo": 43,
+          "candidateQuestionNo": 43,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "软件测试一般分为两个大类：动态测试和静态测试。前者通过运行程序发现错误， 包括（42）等方法；后者采用人工和计算机辅助静态分析的手段对程序进行检测，包括（43） 等方法。",
+          "candidateStemExcerpt": "软件测试一般分为两个大类：动态测试和静态测试。前者通过运行程序发现错误，包括（ ）等方法；后者采用人工和计算机辅助静态分析的手段对程序进行检测，包括（ ）等方法。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-dssa-domain-design-45-46",
+      "nos": [
+        45,
+        46
+      ],
+      "title": "DSSA领域设计与实现",
+      "expected": "exact-shared-blank-pair",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-045",
+          "bankQuestionNo": 45,
+          "candidateQuestionNo": 45,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "特定领域软件架构（Domain Specific Software Architecture, DSSA）的基本活动包括领 域分析、领域设计和领域实现。其中，领域分析的主要目的是获得领域模型。领域设计的主 要目标是获得（45）。领域实现是为了（46）。",
+          "candidateStemExcerpt": "特定领域软件架构（Domain Specific Software Architecture, DSSA）的基本活动包括领域分析、领域设计和领域实现。其中，领域分析的主要目的是获得领域模型。领域设计的主要目标是获得（ ）。领域实现是为了（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-046",
+          "bankQuestionNo": 46,
+          "candidateQuestionNo": 46,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "特定领域软件架构（Domain Specific Software Architecture, DSSA）的基本活动包括领 域分析、领域设计和领域实现。其中，领域分析的主要目的是获得领域模型。领域设计的主 要目标是获得（45）。领域实现是为了（46）。",
+          "candidateStemExcerpt": "特定领域软件架构（Domain Specific Software Architecture, DSSA）的基本活动包括领域分析、领域设计和领域实现。其中，领域分析的主要目的是获得领域模型。领域设计的主要目标是获得（ ）。领域实现是为了（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-atam-saam-analysis-47-48",
+      "nos": [
+        47,
+        48
+      ],
+      "title": "ATAM与SAAM",
+      "expected": "exact-shared-blank-pair",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-047",
+          "bankQuestionNo": 47,
+          "candidateQuestionNo": 47,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "体系结构权衡分析方法（Architecture Tradeoff Analysis Method，ATAM）包含 4 个主 要的活动领域，分别是场景和需求收集、体系结构视图和场景实现、（47）、折中。基于场景 的架构分析方法（Scenarios-based Architecture Analysis Method， SAAM）的主要输入是问题 描述、需求声明",
+          "candidateStemExcerpt": "体系结构权衡分析方法（Architecture Tradeoff Analysis Method，ATAM）包含4个主要的活动领域，分别是场景和需求收集、体系结构视图和场景实现、（ ）、折中。基于场景的架构分析方法（Scenarios-based Architecture Analysis Method，SAAM）的主要输入是问题描述、需求声明和（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-048",
+          "bankQuestionNo": 48,
+          "candidateQuestionNo": 48,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "体系结构权衡分析方法（Architecture Tradeoff Analysis Method，ATAM）包含 4 个主 要的活动领域，分别是场景和需求收集、体系结构视图和场景实现、（47）、折中。基于场景 的架构分析方法（Scenarios-based Architecture Analysis Method， SAAM）的主要输入是问题 描述、需求声明",
+          "candidateStemExcerpt": "体系结构权衡分析方法（Architecture Tradeoff Analysis Method，ATAM）包含4个主要的活动领域，分别是场景和需求收集、体系结构视图和场景实现、（ ）、折中。基于场景的架构分析方法（Scenarios-based Architecture Analysis Method，SAAM）的主要输入是问题描述、需求声明和（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2018h2-repository-style-components-49-50",
+      "nos": [
+        49,
+        50
+      ],
+      "title": "仓库风格组件",
+      "expected": "exact-shared-blank-pair",
+      "candidatePath": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2018年下半年-049",
+          "bankQuestionNo": 49,
+          "candidateQuestionNo": 49,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（49）说明当前状态，（50）在中央数据 存储上执行。",
+          "candidateStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（ ）说明当前状态，（ ）在中央数据存储上执行。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2018年下半年-050",
+          "bankQuestionNo": 50,
+          "candidateQuestionNo": 50,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "normalization": "Unicode NFKC, Latin case-folding, blank-number normalization, whitespace/punctuation normalization; options and answer keys checked separately."
+          },
+          "bankStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（49）说明当前状态，（50）在中央数据 存储上执行。",
+          "candidateStemExcerpt": "在仓库风格中，有两种不同的构件，其中，（ ）说明当前状态，（ ）在中央数据存储上执行。",
           "officialSourceProvenanceVerified": false,
           "answerCorrectnessVerified": false
         }
