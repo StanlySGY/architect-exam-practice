@@ -101,6 +101,28 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 8);
   assert.equal(review.summary.questionNumberShiftStrictTextMatches, 6);
   assert.equal(review.summary.questionNumberShiftVisualExceptions, 2);
+  assert.equal(review.summary.sharedBlankMappingGroupsReviewed, 5);
+  assert.equal(review.summary.sharedBlankMappingItemsReviewed, 10);
+  assert.equal(review.summary.sharedBlankMappingExactGroups, 3);
+  assert.equal(review.summary.sharedBlankMappingExceptionGroups, 2);
+  assert.equal(review.sharedBlankMappingReviews.length, 5);
+  const matchedBlankGroups = review.sharedBlankMappingReviews.filter(group => group.expected === 'exact-shared-blank-pair');
+  assert.equal(matchedBlankGroups.length, 3);
+  for (const group of matchedBlankGroups) {
+    assert.equal(group.items.length, 2);
+    for (const item of group.items) {
+      assert.equal(item.reproducedChecks.normalizedSharedStemMatch, true);
+      assert.equal(item.reproducedChecks.optionsAtoDMatch, true);
+      assert.equal(item.reproducedChecks.answerKeyMatch, true);
+      assert.equal(item.officialSourceProvenanceVerified, false);
+      assert.equal(item.answerCorrectnessVerified, false);
+    }
+  }
+  const idlVariance = review.sharedBlankMappingReviews.find(group => group.groupId === '2017h2-idl-definition-blank-37-38');
+  assert.equal(idlVariance.items.find(item => item.bankQuestionNo === 37).reproducedChecks.answerKeyMatch, false);
+  const confirmationVariance = review.sharedBlankMappingReviews.find(group => group.groupId === '2017h2-confirmation-test-blank-42-43');
+  assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 42).reproducedChecks.optionsAtoDMatch, false);
+  assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 43).reproducedChecks.optionsAtoDMatch, true);
   assert.equal(review.summary.contentException2019ShiftedAssetExceptionsReviewed, 2);
   assert.equal(review.questionNumberShiftCrossChecks.length, 8);
   for (const record of review.questionNumberShiftCrossChecks) {

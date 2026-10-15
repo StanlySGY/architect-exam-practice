@@ -45,7 +45,11 @@
     "questionNumberShiftCrossChecksReviewed": 8,
     "questionNumberShiftStrictTextMatches": 6,
     "questionNumberShiftVisualExceptions": 2,
-    "contentException2019ShiftedAssetExceptionsReviewed": 2
+    "contentException2019ShiftedAssetExceptionsReviewed": 2,
+    "sharedBlankMappingGroupsReviewed": 5,
+    "sharedBlankMappingItemsReviewed": 10,
+    "sharedBlankMappingExactGroups": 3,
+    "sharedBlankMappingExceptionGroups": 2
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -5252,6 +5256,323 @@
       },
       "adjudication": "text-options-answer-match-at-shifted-heading-origin-unverified",
       "rationale": "本地候选第59题的题干、A-D选项和答案字母与题库第60题逐项匹配；本地题号存在偏移，因此只记录内容对应，不推断题库题号错误或官方来源已确认。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    }
+  ],
+  "sharedBlankMappingReviews": [
+    {
+      "groupId": "2017h2-relational-design-blank-9-10",
+      "nos": [
+        9,
+        10
+      ],
+      "expected": "exact-shared-blank-pair",
+      "note": "候选文本与题库均为两个编号空的同一题干；两题的A-D选项和答案字母分别一致。规范化后文本对应，但题源官方出处/答案正确性仍未验证。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-009",
+          "bankQuestionNo": 9,
+          "candidateQuestionNo": 9,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C"
+          },
+          "bankStemExcerpt": "给定关系模式 R(U，F)，其中: 属性集 U={A1 ,A2,A3,A4,A5,A6}， 函数依赖集 F={A1 →A2, A1→A3, A3→A4, A1A5→A6}。关系模式 R 的候选码为（9），由于 R 存在非主属性对码 的部分函数依赖，所以 R 属于（10）。",
+          "candidateStemExcerpt": "给定关系模式R（U，F），其中：属性集U={A1，A2，A3，A4，A5，A6}，函数依赖集F={A1→A2， A1→A3，A3→A4，A1A5→A6}。关系模式R的候选码为（ ），由于R存在非主属性对码的部分函数依赖，所以R属于（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-010",
+          "bankQuestionNo": 10,
+          "candidateQuestionNo": 10,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A"
+          },
+          "bankStemExcerpt": "给定关系模式 R(U，F)，其中: 属性集 U={A1 ,A2,A3,A4,A5,A6}， 函数依赖集 F={A1 →A2, A1→A3, A3→A4, A1A5→A6}。关系模式 R 的候选码为（9），由于 R 存在非主属性对码 的部分函数依赖，所以 R 属于（10）。",
+          "candidateStemExcerpt": "给定关系模式R（U，F），其中：属性集U={A1，A2，A3，A4，A5，A6}，函数依赖集F={A1→A2， A1→A3，A3→A4，A1A5→A6}。关系模式R的候选码为（ ），由于R存在非主属性对码的部分函数依赖，所以R属于（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-mis-planning-blank-18-19",
+      "nos": [
+        18,
+        19
+      ],
+      "expected": "exact-shared-blank-pair",
+      "note": "同一段包含两个编号空的共享题干；两题A-D选项和答案字母分别一致。题源官方出处/答案正确性仍未验证。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-018",
+          "bankQuestionNo": 18,
+          "candidateQuestionNo": 18,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B"
+          },
+          "bankStemExcerpt": "用于管理信息系统规划的方法有很多，其中（18）将整个过程看成是一个“信息集 合”，并将组织的战略目标转变为管理信息系统的战略目标。（19）通过自上而下地识别企业 目标、企业过程和数据，然后对数据进行分析，自下而上地设计信息系统。",
+          "candidateStemExcerpt": "用于管理信息系统规划的方法有很多，其中（ ）将整个过程看成是一个”信息集合“，并将组织的战略目标转变为管理信息系统的战略目标。（ ）通过自上而下地识别企业目标、企业过程和数据，然后对数据进行分析，自下而上地设计信息系统。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-019",
+          "bankQuestionNo": 19,
+          "candidateQuestionNo": 19,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C"
+          },
+          "bankStemExcerpt": "用于管理信息系统规划的方法有很多，其中（18）将整个过程看成是一个“信息集 合”，并将组织的战略目标转变为管理信息系统的战略目标。（19）通过自上而下地识别企业 目标、企业过程和数据，然后对数据进行分析，自下而上地设计信息系统。",
+          "candidateStemExcerpt": "用于管理信息系统规划的方法有很多，其中（ ）将整个过程看成是一个”信息集合“，并将组织的战略目标转变为管理信息系统的战略目标。（ ）通过自上而下地识别企业目标、企业过程和数据，然后对数据进行分析，自下而上地设计信息系统。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-org-information-needs-blank-20-21",
+      "nos": [
+        20,
+        21
+      ],
+      "expected": "exact-shared-blank-pair",
+      "note": "同一段包含两个编号空的组织信息化需求题干；两题选项和答案字母一致。题源官方出处/答案正确性仍未验证。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-020",
+          "bankQuestionNo": 20,
+          "candidateQuestionNo": 20,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A"
+          },
+          "bankStemExcerpt": "组织信息化需求通常包含三个层次，其中（20）需求的目标是提升组织的竞争能力， 为组织的可持续发展提供支持环境。(21)需求包含实现信息化战略目标的需求、运营策略的 需求和人才培养的需求三个方面。技术需求主要强调在信息层技术层面上对系统的完善、升 级、集成和整合提出的需求。",
+          "candidateStemExcerpt": "组织信息化需求通常包含三个层次，其中（ ）需求的目标是提升组织的竞争能力，为组织的可持续发展提供支持环境。（ ）需求包含实现信息化战略目标的需求、运营策略的需求和人才培养的需求三个方面。技术需求主要强调在信息层技术层面上对系统的完善、升级、集成和整合提出的需求。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-021",
+          "bankQuestionNo": 21,
+          "candidateQuestionNo": 21,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B"
+          },
+          "bankStemExcerpt": "组织信息化需求通常包含三个层次，其中（20）需求的目标是提升组织的竞争能力， 为组织的可持续发展提供支持环境。(21)需求包含实现信息化战略目标的需求、运营策略的 需求和人才培养的需求三个方面。技术需求主要强调在信息层技术层面上对系统的完善、升 级、集成和整合提出的需求。",
+          "candidateStemExcerpt": "组织信息化需求通常包含三个层次，其中（ ）需求的目标是提升组织的竞争能力，为组织的可持续发展提供支持环境。（ ）需求包含实现信息化战略目标的需求、运营策略的需求和人才培养的需求三个方面。技术需求主要强调在信息层技术层面上对系统的完善、升级、集成和整合提出的需求。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-idl-definition-blank-37-38",
+      "nos": [
+        37,
+        38
+      ],
+      "expected": "answer-key-variance",
+      "note": "共享IDL两空题干在忽略英文字母大小写/空白并归一编号空后匹配，A-D选项一致；但题库第37题答案为D，候选Markdown同题号答案为C；第38题两边答案均为A。第37题需复核答案/来源版本，不能视为完整匹配。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-037",
+          "bankQuestionNo": 37,
+          "candidateQuestionNo": 37,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": false,
+            "bankAnswer": "D",
+            "candidateAnswer": "C"
+          },
+          "bankStemExcerpt": "OMG 接口定义语言 IDL 文件包含了六种不同的元素，（37）是一个 IDL 文件最核心 的内容，（38）将映射为 Java 语言中的包 (Package) 或 c++语言中的命名空间(Namespace)。",
+          "candidateStemExcerpt": "OMG接口定义语言IDL文件包含了六种不同的元素，（ ）是一个IDL文件最核心的内容，（ ）将映射为Java语言中的包（Package）或C++语言中的命名空间（Namespace）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-038",
+          "bankQuestionNo": 38,
+          "candidateQuestionNo": 38,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A"
+          },
+          "bankStemExcerpt": "OMG 接口定义语言 IDL 文件包含了六种不同的元素，（37）是一个 IDL 文件最核心 的内容，（38）将映射为 Java 语言中的包 (Package) 或 c++语言中的命名空间(Namespace)。",
+          "candidateStemExcerpt": "OMG接口定义语言IDL文件包含了六种不同的元素，（ ）是一个IDL文件最核心的内容，（ ）将映射为Java语言中的包（Package）或C++语言中的命名空间（Namespace）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-confirmation-test-blank-42-43",
+      "nos": [
+        42,
+        43
+      ],
+      "expected": "option-wording-variance",
+      "note": "共享确认测试两空题干和答案字母一致；第42题选项C出现“其它”/“其他”用字差异，第43题选项C只是空白格式差异。将第42题保留为文本差异，不把语义近似当作逐字相同。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-042",
+          "bankQuestionNo": 42,
+          "candidateQuestionNo": 42,
+          "queueStatusAtReview": "candidate-by-year-and-type-only",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": false,
+              "D": true
+            },
+            "optionsAtoDMatch": false,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C"
+          },
+          "bankStemExcerpt": "软件确认测试也称为有效性测试，主要验证（42）。确认测试计划通常是在需求分析 阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（43）。",
+          "candidateStemExcerpt": "软件确认测试也称为有效性测试，主要验证（ ）。确认测试计划通常是在需求分析阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-043",
+          "bankQuestionNo": 43,
+          "candidateQuestionNo": 43,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "normalizationIncludesLatinCaseFold": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C"
+          },
+          "bankStemExcerpt": "软件确认测试也称为有效性测试，主要验证（42）。确认测试计划通常是在需求分析 阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（43）。",
+          "candidateStemExcerpt": "软件确认测试也称为有效性测试，主要验证（ ）。确认测试计划通常是在需求分析阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }
