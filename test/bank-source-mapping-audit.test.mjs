@@ -95,9 +95,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberFourteenthBatchReviewed, 17);
   assert.equal(review.summary.sameNumberFifteenthBatchReviewed, 25);
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
+  assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 3);
-  assert.equal(review.contentExceptionReviews.length, 3);
+  assert.equal(review.summary.contentExceptionReviews, 9);
+  assert.equal(review.contentExceptionReviews.length, 9);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
@@ -121,6 +122,16 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(diagramException.reproducedChecks.normalizedTextStemMatch, true);
   assert.equal(diagramException.reproducedChecks.optionsAtoDMatch, true);
   assert.equal(diagramException.reproducedChecks.candidateHasDiagramAsset, false);
+  for (const id of [
+    'real-2019年下半年-009','real-2019年下半年-010','real-2019年下半年-011',
+    'real-2019年下半年-018','real-2019年下半年-019','real-2019年下半年-020',
+  ]) {
+    const missingAsset = review.contentExceptionReviews.find(record => record.itemId === id);
+    assert.equal(missingAsset.reproducedChecks.textStemBeforeMissingAssetMatches, true);
+    assert.equal(missingAsset.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(missingAsset.reproducedChecks.answerKeyMatch, true);
+    assert.equal(missingAsset.reproducedChecks.originalAssetPresentInCandidate, false);
+  }
   const tableException = review.contentExceptionReviews.find(record => record.itemId === 'real-2024年上半年-068');
   assert.equal(tableException.reproducedChecks.questionSentenceMatches, true);
   assert.equal(tableException.reproducedChecks.bankTablePresent, true);
