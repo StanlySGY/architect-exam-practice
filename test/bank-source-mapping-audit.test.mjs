@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { auditSourceMapping, renderSourceMappingMarkdown } from '../scripts/audit-bank-source-mapping.mjs';
+import { auditSourceMapping, inspectQuestionAtNumber, renderSourceMappingMarkdown } from '../scripts/audit-bank-source-mapping.mjs';
 
 test('来源映射按题型和年份生成候选，不把同名或文本匹配直接当成来源证明', () => {
   const root = '/tmp/source-root';
@@ -76,10 +76,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 167);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 167);
-  assert.equal(review.sameNumberExactContentReviews.length, 167);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 167);
+  assert.equal(review.summary.sameNumberExactContentReviews, 173);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 173);
+  assert.equal(review.sameNumberExactContentReviews.length, 173);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 173);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumberFourthBatchReviewed, 8);
@@ -94,6 +94,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sameNumberThirteenthBatchReviewed, 13);
   assert.equal(review.summary.sameNumberFourteenthBatchReviewed, 17);
   assert.equal(review.summary.sameNumberFifteenthBatchReviewed, 25);
+  assert.equal(review.summary.sameNumber2016AdditionalBatchReviewed, 6);
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
@@ -153,4 +154,44 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
     assert.equal(record.adjudication, 'paired-shared-stem-representation-variant-origin-unverified');
   }
+});
+
+test('共享多空题把题号占位规范为源文本空白，但不泛化删除数值', () => {
+  const sharedStem = '面向服务系统构建过程中，（ ）用于实现 Web 服务的远程调用，（ ）用来将分散的、功能单一的 Web 服务组织成一个复杂的有机应用。';
+  const source = [
+    '## 第39题', '', sharedStem, '',
+    '- **A.** UDDI', '- **B.** WSDL', '- **C.** SOAP', '- **D.** BPEL', '', '**正确答案：C**', '',
+    '## 第40题', '', sharedStem, '',
+    '- **A.** UDDI', '- **B.** WSDL', '- **C.** SOAP', '- **D.** BPEL', '', '**正确答案：D**',
+  ].join('\n');
+  const options = { A: 'UDDI', B: 'WSDL', C: 'SOAP', D: 'BPEL' };
+  const row39 = { questionNo: 39, stem: '面向服务系统构建过程中，（39）用于实现 Web 服务的远程调用，（40）用来将分散的、功能单一的 Web 服务组织成一个复杂的有机应用。', options, answer: 'C' };
+  const row40 = { ...row39, questionNo: 40, answer: 'D' };
+  for (const [questionNo, row] of [[39, row39], [40, row40]]) {
+    const result = inspectQuestionAtNumber(source, questionNo, row);
+    assert.equal(result.atNumber.matchedStem, true);
+    assert.equal(result.atNumber.matchedOptions, true);
+    assert.equal(result.atNumber.matchedAnswer, true);
+    assert.equal(result.atNumber.matchedExactQuestion, true);
+  }
+  const numericSource = ['## 第8题', '', '某服务在 80% 负载时的延迟为 39 ms。', '', '- **A.** 39 ms', '- **B.** 40 ms', '- **C.** 41 ms', '- **D.** 42 ms', '', '**正确答案：A**'].join('\n');
+  const numeric = inspectQuestionAtNumber(numericSource, 8, { questionNo: 8, stem: '某服务在 80% 负载时的延迟为 39 ms。', options: { A: '39 ms', B: '40 ms', C: '41 ms', D: '42 ms' }, answer: 'A' });
+  assert.equal(numeric.atNumber.matchedStem, true);
+  assert.equal(numeric.atNumber.matchedExactQuestion, true);
+  const ambiguousNumericSource = [
+    '## 第8题', '',
+    '某服务处理第（ ）批数据，额外数据项已到达。', '',
+    '- **A.** 10', '- **B.** 20', '- **C.** 30', '- **D.** 40', '',
+    '**正确答案：A**',
+  ].join('\n');
+  const ambiguousNumeric = inspectQuestionAtNumber(ambiguousNumericSource, 8, {
+    questionNo: 8,
+    stem: '某服务处理第（8）批数据，额外数据项已到达。',
+    options: { A: '10', B: '20', C: '30', D: '40' },
+    answer: 'A',
+  });
+  assert.equal(ambiguousNumeric.atNumber.matchedStem, false);
+  assert.equal(ambiguousNumeric.atNumber.matchedOptions, true);
+  assert.equal(ambiguousNumeric.atNumber.matchedAnswer, true);
+  assert.equal(ambiguousNumeric.atNumber.matchedExactQuestion, false);
 });

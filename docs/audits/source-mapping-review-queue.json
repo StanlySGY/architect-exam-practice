@@ -1,6 +1,6 @@
 {
   "reportVersion": 1,
-  "generatedAt": "2026-10-13T05:23:11.194Z",
+  "generatedAt": "2026-10-15T05:05:42.509Z",
   "readOnly": true,
   "sourceRoot": "../ruankao-senior-architecture-designer/sources",
   "counts": {
@@ -11,10 +11,10 @@
     "byStatus": {
       "simulated-no-original-source": 588,
       "no-local-candidate": 522,
-      "candidate-by-year-and-type-only": 125,
-      "candidate-content-match-local-heading-number-differs": 107,
-      "candidate-question-content-match-needs-human-review": 149,
-      "candidate-text-match-needs-human-review": 293,
+      "candidate-by-year-and-type-only": 122,
+      "candidate-content-match-local-heading-number-differs": 110,
+      "candidate-question-content-match-needs-human-review": 220,
+      "candidate-text-match-needs-human-review": 222,
       "ambiguous-candidates": 336,
       "remote-source-needs-review": 63
     }
@@ -20829,18 +20829,18 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-by-year-and-type-only",
+      "status": "candidate-content-match-local-heading-number-differs",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
-          "matchedOptions": false,
-          "matchedAnswer": false,
+          "matchedQuestionNo": 33,
+          "matchedOptions": true,
+          "matchedAnswer": true,
           "matchedExactQuestion": false,
-          "questionNumberMismatch": false
+          "questionNumberMismatch": true
         }
       ]
     },
@@ -21077,17 +21077,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 39,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21108,17 +21108,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 40,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21170,17 +21170,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 42,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21201,17 +21201,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 43,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21263,17 +21263,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 45,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21294,17 +21294,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 46,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21387,17 +21387,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 49,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21418,17 +21418,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 50,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21542,17 +21542,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 54,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21573,17 +21573,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 55,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21604,17 +21604,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 56,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21635,17 +21635,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 57,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21728,17 +21728,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 60,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -21759,17 +21759,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 61,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22100,17 +22100,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 72,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22131,17 +22131,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 73,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22162,17 +22162,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2016年下半年/2016年下半年 系统架构设计师  综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2016年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 74,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22472,17 +22472,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 9,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22503,17 +22503,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 10,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22751,17 +22751,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 18,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22782,17 +22782,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 19,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22813,17 +22813,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 20,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -22844,17 +22844,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 21,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23371,17 +23371,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 38,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23402,18 +23402,18 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-by-year-and-type-only",
+      "status": "candidate-content-match-local-heading-number-differs",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
-          "matchedOptions": false,
-          "matchedAnswer": false,
+          "matchedQuestionNo": 39,
+          "matchedOptions": true,
+          "matchedAnswer": true,
           "matchedExactQuestion": false,
-          "questionNumberMismatch": false
+          "questionNumberMismatch": true
         }
       ]
     },
@@ -23495,17 +23495,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 43,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23557,17 +23557,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 45,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23650,17 +23650,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 48,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23681,17 +23681,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 49,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23712,17 +23712,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 50,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23836,17 +23836,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 54,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23867,17 +23867,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 55,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23898,17 +23898,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 56,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -23929,17 +23929,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 57,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24022,17 +24022,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 60,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24053,17 +24053,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 61,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24146,17 +24146,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 64,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24177,17 +24177,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 65,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24301,17 +24301,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 69,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24332,17 +24332,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 70,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24549,17 +24549,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 2,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24580,17 +24580,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 3,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24642,17 +24642,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 5,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -24673,17 +24673,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 6,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25014,17 +25014,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 18,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25045,17 +25045,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 19,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25076,17 +25076,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 20,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25293,17 +25293,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 27,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25324,17 +25324,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 28,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25355,17 +25355,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 29,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25386,17 +25386,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 30,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25448,17 +25448,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 32,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25479,17 +25479,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 33,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25510,17 +25510,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 34,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25572,17 +25572,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 36,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25603,17 +25603,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 37,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25634,17 +25634,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 38,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25758,17 +25758,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 42,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25789,17 +25789,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 43,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25851,17 +25851,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 45,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25882,17 +25882,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 46,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25913,17 +25913,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 47,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25944,17 +25944,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 48,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -25975,17 +25975,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 49,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26006,17 +26006,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 50,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26130,17 +26130,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 54,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26161,17 +26161,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 55,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26192,18 +26192,18 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-by-year-and-type-only",
+      "status": "candidate-content-match-local-heading-number-differs",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
-          "matchedOptions": false,
-          "matchedAnswer": false,
+          "matchedQuestionNo": 54,
+          "matchedOptions": true,
+          "matchedAnswer": true,
           "matchedExactQuestion": false,
-          "questionNumberMismatch": false
+          "questionNumberMismatch": true
         }
       ]
     },
@@ -26223,17 +26223,17 @@
       "answer": "A",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 57,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26316,17 +26316,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 60,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26347,17 +26347,17 @@
       "answer": "D",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 61,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26440,17 +26440,17 @@
       "answer": "C",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 64,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]
@@ -26471,17 +26471,17 @@
       "answer": "B",
       "sourceFile": "03、历年真题(2009年-2025年)+答案解析/2018年下半年/2018年下半年 系统架构设计师 综合知识.pdf",
       "sourceUrl": "",
-      "status": "candidate-text-match-needs-human-review",
+      "status": "candidate-question-content-match-needs-human-review",
       "candidates": [
         {
           "path": "02-历年真题/2018年下半年-系统架构设计师-综合知识.md",
           "matchedTitle": false,
           "matchedStem": false,
           "sourceVariant": "primary-or-unspecified",
-          "matchedQuestionNo": null,
+          "matchedQuestionNo": 65,
           "matchedOptions": true,
           "matchedAnswer": true,
-          "matchedExactQuestion": false,
+          "matchedExactQuestion": true,
           "questionNumberMismatch": false
         }
       ]

@@ -61,8 +61,28 @@ export function inspectQuestionAtNumber(content, questionNo, row) {
     const matchedAnswer = Boolean(sourceAnswer && sourceAnswer === String(row.answer ?? '').toUpperCase());
     const firstOption = block.text.search(/^\s*(?:[-*]\s*)?\*\*[A-D]\.?\*\*/mu);
     const stemText = firstOption >= 0 ? block.text.slice(0, firstOption) : block.text.split(/(?:正确答案|参考答案|答案)\s*[:：]/u)[0];
-    const rowStem = norm(row.stem ?? row.title);
-    const sourceStem = norm(stemText);
+    const rowStemText = String(row.stem ?? row.title ?? '');
+    const sourceStemText = String(stemText ?? '');
+    const numberedPlaceholders = [...rowStemText.matchAll(/[（(]\s*(\d{1,3})\s*[）)]/gu)]
+      .map((match) => Number(match[1]));
+    const sourceBlankCount = [...sourceStemText.matchAll(/[（(]\s*[）)]/gu)].length;
+    const sortedPlaceholders = [...numberedPlaceholders].sort((a, b) => a - b);
+    const placeholdersAreSequential = sortedPlaceholders.length > 0
+      && sortedPlaceholders.every((number, index) => index === 0 || number === sortedPlaceholders[index - 1] + 1);
+    const placeholderSetBelongsToQuestion = sortedPlaceholders.length >= 2
+      && sourceBlankCount >= 2
+      && sortedPlaceholders.includes(Number(block.questionNo))
+      && sortedPlaceholders.length === sourceBlankCount
+      && placeholdersAreSequential
+      && Math.min(...sortedPlaceholders) >= Number(block.questionNo) - 3
+      && Math.max(...sortedPlaceholders) <= Number(block.questionNo) + 3;
+    // Numbered bank blanks (39)/(40) may correspond to unnumbered source blanks ().
+    // Normalize only when counts match and the numbers form a small consecutive question group.
+    const comparableRowStem = placeholderSetBelongsToQuestion
+      ? rowStemText.replace(/[（(]\s*\d{1,3}\s*[）)]/gu, '()')
+      : rowStemText;
+    const rowStem = norm(comparableRowStem);
+    const sourceStem = norm(sourceStemText);
     const matchedStem = rowStem.length >= 8 && sourceStem.length >= 8 && (sourceStem.includes(rowStem) || rowStem.includes(sourceStem));
     return { questionNo: block.questionNo, matchedStem, matchedOptions, matchedAnswer, matchedExactQuestion: matchedStem && matchedOptions && matchedAnswer };
   };
