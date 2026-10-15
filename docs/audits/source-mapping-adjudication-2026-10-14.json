@@ -30,7 +30,7 @@
     "sameNumberSeventhBatchReviewed": 12,
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
-    "contentExceptionReviews": 11,
+    "contentExceptionReviews": 19,
     "sameNumberTenthBatchReviewed": 9,
     "sameNumberEleventhBatchReviewed": 2,
     "sharedStemFourthBatchReviewed": 2,
@@ -46,10 +46,10 @@
     "questionNumberShiftStrictTextMatches": 6,
     "questionNumberShiftVisualExceptions": 2,
     "contentException2019ShiftedAssetExceptionsReviewed": 2,
-    "sharedBlankMappingGroupsReviewed": 5,
-    "sharedBlankMappingItemsReviewed": 10,
-    "sharedBlankMappingExactGroups": 3,
-    "sharedBlankMappingExceptionGroups": 2
+    "sharedBlankMappingGroupsReviewed": 11,
+    "sharedBlankMappingItemsReviewed": 28,
+    "sharedBlankMappingExactGroups": 6,
+    "sharedBlankMappingExceptionGroups": 5
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -5056,6 +5056,186 @@
       "rationale": "题干正文、A-D选项和答案字母匹配，但候选题号不同且缺少原图；题库中的附加转录不是认证原图。该项不能计入完整题目来源严格匹配，也不独立判断答案正确性。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-037",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 37,
+      "bankQuestionNo": 37,
+      "candidateQuestionNo": 37,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "共享IDL两空题干的A-D选项逐项相同，但同题号候选答案为C、题库登记答案为D；本次只记录答案键差异，不判断哪方正确。",
+      "adjudication": "answer-key-mismatch-origin-unverified",
+      "reproducedChecks": {
+        "normalizedSharedStemMatch": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": false,
+        "bankAnswer": "D",
+        "candidateAnswer": "C"
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-042",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 42,
+      "bankQuestionNo": 42,
+      "candidateQuestionNo": 42,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-by-year-and-type-only",
+      "issue": "共享确认测试两空题干与答案字母匹配，但候选选项C写“其他”，题库写“其它”；该词形差异未按逐字匹配吞掉。",
+      "adjudication": "option-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedSharedStemMatch": true,
+        "optionsAtoDMatch": false,
+        "answerKeyMatch": true,
+        "bankAnswer": "C",
+        "candidateAnswer": "C",
+        "optionCVariant": {
+          "bank": "软件功能、性能及其它特性是否与用户需求一致",
+          "candidate": "软件功能、性能及其他特性是否与用户需求一致"
+        }
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-044",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 44,
+      "bankQuestionNo": 44,
+      "candidateQuestionNo": 44,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "题库公共题干带“但”字，候选第44题未出现“但”；A-D选项与答案字母一致。",
+      "adjudication": "shared-stem-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankSharedStemContainsButCharacter": true,
+        "candidateContainsButCharacter": false
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-046",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 46,
+      "bankQuestionNo": 46,
+      "candidateQuestionNo": 46,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "issue": "题库公共题干带“但”字，候选第46题未出现“但”；A-D选项与答案字母一致。",
+      "adjudication": "shared-stem-wording-variant-origin-unverified",
+      "reproducedChecks": {
+        "normalizedStemMatch": false,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankSharedStemContainsButCharacter": true,
+        "candidateContainsButCharacter": false
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-064",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 64,
+      "bankQuestionNo": 64,
+      "candidateQuestionNo": 64,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干指向“下图”，候选Markdown该题块未含图像引用或资源；选项和答案相同不能替代图示本身。",
+      "adjudication": "missing-figure-asset-origin-unverified",
+      "reproducedChecks": {
+        "textStemBeforeMissingAssetMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesFigure": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-065",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 65,
+      "bankQuestionNo": 65,
+      "candidateQuestionNo": 65,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干指向“下图”，候选Markdown该题块未含图像引用或资源；选项和答案相同不能替代图示本身。",
+      "adjudication": "missing-figure-asset-origin-unverified",
+      "reproducedChecks": {
+        "textStemBeforeMissingAssetMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesFigure": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-069",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 69,
+      "bankQuestionNo": 69,
+      "candidateQuestionNo": 69,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干指向“下表”，候选Markdown该题块未含Markdown表格或表格数据；缺少表格内容无法复现计算条件。",
+      "adjudication": "missing-table-asset-origin-unverified",
+      "reproducedChecks": {
+        "textStemBeforeMissingAssetMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesTable": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2017年下半年-070",
+      "kind": "choice",
+      "term": "2017年下半年",
+      "questionNo": 70,
+      "bankQuestionNo": 70,
+      "candidateQuestionNo": 70,
+      "bankSourceFile": "03、历年真题(2009年-2025年)+答案解析/2017年下半年/2017年下半年 系统架构设计师 综合知识.pdf",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "issue": "题干指向“下表”，候选Markdown该题块未含Markdown表格或表格数据；缺少表格内容无法复现计算条件。",
+      "adjudication": "missing-table-asset-origin-unverified",
+      "reproducedChecks": {
+        "textStemBeforeMissingAssetMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "originalAssetPresentInCandidate": false,
+        "bankPromptReferencesTable": true
+      },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
     }
   ],
   "questionNumberShiftCrossChecks": [
@@ -5568,6 +5748,588 @@
           },
           "bankStemExcerpt": "软件确认测试也称为有效性测试，主要验证（42）。确认测试计划通常是在需求分析 阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（43）。",
           "candidateStemExcerpt": "软件确认测试也称为有效性测试，主要验证（ ）。确认测试计划通常是在需求分析阶段完成的。根据用户的参与程度不同，软件确认测试通常包括（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-architecture-style-blank-48-50",
+      "nos": [
+        48,
+        49,
+        50
+      ],
+      "expected": "exact-shared-blank-group",
+      "note": "三空架构风格题干、A-D选项和答案字母均逐项匹配。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-048",
+          "bankQuestionNo": 48,
+          "candidateQuestionNo": 48,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多 系统所共有的（48）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不 确定的这一类软件系统，通常会采用（49）架构风格。对于因数据输入某个构件，经过内部 处理，产生数据输出的系统，通常会采用（50）架构风格。",
+          "candidateStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多系统所共有的（ ）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不确定的这一类软件系统，通常会采用（ ）架构风格。对于因数据输入某个构件，经过内部处理，产生数据输出的系统，通常会采用（ ）架构风格。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-049",
+          "bankQuestionNo": 49,
+          "candidateQuestionNo": 49,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多 系统所共有的（48）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不 确定的这一类软件系统，通常会采用（49）架构风格。对于因数据输入某个构件，经过内部 处理，产生数据输出的系统，通常会采用（50）架构风格。",
+          "candidateStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多系统所共有的（ ）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不确定的这一类软件系统，通常会采用（ ）架构风格。对于因数据输入某个构件，经过内部处理，产生数据输出的系统，通常会采用（ ）架构风格。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-050",
+          "bankQuestionNo": 50,
+          "candidateQuestionNo": 50,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多 系统所共有的（48）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不 确定的这一类软件系统，通常会采用（49）架构风格。对于因数据输入某个构件，经过内部 处理，产生数据输出的系统，通常会采用（50）架构风格。",
+          "candidateStemExcerpt": "软件架构风格描述某一特定领域中的系统组织方式和惯用模式，反映了领域中众多系统所共有的（ ）特征。对于语音识别、知识推理等问题复杂、解空间很大、求解过程不确定的这一类软件系统，通常会采用（ ）架构风格。对于因数据输入某个构件，经过内部处理，产生数据输出的系统，通常会采用（ ）架构风格。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-design-pattern-blank-54-57",
+      "nos": [
+        54,
+        55,
+        56,
+        57
+      ],
+      "expected": "exact-shared-blank-group",
+      "note": "四空设计模式题干、A-D选项和答案字母均逐项匹配。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-054",
+          "bankQuestionNo": 54,
+          "candidateQuestionNo": 54,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通 过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（54）模 式等；（55）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有 Adapter 模 式等；（56）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（57）模式 等。",
+          "candidateStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（ ）模式等；（ ）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有Adapter模式等；（ ）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（ ）模式等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-055",
+          "bankQuestionNo": 55,
+          "candidateQuestionNo": 55,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通 过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（54）模 式等；（55）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有 Adapter 模 式等；（56）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（57）模式 等。",
+          "candidateStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（ ）模式等；（ ）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有Adapter模式等；（ ）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（ ）模式等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-056",
+          "bankQuestionNo": 56,
+          "candidateQuestionNo": 56,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通 过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（54）模 式等；（55）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有 Adapter 模 式等；（56）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（57）模式 等。",
+          "candidateStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（ ）模式等；（ ）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有Adapter模式等；（ ）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（ ）模式等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-057",
+          "bankQuestionNo": 57,
+          "candidateQuestionNo": 57,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "D",
+            "candidateAnswer": "D",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通 过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（54）模 式等；（55）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有 Adapter 模 式等；（56）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（57）模式 等。",
+          "candidateStemExcerpt": "按照设计模式的目的进行划分，现有的设计模式可以分为三类。其中创建型模式通过采用抽象类所定义的接口，封装了系统中对象如何创建、组合等信息，其代表有（ ）模式等；（ ）模式主要用于如何组合已有的类和对象以获得更大的结构，其代表有Adapter模式等；（ ）模式主要用于对象之间的职责及其提供服务的分配方式，其代表有（ ）模式等。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-quality-attribute-strategy-blank-60-63",
+      "nos": [
+        60,
+        61,
+        62,
+        63
+      ],
+      "expected": "exact-shared-blank-group",
+      "note": "四空质量属性策略题干、A-D选项和答案字母均逐项匹配。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-060",
+          "bankQuestionNo": 60,
+          "candidateQuestionNo": 60,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在 3 秒内完成\" 主要与（58） 质量属性相关，通常可采用（59）架构策略实现该属性; \"在线交易主 站宕机后，能够在 3 秒 内自动切换至备用站点并恢复正常运行\"主要与（60）质量属性相关，通常可采用（61）架 构策略实现该属性; \"系统应该具备一定的安全保护",
+          "candidateStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在3秒内完成\" 主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"在线交易主站宕机后，能够在3秒内自动切换至备用站点并恢复正常运行\"主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"系统应该具备一定的安全保护措施，从而能够抵挡恶意的入侵破",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-061",
+          "bankQuestionNo": 61,
+          "candidateQuestionNo": 61,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在 3 秒内完成\" 主要与（58） 质量属性相关，通常可采用（59）架构策略实现该属性; \"在线交易主 站宕机后，能够在 3 秒 内自动切换至备用站点并恢复正常运行\"主要与（60）质量属性相关，通常可采用（61）架 构策略实现该属性; \"系统应该具备一定的安全保护",
+          "candidateStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在3秒内完成\" 主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"在线交易主站宕机后，能够在3秒内自动切换至备用站点并恢复正常运行\"主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"系统应该具备一定的安全保护措施，从而能够抵挡恶意的入侵破",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-062",
+          "bankQuestionNo": 62,
+          "candidateQuestionNo": 62,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在 3 秒内完成\" 主要与（58） 质量属性相关，通常可采用（59）架构策略实现该属性; \"在线交易主 站宕机后，能够在 3 秒 内自动切换至备用站点并恢复正常运行\"主要与（60）质量属性相关，通常可采用（61）架 构策略实现该属性; \"系统应该具备一定的安全保护",
+          "candidateStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在3秒内完成\" 主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"在线交易主站宕机后，能够在3秒内自动切换至备用站点并恢复正常运行\"主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"系统应该具备一定的安全保护措施，从而能够抵挡恶意的入侵破",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-063",
+          "bankQuestionNo": 63,
+          "candidateQuestionNo": 63,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出 3 个核心 质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在 3 秒内完成\" 主要与（58） 质量属性相关，通常可采用（59）架构策略实现该属性; \"在线交易主 站宕机后，能够在 3 秒 内自动切换至备用站点并恢复正常运行\"主要与（60）质量属性相关，通常可采用（61）架 构策略实现该属性; \"系统应该具备一定的安全保护",
+          "candidateStemExcerpt": "某公司欲开发一个在线交易网站，在架构设计阶段，公司的架构师识别出3个核心质量属性场景。其中\"网站正常运行时，用户发起的交易请求应该在3秒内完成\" 主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"在线交易主站宕机后，能够在3秒内自动切换至备用站点并恢复正常运行\"主要与（ ）质量属性相关，通常可采用（ ）架构策略实现该属性; \"系统应该具备一定的安全保护措施，从而能够抵挡恶意的入侵破",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-architecture-description-blank-44-46",
+      "nos": [
+        44,
+        45,
+        46
+      ],
+      "expected": "stem-wording-variance",
+      "note": "题库公共题干带“但”字，候选Q45有此字，Q44/Q46没有；选项与答案字母一致。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-044",
+          "bankQuestionNo": 44,
+          "candidateQuestionNo": 44,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "B",
+            "candidateAnswer": "B",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "在基于体系结构的软件设计方法中，采用（44）来描述软件架构，采用（45）但来 描述功能需求，采用（46）来描述质量需求。",
+          "candidateStemExcerpt": "在基于体系结构的软件设计方法中，采用（ ）来描述软件架构，采用（ ）来描述功能需求，采用（ ）来描述质量需求。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-045",
+          "bankQuestionNo": 45,
+          "candidateQuestionNo": 45,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "在基于体系结构的软件设计方法中，采用（44）来描述软件架构，采用（45）但来 描述功能需求，采用（46）来描述质量需求。",
+          "candidateStemExcerpt": "在基于体系结构的软件设计方法中，采用（ ）来描述软件架构，采用（ ）但来描述功能需求，采用（ ）来描述质量需求。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-046",
+          "bankQuestionNo": 46,
+          "candidateQuestionNo": 46,
+          "queueStatusAtReview": "candidate-text-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": false,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "在基于体系结构的软件设计方法中，采用（44）来描述软件架构，采用（45）但来 描述功能需求，采用（46）来描述质量需求。",
+          "candidateStemExcerpt": "在基于体系结构的软件设计方法中，采用（ ）来描述软件架构，采用（ ）来描述功能需求，采用（ ）来描述质量需求。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-network-device-figure-64-65",
+      "nos": [
+        64,
+        65
+      ],
+      "expected": "visual-asset-missing",
+      "note": "题干指向下图，但候选Markdown题目块没有图片标记或图片资源。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-064",
+          "bankQuestionNo": 64,
+          "candidateQuestionNo": 64,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": true,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "在网络规划中，政府内外网之间应该部署网络安全防护设备。在下图中部署的设备 A 是（64），对设备 A 的作用描述错误的是（65）。",
+          "candidateStemExcerpt": "在网络规划中，政府内外网之间应该部署网络安全防护设备。在下图中部署的设备A是（ ），对设备A的作用描述错误的是（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-065",
+          "bankQuestionNo": 65,
+          "candidateQuestionNo": 65,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "C",
+            "candidateAnswer": "C",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": true,
+            "bankPromptReferencesTable": false
+          },
+          "bankStemExcerpt": "在网络规划中，政府内外网之间应该部署网络安全防护设备。在下图中部署的设备 A 是（64），对设备 A 的作用描述错误的是（65）。",
+          "candidateStemExcerpt": "在网络规划中，政府内外网之间应该部署网络安全防护设备。在下图中部署的设备A是（ ），对设备A的作用描述错误的是（ ）。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        }
+      ],
+      "bankMutated": false,
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "groupId": "2017h2-project-crash-table-69-70",
+      "nos": [
+        69,
+        70
+      ],
+      "expected": "table-asset-missing",
+      "note": "题干指向下表，但候选Markdown题目块没有表格数据。",
+      "candidatePath": "02-历年真题/2017年下半年-系统架构设计师-综合知识.md",
+      "items": [
+        {
+          "itemId": "real-2017年下半年-069",
+          "bankQuestionNo": 69,
+          "candidateQuestionNo": 69,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": true
+          },
+          "bankStemExcerpt": "某工程包括 A、B、C、D 四个作业，其衔接关系、正常进度下所需天数和所需直接费 用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每 天 5 万元。据此，可以估算出完成该工程最少需要费用（69）万元，以此最低费用完成该工 程需要（70）天。",
+          "candidateStemExcerpt": "某工程包括A、B、C、D四个作业，其衔接关系、正常进度下所需天数和所需直接费用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每天5万元。据此，可以估算出完成该工程最少需要费用（ ）万元，以此最低费用完成该工程需要（ ）天。",
+          "officialSourceProvenanceVerified": false,
+          "answerCorrectnessVerified": false
+        },
+        {
+          "itemId": "real-2017年下半年-070",
+          "bankQuestionNo": 70,
+          "candidateQuestionNo": 70,
+          "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+          "reproducedChecks": {
+            "normalizedSharedStemMatch": true,
+            "optionPerKey": {
+              "A": true,
+              "B": true,
+              "C": true,
+              "D": true
+            },
+            "optionsAtoDMatch": true,
+            "answerKeyMatch": true,
+            "bankAnswer": "A",
+            "candidateAnswer": "A",
+            "candidateImageMarkerPresent": false,
+            "candidateMarkdownTablePresent": false,
+            "bankPromptReferencesFigure": false,
+            "bankPromptReferencesTable": true
+          },
+          "bankStemExcerpt": "某工程包括 A、B、C、D 四个作业，其衔接关系、正常进度下所需天数和所需直接费 用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每 天 5 万元。据此，可以估算出完成该工程最少需要费用（69）万元，以此最低费用完成该工 程需要（70）天。",
+          "candidateStemExcerpt": "某工程包括A、B、C、D四个作业，其衔接关系、正常进度下所需天数和所需直接费用、赶工进度下所需的最少天数和每天需要增加的直接费用见下表。该工程的间接费用为每天5万元。据此，可以估算出完成该工程最少需要费用（ ）万元，以此最低费用完成该工程需要（ ）天。",
           "officialSourceProvenanceVerified": false,
           "answerCorrectnessVerified": false
         }
