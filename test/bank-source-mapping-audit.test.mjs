@@ -72,6 +72,22 @@ test('同号候选A-D选项对应但答案键不同的条目保持未裁决状�
   assert.equal(review.summary.contentExceptionReviews, 43);
 });
 
+test('2017和2018年英文共享题干的8条本地同号候选仅确认内容匹配', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+  const ids = ['real-2017年下半年-071', 'real-2017年下半年-072', 'real-2017年下半年-073', 'real-2017年下半年-074', 'real-2017年下半年-075', 'real-2018年下半年-071', 'real-2018年下半年-073', 'real-2018年下半年-075'];
+  for (const id of ids) {
+    const record = review.sameNumberExactContentReviews.find(x => x.itemId === id);
+    assert.ok(record, id);
+    assert.equal(record.reproducedChecks.normalizedStemMatch, true);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  assert.equal(review.summary.sameNumberExactContentReviews, 187);
+});
+
 test('来源映射阻止 sourceFile 路径逃逸 source root', () => {
   const report = auditSourceMapping({ choices: [{ id: 'escape', sourceType: 'real', term: '2020年下半年', stem: 'x', sourceFile: '../../outside.md' }] }, '/tmp/source-root', []);
   assert.equal(report.records[0].status, 'unsafe-source-path');
@@ -237,10 +253,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.matchedFlags.questionNumberMismatch, true);
     assert.equal(record.adjudication, 'local-content-match-question-number-differs-origin-unverified');
   }
-  assert.equal(review.summary.sameNumberExactContentReviews, 179);
-  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 179);
-  assert.equal(review.sameNumberExactContentReviews.length, 179);
-  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 179);
+  assert.equal(review.summary.sameNumberExactContentReviews, 187);
+  assert.equal(review.summary.sameNumberContentStemOptionAnswerMatches, 187);
+  assert.equal(review.sameNumberExactContentReviews.length, 187);
+  assert.equal(review.summary.sameNumberStrictStemOptionAnswerMatches, 187);
   assert.equal(review.summary.sameNumberSecondBatchReviewed, 10);
   assert.equal(review.summary.sameNumberThirdBatchReviewed, 4);
   assert.equal(review.summary.sameNumber2018AdditionalStandaloneReviewed, 6);
@@ -351,7 +367,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
   for (const record of review.sameNumberExactContentReviews) {
-    assert.ok(['candidate-question-content-match-needs-human-review', 'candidate-text-match-needs-human-review'].includes(record.queueStatusAtReview));
+    assert.ok(['candidate-question-content-match-needs-human-review', 'candidate-text-match-needs-human-review', 'candidate-by-year-and-type-only'].includes(record.queueStatusAtReview));
     assert.equal(record.bankQuestionNo, record.candidateQuestionNo);
     assert.equal(record.reproducedChecks.candidateHeadingQuestionNo, record.questionNo);
     assert.equal(record.reproducedChecks.normalizedStemMatch, true);
