@@ -41,6 +41,37 @@ test('2023年下半年第40—65题只记录同号本地候选匹配，不认证
   assert.ok(review.summary.sameNumber2023BatchStemVariants > 0);
 });
 
+test('2016年下半年第41题保留选项序列化异常与答案键差异，不裁定正确答案', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+  const record = review.contentExceptionReviews.find(x => x.itemId === 'real-2016年下半年-041');
+  assert.ok(record);
+  assert.equal(record.reproducedChecks.bankOptionsStructurallyUsable, false);
+  assert.equal(record.reproducedChecks.bankAnswer, 'D');
+  assert.equal(record.reproducedChecks.candidateAnswer, 'A');
+  assert.equal(record.reproducedChecks.answerKeyMatch, false);
+  assert.equal(record.officialSourceProvenanceVerified, false);
+  assert.equal(record.answerCorrectnessVerified, false);
+  assert.equal(review.summary.bankOptionSerializationAnomaliesReviewed, 1);
+});
+
+test('同号候选A-D选项对应但答案键不同的条目保持未裁决状态', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+  const ids = ['real-2016年下半年-070', 'real-2017年下半年-035', 'real-2017年下半年-068', 'real-2018年下半年-021'];
+  for (const id of ids) {
+    const record = review.contentExceptionReviews.find(x => x.itemId === id);
+    assert.ok(record, id);
+    assert.equal(record.reproducedChecks.optionsAtoDMatch, true);
+    assert.equal(record.reproducedChecks.answerKeyMatch, false);
+    assert.notEqual(record.reproducedChecks.bankAnswer, record.reproducedChecks.candidateAnswer);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  assert.equal(review.summary.candidateAnswerKeyMismatchReviews, 6);
+  assert.equal(review.summary.contentExceptionReviews, 43);
+});
+
 test('来源映射阻止 sourceFile 路径逃逸 source root', () => {
   const report = auditSourceMapping({ choices: [{ id: 'escape', sourceType: 'real', term: '2020年下半年', stem: 'x', sourceFile: '../../outside.md' }] }, '/tmp/source-root', []);
   assert.equal(report.records[0].status, 'unsafe-source-path');
@@ -167,7 +198,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.officialSourceProvenanceVerified, false);
     assert.equal(record.answerCorrectnessVerified, false);
   }
-  assert.equal(review.summary.candidateAnswerKeyMismatchReviews, 2);
+  assert.equal(review.summary.candidateAnswerKeyMismatchReviews, 6);
   assert.equal(review.summary.ambiguousLayeredArchitecturePromptMissingInCandidates, 5);
   const ambiguous2023q20 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2023年下半年-020');
   assert.equal(ambiguous2023q20.decision, 'multiple-local-candidates-answer-key-mismatch-unresolved');
@@ -314,8 +345,8 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
   }
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 38);
-  assert.equal(review.contentExceptionReviews.length, 38);
+  assert.equal(review.summary.contentExceptionReviews, 43);
+  assert.equal(review.contentExceptionReviews.length, 43);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
