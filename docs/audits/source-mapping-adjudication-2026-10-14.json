@@ -42,8 +42,8 @@
     "contentExceptionSixthBatchReviewed": 6,
     "contentException2019SourceAssetExceptionsReviewed": 6,
     "sameNumber2016AdditionalBatchReviewed": 6,
-    "questionNumberShiftCrossChecksReviewed": 73,
-    "questionNumberShiftStrictTextMatches": 67,
+    "questionNumberShiftCrossChecksReviewed": 75,
+    "questionNumberShiftStrictTextMatches": 69,
     "questionNumberShiftVisualExceptions": 4,
     "questionNumberShiftNonVisualStemExceptions": 2,
     "contentException2019ShiftedAssetExceptionsReviewed": 2,
@@ -69,7 +69,8 @@
     "bankAnswerCandidateMismatchCasesReviewed": 5,
     "questionNumberShift2021HighConfidenceBatchReviewed": 33,
     "questionNumberShift2019And2025BatchReviewed": 14,
-    "ambiguous2024StrictMultipleCandidateCasesReviewed": 3
+    "ambiguous2024StrictMultipleCandidateCasesReviewed": 3,
+    "questionNumberShift2024ResidualReviewed": 2
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -8001,6 +8002,54 @@
       },
       "adjudication": "text-options-answer-match-at-shifted-heading-origin-unverified",
       "rationale": "题干、A-D选项及答案字母在唯一命中的本地候选题号下对应。该记录只描述本地文本关系，不证明候选来源官方、题号哪一方有误或答案正确。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-002",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "bankQuestionNo": 2,
+      "candidateQuestionNo": 8,
+      "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+      "bankSourceFile": "真题/系统架构设计师/2024年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 8,
+        "questionNumberMismatch": true,
+        "normalizedTextStemMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "originalAssetPresentInCandidate": null,
+        "bankHasNonOfficialReconstructionOrTranscription": null
+      },
+      "adjudication": "text-options-answer-match-at-shifted-heading-origin-unverified",
+      "rationale": "唯一命中的本地候选在题干、A-D选项及答案字母层面匹配，但标题题号不同。这里只确认本地文本对应；不证明候选来源官方、题号哪一方有误或答案正确。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-004",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "bankQuestionNo": 4,
+      "candidateQuestionNo": 70,
+      "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+      "bankSourceFile": "真题/系统架构设计师/2024年下半年/综合知识.md",
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "reproducedChecks": {
+        "candidateHeadingQuestionNo": 70,
+        "questionNumberMismatch": true,
+        "normalizedTextStemMatches": true,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "originalAssetPresentInCandidate": null,
+        "bankHasNonOfficialReconstructionOrTranscription": null
+      },
+      "adjudication": "text-options-answer-match-at-shifted-heading-origin-unverified",
+      "rationale": "唯一命中的本地候选在题干、A-D选项及答案字母层面匹配，但标题题号不同。这里只确认本地文本对应；不证明候选来源官方、题号哪一方有误或答案正确。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }

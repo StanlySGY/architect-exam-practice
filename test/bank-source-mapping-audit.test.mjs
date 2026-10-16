@@ -276,8 +276,8 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(review.summary.contentExceptionFourthBatchReviewed, 2);
   assert.equal(review.summary.contentExceptionSixthBatchReviewed, 6);
   assert.equal(review.summary.contentException2019SourceAssetExceptionsReviewed, 6);
-  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 73);
-  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 67);
+  assert.equal(review.summary.questionNumberShiftCrossChecksReviewed, 75);
+  assert.equal(review.summary.questionNumberShiftStrictTextMatches, 69);
   assert.equal(review.summary.questionNumberShiftVisualExceptions, 4);
   assert.equal(review.summary.questionNumberShiftNonVisualStemExceptions, 2);
   assert.equal(review.summary.questionNumberShift2016AdditionalReviewed, 8);
@@ -306,7 +306,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 42).reproducedChecks.optionsAtoDMatch, false);
   assert.equal(confirmationVariance.items.find(item => item.bankQuestionNo === 43).reproducedChecks.optionsAtoDMatch, true);
   assert.equal(review.summary.contentException2019ShiftedAssetExceptionsReviewed, 2);
-  assert.equal(review.questionNumberShiftCrossChecks.length, 73);
+  assert.equal(review.questionNumberShiftCrossChecks.length, 75);
   assert.equal(review.summary.questionNumberShift2016SecondBatchReviewed, 8);
   const secondBatchMappings = [
     ['real-2016年下半年-001', 3, true],
@@ -333,7 +333,7 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.reproducedChecks.textStemBeforeMissingAssetMatches, true);
     assert.equal(record.reproducedChecks.originalAssetPresentInCandidate, false);
   }
-  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.reproducedChecks.normalizedTextStemMatches === true).length, 67);
+  assert.equal(review.questionNumberShiftCrossChecks.filter(record => record.reproducedChecks.normalizedTextStemMatches === true).length, 69);
   assert.equal(review.summary.questionNumberShift2016ThirdBatchReviewed, 2);
   const thirdBatchMappings = [
     ['real-2016年下半年-010', 12, false],
@@ -549,4 +549,18 @@ test('2024年多份本地候选严格匹配时保留未决，不选择性认证�
   assert.equal(record.officialSourceProvenanceVerified, false);
   assert.equal(record.answerCorrectnessVerified, false);
  }
+});
+
+
+test('2024年下半年剩余唯一候选题号偏移只确认本地内容对应', async () => {
+ const { readFile } = await import('node:fs/promises');
+ const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+ const expected = [['real-2024年下半年-002', 2, 8], ['real-2024年下半年-004', 4, 70]];
+ for (const [id, bankNo, candidateNo] of expected) {
+  const record = review.questionNumberShiftCrossChecks.find(item => item.itemId === id);
+  assert.ok(record, id); assert.equal(record.bankQuestionNo, bankNo); assert.equal(record.candidateQuestionNo, candidateNo);
+  assert.equal(record.reproducedChecks.normalizedTextStemMatches, true); assert.equal(record.reproducedChecks.optionsAtoDMatch, true); assert.equal(record.reproducedChecks.answerKeyMatch, true);
+  assert.equal(record.officialSourceProvenanceVerified, false); assert.equal(record.answerCorrectnessVerified, false);
+ }
+ assert.equal(review.summary.questionNumberShift2024ResidualReviewed, 2); assert.equal(review.questionNumberShiftCrossChecks.length, 75);
 });
