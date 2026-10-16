@@ -120,13 +120,13 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(entry.officialSourceProvenanceVerified, false);
   }
   assert.equal(review.records.length, 4);
-  assert.equal(review.ambiguousCandidateReviews.length, 40);
-  assert.equal(review.summary.ambiguousCandidateReviews, 40);
+  assert.equal(review.ambiguousCandidateReviews.length, 43);
+  assert.equal(review.summary.ambiguousCandidateReviews, 43);
   assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 13);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 27);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 30);
   assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 7);
   for (const record of review.ambiguousCandidateReviews) {
-    assert.equal(record.queueStatusAtReview, 'ambiguous-candidates');
+    assert.ok(['ambiguous-candidates', 'candidate-content-match-local-heading-number-differs'].includes(record.queueStatusAtReview));
     assert.equal(record.officialSourceProvenanceVerified, false);
     assert.equal(record.answerCorrectnessVerified, false);
   }
@@ -160,10 +160,10 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   assert.equal(ambiguous2022q58.decision, 'multiple-identical-local-candidates-origin-unverified');
   const ambiguous2022q63 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-063');
   assert.equal(ambiguous2022q63.decision, 'best-local-content-match-regular-candidate-q63-origin-unverified');
-  assert.equal(review.ambiguousCandidateReviews.length, 40);
-  assert.equal(review.summary.ambiguousCandidateReviews, 40);
+  assert.equal(review.ambiguousCandidateReviews.length, 43);
+  assert.equal(review.summary.ambiguousCandidateReviews, 43);
   assert.equal(review.summary.ambiguousCandidateBestLocalTextMatch, 13);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 27);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 30);
   assert.equal(review.summary.bankInternalContentInconsistenciesIdentified, 7);
   const ambiguous2022q65 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-065');
   assert.equal(ambiguous2022q65.decision, 'multiple-identical-local-candidates-origin-unverified');
@@ -182,9 +182,9 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
   }
   const ambiguous2022q71 = review.ambiguousCandidateReviews.find(record => record.itemId === 'real-2022年下半年-071');
   assert.equal(ambiguous2022q71.decision, 'multiple-identical-local-candidates-origin-unverified');
-  assert.equal(review.ambiguousCandidateReviews.length, 40);
-  assert.equal(review.summary.ambiguousCandidateReviews, 40);
-  assert.equal(review.summary.ambiguousCandidateUnresolved, 27);
+  assert.equal(review.ambiguousCandidateReviews.length, 43);
+  assert.equal(review.summary.ambiguousCandidateReviews, 43);
+  assert.equal(review.summary.ambiguousCandidateUnresolved, 30);
   assert.equal(review.summary.essayPromptCompletenessIssuesReviewed, 3);
   for (const id of [
     'essay-real-2022年下半年-1',
@@ -536,4 +536,17 @@ test('2019及2025年唯一候选题号偏移只确认本地内容对应', async 
  const records = review.questionNumberShiftCrossChecks.filter(record => batchIds.includes(record.itemId));
  assert.equal(records.length, 14);
  for (const record of records) { assert.notEqual(record.bankQuestionNo, record.candidateQuestionNo); assert.equal(record.reproducedChecks.optionsAtoDMatch, true); assert.equal(record.reproducedChecks.answerKeyMatch, true); assert.equal(record.officialSourceProvenanceVerified, false); assert.equal(record.answerCorrectnessVerified, false); }
+});
+
+test('2024年多份本地候选严格匹配时保留未决，不选择性认证来源或答案', async () => {
+ const { readFile } = await import('node:fs/promises');
+ const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+ for (const id of ['real-2024年下半年-010', 'real-2024年下半年-012', 'real-2024年下半年-041']) {
+  const record = review.ambiguousCandidateReviews.find(item => item.itemId === id);
+  assert.equal(record.decision, 'unresolved-multiple-strict-local-candidates-origin-unverified');
+  assert.ok(record.candidateComparisons.length >= 2);
+  assert.ok(record.candidateComparisons.every(candidate => candidate.optionsAtoDMatch && candidate.answerKeyMatch));
+  assert.equal(record.officialSourceProvenanceVerified, false);
+  assert.equal(record.answerCorrectnessVerified, false);
+ }
 });

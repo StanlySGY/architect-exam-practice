@@ -55,9 +55,9 @@
     "questionNumberShift2016AdditionalReviewed": 8,
     "questionNumberShift2016SecondBatchReviewed": 8,
     "questionNumberShift2016ThirdBatchReviewed": 2,
-    "ambiguousCandidateReviews": 40,
+    "ambiguousCandidateReviews": 43,
     "ambiguousCandidateBestLocalTextMatch": 13,
-    "ambiguousCandidateUnresolved": 27,
+    "ambiguousCandidateUnresolved": 30,
     "bankInternalContentInconsistenciesIdentified": 7,
     "essayPromptCompletenessIssuesReviewed": 3,
     "candidateAnswerKeyMismatchReviews": 6,
@@ -68,7 +68,8 @@
     "bankOptionSerializationAnomaliesReviewed": 1,
     "bankAnswerCandidateMismatchCasesReviewed": 5,
     "questionNumberShift2021HighConfidenceBatchReviewed": 33,
-    "questionNumberShift2019And2025BatchReviewed": 14
+    "questionNumberShift2019And2025BatchReviewed": 14,
+    "ambiguous2024StrictMultipleCandidateCasesReviewed": 3
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -9182,6 +9183,99 @@
       ],
       "decision": "unresolved-no-local-prompt-match-in-candidate-files",
       "rationale": "题库第70题讨论软件测试说法；补充版第70题是任务与机器的最低成本分配问题，常规版没有第70题题块。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-010",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "bankQuestionNo": 10,
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 1,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        },
+        {
+          "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 7,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        }
+      ],
+      "decision": "unresolved-multiple-strict-local-candidates-origin-unverified",
+      "rationale": "存在两个或以上本地候选同时匹配题干、A-D选项和答案字母，但候选文件/题号不同。没有独立原卷或可追溯官方材料时，不能仅凭本地重复内容选择一个作为真实来源，也不能认证答案正确性；保留未决状态。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-012",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "bankQuestionNo": 12,
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 57,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        },
+        {
+          "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 58,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        }
+      ],
+      "decision": "unresolved-multiple-strict-local-candidates-origin-unverified",
+      "rationale": "存在两个或以上本地候选同时匹配题干、A-D选项和答案字母，但候选文件/题号不同。没有独立原卷或可追溯官方材料时，不能仅凭本地重复内容选择一个作为真实来源，也不能认证答案正确性；保留未决状态。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-041",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "bankQuestionNo": 41,
+      "queueStatusAtReview": "candidate-content-match-local-heading-number-differs",
+      "candidateComparisons": [
+        {
+          "candidatePath": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 50,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        },
+        {
+          "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+          "candidateQuestionNo": 51,
+          "normalizedStemMatch": true,
+          "optionsMatchedCount": 4,
+          "optionsAtoDMatch": true,
+          "answerKeyMatch": true,
+          "difference": "题干、选项及答案字母均匹配，但同一题库条目命中多个本地候选，题号和文件版本不一致。"
+        }
+      ],
+      "decision": "unresolved-multiple-strict-local-candidates-origin-unverified",
+      "rationale": "存在两个或以上本地候选同时匹配题干、A-D选项和答案字母，但候选文件/题号不同。没有独立原卷或可追溯官方材料时，不能仅凭本地重复内容选择一个作为真实来源，也不能认证答案正确性；保留未决状态。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }
