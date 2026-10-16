@@ -61,7 +61,10 @@
     "bankInternalContentInconsistenciesIdentified": 7,
     "essayPromptCompletenessIssuesReviewed": 3,
     "candidateAnswerKeyMismatchReviews": 2,
-    "ambiguousLayeredArchitecturePromptMissingInCandidates": 5
+    "ambiguousLayeredArchitecturePromptMissingInCandidates": 5,
+    "sameNumber2023BatchReviewed": 26,
+    "sameNumber2023BatchOptionsAndAnswerMatch": 26,
+    "sameNumber2023BatchStemVariants": 14
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -7003,6 +7006,555 @@
       "officialSourceProvenanceVerified":false,"answerCorrectnessVerified":false
     }
   ],
+  "sameNumber2023BatchReviews": [
+    {
+      "itemId": "real-2023年下半年-040",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 40,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 40,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-041",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 41,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 41,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-042",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 42,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 42,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-043",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 43,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 43,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-044",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 44,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 44,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-045",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 45,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 45,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-046",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 46,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 46,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-047",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 47,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 47,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-048",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 48,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 48,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-049",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 49,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 49,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-050",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 50,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 50,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-051",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 51,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 51,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-052",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 52,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 52,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-053",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 53,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 53,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-054",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 54,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 54,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-055",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 55,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 55,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-056",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 56,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 56,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-057",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 57,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 57,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-058",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 58,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 58,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-059",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 59,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 59,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-060",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 60,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 60,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-061",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 61,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 61,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "C",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-062",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 62,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 62,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-063",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 63,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 63,
+      "queueStatusAtReview": "candidate-question-content-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": true,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "D",
+        "stemVariant": null
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-064",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 64,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 64,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "A",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2023年下半年-065",
+      "kind": "choice",
+      "term": "2023年下半年",
+      "bankQuestionNo": 65,
+      "candidatePath": "02-历年真题/2023年下半年-系统架构设计师-综合知识.md",
+      "candidateQuestionNo": 65,
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "comparison": {
+        "normalizedStemMatch": false,
+        "optionsMatchedCount": 4,
+        "optionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "observedBankAndCandidateAnswer": "B",
+        "stemVariant": "wording-or-blank-placeholder-variant"
+      },
+      "decision": "same-number-local-options-answer-match-origin-unverified",
+      "rationale": "常规版同号题块的A-D选项文字（忽略排版标点差异）和答案字母与题库记录对应。题干可能存在空格占位、措辞或转录差异；这只能证明本地候选内容对应，不能证明官方原卷来源，也不独立验证答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    }
+  ]
+,
   "sharedBlankMappingReviews": [
     {
       "groupId": "2017h2-relational-design-blank-9-10",

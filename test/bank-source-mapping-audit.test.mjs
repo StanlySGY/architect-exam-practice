@@ -24,6 +24,23 @@ test('来源映射按题型和年份生成候选，不把同名或文本匹配�
   assert.match(renderSourceMappingMarkdown(report), /不判断答案对错/);
 });
 
+test('2023年下半年第40—65题只记录同号本地候选匹配，不认证来源或答案正确性', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
+  assert.equal(review.summary.sameNumber2023BatchReviewed, 26);
+  assert.equal(review.summary.sameNumber2023BatchOptionsAndAnswerMatch, 26);
+  assert.equal(review.sameNumber2023BatchReviews.length, 26);
+  assert.equal(new Set(review.sameNumber2023BatchReviews.map(x => x.itemId)).size, 26);
+  for (const record of review.sameNumber2023BatchReviews) {
+    assert.equal(record.comparison.optionsMatchedCount, 4);
+    assert.equal(record.comparison.optionsAtoDMatch, true);
+    assert.equal(record.comparison.answerKeyMatch, true);
+    assert.equal(record.officialSourceProvenanceVerified, false);
+    assert.equal(record.answerCorrectnessVerified, false);
+  }
+  assert.ok(review.summary.sameNumber2023BatchStemVariants > 0);
+});
+
 test('来源映射阻止 sourceFile 路径逃逸 source root', () => {
   const report = auditSourceMapping({ choices: [{ id: 'escape', sourceType: 'real', term: '2020年下半年', stem: 'x', sourceFile: '../../outside.md' }] }, '/tmp/source-root', []);
   assert.equal(report.records[0].status, 'unsafe-source-path');
