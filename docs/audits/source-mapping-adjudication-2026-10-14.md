@@ -742,3 +742,7 @@
 | real-2019年下半年-052 | 题库答案D指双空题第二空“容量测试”；本地第51题答案A指第一空“强度测试” | 共享多空题表示/编号差异；不直接判为答案冲突 |
 
 这3条都保留 officialSourceProvenanceVerified=false、answerCorrectnessVerified=false。外部题库与本地候选文件均未修改。
+
+## 2024年下半年DSSA多候选重复内容复核（1条）
+
+real-2024年下半年-061 的题干与A-D选项可在本地常规版第21题及补充版第15/16题找到对应，所见答案字母均为A。当前证据支持“本地重复收录且答案字母一致”，不支持判断原卷题号映射，也不构成独立来源或答案正确性证明。该条保留 officialSourceProvenanceVerified=false、answerCorrectnessVerified=false。

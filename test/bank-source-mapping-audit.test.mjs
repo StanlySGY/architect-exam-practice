@@ -69,7 +69,7 @@ test('同号候选A-D选项对应但答案键不同的条目保持未裁决状�
     assert.equal(record.answerCorrectnessVerified, false);
   }
   assert.equal(review.summary.candidateAnswerKeyMismatchReviews, 6);
-  assert.equal(review.summary.contentExceptionReviews, 46);
+  assert.equal(review.summary.contentExceptionReviews, 47);
 });
 
 test('2017和2018年英文共享题干的8条本地同号候选仅确认内容匹配', async () => {
@@ -361,8 +361,8 @@ test('题源人工复核只确认本地内容对应，不会把题号错配或�
     assert.equal(record.answerCorrectnessVerified, false);
   }
   assert.equal(review.summary.sharedStemFourthBatchReviewed, 2);
-  assert.equal(review.summary.contentExceptionReviews, 46);
-  assert.equal(review.contentExceptionReviews.length, 46);
+  assert.equal(review.summary.contentExceptionReviews, 47);
+  assert.equal(review.contentExceptionReviews.length, 47);
   assert.equal(review.summary.sharedStemPairReviews, 6);
   assert.equal(review.summary.sharedStemOptionAnswerMatches, 6);
   assert.equal(review.sharedStemPairReviews.length, 6);
@@ -569,8 +569,8 @@ test('2024年下半年剩余唯一候选题号偏移只确认本地内容对应'
 test('选项措辞、选项重排和共享多空题表示差异不被误判为答案正确性证据', async () => {
  const { readFile } = await import('node:fs/promises');
  const review = JSON.parse(await readFile(new URL('../docs/audits/source-mapping-adjudication-2026-10-14.json', import.meta.url), 'utf8'));
- const expected = [['real-2021年下半年-013', 'option-wording-variant-origin-unverified'], ['real-2024年下半年-029', 'option-order-variant-multiple-local-candidates-origin-unverified'], ['real-2019年下半年-052', 'shared-multi-blank-answer-position-variant-origin-unverified']];
+ const expected = [['real-2021年下半年-013', 'option-wording-variant-origin-unverified'], ['real-2024年下半年-029', 'option-order-variant-multiple-local-candidates-origin-unverified'], ['real-2019年下半年-052', 'shared-multi-blank-answer-position-variant-origin-unverified'], ['real-2024年下半年-061', 'duplicate-content-multiple-candidates-answer-agrees-origin-unverified']];
  for (const [id, adjudication] of expected) { const record = review.contentExceptionReviews.find(item => item.itemId === id); assert.ok(record, id); assert.equal(record.adjudication, adjudication); assert.equal(record.officialSourceProvenanceVerified, false); assert.equal(record.answerCorrectnessVerified, false); }
  const reordered = review.contentExceptionReviews.find(item => item.itemId === 'real-2024年下半年-029'); assert.equal(reordered.details.bankCorrectOptionText, reordered.details.candidateCorrectOptionText);
- const sharedBlank = review.contentExceptionReviews.find(item => item.itemId === 'real-2019年下半年-052'); assert.equal(sharedBlank.details.sharedStemHasTwoBlanks, true); assert.equal(review.summary.contentExceptionExploratoryMismatchReviewCount, 3);
+ const sharedBlank = review.contentExceptionReviews.find(item => item.itemId === 'real-2019年下半年-052'); assert.equal(sharedBlank.details.sharedStemHasTwoBlanks, true); assert.equal(review.summary.contentExceptionExploratoryMismatchReviewCount, 4);
 });

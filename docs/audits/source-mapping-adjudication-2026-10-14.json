@@ -30,7 +30,7 @@
     "sameNumberSeventhBatchReviewed": 12,
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
-    "contentExceptionReviews": 46,
+    "contentExceptionReviews": 47,
     "sameNumberTenthBatchReviewed": 9,
     "sameNumberEleventhBatchReviewed": 2,
     "sharedStemFourthBatchReviewed": 2,
@@ -71,7 +71,7 @@
     "questionNumberShift2019And2025BatchReviewed": 14,
     "ambiguous2024StrictMultipleCandidateCasesReviewed": 3,
     "questionNumberShift2024ResidualReviewed": 2,
-    "contentExceptionExploratoryMismatchReviewCount": 3
+    "contentExceptionExploratoryMismatchReviewCount": 4
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -6343,6 +6343,51 @@
         "interpretation": "bank entry represents second blank while candidate answer represents first blank; mapping unresolved"
       },
       "rationale": "仅依据只读题库记录与本地候选Markdown观察到的文本差异作分类；不裁定官方原卷来源，也不核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-061",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "questionNo": 61,
+      "bankQuestionNo": 61,
+      "bankSourceFile": "真题/系统架构设计师/2024年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "ambiguous-candidates",
+      "reproducedChecks": {
+        "stemTopicMatch": true,
+        "normalizedOptionsAtoDMatch": true,
+        "answerKeyMatch": true,
+        "bankAnswer": "A",
+        "primaryCandidateAnswer": "A",
+        "supplementCandidateAnswer": "A",
+        "sourceFileReadOnly": true
+      },
+      "issue": "题库第61题的DSSA题干与本地常规版第21题、补充版第15/16题的题干及A-D选项内容对应，所见候选答案均为A。差异主要是候选文件编号及重复收录；目前不能从多个本地副本判断哪一份对应原卷的官方题号，也不能据此认证答案正确性。",
+      "adjudication": "duplicate-content-multiple-candidates-answer-agrees-origin-unverified",
+      "details": {
+        "bankAnswer": "A",
+        "primaryCandidate": {
+          "path": "02-历年真题/2024年下半年-系统架构设计师-综合知识.md",
+          "questionNo": 21,
+          "answer": "A"
+        },
+        "supplementCandidates": [
+          {
+            "path": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+            "questionNo": 15,
+            "answer": "A"
+          },
+          {
+            "path": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+            "questionNo": 16,
+            "answer": "A"
+          }
+        ],
+        "normalizedStemAndOptionsMatch": true
+      },
+      "rationale": "直接检查只读题库候选队列和本地候选 Markdown 后记录重复内容及答案字母一致；本地重复收录不构成独立来源证据。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }
