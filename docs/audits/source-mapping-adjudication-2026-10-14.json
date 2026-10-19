@@ -30,7 +30,7 @@
     "sameNumberSeventhBatchReviewed": 12,
     "sameNumberEighthBatchReviewed": 12,
     "sameNumberNinthBatchReviewed": 8,
-    "contentExceptionReviews": 43,
+    "contentExceptionReviews": 46,
     "sameNumberTenthBatchReviewed": 9,
     "sameNumberEleventhBatchReviewed": 2,
     "sharedStemFourthBatchReviewed": 2,
@@ -70,7 +70,8 @@
     "questionNumberShift2021HighConfidenceBatchReviewed": 33,
     "questionNumberShift2019And2025BatchReviewed": 14,
     "ambiguous2024StrictMultipleCandidateCasesReviewed": 3,
-    "questionNumberShift2024ResidualReviewed": 2
+    "questionNumberShift2024ResidualReviewed": 2,
+    "contentExceptionExploratoryMismatchReviewCount": 3
   },
   "note": "本登记只记录本轮对题库条目与候选Markdown文本的只读交叉检查。题干、选项和答案在候选文件中匹配，能提高内容对应的置信度；题号不一致的原因与候选文件的原始出处仍未确认，因此不能升级为官方原卷来源已确认，也不判断答案正确性。",
   "records": [
@@ -6221,6 +6222,127 @@
         "stemTopicMatch": true,
         "stemNote": "共享多空题题干在题库中展开为含编号空格；本地候选保留共享题干格式。"
       },
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2021年下半年-013",
+      "kind": "choice",
+      "term": "2021年下半年",
+      "questionNo": 13,
+      "bankQuestionNo": 13,
+      "candidateQuestionNo": 10,
+      "bankSourceFile": "真题/系统架构设计师/2021年下半年/综合知识.md",
+      "candidatePath": "02-历年真题/2021年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "stemTopicMatch": true,
+        "optionsAtoDStrictMatch": false,
+        "answerKeyMatch": true,
+        "bankAnswer": "A",
+        "candidateAnswer": "A",
+        "sourceFileReadOnly": true
+      },
+      "candidateOptionD": "交换机的MAC地址表项是静态增长的，重启时地址表清空",
+      "bankOptionD": "交换机的MAC地址表项是静态增长的，重启时地址表清空",
+      "issue": "本地候选题号为第10题；题干与答案字母匹配，但C选项存在短语差异：题库为“读取输入帧中的目的地址添加”，候选为“读取输入帧中的目的地址来添加”。该差异不影响答案字母相同这一观察，也不能认证题源或答案正确性。",
+      "adjudication": "option-wording-variant-origin-unverified",
+      "details": {
+        "bankAnswer": "A",
+        "candidateAnswer": "A",
+        "optionDifferences": {
+          "C": {
+            "bank": "交换机通过读取输入帧中的目的地址添加相应的MAC地址表项",
+            "candidate": "交换机通过读取输入帧中的目的地址来添加相应的MAC地址表项"
+          }
+        },
+        "allOtherOptionsMatch": true
+      },
+      "rationale": "仅依据只读题库记录与本地候选Markdown观察到的文本差异作分类；不裁定官方原卷来源，也不核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2024年下半年-029",
+      "kind": "choice",
+      "term": "2024年下半年",
+      "questionNo": 29,
+      "bankQuestionNo": 29,
+      "candidateQuestionNo": 59,
+      "bankSourceFile": "真题/系统架构设计师/2024年下半年/综合知识.md",
+      "candidatePath": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "ambiguous-candidates",
+      "reproducedChecks": {
+        "stemTopicMatch": true,
+        "optionsAtoDStrictMatch": false,
+        "answerKeyMatch": false,
+        "bankAnswer": "C",
+        "candidateAnswer": "A",
+        "sourceFileReadOnly": true
+      },
+      "candidateOptionD": "C",
+      "bankOptionD": "A",
+      "issue": "本地候选（第59题；补充候选第58题亦有相同内容）将选项顺序与题库不同。题库C项为“AB”，候选A项为“AB”；题库答案C与候选答案A指向相同选项文本。属于选项重排/答案字母随之变化，不应直接记作答案内容冲突。多个本地候选的权威性仍未解决，官方来源和答案正确性均未认证。",
+      "adjudication": "option-order-variant-multiple-local-candidates-origin-unverified",
+      "details": {
+        "bankAnswer": "C",
+        "candidateAnswer": "A",
+        "bankCorrectOptionText": "AB",
+        "candidateCorrectOptionText": "AB",
+        "bankOptions": {
+          "A": "B",
+          "B": "D",
+          "C": "AB",
+          "D": "A"
+        },
+        "candidateOptions": {
+          "A": "AB",
+          "B": "A",
+          "C": "B",
+          "D": "C"
+        },
+        "additionalCandidate": {
+          "path": "02-历年真题(补充)/2024年下半年-系统架构设计师-综合知识.md",
+          "questionNo": 58,
+          "answer": "A",
+          "correctOptionText": "AB"
+        }
+      },
+      "rationale": "仅依据只读题库记录与本地候选Markdown观察到的文本差异作分类；不裁定官方原卷来源，也不核验答案正确性。",
+      "officialSourceProvenanceVerified": false,
+      "answerCorrectnessVerified": false
+    },
+    {
+      "itemId": "real-2019年下半年-052",
+      "kind": "choice",
+      "term": "2019年下半年",
+      "questionNo": 52,
+      "bankQuestionNo": 52,
+      "candidateQuestionNo": 51,
+      "bankSourceFile": "ruankao-senior-architecture-designer/02.历年真题-清洗版/2019年下半年-系统架构设计师-综合知识.md",
+      "candidatePath": "02-历年真题/2019年下半年-系统架构设计师-综合知识.md",
+      "queueStatusAtReview": "candidate-text-match-needs-human-review",
+      "reproducedChecks": {
+        "stemTopicMatch": true,
+        "optionsAtoDStrictMatch": false,
+        "answerKeyMatch": false,
+        "bankAnswer": "D",
+        "candidateAnswer": "A",
+        "sourceFileReadOnly": true
+      },
+      "candidateOptionD": "容量测试",
+      "bankOptionD": "容量测试",
+      "issue": "题库记录使用共享双空题干并标记答案D（第二空“容量测试”）；本地候选第51题保留同一完整双空题干，答案A对应第一空“强度测试”。这是共享多空题被拆分/编号后的表示差异，不能把候选A与题库D直接判为答案冲突，也不能仅凭本地候选确定题号映射。",
+      "adjudication": "shared-multi-blank-answer-position-variant-origin-unverified",
+      "details": {
+        "bankAnswer": "D",
+        "candidateAnswer": "A",
+        "bankAnswerOptionText": "容量测试",
+        "candidateAnswerOptionText": "强度测试",
+        "sharedStemHasTwoBlanks": true,
+        "interpretation": "bank entry represents second blank while candidate answer represents first blank; mapping unresolved"
+      },
+      "rationale": "仅依据只读题库记录与本地候选Markdown观察到的文本差异作分类；不裁定官方原卷来源，也不核验答案正确性。",
       "officialSourceProvenanceVerified": false,
       "answerCorrectnessVerified": false
     }
