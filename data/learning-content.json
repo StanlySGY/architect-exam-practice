@@ -7193,6 +7193,82 @@
         }
       ]
     },
+    "11.2.4":     {
+      "status": "partial",
+      "what": "AI Agent 是围绕目标组织模型推理、工具调用、上下文、任务状态和外部执行环境的系统闭环；Super-agent 是一种跨任务协调思路，可用 Router 负责全局路由、Worker 负责隔离执行来组织多任务。核心不是增加模型数量，而是明确职责、状态、事件和权限边界。",
+      "why": "当 IM、邮件、代码审查和 CI 等多信道事件持续到达时，单会话容易阻塞或混杂上下文，完全独立的会话又容易丢失任务关联。分层协调、事件订阅、异步执行和持久化状态可以在连续性、吞吐量、可靠性与成本之间做权衡，但会增加调度、消息一致性和治理复杂度。",
+      "how": "按“事件接入与身份校验→规则快速过滤→持久化队列/事件总线→Router 建立 Thread 并分配 Worker→Worker 隔离执行→状态/结果事件回传→Router 汇总与人工验收”理解主链路。把计算进程、任务状态和执行环境分开管理；通过事件 ID、幂等键、检查点、租约、有限重试和外部 Watchdog 处理重复投递、进程重启与任务停滞。",
+      "confusions": "Router/Worker 是职责划分，不必然对应两台服务器或两个固定模型；应用层异步任务不等于网络协议层全双工；Inline/Spill 是上下文预算策略，不是操作系统自动换页；Chain of Recall 是基于 ID/引用关系的关联召回，不等于纯向量检索；软件 Watchdog 关注服务和任务进度，不能与硬件看门狗复位机制混为一谈；至少一次消息投递配合幂等不等于端到端天然恰好一次。",
+      "scenarios": "情境练习（非教材原例）：企业研发平台同时接收 IM 缺陷反馈、PR 评论和 CI 失败事件。先用规则过滤机器人噪声，再按仓库/PR/缺陷 ID 归并 Thread；已有 Worker 订阅的后续事件直达，未认领的新任务由 Router 分配；复现、代码审查和测试异步并行，状态持久化，合并代码和生产操作保留人工审批。",
+      "examples": "自拟练习（非教材原例）：设计一个企业研发协作 Agent 平台。画出接入层、事件队列、Router、Worker 池、状态存储、执行环境和 Watchdog；说明如何去重、限制并发、恢复中断任务、隔离仓库工作区与凭据，并给出 P95 延迟、任务完成率、重复副作用率、恢复时间和单任务成本等验证指标。",
+      "examFocus": "优先掌握本专题背后的通用考点：分层/组件职责、事件驱动、消息队列与发布订阅、同步与异步、并发调度、状态持久化、幂等、容错恢复、可用性和安全控制。Router/Worker、Trigger/Thread、Inline/Spill、Chain of Recall、BYOM 等属于架构迁移或前沿术语，不应当成大纲明确列出的独立必考名词；答题应回到需求、质量属性、机制、约束和权衡。",
+      "pitfalls": "不要把厂商研究设想描述成已经普遍验证的生产标准；不要只堆叠 Agent 名词而不说明组件职责、数据流和失效处理；不要认为更多 Worker 必然更快；不要把心跳存活当成任务有进展或输出正确；不要让 Worker 默认拥有全部工具、仓库和生产权限；不要把自拟案例当作教材原例或真题事实。",
+      "source": {
+        "type": "mindmap",
+        "path": "architect.mm",
+        "status": "needs-review"
+      },
+      "prerequisites": [
+        "1.1 系统架构概述与架构风格",
+        "事件驱动架构、消息中间件与发布订阅",
+        "软件可靠性、故障检测与恢复",
+        "信息安全、身份认证与访问控制"
+      ],
+      "keyRelations": [
+        "第 1 章事件驱动架构与消息中间件",
+        "第 8 章质量属性场景、架构评价与权衡",
+        "第 9 章软件可靠性与容错恢复",
+        "第 10 章分布式服务与系统演化",
+        "第 11 章人工智能技术",
+        "第 16 章看门狗电路与嵌入式消息中间件",
+        "第 18 章安全策略与访问控制"
+      ],
+      "practiceFocus": [
+        "Router/Worker 职责与并发隔离",
+        "Trigger/Thread 事件过滤、订阅与幂等",
+        "异步任务状态与检查点恢复",
+        "计算/状态/环境解耦",
+        "Watchdog、最小权限与人工审批",
+        "性能、可靠性、安全与成本权衡"
+      ],
+      "selfChecks": [
+        "说明 Agent 系统与单纯模型 API 的区别，并画出推理、工具、状态和执行环境构成的闭环。",
+        "比较单会话、多会话和 Router/Worker 的连续性、吞吐量、复杂度与故障隔离代价。",
+        "设计 Trigger 到 Worker 的事件处理链路，说明如何过滤噪声、关联 Thread、处理重复投递和队列积压。",
+        "解释异步任务为什么不等于网络协议层全双工，并说明 Inline/Spill 的上下文管理边界。",
+        "说明计算、状态和执行环境解耦后，如何通过检查点、租约、幂等和人工接管恢复任务。",
+        "区分 Liveness、Progress 和 Correctness，并列出 Agent 工具执行必须具备的安全控制。"
+      ],
+      "evidence": [
+        {
+          "sourceTitle": "清华大学出版社：系统架构设计师考试大纲（2022 年审定通过）与教程第 2 版简介",
+          "url": "https://www.tup.com.cn/booksCenter/bookbrief?id=10980001",
+          "sourceAuthority": "清华大学出版社",
+          "supportedClaim": "考试大纲和教程覆盖系统架构设计、人工智能、可靠性等相关基础领域。",
+          "scope": "支持本专题底层原理与既有课程知识的关联；不支持把 Agent 或 Super-agent 术语认定为大纲单列的独立必考点。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-02"
+        },
+        {
+          "sourceTitle": "DeepSeek Harness：Exploring Super-agent Design",
+          "url": "https://x.com/DeepSeekHarness/status/2116857257245987236",
+          "sourceAuthority": "DeepSeek Harness",
+          "supportedClaim": "文章提出 Router/Worker、事件驱动、多信道交互、计算/状态/环境分离和 Watchdog 等架构探索方向。",
+          "scope": "用于说明原文提出的架构设想，不代表全部能力已经产品化、经过普遍生产验证或属于官方考试要求。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-02"
+        },
+        {
+          "sourceTitle": "DeepSeek Super-agent prototype execution documentation",
+          "url": "https://github.com/deepseek-ai/dsh-superagent-prototype/blob/main/docs/003-execution.md",
+          "sourceAuthority": "DeepSeek AI GitHub",
+          "supportedClaim": "公开原型文档提供 Ticket、Executor Session、后台任务和 worktree 等执行层概念的工程示例。",
+          "scope": "仅作为原型工程实现的补充材料，不把原型文档视为生产级保证、行业标准或考试规范。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-02"
+        }
+      ]
+    },
     "11.3.1": {
       "status": "partial",
       "what": "机器人能够感知环境、执行动作并在一定自主程度下完成任务；不仅是机械臂，也包括软件机器人和智能服务平台。",
@@ -17203,17 +17279,17 @@
   },
   "coverage": {
     "source": "architect.mm",
-    "leafUnits": 324,
-    "courseRecords": 347,
+    "leafUnits": 325,
+    "courseRecords": 348,
     "policy": "verified仅表示已有明确可靠来源并经人工核验；批量课程化记录保持partial，不冒充教材级核验。",
-    "uniqueLeafIds": 324,
+    "uniqueLeafIds": 325,
     "qualityRule": "课程字段完整不等于事实已核验；知识点只有经过可靠来源核验后才能升级verified。",
     "enrichedRecords": 17,
-    "selfCheckEnrichedRecords": 347,
-    "lessonCourseRecords": 324,
+    "selfCheckEnrichedRecords": 348,
+    "lessonCourseRecords": 325,
     "chapterSummaryRecords": 18,
     "sectionSummaryRecords": 5,
     "missingLeafCourseRecords": 0,
-    "lessonSelfCheckEnrichedRecords": 324
+    "lessonSelfCheckEnrichedRecords": 325
   }
 }

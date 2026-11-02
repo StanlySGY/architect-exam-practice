@@ -2015,17 +2015,21 @@ test("系统学习单元 ID 全局唯一，缺少专属课程内容时明确隔�
   const service = new PracticeService({ store, root });
   await service.init();
   const units = service.learningUnits();
-  assert.equal(units.length, 324);
+  assert.equal(units.length, 325);
   assert.equal(new Set(units.map((unit) => unit.id)).size, units.length, "learning IDs must be globally unique");
   const authored = units.filter((unit) => unit.contentSource?.type === "course-content");
   const fallback = units.filter((unit) => unit.contentSource?.type === "mindmap-fallback");
-  assert.equal(authored.length, 324);
+  assert.equal(authored.length, 325);
   assert.equal(fallback.length, 0);
   assert.ok(authored.every((unit) => ["verified", "partial"].includes(unit.contentStatus)), "authored lessons must expose an explicit review status");
-  const newlyAuthoredIds = ["4.4.2.3","6.2.3.1","6.2.3.2","6.2.3.3","9.2.3.1","9.2.3.2","9.2.3.3","9.2.3.4","9.2.3.5","9.2.3.6","9.2.3.7","9.2.3.8","9.2.3.9","9.2.3.10","10.4.1","10.4.2","10.4.3","10.4.4","10.4.5","10.4.6","10.4.7","10.4.8","10.4.9","10.4.10","10.4.11","10.4.12","10.4.13","10.4.14","10.4.15","10.4.16","10.4.17","10.4.18","17.2.3.4","17.2.3.5","19.3.5.1","19.3.7","19.4.4.1","19.4.4.2"];
+  const newlyAuthoredIds = ["4.4.2.3","6.2.3.1","6.2.3.2","6.2.3.3","9.2.3.1","9.2.3.2","9.2.3.3","9.2.3.4","9.2.3.5","9.2.3.6","9.2.3.7","9.2.3.8","9.2.3.9","9.2.3.10","10.4.1","10.4.2","10.4.3","10.4.4","10.4.5","10.4.6","10.4.7","10.4.8","10.4.9","10.4.10","10.4.11","10.4.12","10.4.13","10.4.14","10.4.15","10.4.16","10.4.17","10.4.18","17.2.3.4","17.2.3.5","19.3.5.1","19.3.7","19.4.4.1","19.4.4.2","11.2.4"];
   const newlyAuthored = newlyAuthoredIds.map((id) => units.find((unit) => unit.id === id));
-  assert.equal(newlyAuthored.length, 38);
+  assert.equal(newlyAuthored.length, 39);
   assert.ok(newlyAuthored.every((unit) => unit?.contentSource?.type === "course-content" && unit.contentSource.status === "partial" && unit.contentStatus === "partial"), "all previously missing lessons must now have explicit partial course records");
+  const agentTopic = units.find((unit) => unit.id === "11.2.4");
+  assert.ok(agentTopic, "Agent 专题应作为独立学习单元出现");
+  assert.equal(agentTopic.contentStatus, "partial");
+  assert.match(agentTopic.teaching.what, /Router|Worker|Agent/);
   const required = ["what", "why", "how", "confusions", "scenarios", "examples", "examFocus", "pitfalls"];
   for (const unit of authored) {
     assert.ok(["verified", "partial"].includes(unit.contentSource.status), "invalid content status: " + unit.id);

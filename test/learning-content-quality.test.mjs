@@ -7,8 +7,8 @@ const sectionSummaryIds = new Set(["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4
 const units = Object.entries(content.units).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !sectionSummaryIds.has(id));
 const highValue = ['1.2','1.3','2.1','2.4','2.5','5.1','5.2','5.4','6.1.1','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.3.1','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4','6.5.1','6.5.2','7.1.1','7.1.2','7.1.3','7.2.1','7.2.2','7.2.3','7.2.4','7.2.5','7.2.6','7.2.7','7.2.8','7.2.9','7.3.1','7.3.2','7.3.3','7.3.4','7.3.5','7.3.6','7.4.1','7.4.3','7.4.4','7.5.1','7.5.4','8.1.1','9.1.1','10.1.1','14.1','15.1','18.2.1','18.2.2','19.1'];
 
-test('324个课程单元的例子、陷阱不重复且自检题完整', () => {
-  assert.equal(units.length, 324);
+test('325个课程单元的例子、陷阱不重复且自检题完整', () => {
+  assert.equal(units.length, 325);
   for (const [id, unit] of units) {
     assert.ok(unit.examples && unit.examples.length >= 14, id + ' examples missing');
     assert.ok(unit.pitfalls && unit.pitfalls.length >= 14, id + ' pitfalls missing');
@@ -56,11 +56,11 @@ test('高价值单元的例子与陷阱包含足够的知识点说明', () => {
 });
 
 test("章节与小节摘要不会混入叶子课程内容映射", () => {
-  assert.equal(units.length, 324);
+  assert.equal(units.length, 325);
   assert.equal(content.coverage.courseRecords, Object.keys(content.units).length);
   assert.equal(content.coverage.lessonCourseRecords, units.length);
-  assert.equal(content.coverage.leafUnits, 324);
-  assert.equal(content.coverage.uniqueLeafIds, 324);
+  assert.equal(content.coverage.leafUnits, 325);
+  assert.equal(content.coverage.uniqueLeafIds, 325);
   assert.equal(content.coverage.chapterSummaryRecords, Object.values(content.units).filter((unit) => unit.source?.path === "data/chapters.json").length);
   assert.equal(content.coverage.sectionSummaryRecords, Object.keys(content.units).filter((id) => sectionSummaryIds.has(id)).length);
   assert.equal(content.coverage.missingLeafCourseRecords, 0);
@@ -132,9 +132,9 @@ test('第1章已核验单元的教学字段必须与各自主题对应', () => {
 test('补齐课程记录不篡改原有事实核验状态', () => {
   const statuses = units.reduce((acc, [, unit]) => (acc[unit.status] = (acc[unit.status] || 0) + 1, acc), {});
   assert.equal(statuses.verified, 3);
-  assert.equal(statuses.partial, 321);
-  assert.equal(content.coverage.selfCheckEnrichedRecords, 347);
-  assert.equal(content.coverage.lessonSelfCheckEnrichedRecords, 324);
+  assert.equal(statuses.partial, 322);
+  assert.equal(content.coverage.selfCheckEnrichedRecords, 348);
+  assert.equal(content.coverage.lessonSelfCheckEnrichedRecords, 325);
 });
 
 test('第7、8章清除已识别的章节级通用模板', () => {
