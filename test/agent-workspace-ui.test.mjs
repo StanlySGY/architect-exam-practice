@@ -121,6 +121,25 @@ test("Agent 任务结果提供明确保存的本机历史、回看和删除入�
   assert.ok(css.includes(".agent-task-history-row"));
 });
 
+test("服务端任务列表结构正确，显示任务摘要并为操作提供可访问名称", () => {
+  assert.equal((html.match(/class="agent-task-layout"/g) || []).length, 1);
+  assert.match(html, /<\/details>\s*<section class="agent-server-tasks">[\s\S]*?<\/section>\s*<div class="agent-task-layout">/);
+  assert.ok(html.includes("/styles.css?v=20261103-agent-persistent2"));
+  assert.ok(html.includes("/app.js?v=20261103-agent-persistent2"));
+  assert.ok(app.includes("task.promptPreview"));
+  assert.ok(app.includes("agent-server-task-prompt"));
+  assert.ok(app.includes('"aria-label": (isActive ? "继续跟踪：" : "查看结果：") + promptPreview'));
+  assert.ok(app.includes('"aria-label": "取消任务：" + promptPreview'));
+  assert.ok(css.includes(".agent-server-task-prompt"));
+});
+
+test("持久任务状态查询遇到瞬时故障时保留任务并进行有上限的退避重试", () => {
+  const watcher = app.slice(app.indexOf("async function watchDurableAgentTask"), app.indexOf("async function createDurableAgentTask"));
+  assert.ok(watcher.includes("let statusFailures = 0;"));
+  assert.ok(watcher.includes("const retryDelay = Math.min(2_000, 250 * (2 ** Math.min(statusFailures - 1, 3)))"));
+  assert.match(watcher, /if \(signal\?\.aborted\) \{\s+await requestCancellation\(\);/);
+});
+
 test("Agent 任务通过真实 SSE 事件展示逐角色状态，并提供定点重试", () => {
   assert.ok(html.includes('id="agent-task-progress-roles"'));
   assert.ok(html.includes('id="agent-task-progress-text"'));

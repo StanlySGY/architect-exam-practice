@@ -121,6 +121,9 @@ test("持久 Agent HTTP API：幂等创建、事件回连、状态查询与取�
   const listResponse = await fetch(`${origin}/api/agents/tasks?limit=5`, { headers: { origin } });
   const listed = await listResponse.json();
   assert.ok(listed.tasks.some((task) => task.id === created.task.id));
+  const listedTask = listed.tasks.find((task) => task.id === created.task.id);
+  assert.equal(listedTask.promptPreview, body.prompt);
+  assert.equal("request" in listedTask, false);
 
   generator.runAgentTask = ({ signal }) => new Promise((_resolve, reject) => {
     if (signal.aborted) reject(signal.reason);

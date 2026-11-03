@@ -87,6 +87,10 @@ test("持久任务：幂等创建、payload 白名单、配额与身份隔离", 
   assert.equal(store.cancelTask(created.task.id, "owner-b"), null);
   assert.equal(store.listEvents(created.task.id, "owner-b", 0), null);
   assert.deepEqual(store.listTasks("owner-b"), []);
+  const listed = store.listTasks("owner-a");
+  assert.equal(listed.length, 1);
+  assert.equal(listed[0].promptPreview, "解释架构权衡");
+  assert.equal("request" in listed[0], false);
 });
 
 test("持久任务：事务领取只会让一个 Worker 获得租约，事件游标严格递增", async (t) => {

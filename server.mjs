@@ -188,7 +188,9 @@ async function streamAgentTask(request, response, body) {
     clearInterval(heartbeat);
     if (!response.destroyed && !response.writableEnded) response.end();
   }
-}const TERMINAL_AGENT_TASK_STATES = new Set(["completed", "failed", "cancelled"]);
+}
+
+const TERMINAL_AGENT_TASK_STATES = new Set(["completed", "failed", "cancelled"]);
 
 function agentTaskOwnerKey(request) {
   if (!authRequired) return "local";
@@ -504,7 +506,8 @@ async function route(request, response) {
         tasks: agentTaskManager.store.listTasks(ownerKey, url.searchParams.get("limit") || 10),
       });
     }
-    const eventsMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/events$/);    if (request.method === "GET" && eventsMatch) {
+    const eventsMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/events$/);
+    if (request.method === "GET" && eventsMatch) {
       return streamPersistedAgentTaskEvents(
         request,
         response,
@@ -513,13 +516,15 @@ async function route(request, response) {
         url,
       );
     }
-    const cancelMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/cancel$/);    if (request.method === "POST" && cancelMatch) {
+    const cancelMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/cancel$/);
+    if (request.method === "POST" && cancelMatch) {
       await readJson(request);
       const task = agentTaskManager.store.cancelTask(decodeURIComponent(cancelMatch[1]), ownerKey);
       if (!task) throw Object.assign(new Error("任务不存在"), { status: 404, code: "AGENT_TASK_NOT_FOUND" });
       return sendJson(response, 200, { task });
     }
-    const taskMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)$/);    if (request.method === "GET" && taskMatch) {
+    const taskMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)$/);
+    if (request.method === "GET" && taskMatch) {
       const task = agentTaskManager.store.getTask(decodeURIComponent(taskMatch[1]), ownerKey);
       if (!task) throw Object.assign(new Error("任务不存在"), { status: 404, code: "AGENT_TASK_NOT_FOUND" });
       return sendJson(response, 200, { task });

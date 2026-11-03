@@ -610,6 +610,7 @@ async function readDurableAgentTaskEvents(taskId, afterSeq, { signal, onProgress
 async function watchDurableAgentTask(taskId, { signal, onProgress = () => {}, timeoutMs = AGENT_DURABLE_TASK_TIMEOUT_MS } = {}) {
   const deadline = Date.now() + timeoutMs;
   let cursor = 0;
+  let statusFailures = 0;
   let cancelPromise = null;
   const requestCancellation = () => {
     if (!cancelPromise) {
@@ -630,11 +631,26 @@ async function watchDurableAgentTask(taskId, { signal, onProgress = () => {}, ti
         await requestCancellation();
         throw new DOMException("任务已取消", "AbortError");
       }
-      const status = await api(`/api/agents/tasks/${encodeURIComponent(taskId)}`, {
-        method: "GET",
-        signal,
-        timeoutMs: 15_000,
-      });
+      let status;
+      try {
+        status = await api(`/api/agents/tasks/${encodeURIComponent(taskId)}`, {
+          method: "GET",
+          signal,
+          timeoutMs: 15_000,
+        });
+        statusFailures = 0;
+      } catch (error) {
+        if (signal?.aborted) {
+          await requestCancellation();
+          throw new DOMException("任务已取消", "AbortError");
+        }
+        if (error.status && error.status < 500 && ![408, 425, 429].includes(error.status)) throw error;
+        statusFailures += 1;
+        // 状态查询也可能遇到短暂网络抖动；保留 taskId，并用有上限的退避继续跟踪。
+        const retryDelay = Math.min(2_000, 250 * (2 ** Math.min(statusFailures - 1, 3)));
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+        continue;
+      }
       const task = status.task;
       if (task.status === "completed") {
         writeActiveAgentTaskReference("");
@@ -4001,6 +4017,7 @@ function renderAgentServerTasks(tasks = []) {
   }
   const rows = tasks.map((task) => {
     const isActive = ["queued", "running", "cancelling"].includes(task.status);
+    const promptPreview = String(task.promptPreview || "").trim() || "未记录任务摘要";
     const dateLabel = new Date(task.updatedAt || task.createdAt).toLocaleString("zh-CN", {
       month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
     });
@@ -4015,18 +4032,19 @@ function renderAgentServerTasks(tasks = []) {
           element("span", { text: "尝试 " + (task.attemptCount || 0) + " 次" }),
           element("span", { text: "事件 #" + (task.eventSeq || 0) }),
         ]),
+        element("p", { className: "agent-server-task-prompt", text: promptPreview }),
         element("small", { text: "任务 ID · " + task.id }),
       ]),
       element("div", { className: "agent-server-task-actions" }, [
         element("button", {
           className: "secondary agent-server-task-open",
           text: isActive ? "继续跟踪" : "查看结果",
-          attrs: { type: "button" },
+          attrs: { type: "button", "aria-label": (isActive ? "继续跟踪：" : "查看结果：") + promptPreview },
         }),
         isActive ? element("button", {
           className: "ghost agent-server-task-cancel",
           text: "取消",
-          attrs: { type: "button" },
+          attrs: { type: "button", "aria-label": "取消任务：" + promptPreview },
         }) : null,
       ]),
     ]);

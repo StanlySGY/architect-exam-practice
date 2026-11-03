@@ -62,7 +62,7 @@ export function normalizeAgentTaskPayload(input = {}) {
   };
 }
 
-function publicTask(row, { includePayload = false } = {}) {
+function publicTask(row, { includePayload = false, includeSummary = false } = {}) {
   if (!row) return null;
   const task = {
     id: row.id,
@@ -79,6 +79,10 @@ function publicTask(row, { includePayload = false } = {}) {
     result: parseJson(row.result_json),
     error: parseJson(row.error_json),
   };
+  if (includeSummary) {
+    const payload = parseJson(row.payload_json, {});
+    task.promptPreview = String(payload?.prompt || "").replace(/\s+/g, " ").trim().slice(0, 120);
+  }
   if (includePayload) task.request = parseJson(row.payload_json, {});
   return task;
 }
@@ -214,7 +218,7 @@ export class AgentTaskStore {
     const size = Math.max(1, Math.min(25, Math.floor(Number(limit) || 10)));
     return this.db.prepare(
       "SELECT * FROM agent_tasks WHERE owner_key = ? ORDER BY created_at DESC LIMIT ?",
-    ).all(ownerKey, size).map((row) => publicTask(row));
+    ).all(ownerKey, size).map((row) => publicTask(row, { includeSummary: true }));
   }
 
   listEvents(taskId, ownerKey, afterSeq = 0, limit = 100) {
@@ -410,7 +414,7 @@ export class AgentTaskManager {
       const task = this.store.claimNextTask(this.ownerId);
       if (task) await this.execute(task);
     } catch (error) {
-      process.stderr.write(`[agent-task-manager] \${String(error?.message || error)}\\n`);
+      process.stderr.write(`[agent-task-manager] ${String(error?.message || error)}\n`);
     } finally {
       this.running = false;
     }
