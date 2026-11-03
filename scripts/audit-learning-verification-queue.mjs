@@ -1,46 +1,147 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-export function buildVerificationQueue(content) {
- const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
- const queue = units.map(([id, unit]) => {
-  const evidence = Array.isArray(unit?.evidence) ? unit.evidence : [];
-  const validEvidence = evidence.filter(item => {
-   const reviewedOn = String(item?.reviewedOn ?? '');
-   const validDate = /^\d{4}-\d{2}-\d{2}$/.test(reviewedOn) && !Number.isNaN(Date.parse(`${reviewedOn}T00:00:00Z`)) && new Date(`${reviewedOn}T00:00:00Z`).toISOString().slice(0, 10) === reviewedOn;
-   return item && /^https:\/\//.test(String(item.url ?? '')) && String(item.supportedClaim ?? '').trim() && String(item.scope ?? '').trim() && validDate && String(item.reviewStatus ?? '').trim() && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus));
-  });
-  const pendingClaims = Array.isArray(unit?.verificationPendingClaims) ? unit.verificationPendingClaims.map(value => String(value).trim()).filter(Boolean) : [];
-  const missing = [];
-  if (!validEvidence.length) missing.push('no claim-level evidence record');
-  for (const claim of pendingClaims) missing.push(`unresolved material claim: ${claim}`);
-  if (unit?.status === 'verified' && !validEvidence.length) missing.push('verified status without valid claim-level evidence');
-  const nextAction = missing.length
-   ? (validEvidence.length ? 'resolve the listed material claim(s) against a direct source; keep the unit partial' : 'retrieve authoritative source and record the exact supported claim/scope')
-   : 'review whether evidence covers every factual claim before upgrading status';
-  return { id, status: unit?.status ?? '(missing)', chapter: String(id).split('.')[0], what: String(unit?.what ?? ''), evidenceCount: validEvidence.length, pendingClaims, missing, nextAction };
- });
- const fullyCovered = queue.filter(unit => unit.evidenceCount > 0 && unit.missing.length === 0).length;
- const localPdfCrossChecks = units.filter(([, unit]) => unit?.textbookCrossCheck?.sourceKind === 'local-pdf-page-cross-check' && /^[a-f0-9]{64}$/u.test(String(unit.textbookCrossCheck.localPdfSha256 ?? '')) && Array.isArray(unit.textbookCrossCheck.pdfPhysicalPages) && Array.isArray(unit.textbookCrossCheck.printedPages));
- const localPdfProvenanceUnverified = localPdfCrossChecks.filter(([, unit]) => unit?.status === 'partial' && /尚未获得出版社独立认证/u.test(String(unit.textbookCrossCheck.provenanceCaveat ?? ''))).map(([id]) => id);
- return {
-  reportVersion: 2,
-  readOnly: true,
-  unitCount: units.length,
-  statusDistribution: units.reduce((a, [, u]) => { const s = u?.status ?? '(missing)'; a[s] = (a[s] ?? 0) + 1; return a; }, {}),
-  unitsWithClaimLevelEvidence: queue.filter(unit => unit.evidenceCount > 0).length,
-  unitsWithCompleteClaimEvidence: fullyCovered,
-  unitsMissingEvidence: queue.filter(unit => unit.missing.length > 0).length,
-  verifiedWithoutEvidence: queue.filter(unit => unit.status === 'verified' && unit.evidenceCount === 0).map(unit => unit.id),
-  unitsWithLocalPdfCrossCheck: localPdfCrossChecks.length,
-  unitsWithUnverifiedLocalPdfProvenance: localPdfProvenanceUnverified,
-  queue: queue.filter(unit => unit.missing.length > 0).sort((a, b) => a.chapter.localeCompare(b.chapter, undefined, { numeric: true }) || a.id.localeCompare(b.id, undefined, { numeric: true })),
-  note: 'A URL alone is not proof. verificationPendingClaims tracks unresolved material claims. unitsWithLocalPdfCrossCheck separately counts units cross-checked against a locally available PDF copy; unitsWithUnverifiedLocalPdfProvenance marks copies whose publisher origin is not independently authenticated. Such units must remain partial and must not be upgraded to verified solely from a local copy, even when their claim-level queue is empty.'
- };
+const legacyCompatibilityIds = ['4.4.2', '6.2.3', '17.2.3', '19.3.5', '19.4.4'];
+
+function hasValidLocalPdfProvenanceWarning(unit) {
+  return unit?.textbookCrossCheck?.sourceKind === 'local-pdf-page-cross-check'
+    && /^[a-f0-9]{64}$/u.test(String(unit.textbookCrossCheck.localPdfSha256 ?? ''))
+    && Array.isArray(unit.textbookCrossCheck.pdfPhysicalPages)
+    && Array.isArray(unit.textbookCrossCheck.printedPages)
+    && /尚未获得出版社独立认证/u.test(String(unit.textbookCrossCheck.provenanceCaveat ?? ''));
 }
+
+function validEvidenceRecords(unit) {
+  return (Array.isArray(unit?.evidence) ? unit.evidence : []).filter(item => {
+    const reviewedOn = String(item?.reviewedOn ?? '');
+    const validDate = /^\d{4}-\d{2}-\d{2}$/u.test(reviewedOn)
+      && !Number.isNaN(Date.parse(`${reviewedOn}T00:00:00Z`))
+      && new Date(`${reviewedOn}T00:00:00Z`).toISOString().slice(0, 10) === reviewedOn;
+    return item
+      && /^https:\/\//u.test(String(item.url ?? ''))
+      && String(item.supportedClaim ?? '').trim()
+      && String(item.scope ?? '').trim()
+      && validDate
+      && String(item.reviewStatus ?? '').trim()
+      && !/background-only|needs-textbook-verification|needs-review|candidate/iu.test(String(item.reviewStatus));
+  });
+}
+
+export function buildVerificationQueue(content) {
+  const allUnits = Object.entries(content?.units ?? {});
+  const chapterOverviewUnits = allUnits.filter(([, unit]) => unit?.source?.path === 'data/chapters.json');
+  const legacyCompatibilityUnits = allUnits.filter(([id]) => legacyCompatibilityIds.includes(id));
+  const excludedIds = new Set([
+    ...chapterOverviewUnits.map(([id]) => id),
+    ...legacyCompatibilityUnits.map(([id]) => id),
+  ]);
+  const units = allUnits.filter(([id]) => !excludedIds.has(id));
+
+  const records = units.map(([id, unit]) => {
+    const evidence = validEvidenceRecords(unit);
+    const pendingClaims = Array.isArray(unit?.verificationPendingClaims)
+      ? unit.verificationPendingClaims.map(value => String(value).trim()).filter(Boolean)
+      : [];
+    const provenanceWarning = hasValidLocalPdfProvenanceWarning(unit);
+    const missing = [];
+    if (!evidence.length) missing.push('no claim-level evidence record');
+    for (const claim of pendingClaims) missing.push(`unresolved material claim: ${claim}`);
+    if (unit?.status === 'verified' && !evidence.length) {
+      missing.push('verified status without valid claim-level evidence');
+    }
+
+    // Claim-scoped evidence cannot certify every factual statement in a unit.
+    const complete = unit?.status === 'verified'
+      && evidence.length > 0
+      && pendingClaims.length === 0
+      && !provenanceWarning;
+    const reviewReasons = [];
+    if (unit?.status !== 'verified') reviewReasons.push(`whole-unit status is ${unit?.status ?? '(missing)'}`);
+    if (provenanceWarning) reviewReasons.push('local PDF publisher provenance has not been independently authenticated');
+    if (missing.length) reviewReasons.push(...missing);
+
+    let nextAction;
+    if (!evidence.length) {
+      nextAction = 'retrieve an authoritative source and record the exact supported claim and scope';
+    } else if (pendingClaims.length) {
+      nextAction = 'resolve each listed material claim against a direct source; keep the unit partial';
+    } else if (provenanceWarning) {
+      nextAction = 'authenticate the local PDF copy provenance independently; keep the unit partial until then';
+    } else if (!complete) {
+      nextAction = 'human-review the unit claim by claim, confirm full factual coverage and source scope, then record the reviewer decision; keep partial meanwhile';
+    } else {
+      nextAction = 'no further verification action is currently queued';
+    }
+
+    return {
+      id,
+      status: unit?.status ?? '(missing)',
+      chapter: String(id).split('.')[0],
+      what: String(unit?.what ?? ''),
+      evidenceCount: evidence.length,
+      pendingClaims,
+      missing,
+      provenanceWarning,
+      complete,
+      reviewReasons,
+      nextAction,
+    };
+  });
+
+  const localPdfCrossChecks = units.filter(([, unit]) =>
+    unit?.textbookCrossCheck?.sourceKind === 'local-pdf-page-cross-check'
+    && /^[a-f0-9]{64}$/u.test(String(unit.textbookCrossCheck.localPdfSha256 ?? ''))
+    && Array.isArray(unit.textbookCrossCheck.pdfPhysicalPages)
+    && Array.isArray(unit.textbookCrossCheck.printedPages));
+  const localPdfProvenanceUnverified = localPdfCrossChecks
+    .filter(([, unit]) => hasValidLocalPdfProvenanceWarning(unit))
+    .map(([id]) => id);
+  const queue = records
+    .filter(record => !record.complete)
+    .sort((a, b) => a.chapter.localeCompare(b.chapter, undefined, { numeric: true })
+      || a.id.localeCompare(b.id, undefined, { numeric: true }));
+  const statusDistribution = units.reduce((counts, [, unit]) => {
+    const status = unit?.status ?? '(missing)';
+    counts[status] = (counts[status] ?? 0) + 1;
+    return counts;
+  }, {});
+
+  return {
+    reportVersion: 3,
+    readOnly: true,
+    sourceUnitCount: allUnits.length,
+    unitCount: units.length,
+    excludedUnitCount: excludedIds.size,
+    excludedUnits: {
+      chapterOverview: {
+        count: chapterOverviewUnits.length,
+        ids: chapterOverviewUnits.map(([id]) => id),
+        reason: 'navigation-only chapter overview records are not leaf learning units',
+      },
+      legacyCompatibilityMappings: {
+        count: legacyCompatibilityUnits.length,
+        ids: legacyCompatibilityUnits.map(([id]) => id),
+        reason: 'legacy/parent compatibility mappings require separate source-to-topic reconciliation and are not counted as independent leaf units',
+      },
+    },
+    statusDistribution,
+    unitsWithClaimLevelEvidence: records.filter(record => record.evidenceCount > 0).length,
+    unitsWithCompleteClaimEvidence: records.filter(record => record.complete).length,
+    unitsAwaitingVerification: queue.length,
+    unitsMissingEvidence: records.filter(record => record.missing.length > 0).length,
+    unitsWithUnresolvedClaims: records.filter(record => record.pendingClaims.length > 0).length,
+    verifiedWithoutEvidence: records.filter(record => record.status === 'verified' && record.evidenceCount === 0).map(record => record.id),
+    unitsWithLocalPdfCrossCheck: localPdfCrossChecks.length,
+    unitsWithUnverifiedLocalPdfProvenance: localPdfProvenanceUnverified,
+    queue,
+    note: 'A claim-level evidence record supports only its stated claim and scope. The presence of at least one record does not certify every factual statement in a unit. Only units explicitly marked verified, with valid evidence, no unresolved claims, and no known provenance warning are counted complete. Partial units remain in the human verification queue. A URL or local PDF page reference alone is not proof of source authenticity or whole-unit correctness.',
+  };
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
- const file=resolve(process.argv[2] ?? resolve(root,'data/learning-content.json'));
- const content=JSON.parse(await readFile(file,'utf8'));
- console.log(JSON.stringify({sourcePath:file,...buildVerificationQueue(content)},null,2));
+  const file = resolve(process.argv[2] ?? resolve(root, 'data/learning-content.json'));
+  const content = JSON.parse(await readFile(file, 'utf8'));
+  console.log(JSON.stringify({ sourcePath: file, ...buildVerificationQueue(content) }, null, 2));
 }

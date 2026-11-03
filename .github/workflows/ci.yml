@@ -18,5 +18,9 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Syntax check (zero-dep lint)
         run: npm run lint
+      - name: Learning-content audit
+        run: npm run audit:learning-content
+      - name: Learning verification backlog audit
+        run: npm run audit:verification-queue
       - name: Tests
         run: npm test

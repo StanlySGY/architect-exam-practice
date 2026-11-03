@@ -16,15 +16,27 @@ test('valid evidence for one subclaim does not close a unit with unresolved mate
  assert.equal(report.unitsWithClaimLevelEvidence,1);assert.equal(report.unitsWithCompleteClaimEvidence,0);assert.equal(report.unitsMissingEvidence,1);
  assert.deepEqual(report.queue[0].missing,['unresolved material claim: textbook taxonomy and formula remain unresolved']);
 });
+
+test('unverified local PDF provenance blocks completion even when a unit is marked verified',()=>{
+ const evidence={url:'https://publisher.example/catalog',supportedClaim:'bounded textbook page location',scope:'catalog metadata only',reviewedOn:'2026-10-13',reviewStatus:'source-supports-bounded-claim'};
+ const report=buildVerificationQueue({units:{localPdfUnit:{status:'verified',evidence:[evidence],verificationPendingClaims:[],textbookCrossCheck:{sourceKind:'local-pdf-page-cross-check',localPdfSha256:'a'.repeat(64),pdfPhysicalPages:[314],printedPages:[299],provenanceCaveat:'尚未获得出版社独立认证'}}}});
+ assert.equal(report.unitsWithClaimLevelEvidence,1);
+ assert.equal(report.unitsWithCompleteClaimEvidence,0);
+ assert.equal(report.unitsAwaitingVerification,1);
+ assert.equal(report.queue[0].provenanceWarning,true);
+ assert.ok(report.queue[0].reviewReasons.includes('local PDF publisher provenance has not been independently authenticated'));
+});
 test('verification queue rejects malformed or impossible evidence review dates',()=>{
  const makeEvidence=reviewedOn=>({url:'https://example.com/claim',supportedClaim:'claim',scope:'bounded claim only',reviewedOn,reviewStatus:'source-supports-core-claim'});
- const report=buildVerificationQueue({units:{valid:{status:'partial',evidence:[makeEvidence('2024-02-29')]},malformed:{status:'partial',evidence:[makeEvidence('2024-2-09')]},impossible:{status:'partial',evidence:[makeEvidence('2025-02-29')]}}});
+ const report=buildVerificationQueue({units:{valid:{status:'verified',evidence:[makeEvidence('2024-02-29')]},malformed:{status:'partial',evidence:[makeEvidence('2024-2-09')]},impossible:{status:'partial',evidence:[makeEvidence('2025-02-29')]}}});
  assert.equal(report.unitsWithClaimLevelEvidence,1);
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
-test('current learning course keeps broad background references out of claim-level evidence counts',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,325); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,322); assert.equal(report.unitsWithClaimLevelEvidence,325); assert.equal(report.unitsWithCompleteClaimEvidence,325); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
- assert.deepEqual(report.queue.map(unit=>unit.id),[]);
+test('current learning course keeps claim evidence separate from full-unit verification status',()=>{
+ const report=buildVerificationQueue(content); assert.equal(report.sourceUnitCount,348); assert.equal(report.unitCount,325); assert.equal(report.excludedUnitCount,23); assert.equal(report.excludedUnits.chapterOverview.count,18); assert.equal(report.excludedUnits.legacyCompatibilityMappings.count,5); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,322); assert.equal(report.unitsWithClaimLevelEvidence,325); assert.equal(report.unitsWithCompleteClaimEvidence,3); assert.equal(report.unitsAwaitingVerification,322); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ assert.equal(report.queue.length,322);
+ assert.ok(report.queue.every(unit=>unit.status==='partial' && unit.reviewReasons.includes('whole-unit status is partial')));
+ assert.ok(report.note.includes('does not certify every factual statement'));
 });
 
 test('normal-form evidence makes distinct claims and reliability-model background is not misclassified as claim proof',()=>{
@@ -33,7 +45,7 @@ test('normal-form evidence makes distinct claims and reliability-model backgroun
   const reliabilityIds=['9.1.5','9.2.3.1','9.2.3.2','9.2.3.3','9.2.3.4','9.2.3.5','9.2.3.6','9.2.3.7','9.2.3.8','9.2.3.9','9.2.3.10'];
  for(const id of reliabilityIds){const unit=content.units[id];assert.equal(unit.status,'partial',id);assert.deepEqual(unit.verificationPendingClaims,[],id);assert.ok(unit.textbookCrossCheck,id);assert.ok(unit.evidence.some(e=>e.reviewStatus==='source-supports-bounded-claim'&&e.supportedClaim&&e.scope),id);}
  assert.ok(content.units['9.1.5'].evidence.some(e=>e.reviewStatus==='background-only-needs-textbook-verification'));
- const current=buildVerificationQueue(content);assert.deepEqual(current.queue.map(unit=>unit.id),[]);
+ const current=buildVerificationQueue(content);assert.equal(current.unitsAwaitingVerification,322);assert.ok(current.queue.every(unit=>unit.status==='partial'));
 });
 
 test('reliability model claims use direct technical sources with explicit local textbook page cross-checks',()=>{
@@ -59,8 +71,8 @@ test('reliability model claims use direct technical sources with explicit local 
  }
  assert.ok(!content.units['9.1.5'].what.includes('狭义测试按运行剖面随机抽样'));
  const report=buildVerificationQueue(content);
- assert.equal(report.unitsWithClaimLevelEvidence,325);assert.equal(report.unitsWithCompleteClaimEvidence,325);assert.equal(report.unitsMissingEvidence,0);
- assert.deepEqual(report.queue.map(unit=>unit.id),[]);
+  assert.equal(report.unitsWithClaimLevelEvidence,325);assert.equal(report.unitsWithCompleteClaimEvidence,3);assert.equal(report.unitsAwaitingVerification,322);assert.equal(report.unitsMissingEvidence,0);
+  assert.equal(report.queue.length,322);
 });
 
 test('supplemental reliability sources remain bounded alongside local textbook page cross-checks', () => {
@@ -97,9 +109,9 @@ test('supplemental reliability sources remain bounded alongside local textbook p
   const report = buildVerificationQueue(content);
   assert.equal(report.unitCount, 325);
   assert.equal(report.unitsWithClaimLevelEvidence, 325);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 325);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 3);
   assert.equal(report.unitsMissingEvidence, 0);
-  assert.deepEqual(report.queue.map(unit => unit.id), []);
+  assert.equal(report.queue.length, 322);
 });
 
 test('NHPP evidence retains a critical empirical counterexample after the taxonomy cross-check', () => {
@@ -199,7 +211,7 @@ test('official publisher catalog confirms only the headings and page locations, 
   assert.ok(audit.includes('目录页未展开列出 9.2.3 下的十类模型名称、段落、公式或模型假设'));
   const report = buildVerificationQueue(content);
   assert.equal(report.unitsMissingEvidence, 0);
-  assert.deepEqual(report.queue.map(unit => unit.id), []);
+  assert.equal(report.unitsAwaitingVerification, 322);
 });
 
 test('Fuzhou University journal record verifies the component-reliability paper metadata and only its bounded claim', () => {
@@ -227,7 +239,7 @@ test('official preview and repost metadata do not authenticate the locally avail
   const report = buildVerificationQueue(content);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.ok(report.queue.every(unit => unit.status === 'partial'));
-  assert.deepEqual(report.queue, []);
+  assert.equal(report.queue.length, 322);
 });
 
 test('NASA and peer-reviewed reliability papers support bounded failure-rate model claims without proving textbook taxonomy', () => {
@@ -280,7 +292,7 @@ test('reliability-model self-checks remain model-specific after local textbook p
   assert.ok(seed.includes('不是目标教材公式的核验结果'));
   const report = buildVerificationQueue(content);
   assert.equal(report.unitsMissingEvidence, 0);
-  assert.deepEqual(report.queue.map(unit => unit.id), []);
+  assert.equal(report.unitsAwaitingVerification, 322);
 });
 test("NIST-backed security concepts carry bounded claim-level evidence and remain partial",()=>{
  for (const id of ["4.6.2","4.7.1","4.7.2","4.8.2"]) {
@@ -703,11 +715,12 @@ test('local PDF page cross-check resolves taxonomy claims while source provenanc
   assert.ok(audit.includes('尚未获得出版社独立认证'));
   const report = buildVerificationQueue(content);
   assert.equal(report.unitCount, 325);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 325);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 3);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.equal(report.unitsWithLocalPdfCrossCheck, 11);
   assert.deepEqual([...report.unitsWithUnverifiedLocalPdfProvenance].sort(), cases.map(([id]) => id).sort());
-  assert.deepEqual(report.queue, []);
+  assert.equal(report.unitsAwaitingVerification, 322);
+  assert.ok(report.queue.every(unit => unit.status === 'partial'));
 });
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
