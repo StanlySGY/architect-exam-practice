@@ -95,6 +95,7 @@ test("执行结果区分成功/失败，展示要点、关注点并支持复制"
 });
 
 test("Agent 工作区具备响应式、键盘焦点和窄屏布局", () => {
+  assert.ok(css.includes(".agent-workspace-view{width:100%;max-width:none;min-width:0}"));
   assert.ok(css.includes("@media(max-width:1100px){.agent-config-columns"));
   assert.ok(css.includes("@media(max-width:800px){.agent-page-heading"));
   assert.ok(css.includes("@media(max-width:560px){.agent-workspace-metrics"));
@@ -124,7 +125,7 @@ test("Agent 任务结果提供明确保存的本机历史、回看和删除入�
 test("服务端任务列表结构正确，显示任务摘要并为操作提供可访问名称", () => {
   assert.equal((html.match(/class="agent-task-layout"/g) || []).length, 1);
   assert.match(html, /<\/details>\s*<section class="agent-server-tasks">[\s\S]*?<\/section>\s*<div class="agent-task-layout">/);
-  assert.ok(html.includes("/styles.css?v=20261103-agent-persistent2"));
+  assert.ok(html.includes("/styles.css?v=20261103-agent-fullwidth1"));
   assert.ok(html.includes("/app.js?v=20261103-agent-persistent4"));
   assert.ok(app.includes("task.promptPreview"));
   assert.ok(app.includes("function agentServerTaskStatusLabel(status)"));
