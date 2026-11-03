@@ -97,6 +97,54 @@ test("模型列表请求在 DNS 校验后使用安全请求参数并限制响应
   assert.equal(requestOptions.options.redirect, "error");
   assert.equal(requestOptions.options.headers.authorization, "Bearer secret");
 
+  await config.fetchModels({
+    baseUrl: "https://model.example/v1",
+    apiKey: "  Bearer secret  ",
+  });
+  assert.equal(requestOptions.options.headers.authorization, "Bearer secret");
+
+  const unauthorized = new ModelConfig({
+    root: directory,
+    lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+    fetchImpl: async (_url, options) => {
+      requestOptions = { options };
+      return {
+        ok: false,
+        status: 401,
+        headers: { get: () => null },
+        text: async () => "do not expose upstream response body",
+      };
+    },
+  });
+  await assert.rejects(
+    () => unauthorized.fetchModels({
+      baseUrl: "https://model.example/v1",
+      apiKey: "Bearer secret",
+    }),
+    (error) => error.status === 502
+      && error.code === "MODEL_PROVIDER_UNAUTHORIZED"
+      && error.message.includes("上游 HTTP 401")
+      && error.message.includes("请求已附带 Bearer API Key")
+      && !error.message.includes("secret")
+      && !error.message.includes("do not expose"),
+  );
+  assert.equal(requestOptions.options.headers.authorization, "Bearer secret");
+
+  const forbidden = new ModelConfig({
+    root: directory,
+    lookup: async () => [{ address: "93.184.216.34", family: 4 }],
+    fetchImpl: async () => ({
+      ok: false,
+      status: 403,
+      headers: { get: () => null },
+      text: async () => "",
+    }),
+  });
+  await assert.rejects(
+    () => forbidden.fetchModels({ baseUrl: "https://model.example/v1" }),
+    (error) => error.status === 502 && error.code === "MODEL_PROVIDER_FORBIDDEN",
+  );
+
   const tooLarge = new ModelConfig({
     root: directory,
     lookup: async () => [{ address: "93.184.216.34", family: 4 }],

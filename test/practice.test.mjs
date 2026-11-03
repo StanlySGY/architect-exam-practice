@@ -222,6 +222,14 @@ test("模型工作区支持多供应商并保留 API Key 掩码兼容", async (t
   assert.equal(process.env.ARCHITECT_LLM_MODEL, "deepseek-chat");
   assert.equal(config.publicWorkspace().providers[0].apiKey, "********1234");
   assert.equal(config.publicWorkspace().agents.length, 2);
+  assert.equal(
+    config.providerCredentials("provider-deepseek", { apiKey: "********1234" }).apiKey,
+    "secret-1234",
+  );
+  assert.equal(
+    config.providerCredentials("provider-deepseek", { apiKey: "replacement-key" }).apiKey,
+    "replacement-key",
+  );
   if (process.platform !== "win32") {
     assert.equal((await stat(join(directory, ".env"))).mode & 0o777, 0o600);
   }

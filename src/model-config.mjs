@@ -448,7 +448,9 @@ export class ModelConfig {
     }
     const modelsUrl = base.toString();
     const headers = { "content-type": "application/json" };
-    if (apiKey) headers.authorization = `Bearer ${apiKey}`;
+    // 允许用户直接粘贴完整 Authorization 值，但最终只发送一个 Bearer 前缀。
+    const normalizedApiKey = String(apiKey || "").trim().replace(/^Bearer\s+/i, "").trim();
+    if (normalizedApiKey) headers.authorization = "Bearer " + normalizedApiKey;
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 30_000);
     try {
@@ -465,9 +467,25 @@ export class ModelConfig {
             headers,
           );
       if (!response.ok) {
+        const upstreamStatus = Number(response.status) || 502;
+        if (upstreamStatus === 401) {
+          const authHint = normalizedApiKey
+            ? "请求已附带 Bearer API Key，但上游拒绝了该凭证。请核对 Key 是否有效、是否属于当前 Base URL 对应的供应商，以及该凭证是否允许访问 /models。"
+            : "本次请求没有附带 API Key。该供应商可能要求 Bearer 鉴权，请填写有效 Key 后重试。";
+          throw Object.assign(
+            new Error("模型供应商拒绝了模型列表鉴权（上游 HTTP 401）。" + authHint),
+            { status: 502, code: "MODEL_PROVIDER_UNAUTHORIZED" },
+          );
+        }
+        if (upstreamStatus === 403) {
+          throw Object.assign(
+            new Error("模型供应商拒绝访问模型列表（上游 HTTP 403）。请检查该凭证的模型列表读取权限或供应商侧访问策略。"),
+            { status: 502, code: "MODEL_PROVIDER_FORBIDDEN" },
+          );
+        }
         throw Object.assign(
-          new Error(`获取模型列表失败（HTTP ${response.status}）`),
-          { status: 502 },
+          new Error("获取模型列表失败（上游 HTTP " + upstreamStatus + "）"),
+          { status: 502, code: "MODEL_PROVIDER_HTTP_ERROR" },
         );
       }
       const contentLength = Number(response.headers?.get?.("content-length"));
