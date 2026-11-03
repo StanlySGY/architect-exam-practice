@@ -1,8 +1,8 @@
 import { renderQuestionFigure } from "/lib/figures.mjs";
 import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
+import { mountBeginnerRoadmap } from "/roadmap-ui.mjs";
 import { $, element, emptyMessage } from "/ui.js";
-import {
 import {
   AGENT_TASK_HISTORY_LIMIT,
   clearAgentTaskHistory,
@@ -10,6 +10,7 @@ import {
   removeAgentTaskHistory,
   saveAgentTaskHistory,
 } from "/agent-task-history.mjs";
+import {
   currentWikiGraph,
   destroyWikiGraph,
   fitWikiGraph,
@@ -44,7 +45,6 @@ const state = {
   generationControllers: new Map(),
   loadVersions: new Map(),
   modelWorkspace: { providers: [], agents: [], defaultAgentId: "" },
-  caseOffset: 0,
   modelWorkspaceSavedSignature: "",
   modelWorkspaceLoaded: false,
   agentSelectedIds: null,
@@ -55,6 +55,7 @@ const state = {
   agentTaskProgressRows: new Map(),
   activeAgentTaskId: "",
   agentServerTasks: [],
+  caseOffset: 0,
   caseLimit: 4,
   caseTotal: 0,
   caseLoadId: 0,
@@ -64,6 +65,8 @@ const state = {
   paperLoadId: 0,
   paperMockTimers: new Set(),
   caseExam: null,
+  pendingContinuousExam: null,
+  realExamCatalog: [],
   wikiGraphColorBy: "chapter",
   wikiGraphDepth: 1,
   caseExamTimer: null,
@@ -85,7 +88,8 @@ const difficultyNames = {
 function bankOnboardingNode() {
   const actions = [
     ["配置模型", "data", ".model-config-panel"],
-    ["生成章节题目", "home", ".agent-panel"],
+    ["生成待审校章节题", "home", ".agent-panel"],
+    ["进入真题套卷", "mock", "#real-exam-form"],
     ["导入真题库", "data", "#import-bank"],
   ].map(([label, view, target]) => {
     const button = element("button", {
@@ -100,9 +104,9 @@ function bankOnboardingNode() {
     return button;
   });
   return [
-    element("strong", { text: "还没有生成题目" }),
+    element("strong", { text: "当前没有可用于正式章节练习的已审校题目" }),
     element("p", {
-      text: "先在数据管理配置模型，再按章节生成题目；也可以导入真题库开始练习。",
+      text: "思维导图生成题必须完成答案、解析和来源核验后才能进入正式章节练习。待审校题不会混入正式成绩；你可以先做历年真题套卷，或在题库管理中审查生成题。",
     }),
     element("div", { className: "bank-onboarding-actions" }, actions),
   ];
@@ -329,7 +333,6 @@ async function api(path, options = {}, authRetried = false) {
   }
 }
 
-function resolveElements(target) {
 async function streamAgentRequest(path, body, {
   signal: callerSignal,
   timeoutMs = LONG_API_TIMEOUT_MS,
@@ -737,6 +740,7 @@ async function createDurableAgentTask(payload, { signal, onProgress = () => {} }
   return watchDurableAgentTask(taskId, { signal, onProgress });
 }
 
+function resolveElements(target) {
   const targets = Array.isArray(target) ? target : [target];
   return targets
     .map((item) => (typeof item === "string" ? $(item) : item))
@@ -1003,7 +1007,7 @@ function switchView(view) {
 function renderChapters() {
   const options = state.chapters.map((chapter) =>
     element("option", {
-      text: `第 ${chapter.id} 章　${chapter.title}`,
+      text: `第 ${chapter.id} 章　${chapter.title} · ${chapter.counts.all} 道已审校`,
       attrs: { value: chapter.id },
     }),
   );
@@ -1019,7 +1023,7 @@ function renderChapters() {
         element("strong", { text: `第 ${chapter.id} 章` }),
         element("span", {
           text: available
-            ? `${chapter.title} · ${chapter.counts.all} 道可用`
+            ? `${chapter.title} · ${chapter.counts.all} 道已审校可练${chapter.reviewCounts?.pendingReview ? ` · ${chapter.reviewCounts.pendingReview} 道待审校` : ""}${chapter.reviewCounts?.quarantined ? ` · ${chapter.reviewCounts.quarantined} 道隔离` : ""}`
             : `${chapter.title} · 尚未整理`,
         }),
       ],
@@ -1054,7 +1058,7 @@ async function loadSections() {
       element("option", { text: "整章练习", attrs: { value: "all" } }),
       ...data.sections.map((section) =>
         element("option", {
-          text: `${section.title} · ${section.counts.all} 道可用`,
+          text: `${section.title} · ${section.counts.all} 道已审校${section.reviewCounts?.pendingReview ? ` · ${section.reviewCounts.pendingReview} 待审校` : ""}`,
           attrs: { value: section.id },
         }),
       ),
@@ -1078,13 +1082,17 @@ function updateAvailability() {
       : (scope?.counts[difficulty] ?? 0);
   let availability;
   if (!mapped) availability = "尚未整理思维导图";
-  else if (count) availability = `${count} 道可用（新增题目自动防重）`;
-  else availability = "导图已就绪，尚未生成此难度";
+  else if (count) availability = `${count} 道已审校可用（新增题目自动防重）${scope?.reviewCounts?.pendingReview ? ` · 另有 ${scope.reviewCounts.pendingReview} 道待审校` : ""}`;
+  else if (scope?.reviewCounts?.pendingReview) availability = `0 道已审校可用 · ${scope.reviewCounts.pendingReview} 道待审校（暂不可用于正式练习）`;
+  else if (scope?.reviewCounts?.quarantined) availability = `当前难度没有已审校题 · ${scope.reviewCounts.quarantined} 道已隔离`;
+  else availability = "导图已就绪，当前难度尚无题目";
   $("#availability").textContent = availability;
   let actionText;
   if (state.generationRetry) actionText = "重试生成";
   else if (count) actionText = "补充 Agent 题目";
-  else actionText = "根据当前章节导图生成题目";
+  else actionText = scope?.reviewCounts?.pendingReview
+    ? "补充生成候选题（生成后需审校）"
+    : "根据当前章节导图生成候选题（需审校后使用）";
   $("#generate-button").textContent = actionText;
   $("#generate-button").disabled = !mapped;
   $("#start-practice-button").disabled = !mapped || !count;
@@ -1436,13 +1444,17 @@ function renderQuestions({ restore = false } = {}) {
     state.session.mode === "review"
       ? "间隔回顾 · 错题本"
       : state.session.mode === "exam-mcq"
-        ? state.session.term
-          ? `${state.session.term} · 按题号组卷 · 交卷统一判分`
-          : "模拟考试 · 跨章抽题 · 交卷统一判分"
+        ? state.session.continuousMode
+          ? `${state.session.term || "当前考期"} · 240 分钟连考 · 综合知识阶段`
+          : state.session.term
+            ? `${state.session.term} · 按题号组卷 · 交卷统一判分`
+            : "模拟考试 · 跨章抽题 · 交卷统一判分"
         : `系统架构设计师 · ${difficultyNames[state.session.difficulty]}难度`;
   $("#submit-hint").textContent =
     state.session.mode === "exam-mcq"
-      ? `共 ${questions.length} 道题，可随时修改答案，交卷后统一判分`
+      ? state.session.continuousMode
+        ? "连考第一阶段：综合知识 75 题，至少进行 120 分钟后才能手动交卷，150 分钟到时自动交卷并衔接案例分析。"
+        : `共 ${questions.length} 道题，可随时修改答案，交卷后统一判分`
       : `已加载 ${questions.length} 道题，选择答案后立即判题`;
   setupExamCountdown();
   renderCurrentQuestion();
@@ -1465,6 +1477,9 @@ function setupExamCountdown() {
     new Date(session.startedAt).getTime() + session.durationSeconds * 1000;
   countdown.hidden = false;
   label.hidden = false;
+  label.textContent = session.continuousMode
+    ? "连考第一阶段 · 至少 120 分钟 / 最多 150 分钟"
+    : "剩余时间";
   const tick = () => {
     const remaining = Math.max(
       0,
@@ -1541,16 +1556,22 @@ function renderLearningPath(data) {
     try { renderLearningPath(await api("/api/learning/start", { method: "POST", body: JSON.stringify({ unitId: unit.id }) })); loadStudyQueue(); }
     catch (error) { showToast(error.message, true); } finally { startButton.disabled = false; }
   });
-  const completeButton = element("button", { className: "secondary", text: "已阅读，进入5题巩固", attrs: { type: "button" } });
+  const completeButton = element("button", { className: "secondary", text: "完成自检并进入精准巩固", attrs: { type: "button" } });
   completeButton.addEventListener("click", async () => {
+    const incompleteChecks = (unit.selfChecks ?? []).filter((check) => !check.completed);
+    if (incompleteChecks.length) {
+      showToast(`请先完成本节的 ${incompleteChecks.length} 项自检。能够独立解释后再推进学习进度。`, true);
+      body.querySelector(".learning-check-list input:not(:checked)")?.focus();
+      return;
+    }
     completeButton.disabled = true;
     try {
+      const reinforcement = await api(`/api/learning-reinforcement?unitId=${encodeURIComponent(unit.id)}&limit=5`);
       const next = await api("/api/learning/complete", { method: "POST", body: JSON.stringify({ unitId: unit.id, confidence: 2 }) });
       renderLearningPath(next);
       loadStudyQueue();
-      const reinforcement = await api(`/api/learning-reinforcement?unitId=${encodeURIComponent(unit.id)}&limit=5`);
       if (!reinforcement.count) {
-        showToast("当前知识点还没有可用于正式巩固的已审校题目，请先补充或核验题库。", true);
+        showToast("已记录本节阅读完成；当前没有知识点精准匹配且已审校的题目，不会用其他章节题目代替。请结合教材自检，题目补齐后再进行巩固。");
         return;
       }
       state.session = await api("/api/sessions", {
@@ -1572,6 +1593,39 @@ function renderLearningPath(data) {
       showToast(`已进入“${reinforcement.unitTitle}”知识点巩固：${reinforcement.count} 题。`);
     } catch (error) { showToast(error.message, true); } finally { completeButton.disabled = false; }
   });
+  const topic = (heading, content, className = "") => content
+    ? element("section", { className: `learning-topic ${className}`.trim() }, [
+        element("h3", { text: heading }),
+        element("p", { text: content }),
+      ])
+    : null;
+  const evidenceNodes = (unit.evidence ?? []).map((item) => {
+    const href = safeHttpUrl(item.url);
+    return element("li", { className: "learning-evidence-item" }, [
+      href
+        ? element("a", { text: item.sourceTitle || item.url, attrs: { href, target: "_blank", rel: "noopener noreferrer" } })
+        : element("strong", { text: item.sourceTitle || "未提供可打开的来源链接" }),
+      item.sourceAuthority ? element("p", { text: "来源：" + item.sourceAuthority }) : null,
+      item.supportedClaim ? element("p", { text: "支持范围：" + item.supportedClaim }) : null,
+      item.scope ? element("p", { text: "边界说明：" + item.scope }) : null,
+      item.reviewStatus || item.reviewedOn
+        ? element("small", { text: [item.reviewStatus, item.reviewedOn].filter(Boolean).join(" · ") })
+        : null,
+    ]);
+  });
+  const lessonContext = [];
+  if (unit.prerequisites?.length) lessonContext.push(element("div", {}, [
+    element("strong", { text: "前置知识" }),
+    element("p", { text: unit.prerequisites.join("；") }),
+  ]));
+  if (unit.keyRelations?.length) lessonContext.push(element("div", {}, [
+    element("strong", { text: "关联主题" }),
+    element("p", { text: unit.keyRelations.join("；") }),
+  ]));
+  if (unit.practiceFocus?.length) lessonContext.push(element("div", {}, [
+    element("strong", { text: "训练关注" }),
+    element("p", { text: unit.practiceFocus.join("；") }),
+  ]));
   body.replaceChildren(
     element("div", { className: "learning-meta" }, [
       element("span", { className: "learning-chapter-chip", text: "第 " + unit.chapter + " 章 · " + unit.chapterTitle }),
@@ -1582,10 +1636,24 @@ function renderLearningPath(data) {
         element("span", { className: "learning-topic-index", text: "01" }),
         element("div", {}, [element("h3", { text: "这节先学什么" }), element("p", { text: unit.coreKnowledge })]),
       ]),
-      element("section", { className: "learning-topic" }, [element("h3", { text: "为什么 / 怎么工作" }), element("p", { text: unit.teaching?.why || unit.teaching?.how || "待补：这里将补充问题背景与核心机制。" })]),
-      element("section", { className: "learning-topic" }, [element("h3", { text: "场景与例子" }), element("p", { text: unit.teaching?.scenarios || unit.teaching?.examples || "待补：这里将补充应用场景与实际系统例子。" })]),
-      element("section", { className: "learning-topic learning-topic-exam" }, [element("h3", { text: "考试关注点" }), element("p", { text: unit.examFocus })]),
-      element("section", { className: "learning-topic" }, [element("h3", { text: "易混淆 / 常见陷阱" }), element("p", { text: (unit.teaching?.confusions || unit.commonConfusions) + (unit.teaching?.pitfalls ? "；" + unit.teaching.pitfalls : "") })]),
+      topic("为什么要学习", unit.teaching?.why),
+      topic("核心机制与方法", unit.teaching?.how),
+      topic("应用场景", unit.teaching?.scenarios),
+      topic("例子与演练", unit.teaching?.examples),
+      topic("考试关注点", unit.examFocus, "learning-topic-exam"),
+      topic("容易混淆的概念", unit.teaching?.confusions || unit.commonConfusions),
+      topic("常见陷阱", unit.teaching?.pitfalls),
+      lessonContext.length ? element("section", { className: "learning-topic learning-lesson-context" }, [
+        element("h3", { text: "学习导航" }),
+        ...lessonContext,
+      ]) : null,
+      evidenceNodes.length ? element("details", { className: "learning-topic learning-evidence" }, [
+        element("summary", { text: `资料依据与核验边界（${evidenceNodes.length}）` }),
+        element("ul", { className: "learning-evidence-list" }, evidenceNodes),
+      ]) : element("section", { className: "learning-topic learning-evidence-missing" }, [
+        element("h3", { text: "资料依据" }),
+        element("p", { text: "当前单元没有登记可追溯的资料依据。请以指定版本教材和官方资料复核，不要仅凭本页面记忆。" }),
+      ]),
       element("section", { className: "learning-checks" }, [
         element("div", { className: "learning-checks-heading" }, [element("div", {}, [element("h3", { text: "学完自检" }), element("p", { text: "勾选你已经能独立解释的知识点" })]), element("span", { className: "learning-checks-count", text: (unit.selfChecks ?? []).filter((check) => check.completed).length + " / " + (unit.selfChecks ?? []).length })]),
         element("ul", { className: "learning-check-list" }, (unit.selfChecks ?? []).map((check) => {
@@ -1898,6 +1966,16 @@ async function submitPractice(event, { auto = false } = {}) {
   event?.preventDefault();
   if (!state.session || state.submittingPractice) return;
   const examMode = state.session.mode === "exam-mcq";
+  const examSession = state.session;
+  if (examMode && examSession.continuousMode && !auto) {
+    const elapsedSeconds = Math.max(0, (Date.now() - new Date(examSession.startedAt).getTime()) / 1000);
+    const minimumSeconds = 120 * 60;
+    if (elapsedSeconds < minimumSeconds) {
+      const remaining = Math.ceil((minimumSeconds - elapsedSeconds) / 60);
+      showToast(`连考模式的综合知识阶段至少进行 120 分钟，还需 ${remaining} 分钟后才能交卷并进入案例阶段。`, true);
+      return;
+    }
+  }
   const unanswered = state.session.questions.length - Object.keys(state.answers).length;
   const message = examMode
     ? unanswered
@@ -1940,6 +2018,23 @@ async function submitPractice(event, { auto = false } = {}) {
       timeoutMs: LONG_API_TIMEOUT_MS,
     });
     state.activeSession = null;
+    if (examMode && examSession.continuousMode) {
+      state.session = null;
+      state.pendingContinuousExam = {
+        sessionId: examSession.id,
+        term: examSession.term,
+        sourceType: examSession.sourceType,
+        choiceResult: {
+          correct: state.result.correct,
+          total: state.result.total,
+          percentage: state.result.percentage,
+        },
+      };
+      switchView("mock");
+      await continueContinuousExam(state.pendingContinuousExam);
+      refreshReviewBadge();
+      return;
+    }
     renderResult();
     switchView("result");
     refreshReviewBadge();
@@ -3289,16 +3384,16 @@ function providerNode(provider, index = 0) {
       showToast("至少保留一个供应商", true);
       return;
     }
-    state.modelWorkspace.providers = state.modelWorkspace.providers.filter((item) => item.id !== provider.id);
     const boundAgents = state.modelWorkspace.agents.filter((agent) => agent.providerId === provider.id);
     if (boundAgents.length) {
       setAgentWorkspaceTab("team");
       showToast("该供应商仍被 " + boundAgents.length + " 个 Agent 使用，请先为这些角色更换供应商", true);
       return;
     }
+    state.modelWorkspace.providers = state.modelWorkspace.providers.filter((item) => item.id !== provider.id);
     renderModelWorkspace();
-  });
     updateWorkspaceDirtyState();
+  });
   const baseUrl = element("input", { className: "provider-base-url", attrs: { type: "url", placeholder: "https://api.example.com/v1", autocomplete: "url" } });
   baseUrl.value = provider.baseUrl;
   const apiKey = element("input", { className: "provider-api-key", attrs: { type: "password", placeholder: "留空表示无需鉴权", autocomplete: "new-password" } });
@@ -3308,13 +3403,13 @@ function providerNode(provider, index = 0) {
   const fetchButton = element("button", { className: "secondary mc-provider-fetch", text: "获取模型列表", attrs: { type: "button", disabled: provider.type === "claude-cli" } });
   const fetchState = element("span", { className: "provider-fetch-state", text: provider.models.length ? provider.models.length + " 个模型" : "尚未获取模型" });
   fetchButton.addEventListener("click", () => fetchProviderModels(provider.id));
-  card.append(
   type.addEventListener("change", () => {
     fetchButton.disabled = type.value === "claude-cli";
     const badge = card.querySelector(".provider-type-badge");
     if (badge) badge.textContent = type.value === "claude-cli" ? "CLI" : "API";
     updateWorkspaceDirtyState();
   });
+  card.append(
     element("div", { className: "provider-card-header" }, [
       element("span", { className: "provider-card-index", text: String(index + 1).padStart(2, "0") }),
       nameInput,
@@ -3358,8 +3453,8 @@ function agentNode(agent, index = 0) {
     }
     state.agentSelectedIds = (state.agentSelectedIds || []).filter((id) => id !== agent.id);
     renderModelWorkspace();
-  });
     updateWorkspaceDirtyState();
+  });
   const providerSelect = element("select", { className: "agent-provider" });
   providerSelect.append(...state.modelWorkspace.providers.map((provider) => element("option", { text: provider.name, attrs: { value: provider.id } })));
   providerSelect.value = agent.providerId;
@@ -3382,7 +3477,6 @@ function agentNode(agent, index = 0) {
   ]);
   const enabled = element("input", { attrs: { type: "checkbox", "aria-label": "允许参与任务" } });
   enabled.checked = agent.enabled;
-  card.append(
   enabled.addEventListener("change", () => {
     state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
     if (!enabled.checked) {
@@ -3398,6 +3492,7 @@ function agentNode(agent, index = 0) {
     renderModelWorkspace();
     updateWorkspaceDirtyState();
   });
+  card.append(
     element("div", { className: "agent-config-card-header" }, [
       element("span", { className: "agent-card-index", text: String(index + 1).padStart(2, "0") }),
       nameInput,
@@ -3457,7 +3552,6 @@ function collectWorkspaceDraft() {
   };
 }
 
-function renderModelWorkspace() {
 function workspaceSignature(workspace) {
   return JSON.stringify(workspaceDraft(workspace || {}));
 }
@@ -3642,6 +3736,7 @@ function syncAgentStrategyUi() {
   }
 }
 
+function renderModelWorkspace() {
   ensureWorkspaceDraft();
   const providerList = $("#provider-list");
   const agentList = $("#agent-list");
@@ -3675,18 +3770,18 @@ async function loadModelConfig() {
   try {
     const config = await api("/api/model-config");
     state.modelWorkspace = workspaceDraft(config);
-    renderModelWorkspace();
     state.modelWorkspaceSavedSignature = workspaceSignature(state.modelWorkspace);
     state.modelWorkspaceLoaded = true;
     state.agentSelectedIds = null;
+    renderModelWorkspace();
   } catch (error) {
     showToast(error.message, true);
-  }
     const status = $("#agent-workspace-save-state");
     if (status) {
       status.textContent = "配置加载失败";
       status.classList.add("is-error");
     }
+  }
 }
 
 async function saveModelConfig() {
@@ -3700,9 +3795,9 @@ async function saveModelConfig() {
       body: JSON.stringify(draft),
     });
     state.modelWorkspace = workspaceDraft(config);
-    renderModelWorkspace();
     state.modelWorkspaceSavedSignature = workspaceSignature(state.modelWorkspace);
     state.modelWorkspaceLoaded = true;
+    renderModelWorkspace();
     showToast("模型工作区已保存并生效");
     await loadModelStatus();
   } catch (error) {
@@ -3764,7 +3859,6 @@ function addProvider() {
     defaultModel: "",
   });
   renderModelWorkspace();
-}
   setAgentWorkspaceTab("providers");
   requestAnimationFrame(() => {
     const card = document.querySelector('[data-provider-id="' + CSS.escape(providerId) + '"]');
@@ -3820,13 +3914,14 @@ function addAgentFromTemplate(templateId) {
     card?.scrollIntoView({ behavior: "smooth", block: "center" });
     card?.querySelector(".agent-config-card-header input")?.focus();
   });
+}
 
 function addAgent() {
   state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
   const provider = state.modelWorkspace.providers[0];
   if (!provider) {
-    showToast("请先添加供应商", true);
     setAgentWorkspaceTab("providers");
+    showToast("请先添加供应商", true);
     return;
   }
   const agentId = `agent-${Date.now()}`;
@@ -3839,15 +3934,15 @@ function addAgent() {
     systemPrompt: "",
     enabled: true,
   });
-  renderModelWorkspace();
   if (!state.modelWorkspace.defaultAgentId) state.modelWorkspace.defaultAgentId = agentId;
-}
+  renderModelWorkspace();
   setAgentWorkspaceTab("team");
   requestAnimationFrame(() => {
     const card = document.querySelector('[data-agent-id="' + CSS.escape(agentId) + '"]');
     card?.scrollIntoView({ behavior: "smooth", block: "center" });
     card?.querySelector(".agent-config-card-header input")?.focus();
   });
+}
 
 function agentTaskPlainText(result) {
   const lines = [
@@ -4659,6 +4754,7 @@ async function retryAgentReview() {
     state.agentTaskBusy = false;
     operation.finish();
   }
+}
 
 async function runAgentTask() {
   if (state.agentTaskBusy) return;
@@ -4732,10 +4828,10 @@ async function runAgentTask() {
       showToast("已停止 Agent 任务");
       return;
     }
-    showToast(error.message, true);
     validation.textContent = error.message;
     validation.hidden = false;
     validation.scrollIntoView({ behavior: "smooth", block: "center" });
+    showToast(error.message, true);
   } finally {
     state.agentTaskBusy = false;
     operation.finish();
@@ -5245,6 +5341,38 @@ async function loadModelStatus() {
     $("#model-status").textContent = "模型状态未知";
     $("#sidebar-model-status").textContent = "状态未知";
   }
+}
+
+async function openRoadmapWeek(week) {
+  if (week.action === "paper") {
+    switchView("paper");
+    await loadPapers();
+    return;
+  }
+  if (week.action === "case") {
+    switchView("case");
+    await loadCases();
+    return;
+  }
+  if (week.action === "mock") {
+    switchView("mock");
+    await loadMock();
+    return;
+  }
+  const chapter = Number(week.chapters?.[0]);
+  const chapterInfo = state.chapters.find((item) => item.id === chapter);
+  if (!chapterInfo) {
+    showToast("本周没有可定位的教材章节。", true);
+    return;
+  }
+  switchView("materials");
+  await loadMaterials();
+  const padded = String(chapter).padStart(2, "0");
+  const materialId = `textbook-第${padded}章-${chapterInfo.title}`;
+  const material = materialState.materials.find((item) => item.id === materialId)
+    ?? materialState.materials.find((item) => item.group === "textbook" && item.title.includes(`第${padded}章`));
+  if (material) await openMaterial(material.id);
+  else showToast(`未找到第 ${chapter} 章教材资料，请从“资料”页选择对应章节。`);
 }
 
 async function loadStudyPlan() {
@@ -6456,6 +6584,7 @@ async function loadMock() {
 async function loadRealExamCatalog() {
   const select = $("#real-exam-term");
   const start = $("#start-real-exam");
+  const continuousStart = $("#start-real-continuous-exam");
   const load = beginLoad(
     "real-exam-catalog",
     "#real-exam-catalog-status",
@@ -6465,12 +6594,14 @@ async function loadRealExamCatalog() {
     const { papers } = await api("/api/real-exams");
     if (!load.isCurrent()) return;
     const choicePapers = (papers ?? []).filter((paper) => paper.questions > 0);
+    state.realExamCatalog = choicePapers;
     if (!choicePapers.length) {
       select.replaceChildren(
         element("option", { text: "请先导入真题库", attrs: { value: "" } }),
       );
       select.disabled = true;
       start.disabled = true;
+      if (continuousStart) continuousStart.disabled = true;
       setRealExamCatalogStatus("未导入真题");
       load.finish();
       return;
@@ -6492,6 +6623,7 @@ async function loadRealExamCatalog() {
     if ([...select.options].some((option) => option.value === previous)) {
       select.value = previous;
     }
+    updateRealContinuousButton();
     const latest = choicePapers.find((paper) => paper.sourceType === "real") || choicePapers[0];
     setRealExamCatalogStatus(`${choicePapers.length} 套可开 · 最新 ${latest.term}`);
     load.finish();
@@ -6504,6 +6636,20 @@ async function loadRealExamCatalog() {
     start.disabled = true;
     load.fail(error, loadRealExamCatalog);
   }
+}
+
+function updateRealContinuousButton() {
+  const button = $("#start-real-continuous-exam");
+  if (!button) return;
+  const select = $("#real-exam-term");
+  const selected = state.realExamCatalog.find((paper) =>
+    paper.term === select?.value && paper.sourceType === (select.selectedOptions[0]?.dataset.sourceType || "real"),
+  );
+  const ready = Boolean(selected && selected.questions === 75 && selected.cases >= 3);
+  button.disabled = !ready;
+  button.title = ready
+    ? "综合知识 75 题 + 同考期至少 3 道案例，按 240 分钟总时限连续作答"
+    : "该考期必须同时具备完整 75 道综合知识题和至少 3 道同来源案例题，才能开始连考";
 }
 
 async function loadMockHistory() {
@@ -6637,6 +6783,45 @@ async function startRealExam(event) {
   }
 }
 
+async function startRealContinuousExam() {
+  const select = $("#real-exam-term");
+  const term = select.value;
+  if (!term) {
+    showToast("请先选择一个完整考期，再开始连考。", true);
+    return;
+  }
+  const button = $("#start-real-continuous-exam");
+  if (button) {
+    button.disabled = true;
+    button.textContent = "正在准备连考试卷…";
+  }
+  try {
+    state.session = await api("/api/exam-sessions", {
+      method: "POST",
+      body: JSON.stringify({
+        term,
+        sourceType: select.selectedOptions[0]?.dataset.sourceType || "real",
+        durationMinutes: 150,
+        count: 75,
+        continuousMode: true,
+      }),
+    });
+    resetExamSaveState(state.session);
+    state.activeSession = null;
+    $("#resume-panel").hidden = true;
+    renderQuestions();
+    switchView("practice");
+    showToast("连考开始：综合知识至少 120 分钟、最多 150 分钟，之后自动衔接案例剩余时间。");
+  } catch (error) {
+    showToast(error.message, true);
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "按此考期开始 240 分钟连考";
+    }
+  }
+}
+
 async function importArchitectBank() {
   const button = $("#import-bank");
   if (
@@ -6670,14 +6855,43 @@ async function importArchitectBank() {
 async function loadActiveCaseExam() {
   const load = beginLoad("active-case-exam", "#case-exam-stage", "正在加载案例模拟…");
   try {
-    const { exam } = await api("/api/case-exams/active");
+    const [{ exam }, pending] = await Promise.all([
+      api("/api/case-exams/active"),
+      api("/api/continuous-exams/pending").catch(() => ({ exam: null })),
+    ]);
     if (!load.isCurrent()) return;
     state.caseExam = exam;
+    state.pendingContinuousExam = exam ? null : pending.exam;
     if (exam) $("#start-case-exam").disabled = true;
     renderCaseExam();
     load.finish();
   } catch (error) {
     load.fail(error, loadActiveCaseExam);
+  }
+}
+
+async function continueContinuousExam(pending = state.pendingContinuousExam) {
+  if (!pending?.sessionId) return false;
+  try {
+    const exam = await api("/api/case-exams", {
+      method: "POST",
+      body: JSON.stringify({ continuousSessionId: pending.sessionId }),
+      timeoutMs: LONG_API_TIMEOUT_MS,
+    });
+    state.caseExam = exam;
+    state.pendingContinuousExam = null;
+    switchView("mock");
+    renderCaseExam();
+    showToast(`综合知识阶段已完成，案例阶段开始。剩余 ${Math.floor(exam.durationSeconds / 60)} 分钟。`);
+    await loadMockHistory();
+    return true;
+  } catch (error) {
+    const latest = await api("/api/continuous-exams/pending").catch(() => ({ exam: null }));
+    state.pendingContinuousExam = latest.exam || pending;
+    switchView("mock");
+    renderCaseExam();
+    showToast(error.message + "；你可以在案例模块中重新继续，不会丢失综合知识成绩。", true);
+    return false;
   }
 }
 
@@ -6688,12 +6902,28 @@ function renderCaseExam() {
   state.caseExamTimer = null;
   const exam = state.caseExam;
   if (!exam) {
-    stage.replaceChildren();
+    const pending = state.pendingContinuousExam;
+    if (pending) {
+      const elapsed = Math.max(0, (Date.now() - new Date(pending.startedAt).getTime()) / 1000);
+      const remaining = Math.max(0, 240 * 60 - elapsed);
+      stage.replaceChildren(element("section", { className: "panel continuous-exam-handoff" }, [
+        element("span", { className: "eyebrow", text: "CONTINUOUS EXAM · STAGE 2" }),
+        element("h2", { text: "综合知识已交卷，等待进入案例分析" }),
+        element("p", { text: `${pending.term || "当前考期"} · 综合知识 ${pending.choiceResult?.correct ?? "—"}/${pending.choiceResult?.total ?? 75} 题正确 · 本场总时限 240 分钟 · 当前剩余约 ${Math.floor(remaining / 60)} 分钟` }),
+        element("p", { className: "muted", text: "案例阶段将使用同一考期、同一来源的案例题，并继承 240 分钟总时限。刷新页面后仍可继续。" }),
+        element("button", { className: "primary", text: "继续案例分析阶段", attrs: { type: "button" } }),
+      ]));
+      stage.querySelector("button")?.addEventListener("click", () => continueContinuousExam(pending));
+    } else {
+      stage.replaceChildren();
+    }
     resume.hidden = true;
     return;
   }
-  $("#mock-exam-resume-title").textContent = "继续案例模拟卷";
-  $("#mock-exam-resume-meta").textContent = `已开始于 ${new Date(exam.startedAt).toLocaleString("zh-CN")}，草稿会持续保存。`;
+  $("#mock-exam-resume-title").textContent = exam.continuousSessionId ? "继续 240 分钟连考 · 案例阶段" : "继续案例模拟卷";
+  $("#mock-exam-resume-meta").textContent = exam.continuousSessionId
+    ? `综合知识 ${exam.continuousMcqResult?.correct ?? "—"}/${exam.continuousMcqResult?.total ?? 75} 题正确 · 案例阶段剩余 ${Math.floor((exam.remainingSeconds ?? exam.durationSeconds) / 60)} 分钟 · 草稿会持续保存。`
+    : `已开始于 ${new Date(exam.startedAt).toLocaleString("zh-CN")}，草稿会持续保存。`;
   resume.hidden = false;
   stage.replaceChildren(caseExamNode(exam));
   // 回填草稿
@@ -6754,7 +6984,9 @@ function fillCaseExamCountdown(exam) {
   if (!timerBox) return;
   const countdown = caseExamTimerElement();
   const label = element("span", {
-    text: `剩余时间 · 共 ${exam.cases.length} 道案例`,
+    text: exam.continuousSessionId
+      ? `240 分钟连考总剩余时间 · 案例阶段共 ${exam.cases.length} 道`
+      : `剩余时间 · 共 ${exam.cases.length} 道案例`,
   });
   timerBox.replaceChildren(countdown, label);
   const deadline =
@@ -6962,7 +7194,7 @@ async function submitCaseExam(exam, button) {
     state.caseExam = null;
     clearInterval(state.caseExamTimer);
     state.caseExamTimer = null;
-    renderCaseExamGrade(grade);
+    renderCaseExamGrade(grade, exam);
     await loadMockHistory();
     showToast(`AI 判分完成：${grade.total_score}/${grade.max_score} 分`);
   } catch (error) {
@@ -6975,12 +7207,17 @@ async function submitCaseExam(exam, button) {
 }
 
 // 案例模拟卷判分结果展示（整卷逐问得分 + 总分）。
-function renderCaseExamGrade(grade) {
+function renderCaseExamGrade(grade, exam = null) {
   const stage = $("#case-exam-stage");
   $("#mock-exam-resume").hidden = true;
   const passed = grade.max_score
     ? Math.round((grade.total_score / grade.max_score) * 100) >= 60
     : false;
+  const mcq = exam?.continuousMcqResult;
+  const caseScoreOn75 = grade.max_score ? (Number(grade.total_score) / Number(grade.max_score)) * 75 : 0;
+  const casePassed = caseScoreOn75 >= 45;
+  const mcqPassed = mcq?.total === 75 && Number(mcq.correct) >= 45;
+  const continuousPassed = Boolean(exam?.continuousSessionId && mcq && mcqPassed && casePassed);
   const cards = (grade.cases ?? []).map((caseGrade) =>
     element("article", { className: "panel case-card" }, [
       element("h3", { className: "case-title", text: caseGrade.title }),
@@ -6988,6 +7225,17 @@ function renderCaseExamGrade(grade) {
     ]),
   );
   stage.replaceChildren(
+    exam?.continuousSessionId && mcq ? element("section", { className: "panel continuous-exam-result" }, [
+      element("div", { className: "panel-heading" }, [
+        element("h2", { text: "240 分钟连考 · 两科成绩" }),
+        element("span", { className: `pass-badge ${continuousPassed ? "pass" : "fail"}`, text: continuousPassed ? "两科均达 45 分" : "至少一科未达 45 分" }),
+      ]),
+      element("div", { className: "continuous-exam-result-grid" }, [
+        element("div", {}, [element("strong", { text: `${mcq.correct}/75` }), element("span", { text: "综合知识 · 45 分为合格线" }), element("small", { text: mcqPassed ? "达到单科合格线" : "未达到单科合格线" })]),
+        element("div", {}, [element("strong", { text: `${Math.round(caseScoreOn75 * 10) / 10}/75` }), element("span", { text: `案例分析 · 原始得分 ${grade.total_score}/${grade.max_score} · 45 分为合格线` }), element("small", { text: casePassed ? "达到单科合格线" : "未达到单科合格线" })]),
+      ]),
+      element("p", { className: "muted", text: "连考判定按两科分别达到 45 分计算，不用两科总分相互抵消。案例评分由 AI 生成，建议结合参考答案人工复核。" }),
+    ]) : null,
     element("div", { className: "score-hero" }, [
       element("div", { className: "score-circle" }, [
         element("div", {}, [
@@ -7015,6 +7263,8 @@ document.querySelectorAll("[data-view]").forEach((button) =>
 $("#practice-form").addEventListener("submit", startPractice);
 $("#mock-exam-form").addEventListener("submit", startMockExam);
 $("#real-exam-form").addEventListener("submit", startRealExam);
+$("#real-exam-term").addEventListener("change", updateRealContinuousButton);
+$("#start-real-continuous-exam").addEventListener("click", startRealContinuousExam);
 $("#start-case-exam").addEventListener("click", startCaseExam);
 $("#mock-exam-resume-button").addEventListener("click", () => {
   if (!state.caseExam) return;
@@ -7082,39 +7332,6 @@ $("#paper-next").addEventListener("click", () => {
   loadPapers();
 });
 $("#mc-save").addEventListener("click", saveModelConfig);
-$("#mc-add-provider").addEventListener("click", addProvider);
-$("#agent-add").addEventListener("click", addAgent);
-$("#agent-task-run").addEventListener("click", runAgentTask);
-$("#app-dialog").addEventListener("click", (event) => {
-  if (event.target === event.currentTarget) {
-    finishAppDialog($("#app-dialog-input").hidden ? false : null);
-  }
-});
-$("#wiki-generate").addEventListener("click", generateWiki);
-// 生成知识点以模态弹窗承载（一次性动作）；进行中不允许意外关闭。
-$("#wiki-generate-open").addEventListener("click", () => {
-  $("#wiki-generate-dialog").showModal();
-});
-$("#wiki-generate-dialog-close").addEventListener("click", () => {
-  $("#wiki-generate-dialog").close();
-});
-$("#wiki-generate-dialog").addEventListener("cancel", (event) => {
-  if (state.generationControllers.has("wiki")) event.preventDefault();
-});
-// 问知识库以右侧抽屉承载（多轮问答）：浏览目录/图谱不中断。
-let wikiAskCloseTimer = null;
-let wikiAskReturnFocus = null;
-
-function openWikiAskDrawer() {
-  const drawer = $("#wiki-ask-drawer");
-  if (wikiAskCloseTimer !== null) {
-    clearTimeout(wikiAskCloseTimer);
-    wikiAskCloseTimer = null;
-  }
-  if (drawer.hidden) {
-    const active = document.activeElement;
-    wikiAskReturnFocus =
-      active instanceof HTMLElement && !drawer.contains(active)
 document.querySelectorAll("[data-agent-tab]").forEach((button, index, buttons) => {
   button.addEventListener("click", () => setAgentWorkspaceTab(button.dataset.agentTab));
   button.addEventListener("keydown", (event) => {
@@ -7128,9 +7345,9 @@ document.querySelectorAll("[data-agent-tab]").forEach((button, index, buttons) =
 document.querySelectorAll("[data-agent-role-template]").forEach((button) => {
   button.addEventListener("click", () => addAgentFromTemplate(button.dataset.agentRoleTemplate));
 });
-        ? active
-        : $("#wiki-ask-open");
-  }
+$("#mc-add-provider").addEventListener("click", addProvider);
+$("#agent-add").addEventListener("click", addAgent);
+$("#agent-task-run").addEventListener("click", runAgentTask);
 $("#provider-list").addEventListener("input", syncWorkspaceDraftFromForm);
 $("#provider-list").addEventListener("change", syncWorkspaceDraftFromForm);
 $("#agent-list").addEventListener("input", syncWorkspaceDraftFromForm);
@@ -7168,6 +7385,39 @@ $("#agent-task-history-clear").addEventListener("click", clearAgentTaskHistoryWi
 $("#agent-server-task-refresh").addEventListener("click", () => { void loadAgentServerTasks({ quiet: false }); });
 renderAgentTaskHistory();
 void loadAgentServerTasks();
+$("#app-dialog").addEventListener("click", (event) => {
+  if (event.target === event.currentTarget) {
+    finishAppDialog($("#app-dialog-input").hidden ? false : null);
+  }
+});
+$("#wiki-generate").addEventListener("click", generateWiki);
+// 生成知识点以模态弹窗承载（一次性动作）；进行中不允许意外关闭。
+$("#wiki-generate-open").addEventListener("click", () => {
+  $("#wiki-generate-dialog").showModal();
+});
+$("#wiki-generate-dialog-close").addEventListener("click", () => {
+  $("#wiki-generate-dialog").close();
+});
+$("#wiki-generate-dialog").addEventListener("cancel", (event) => {
+  if (state.generationControllers.has("wiki")) event.preventDefault();
+});
+// 问知识库以右侧抽屉承载（多轮问答）：浏览目录/图谱不中断。
+let wikiAskCloseTimer = null;
+let wikiAskReturnFocus = null;
+
+function openWikiAskDrawer() {
+  const drawer = $("#wiki-ask-drawer");
+  if (wikiAskCloseTimer !== null) {
+    clearTimeout(wikiAskCloseTimer);
+    wikiAskCloseTimer = null;
+  }
+  if (drawer.hidden) {
+    const active = document.activeElement;
+    wikiAskReturnFocus =
+      active instanceof HTMLElement && !drawer.contains(active)
+        ? active
+        : $("#wiki-ask-open");
+  }
   drawer.hidden = false;
   drawer.setAttribute("aria-hidden", "false");
   $("#wiki-ask-backdrop").hidden = false;
@@ -7393,6 +7643,7 @@ document.addEventListener("keydown", (event) => {
 async function initializeApp() {
   // 章节是筛选器的基础，先完成它，再让其他启动任务互相隔离失败。
   await Promise.allSettled([loadChapters()]);
+  mountBeginnerRoadmap({ onOpenWeek: openRoadmapWeek });
   await Promise.allSettled([
     loadSections(),
     loadModelStatus(),

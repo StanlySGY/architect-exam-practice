@@ -91,21 +91,20 @@ export function selectLearningReinforcementQuestions({ unit, questions, limit = 
   const title = String(unit?.title ?? "").trim();
   const id = String(unit?.id ?? "").trim();
   const sectionId = String(unit?.sectionId ?? id.split(".").slice(0, 2).join(".")).trim();
-  const chapter = Number(unit?.chapter);
   const eligible = (questions ?? []).filter((question) => isQuestionEligibleForFormalStudy(question));
   const scored = eligible.map((question) => {
     const source = String(question.sourceNode ?? "").trim();
     const kp = String(question.knowledgePoint ?? "").trim();
     const qSection = String(question.section ?? "").trim();
-    const qChapter = Number(question.chapter);
     let score = -1;
-    let selectionReason = "chapter";
-    if ((source && (source.includes(id) || source.includes(title))) || (kp && (kp === title || kp.includes(title) || title.includes(kp)))) {
+    let selectionReason = null;
+    const escapedId = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const sourceHasExactNode = Boolean(id && source && new RegExp(`(^|[^\\d])${escapedId}(?=$|[^\\d.])`, "u").test(source));
+    const sourceNamesExactUnit = sourceHasExactNode && (!title || source.includes(title));
+    if ((kp && kp === title) || sourceNamesExactUnit) {
       score = 300; selectionReason = "direct";
-    } else if (qSection === sectionId || (source && source.includes(sectionId))) {
+    } else if (id && id === sectionId && qSection === id) {
       score = 200; selectionReason = "section";
-    } else if (qChapter === chapter) {
-      score = 100; selectionReason = "chapter";
     }
     return { question, score, selectionReason };
   }).filter((item) => item.score >= 0).sort((a, b) => b.score - a.score || String(a.question.id).localeCompare(String(b.question.id)));
@@ -135,9 +134,20 @@ function mergeLearningContent(unit, content) {
     ...Object.fromEntries(Object.entries(authored).filter(([key, value]) =>
       key !== "status" && key !== "source" && value !== null && String(value).trim() !== "")),
   };
+  const authoredChecks = Array.isArray(authored.selfChecks)
+    ? authored.selfChecks
+        .map((check, index) => {
+          const prompt = typeof check === "string"
+            ? check.trim()
+            : String(check?.prompt ?? check?.question ?? "").trim();
+          return prompt ? { id: `lesson-check-${index + 1}`, prompt } : null;
+        })
+        .filter(Boolean)
+    : [];
   return {
     ...unit,
     teaching,
+    checks: authoredChecks.length ? authoredChecks : unit.checks,
     contentStatus: authored.status === "verified" ? "verified" : authored.status === "partial" ? "partial" : unit.contentStatus,
     contentSource: { type: "course-content", path: "data/learning-content.json", status: authored.status ?? "partial" },
   };
@@ -636,6 +646,10 @@ export class ReviewDomain extends SessionsDomain {
         checksTotal: current.checks.length,
         contentStatus: current.contentStatus,
         contentSource: current.contentSource ?? current.source,
+        evidence: Array.isArray(current.teaching?.evidence) ? current.teaching.evidence : [],
+        prerequisites: Array.isArray(current.teaching?.prerequisites) ? current.teaching.prerequisites : [],
+        keyRelations: Array.isArray(current.teaching?.keyRelations) ? current.teaching.keyRelations : [],
+        practiceFocus: Array.isArray(current.teaching?.practiceFocus) ? current.teaching.practiceFocus : [],
         practiceAction: { type: "start-practice", chapter: current.chapter, section: current.id, difficulty: "mixed", count: 5 },
       } : null,
       position: current ? (currentIndex + "/" + units.length) : (units.length + "/" + units.length),

@@ -8,6 +8,15 @@ const knownTemplateTails = {
   how: "学习时请把上述机制与本单元的适用条件、关键约束和代价对应起来；涉及精确结论时回查来源。",
   confusions: "辨析时围绕本单元的核心概念与适用条件，明确相邻术语的区别；缺乏证据的结论保留待核验。",
 };
+// These patterns detect known course-writing scaffolds, not factual errors.
+const templateLikePatterns = {
+  why: /^理解「[^」]+」的价值，在于/u,
+  how: /^围绕「[^」]+」学习时，先用一句话界定概念/u,
+  confusions: /^辨析「[^」]+」时，选出最容易混淆/u,
+  examFocus: /^复习重点：围绕“[^”]+”整理定义、关键机制/u,
+  examples: /^自拟练习（非教材原例）：设想一个与「[^」]+」相关的业务或技术场景/u,
+  scenarios: /^情境练习（非教材原例）：围绕“[^”]+”设定一个系统需求/u,
+};
 
 export function auditLearningContent(content) {
   const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
@@ -50,6 +59,22 @@ export function auditLearningContent(content) {
     }
     genericMarkerOccurrences[marker] = { count: matches.length, matches: matches.slice(0, 50) };
   }
+  const templateLikeTeachingFields = {};
+  const templateLikeFieldsByUnit = new Map();
+  for (const [field, pattern] of Object.entries(templateLikePatterns)) {
+    const unitIds = [];
+    for (const [id, unit] of units) {
+      if (!pattern.test(String(unit?.[field] ?? "").trim())) continue;
+      unitIds.push(id);
+      if (!templateLikeFieldsByUnit.has(id)) templateLikeFieldsByUnit.set(id, []);
+      templateLikeFieldsByUnit.get(id).push(field);
+    }
+    templateLikeTeachingFields[field] = { count: unitIds.length, unitIds: unitIds.slice(0, 50) };
+  }
+  const unitsWithFourOrMoreTemplateFields = [...templateLikeFieldsByUnit.entries()]
+    .filter(([, matchedFields]) => matchedFields.length >= 4)
+    .map(([id, matchedFields]) => ({ id, fields: matchedFields }))
+    .sort((a, b) => b.fields.length - a.fields.length || a.id.localeCompare(b.id));
   const statuses = {};
   for (const [, unit] of units) statuses[unit.status ?? "(missing)"] = (statuses[unit.status ?? "(missing)"] ?? 0) + 1;
   return {
@@ -60,7 +85,12 @@ export function auditLearningContent(content) {
     duplicateFields,
     knownTemplateTailOccurrences: Object.fromEntries(Object.entries(templateTailOccurrences).map(([field, ids]) => [field, { count: ids.length, unitIds: ids.slice(0, 30) }])),
     knownGenericTemplateMarkers: genericMarkerOccurrences,
-    note: "重复检测只按规范化后的全文完全一致识别；不同措辞可能仍重复表达同一知识点。报告不判断事实正确性，不修改源数据。",
+    templateLikeTeachingFields,
+    unitsWithFourOrMoreTemplateFields: {
+      count: unitsWithFourOrMoreTemplateFields.length,
+      units: unitsWithFourOrMoreTemplateFields.slice(0, 100),
+    },
+    note: "全文重复检测只按规范化后的全文完全一致识别；模板句式检测是启发式，命中不代表事实错误或内容无用，未命中也不代表讲解充分。报告不判断事实正确性，不修改源数据。",
   };
 }
 

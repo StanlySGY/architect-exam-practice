@@ -154,6 +154,7 @@ export class SessionsDomain extends PracticeServiceBase {
     durationMinutes = 150,
     term = null,
     sourceType = null,
+    continuousMode = false,
   } = {}) {
     const durationSeconds = Math.max(
       300,
@@ -187,6 +188,12 @@ export class SessionsDomain extends PracticeServiceBase {
           code: "EXAM_PAPER_EMPTY",
         });
       }
+      if (continuousMode && selected.length !== 75) {
+        throw Object.assign(new Error("连考模式需要完整的 75 道综合知识题；当前考期题量不足，请改用单科练习"), {
+          status: 409,
+          code: "CONTINUOUS_EXAM_CHOICE_COUNT",
+        });
+      }
     } else {
       const size = Math.max(1, Math.min(75, Number(count) || 75));
       const generated = this.allQuestions().filter(
@@ -205,6 +212,12 @@ export class SessionsDomain extends PracticeServiceBase {
         );
       }
       selected = sample(candidates, Math.min(size, candidates.length), this.random);
+      if (continuousMode && selected.length !== 75) {
+        throw Object.assign(new Error("连考模式需要完整的 75 道综合知识题；当前可用题量不足"), {
+          status: 409,
+          code: "CONTINUOUS_EXAM_CHOICE_COUNT",
+        });
+      }
     }
     return this.saveSession({
       chapter: null,
@@ -215,10 +228,37 @@ export class SessionsDomain extends PracticeServiceBase {
       questions: selected,
       term: examTerm || selected[0]?.term || null,
       paper: selected[0]?.paper || null,
+      continuousMode: Boolean(continuousMode),
       sourceType: examTerm
         ? examSourceType || selected[0]?.sourceType || "real"
         : randomSourceType,
     });
+  }
+
+  pendingContinuousExam() {
+    const state = this.store.snapshot();
+    const sessions = Object.values(state.sessions)
+      .filter((session) => session.continuousMode && session.gradedAt && !session.abandonedAt)
+      .toSorted((left, right) => String(right.gradedAt).localeCompare(String(left.gradedAt)));
+    const session = sessions.find((candidate) =>
+      !state.caseExams.some((exam) => exam.continuousSessionId === candidate.id),
+    );
+    if (!session) return null;
+    const attempt = state.attempts.find((item) => item.sessionId === session.id && item.mode === "exam-mcq");
+    if (!attempt) return null;
+    return {
+      sessionId: session.id,
+      term: session.term ?? null,
+      sourceType: session.sourceType ?? null,
+      startedAt: session.startedAt,
+      gradedAt: session.gradedAt,
+      choiceResult: {
+        correct: attempt.correct,
+        total: attempt.total,
+        percentage: attempt.percentage,
+        gradedAt: attempt.gradedAt,
+      },
+    };
   }
 
   // 模拟卷作答：与练习即时判题不同，允许反复改答案，且不返回任何反馈。
@@ -305,6 +345,7 @@ export class SessionsDomain extends PracticeServiceBase {
     term = null,
     paper = null,
     sourceType = null,
+    continuousMode = false,
   }) {
     const id = makeId("session");
     const createdAt = this.now();
@@ -317,6 +358,7 @@ export class SessionsDomain extends PracticeServiceBase {
       term,
       paper,
       sourceType,
+      ...(continuousMode ? { continuousMode: true } : {}),
       questionIds: questions.map((question) => question.id),
       questionSnapshots: Object.fromEntries(
         questions.map((question) => [question.id, cloneQuestion(question)]),
@@ -579,6 +621,15 @@ export class SessionsDomain extends PracticeServiceBase {
       const timedOut =
         session.mode === "exam-mcq" &&
         this.isPastDeadline(session, gradedAt, EXAM_GRACE_SECONDS);
+      if (session.mode === "exam-mcq" && session.continuousMode && !timedOut) {
+        const elapsedSeconds = Math.max(0, (Date.parse(gradedAt) - Date.parse(session.startedAt)) / 1000);
+        if (elapsedSeconds < 120 * 60) {
+          throw Object.assign(new Error("连考模式的综合知识阶段至少需要进行 120 分钟后才能交卷"), {
+            status: 409,
+            code: "CONTINUOUS_EXAM_MINIMUM_NOT_MET",
+          });
+        }
+      }
       const serverAnswers = session.checkedAnswers ?? {};
       if (timedOut) {
         for (const [questionId, answer] of Object.entries(submittedAnswers)) {

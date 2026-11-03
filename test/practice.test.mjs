@@ -1431,6 +1431,22 @@ test("动态识别思维导图已有章节，初始题库为空", async (t) => {
   assert.equal(sourced.find((chapter) => chapter.id === 8).source, "mindmap");
 });
 
+test("章节目录区分正式可练题、待审校题和隔离题，不把待审校题算作可用", async (t) => {
+  const { service, store } = await fixture(t);
+  await store.update((state) => {
+    state.generatedQuestions = [
+      { id: "pending-q", sourceType: "generated", chapter: 7, section: "7.1", reviewStatus: "pending_review", question: "待审校", options: { A: "A", B: "B", C: "C", D: "D" }, correctAnswer: "A", analysis: "解析" },
+      { id: "quarantined-q", sourceType: "generated", chapter: 7, section: "7.1", reviewStatus: "quarantined", question: "隔离题", options: { A: "A", B: "B", C: "C", D: "D" }, correctAnswer: "A", analysis: "解析" },
+    ];
+  });
+  const chapter = service.chapterList().find((item) => item.id === 7);
+  assert.equal(chapter.counts.all, 0);
+  assert.deepEqual(chapter.reviewCounts, { pendingReview: 1, quarantined: 1 });
+  const section = (await service.sections(7)).find((item) => item.id === "7.1");
+  assert.equal(section.counts.all, 0);
+  assert.deepEqual(section.reviewCounts, { pendingReview: 1, quarantined: 1 });
+});
+
 test("练习接口不泄露答案，判卷后写入错题本", async (t) => {
   const { service } = await fixture(t);
   await addQuestions(service, { chapter: 4, difficulty: "medium" });
@@ -2363,17 +2379,21 @@ test("系统学习单元 ID 全局唯一，缺少专属课程内容时明确隔�
   const service = new PracticeService({ store, root });
   await service.init();
   const units = service.learningUnits();
-  assert.equal(units.length, 324);
+  assert.equal(units.length, 325);
   assert.equal(new Set(units.map((unit) => unit.id)).size, units.length, "learning IDs must be globally unique");
   const authored = units.filter((unit) => unit.contentSource?.type === "course-content");
   const fallback = units.filter((unit) => unit.contentSource?.type === "mindmap-fallback");
-  assert.equal(authored.length, 324);
+  assert.equal(authored.length, 325);
   assert.equal(fallback.length, 0);
   assert.ok(authored.every((unit) => ["verified", "partial"].includes(unit.contentStatus)), "authored lessons must expose an explicit review status");
-  const newlyAuthoredIds = ["4.4.2.3","6.2.3.1","6.2.3.2","6.2.3.3","9.2.3.1","9.2.3.2","9.2.3.3","9.2.3.4","9.2.3.5","9.2.3.6","9.2.3.7","9.2.3.8","9.2.3.9","9.2.3.10","10.4.1","10.4.2","10.4.3","10.4.4","10.4.5","10.4.6","10.4.7","10.4.8","10.4.9","10.4.10","10.4.11","10.4.12","10.4.13","10.4.14","10.4.15","10.4.16","10.4.17","10.4.18","17.2.3.4","17.2.3.5","19.3.5.1","19.3.7","19.4.4.1","19.4.4.2"];
+  const newlyAuthoredIds = ["4.4.2.3","6.2.3.1","6.2.3.2","6.2.3.3","9.2.3.1","9.2.3.2","9.2.3.3","9.2.3.4","9.2.3.5","9.2.3.6","9.2.3.7","9.2.3.8","9.2.3.9","9.2.3.10","10.4.1","10.4.2","10.4.3","10.4.4","10.4.5","10.4.6","10.4.7","10.4.8","10.4.9","10.4.10","10.4.11","10.4.12","10.4.13","10.4.14","10.4.15","10.4.16","10.4.17","10.4.18","17.2.3.4","17.2.3.5","19.3.5.1","19.3.7","19.4.4.1","19.4.4.2","11.2.4"];
   const newlyAuthored = newlyAuthoredIds.map((id) => units.find((unit) => unit.id === id));
-  assert.equal(newlyAuthored.length, 38);
+  assert.equal(newlyAuthored.length, 39);
   assert.ok(newlyAuthored.every((unit) => unit?.contentSource?.type === "course-content" && unit.contentSource.status === "partial" && unit.contentStatus === "partial"), "all previously missing lessons must now have explicit partial course records");
+  const agentTopic = units.find((unit) => unit.id === "11.2.4");
+  assert.ok(agentTopic, "Agent 专题应作为独立学习单元出现");
+  assert.equal(agentTopic.contentStatus, "partial");
+  assert.match(agentTopic.teaching.what, /Router|Worker|Agent/);
   const required = ["what", "why", "how", "confusions", "scenarios", "examples", "examFocus", "pitfalls"];
   for (const unit of authored) {
     assert.ok(["verified", "partial"].includes(unit.contentSource.status), "invalid content status: " + unit.id);
@@ -2410,6 +2430,10 @@ test("系统学习按思维导图建立单元、记录学习状态并衔接章�
   assert.equal(plan.completed, 0);
   assert.equal(plan.current.status, "not-started");
   assert.ok(plan.current.coreKnowledge);
+  assert.ok(plan.current.selfChecks.length >= 2);
+  assert.match(plan.current.selfChecks[0].prompt, /解释架构定义中的基本组织.*元素之间的关系/);
+  assert.ok(plan.current.evidence.length > 0, "lesson should expose its source evidence");
+  assert.ok(plan.current.evidence.every((item) => item.sourceTitle && item.scope));
   assert.equal(plan.current.practiceAction.type, "start-practice");
   await service.startLearning(plan.current.id);
   assert.equal(service.learningPlan().current.status, "learning");
@@ -3195,6 +3219,103 @@ test("按考期套卷依题号顺序组卷", async (t) => {
     () => service.createMockExamSession({ term: "2099年上半年", sourceType: "real" }),
     (error) => error.code === "EXAM_PAPER_EMPTY" && error.status === 409,
   );
+});
+
+test("240 分钟连考按 120/150 分钟切换，并在服务端恢复同考期案例阶段", async (t) => {
+  const base = Date.parse("2026-11-03T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service, store } = await fixture(t, () => time);
+  await store.update((state) => {
+    state.generatedQuestions = Array.from({ length: 75 }, (_, index) => ({
+      id: `continuous-real-${index + 1}`, sourceType: "real", source: "test-fixture", chapter: 7,
+      difficulty: "medium", question: `连考综合知识题 ${index + 1}？`,
+      options: { A: "甲", B: "乙", C: "丙", D: "丁" }, correctAnswer: "A", analysis: "测试解析",
+      term: "2025年下半年", paper: "2025年下半年", questionNo: index + 1, createdAt: time,
+    }));
+    state.caseQuestions = Array.from({ length: 4 }, (_, index) => ({
+      id: `continuous-case-${index + 1}`, sourceType: "real", source: "test-fixture", chapter: 7,
+      title: `2025年下半年案例 ${index + 1}`, scenario: "用于服务层连考时间测试的案例情境。",
+      knowledgePoint: "架构设计", term: "2025年下半年",
+      questions: [{ id: "1", text: "请分析架构方案。", points: 25, referenceAnswer: "参考答案" }],
+    }));
+  });
+  const exam = await service.createMockExamSession({ term: "2025年下半年", sourceType: "real", count: 75, durationMinutes: 150, continuousMode: true });
+  assert.equal(exam.questions.length, 75);
+  assert.equal(exam.continuousMode, true);
+  assert.equal(exam.durationSeconds, 150 * 60);
+  time = new Date(base + 119 * 60 * 1000).toISOString();
+  await assert.rejects(() => service.grade({ sessionId: exam.id, answers: {} }),
+    (error) => error.code === "CONTINUOUS_EXAM_MINIMUM_NOT_MET" && error.status === 409);
+  assert.equal(service.store.snapshot().sessions[exam.id].gradedAt, null);
+  time = new Date(base + 150 * 60 * 1000).toISOString();
+  const mcqGrade = await service.grade({ sessionId: exam.id, answers: {} });
+  assert.equal(mcqGrade.total, 75);
+  assert.equal(mcqGrade.correct, 0);
+  const pending = service.pendingContinuousExam();
+  assert.equal(pending.sessionId, exam.id);
+  assert.equal(pending.choiceResult.total, 75);
+  const caseExam = await service.createCaseExam({ continuousSessionId: exam.id });
+  assert.equal(caseExam.continuousSessionId, exam.id);
+  assert.equal(caseExam.continuousMcqResult.correct, 0);
+  assert.equal(caseExam.continuousMcqResult.total, 75);
+  assert.equal(caseExam.durationSeconds, 90 * 60);
+  assert.equal(caseExam.cases.length, 3);
+  assert.ok(caseExam.cases.every((item) => item.term === "2025年下半年" && item.sourceType === "real"));
+  assert.equal(service.pendingContinuousExam(), null);
+  const retry = await service.createCaseExam({ continuousSessionId: exam.id });
+  assert.equal(retry.id, caseExam.id, "retry must resume the same paper and timer");
+  time = new Date(base + 160 * 60 * 1000).toISOString();
+  const resumed = service.activeCaseExam();
+  assert.equal(resumed.id, caseExam.id);
+  assert.equal(resumed.remainingSeconds, 80 * 60);
+});
+
+test("120 分钟交卷时案例可用剩余 120 分钟，240 分钟后才首次进入则拒绝", async (t) => {
+  const base = Date.parse("2026-11-03T08:00:00.000Z");
+  let time = new Date(base).toISOString();
+  const { service, store } = await fixture(t, () => time);
+  await store.update((state) => {
+    state.generatedQuestions = Array.from({ length: 75 }, (_, index) => ({
+      id: `continuous-120-${index + 1}`, sourceType: "real", chapter: 7,
+      question: `题目 ${index + 1}`, options: { A: "甲", B: "乙", C: "丙", D: "丁" },
+      correctAnswer: "A", analysis: "解析", term: "2025年下半年", paper: "2025年下半年", questionNo: index + 1,
+    }));
+    state.caseQuestions = Array.from({ length: 3 }, (_, index) => ({
+      id: `continuous-120-case-${index + 1}`, sourceType: "real", chapter: 7,
+      title: `案例 ${index + 1}`, scenario: "测试情境", knowledgePoint: "架构设计", term: "2025年下半年",
+      questions: [{ id: "1", text: "请分析。", points: 25, referenceAnswer: "参考答案" }],
+    }));
+  });
+  const exam = await service.createMockExamSession({ term: "2025年下半年", sourceType: "real", continuousMode: true });
+  time = new Date(base + 120 * 60 * 1000).toISOString();
+  await service.grade({ sessionId: exam.id, answers: {} });
+  const cases = await service.createCaseExam({ continuousSessionId: exam.id });
+  assert.equal(cases.durationSeconds, 120 * 60);
+
+  time = new Date(base).toISOString();
+  const { service: expiredService, store: expiredStore } = await fixture(t, () => time);
+  await expiredStore.update((state) => {
+    state.generatedQuestions = structuredClone(store.snapshot().generatedQuestions);
+    state.caseQuestions = structuredClone(store.snapshot().caseQuestions);
+  });
+  const expiredMcq = await expiredService.createMockExamSession({ term: "2025年下半年", sourceType: "real", continuousMode: true });
+  time = new Date(base + 240 * 60 * 1000).toISOString();
+  await expiredService.grade({ sessionId: expiredMcq.id, answers: {} });
+  await assert.rejects(() => expiredService.createCaseExam({ continuousSessionId: expiredMcq.id }),
+    (error) => error.code === "CONTINUOUS_EXAM_TIME_OVER" && error.status === 409);
+});
+
+test("连考拒绝不完整综合知识套卷", async (t) => {
+  const { service, store } = await fixture(t);
+  await store.update((state) => {
+    state.generatedQuestions = Array.from({ length: 74 }, (_, index) => ({
+      id: `continuous-short-${index + 1}`, sourceType: "real", chapter: 7,
+      question: `题目 ${index + 1}`, options: { A: "甲", B: "乙", C: "丙", D: "丁" },
+      correctAnswer: "A", analysis: "解析", term: "2025年下半年", questionNo: index + 1,
+    }));
+  });
+  await assert.rejects(() => service.createMockExamSession({ term: "2025年下半年", sourceType: "real", continuousMode: true }),
+    (error) => error.code === "CONTINUOUS_EXAM_CHOICE_COUNT" && error.status === 409);
 });
 
 test("导入题不参与生成去重且不能永久删除", async (t) => {

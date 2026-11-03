@@ -5,6 +5,8 @@ import test from "node:test";
 const app = await readFile(new URL("../public/app.js", import.meta.url), "utf8");
 const html = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
 const css = await readFile(new URL("../public/styles.css", import.meta.url), "utf8");
+const roadmapUi = await readFile(new URL("../public/roadmap-ui.mjs", import.meta.url), "utf8");
+const reviewPage = await readFile(new URL("../public/exam-review-2026.html", import.meta.url), "utf8");
 
 test("前端共享 API 提供默认超时并合并调用方取消信号", () => {
   assert.match(app, /const DEFAULT_API_TIMEOUT_MS = 30_000/);
@@ -127,4 +129,38 @@ test("题库编辑器提供带来源定位和核验范围的人工审校入口",
   assert.match(app, /reviewedFields/);
   assert.match(app, /\/api\/questions\/\$\{encodeURIComponent\(question\.id\)\}\/review/);
   assert.match(app, /来源权威性仍需人工判断/);
+});
+
+
+test("零基础路线在首页提供独立的配置、进度和教材/题型入口", () => {
+  assert.match(html, /id="beginner-roadmap"/);
+  assert.match(app, /import \{ mountBeginnerRoadmap \} from "\/roadmap-ui\.mjs"/);
+  assert.match(app, /async function openRoadmapWeek\(week\)/);
+  assert.match(app, /mountBeginnerRoadmap\(\{ onOpenWeek: openRoadmapWeek \}\)/);
+  assert.match(css, /#home-view \.beginner-roadmap/);
+  assert.match(css, /@media\(max-width:620px\).*roadmap-setup/s);
+});
+
+
+test("2026 考后复盘入口在首次配置和已有路线状态下都可见", () => {
+  assert.match(roadmapUi, /link\.href = "\/exam-review-2026\.html"/);
+  assert.equal((roadmapUi.match(/reviewShortcut\(\)/g) || []).length, 2);
+  assert.match(reviewPage, /2026 年实际考试节奏/);
+  assert.match(reviewPage, /240 分钟/);
+  assert.match(reviewPage, /14:30—16:30/);
+});
+
+test("学习路线的存储失败会明确告警且阻止进度误推进或丢失", () => {
+  assert.match(roadmapUi, /function showRoadmapError\(panel, message\)[\s\S]*?setAttribute\("role", "alert"\)/);
+  assert.match(roadmapUi, /if \(!savePlan\(next\)\) \{[\s\S]*?本周尚未推进[\s\S]*?return;[\s\S]*?render\(\);/);
+  assert.match(roadmapUi, /localStorage\.removeItem\(ROADMAP_STORAGE_KEY\);[\s\S]*?catch \{[\s\S]*?原路线和进度均已保留/);
+  assert.match(css, /\.roadmap-error\{[^}]*var\(--danger-ink\)/);
+});
+
+test("学习路线进度条向辅助技术公开当前完成比例", () => {
+  assert.match(roadmapUi, /progressTrack\.setAttribute\("role", "progressbar"\)/);
+  assert.match(roadmapUi, /aria-valuemin/);
+  assert.match(roadmapUi, /aria-valuemax/);
+  assert.match(roadmapUi, /aria-valuenow/);
+  assert.match(roadmapUi, /aria-valuetext/);
 });

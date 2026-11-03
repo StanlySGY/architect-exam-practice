@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>2026 年 10 月系统架构设计师考后复盘</title>
+  <link rel="stylesheet" href="/styles.css?v=20261030-roadmap1">
+  <style>
+    body{min-height:100vh;background:var(--bg);color:var(--ink)}
+    .review-shell{width:min(980px,calc(100% - 36px));margin:0 auto;padding:36px 0 72px}
+    .review-head{padding:30px;border:1px solid var(--line);border-radius:18px;background:var(--card);box-shadow:0 8px 32px color-mix(in oklch,var(--ink) 5%,transparent)}
+    .review-head h1{margin:6px 0 12px;font-size:clamp(24px,4vw,36px);line-height:1.35;letter-spacing:-.04em}
+    .review-head p{max-width:760px;color:var(--text-soft);line-height:1.9}
+    .review-eyebrow{color:var(--accent-fg);font-size:11px;font-weight:800;letter-spacing:.14em}
+    .review-tag{display:inline-flex;margin:3px 6px 3px 0;padding:5px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-size:11px}
+    .review-section{margin-top:18px;padding:26px 30px;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+    .review-section h2{margin:0 0 14px;font-size:20px}
+    .review-section h3{margin:20px 0 8px;font-size:15px}
+    .review-section p,.review-section li{color:var(--text-soft);font-size:13px;line-height:1.95}
+    .review-section ul,.review-section ol{padding-left:22px}
+    .review-section a{color:var(--accent-fg);text-decoration:underline;text-underline-offset:3px}
+    .review-note{padding:14px 16px;border-left:3px solid var(--amber);border-radius:7px;background:var(--surface-faint)}
+    .review-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .review-item{padding:14px;border:1px solid var(--line);border-radius:11px;background:var(--surface-faint)}
+    .review-item strong{display:block;margin-bottom:5px;font-size:13px}
+    .review-item p{margin:0;font-size:12px}
+    .review-table-wrap{overflow-x:auto}
+    .review-table{width:100%;border-collapse:collapse;font-size:12px}
+    .review-table th,.review-table td{padding:11px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;line-height:1.75}
+    .review-table th{color:var(--ink);font-weight:750}
+    .review-table td{color:var(--text-soft)}
+    .review-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+    .review-actions a{display:inline-flex;padding:10px 14px;border:1px solid var(--line);border-radius:9px;text-decoration:none;font-size:12px}
+    @media(max-width:650px){.review-shell{width:calc(100% - 24px);padding-top:14px}.review-head,.review-section{padding:20px}.review-grid{grid-template-columns:minmax(0,1fr)}.review-table{min-width:680px}}
+  </style>
+</head>
+<body>
+  <main class="review-shell">
+    <header class="review-head">
+      <div class="review-eyebrow">EXAM INTELLIGENCE · 2026.10.24</div>
+      <h1>系统架构设计师：最新考后复盘</h1>
+      <p>把公开考生回忆整理成下一轮学习信号。它不是官方原卷，也不是完整真题库；你仍要以教程、标准原文和下一年度准考证为准。</p>
+      <span class="review-tag">考生回忆</span><span class="review-tag">来源交叉核对</span><span class="review-tag">不复制未授权题面</span>
+      <div class="review-actions">
+        <a href="/">返回学习首页</a>
+        <a href="/#materials">打开教材资料</a>
+      </div>
+    </header>
+    <section class="review-section">
+      <h2>2026 年实际考试节奏</h2>
+      <div class="review-note">2026 年 10 月 24 日系统架构设计师：上午《综合知识》《案例分析》连考 240 分钟；综合知识可用 120—150 分钟，剩余时间用于案例；下午《论文》120 分钟（14:30—16:30）。此安排来自湖南省工信厅 2026-10-16 批次通知。2027 年规则必须重新查看当年公告与准考证。</div>
+      <p>官方来源：<a href="https://gxt.hunan.gov.cn/gxt/rkb/jsjtzgg/202610/t20261016_34082960.html" target="_blank" rel="noreferrer">湖南省工业和信息化厅批次安排</a> · <a href="https://hrss.sz.gov.cn/szksy/zxxx/content/post_12939472.html" target="_blank" rel="noreferrer">深圳市考试院年度通知</a></p>
+    </section>
+    <section class="review-section">
+      <h2>综合知识：本次回忆涉及的知识域</h2>
+      <div class="review-grid">
+        <article class="review-item"><strong>密码与安全</strong><p>AES、Triple DES、SM4 等对称密码，软件登记和著作权归属。</p></article>
+        <article class="review-item"><strong>概率与可靠性</strong><p>独立事件、组件成功概率、MTBF，以及串联系统和并联系统计算。</p></article>
+        <article class="review-item"><strong>数据库</strong><p>完整性约束、关系代数投影、范式目的与适用边界。</p></article>
+        <article class="review-item"><strong>AI 与知识图谱</strong><p>实体消歧、实体链接、监督学习与无监督学习的差别。</p></article>
+        <article class="review-item"><strong>软件工程与设计</strong><p>敏捷开发、策略模式、观察者模式、语法分析等基础概念。</p></article>
+        <article class="review-item"><strong>证据限制</strong><p>希赛公布的是零散考生回忆，不是完整 75 题；若计算条件不全，不要猜测标准答案。</p></article>
+      </div>
+      <p>来源：<a href="https://www.educity.cn/rk/5545920.html" target="_blank" rel="noreferrer">希赛网：2026-10-24 综合知识回忆版</a>。</p>
+    </section>
+    <section class="review-section">
+      <h2>案例分析：从“记技术”转为“讲机制”</h2>
+      <div class="review-table-wrap"><table class="review-table">
+        <thead><tr><th>场景</th><th>复习重点</th><th>作答应包含</th></tr></thead>
+        <tbody>
+          <tr><td>AQI 空气质量检测</td><td>质量属性场景、性能优化、资源受限与节点故障</td><td>场景六要素、两种可行方案、机制、收益与局限</td></tr>
+          <tr><td>Redis 主从与 Sentinel</td><td>全量/增量复制、复制延迟、哨兵判断与故障转移</td><td>机制、旧数据风险、业务读写策略和一致性代价</td></tr>
+          <tr><td>推荐系统与支付回调</td><td>长尾商品、内容推荐/协同过滤、回调安全</td><td>算法适用边界、幂等键、时间戳/随机数、签名校验</td></tr>
+          <tr><td>UML 行为建模</td><td>状态图、活动图与六类常见关系</td><td>关系语义、适用对象和题干中的映射依据</td></tr>
+          <tr><td>嵌入式 AI 辅助开发</td><td>可靠性、可控性、确定性、AI 生成代码测试</td><td>约束、静态检查、仿真/硬件测试、人工审批与兜底</td></tr>
+        </tbody>
+      </table></div>
+      <p>来源：<a href="https://m.hqwx.com/news/2026-10/17929098004018.html" target="_blank" rel="noreferrer">环球青藤案例考点回忆</a> · <a href="https://mjineng.hqqt.com/news/2026-10/17929106753026.html" target="_blank" rel="noreferrer">环球青藤案例回忆版</a>。</p>
+    </section>
+    <section class="review-section">
+      <h2>论文：三个回忆主题</h2>
+      <div class="review-grid">
+        <article class="review-item"><strong>数据湖设计与实践</strong><p>数据接入、存储分层、元数据、湖仓治理、分区/查询性能和数据安全。</p></article>
+        <article class="review-item"><strong>大模型幻觉治理</strong><p>RAG、知识版本、引用溯源、事实校验、人工审核与反馈闭环。</p></article>
+        <article class="review-item"><strong>IT 系统运维与 AI 运维</strong><p>监控、告警、定位、审批、自动化处置、回滚和人工兜底。</p></article>
+      </div>
+      <p>来源：<a href="https://www.educity.cn/rk/5545923.html" target="_blank" rel="noreferrer">希赛论文回忆版</a> · <a href="https://mjineng.hqqt.com/news/2026-10/17929092748774.html" target="_blank" rel="noreferrer">环球青藤论文回忆版</a>。</p>
+    </section>
+    <section class="review-section">
+      <h2>零基础该怎么吸收这些考点</h2>
+      <ol>
+        <li>先依照 20 章教程主线学习，不要把一场考试的回忆当成新的大纲。</li>
+        <li>把概率、可靠性、数据库关系运算等计算放进每周练习；写出假设、单位和公式。</li>
+        <li>学习架构时，把每个技术写成“解决什么问题、怎么工作、什么情况下适用、代价是什么”。</li>
+        <li>案例答案用“结论 → 工作机制 → 适用条件 → 收益与代价 → 验证方式”。</li>
+        <li>提前整理三个真实项目素材：数据平台/RAG、运维治理、AI 功能工程化；所有指标必须有实际测量口径。</li>
+      </ol>
+      <div class="review-note">不建议背“万能项目”和虚构性能数字。论文要回答题目每个小问，并且能说明你本人做过什么、为什么这样设计、怎么验证结果。</div>
+      <p>考后宏观分析参考：<a href="https://www.hqwx.com/web_news/html/2026-10/17931570904317.html" target="_blank" rel="noreferrer">环球青藤 2026-10-28 复盘文章</a>。其中趋势判断属于培训机构的考后分析，不是官方考纲或下一年押题。</p>
+    </section>
+    <footer class="review-section"><p>资料完整度提示：本页把考生回忆归纳为考点线索，没有导入未经授权的 PDF、图片或整段题面；题目版本、答案及缺失条件仍需人工核对。</p></footer>
+  </main>
+</body>
+</html>

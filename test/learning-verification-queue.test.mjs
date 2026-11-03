@@ -23,7 +23,7 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course keeps broad background references out of claim-level evidence counts',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.unitCount,324); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,321); assert.equal(report.unitsWithClaimLevelEvidence,324); assert.equal(report.unitsWithCompleteClaimEvidence,324); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.unitCount,325); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,322); assert.equal(report.unitsWithClaimLevelEvidence,325); assert.equal(report.unitsWithCompleteClaimEvidence,325); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
  assert.deepEqual(report.queue.map(unit=>unit.id),[]);
 });
 
@@ -59,7 +59,7 @@ test('reliability model claims use direct technical sources with explicit local 
  }
  assert.ok(!content.units['9.1.5'].what.includes('狭义测试按运行剖面随机抽样'));
  const report=buildVerificationQueue(content);
- assert.equal(report.unitsWithClaimLevelEvidence,324);assert.equal(report.unitsWithCompleteClaimEvidence,324);assert.equal(report.unitsMissingEvidence,0);
+ assert.equal(report.unitsWithClaimLevelEvidence,325);assert.equal(report.unitsWithCompleteClaimEvidence,325);assert.equal(report.unitsMissingEvidence,0);
  assert.deepEqual(report.queue.map(unit=>unit.id),[]);
 });
 
@@ -95,9 +95,9 @@ test('supplemental reliability sources remain bounded alongside local textbook p
   }
 
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitCount, 324);
-  assert.equal(report.unitsWithClaimLevelEvidence, 324);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 324);
+  assert.equal(report.unitCount, 325);
+  assert.equal(report.unitsWithClaimLevelEvidence, 325);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 325);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.deepEqual(report.queue.map(unit => unit.id), []);
 });
@@ -702,8 +702,8 @@ test('local PDF page cross-check resolves taxonomy claims while source provenanc
   assert.ok(audit.includes(sha));
   assert.ok(audit.includes('尚未获得出版社独立认证'));
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitCount, 324);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 324);
+  assert.equal(report.unitCount, 325);
+  assert.equal(report.unitsWithCompleteClaimEvidence, 325);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.equal(report.unitsWithLocalPdfCrossCheck, 11);
   assert.deepEqual([...report.unitsWithUnverifiedLocalPdfProvenance].sort(), cases.map(([id]) => id).sort());

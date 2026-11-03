@@ -135,7 +135,66 @@ export class CaseExamDomain extends DataDomain {
   }
 
   // 案例模拟卷：从案例库随机抽取若干道组成限时连做卷。
-  async createCaseExam({ count = 3, durationMinutes = 90, term = null, sourceType = null } = {}) {
+  async createCaseExam({ count = 3, durationMinutes = 90, term = null, sourceType = null, continuousSessionId = null } = {}) {
+    if (continuousSessionId) {
+      const state = this.store.snapshot();
+      const session = state.sessions?.[String(continuousSessionId)];
+      if (!session || session.mode !== "exam-mcq" || !session.continuousMode || !session.gradedAt || session.abandonedAt) {
+        throw Object.assign(new Error("找不到已完成综合知识阶段的连考记录"), { status: 409, code: "CONTINUOUS_EXAM_SESSION_INVALID" });
+      }
+      const existing = state.caseExams.find((item) => item.continuousSessionId === session.id);
+      if (existing) return this.caseExamPayload(existing, this.resolveCaseExamCases(existing, state));
+      const attempt = state.attempts.find((item) => item.sessionId === session.id && item.mode === "exam-mcq");
+      if (!attempt || attempt.total !== 75) {
+        throw Object.assign(new Error("连考记录缺少完整的 75 道综合知识判分结果"), { status: 409, code: "CONTINUOUS_EXAM_RESULT_MISSING" });
+      }
+      const createdAt = this.now();
+      const elapsedSeconds = Math.max(0, (Date.parse(createdAt) - Date.parse(session.startedAt)) / 1000);
+      if (elapsedSeconds < 120 * 60) {
+        throw Object.assign(new Error("综合知识阶段至少需要进行 120 分钟后才能进入案例分析"), { status: 409, code: "CONTINUOUS_EXAM_MINIMUM_NOT_MET" });
+      }
+      const remainingSeconds = Math.floor(240 * 60 - elapsedSeconds);
+      if (remainingSeconds < 600) {
+        throw Object.assign(new Error("240 分钟连考总时限已到，不能再开始案例阶段"), { status: 409, code: "CONTINUOUS_EXAM_TIME_OVER" });
+      }
+      if (!session.term) {
+        throw Object.assign(new Error("连考必须选择一个具体考期的 75 道综合知识真题"), { status: 409, code: "CONTINUOUS_EXAM_TERM_REQUIRED" });
+      }
+      const candidates = state.caseQuestions.filter((item) => item.term === session.term && item.sourceType === session.sourceType);
+      if (candidates.length < 3) {
+        throw Object.assign(new Error(`${session.term} 缺少至少 3 道同来源案例题，无法组成完整连考`), { status: 409, code: "CONTINUOUS_EXAM_CASE_PAPER_INCOMPLETE" });
+      }
+      const selected = sample(candidates, 3, this.random);
+      const exam = {
+        id: makeId("case-exam"),
+        caseIds: selected.map((item) => item.id),
+        caseSnapshots: selected.map((item) => this.snapshotCase(item)),
+        durationSeconds: remainingSeconds,
+        startedAt: createdAt,
+        drafts: {},
+        grade: null,
+        gradedAt: null,
+        abandonedAt: null,
+        createdAt,
+        continuousSessionId: session.id,
+        continuousMcqResult: {
+          correct: attempt.correct,
+          total: attempt.total,
+          percentage: attempt.percentage,
+          gradedAt: attempt.gradedAt,
+        },
+      };
+      await this.store.update((draft) => {
+        const duplicate = draft.caseExams.find((item) => item.continuousSessionId === session.id);
+        if (duplicate) return;
+        for (const previous of draft.caseExams) {
+          if (!previous.gradedAt && !previous.abandonedAt) previous.abandonedAt = createdAt;
+        }
+        draft.caseExams.push(exam);
+      });
+      const saved = this.store.snapshot().caseExams.find((item) => item.continuousSessionId === session.id);
+      return this.caseExamPayload(saved ?? exam, selected);
+    }
     const size = Math.max(1, Math.min(8, Number(count) || 3));
     const durationSeconds = Math.max(
       600,

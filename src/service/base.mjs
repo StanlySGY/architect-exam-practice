@@ -58,14 +58,19 @@ export class PracticeServiceBase {
   chapterList() {
     const questions = this.allQuestions();
     return this.chapters.map((chapter) => {
-      const available = questions.filter(
+      const generated = questions.filter(
         (question) =>
           question.chapter === chapter.id &&
-          isQuestionEligibleForFormalStudy(question) &&
+          !question.disabledAt &&
           (question.sourceType ?? "generated") === "generated",
       );
+      const available = generated.filter(isQuestionEligibleForFormalStudy);
       return {
         ...chapter,
+        reviewCounts: {
+          pendingReview: generated.filter((question) => question.reviewStatus !== "quarantined" && !isQuestionEligibleForFormalStudy(question)).length,
+          quarantined: generated.filter((question) => question.reviewStatus === "quarantined").length,
+        },
         counts: {
           all: available.length,
           easy: available.filter((question) => question.difficulty === "easy")
@@ -113,16 +118,21 @@ export class PracticeServiceBase {
     const counts = this.allQuestions().filter(
       (question) =>
         question.chapter === Number(chapterId) &&
-        isQuestionEligibleForFormalStudy(question) &&
+        !question.disabledAt &&
         (question.sourceType ?? "generated") === "generated",
     );
     return sectionsOfChapter(chapterNode, Number(chapterId)).map((section) => {
-      const available = counts.filter(
+      const sectionQuestions = counts.filter(
         (question) => question.section === section.id,
       );
+      const available = sectionQuestions.filter(isQuestionEligibleForFormalStudy);
       return {
         id: section.id,
         title: section.title,
+        reviewCounts: {
+          pendingReview: sectionQuestions.filter((question) => question.reviewStatus !== "quarantined" && !isQuestionEligibleForFormalStudy(question)).length,
+          quarantined: sectionQuestions.filter((question) => question.reviewStatus === "quarantined").length,
+        },
         counts: {
           all: available.length,
           easy: available.filter((question) => question.difficulty === "easy")

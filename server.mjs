@@ -751,6 +751,9 @@ async function route(request, response) {
   if (request.method === "GET" && pathname === "/api/sessions/active") {
     return sendJson(response, 200, { session: practice.activeSession() });
   }
+  if (request.method === "GET" && pathname === "/api/continuous-exams/pending") {
+    return sendJson(response, 200, { exam: practice.pendingContinuousExam() });
+  }
   if (request.method === "POST" && pathname === "/api/sessions") {
     return sendJson(
       response,
