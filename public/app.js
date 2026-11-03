@@ -4027,7 +4027,7 @@ function renderAgentServerTasks(tasks = []) {
     }, [
       element("div", { className: "agent-server-task-copy" }, [
         element("div", { className: "agent-server-task-meta" }, [
-          element("strong", { text: agentTaskStatusLabel(task.status) }),
+          element("strong", { text: agentServerTaskStatusLabel(task.status) }),
           element("span", { text: dateLabel }),
           element("span", { text: "尝试 " + (task.attemptCount || 0) + " 次" }),
           element("span", { text: "事件 #" + (task.eventSeq || 0) }),
@@ -4508,13 +4508,12 @@ function renderAgentTaskResult(result, meta = {}) {
         ])
       : null;
   synthesis?.querySelector(".agent-retry-review")?.addEventListener("click", retryAgentReview);
-  box.replaceChildren(
+  box.replaceChildren(...[
     heading,
     synthesis,
-  );
     element("div", { className: "agent-result-grid" }, answers),
+  ].filter(Boolean));
   box.hidden = false;
-}
   box.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 

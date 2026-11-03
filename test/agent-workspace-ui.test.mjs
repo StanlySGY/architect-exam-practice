@@ -125,8 +125,13 @@ test("服务端任务列表结构正确，显示任务摘要并为操作提供�
   assert.equal((html.match(/class="agent-task-layout"/g) || []).length, 1);
   assert.match(html, /<\/details>\s*<section class="agent-server-tasks">[\s\S]*?<\/section>\s*<div class="agent-task-layout">/);
   assert.ok(html.includes("/styles.css?v=20261103-agent-persistent2"));
-  assert.ok(html.includes("/app.js?v=20261103-agent-persistent2"));
+  assert.ok(html.includes("/app.js?v=20261103-agent-persistent4"));
   assert.ok(app.includes("task.promptPreview"));
+  assert.ok(app.includes("function agentServerTaskStatusLabel(status)"));
+  assert.ok(app.includes("agentServerTaskStatusLabel(task.status)"));
+  assert.equal(app.includes("agentTaskStatusLabel(task.status)"), false);
+  assert.ok(app.includes("box.replaceChildren(...["));
+  assert.ok(app.includes("].filter(Boolean));"));
   assert.ok(app.includes("agent-server-task-prompt"));
   assert.ok(app.includes('"aria-label": (isActive ? "继续跟踪：" : "查看结果：") + promptPreview'));
   assert.ok(app.includes('"aria-label": "取消任务：" + promptPreview'));
