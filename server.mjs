@@ -1,6 +1,8 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
 import { createServer } from "node:http";
+import { createHash } from "node:crypto";
+import { AgentTaskManager } from "./src/agent-task-manager.mjs";
 import dns from "node:dns";
 import { isIP, setDefaultAutoSelectFamily, setDefaultAutoSelectFamilyAttemptTimeout } from "node:net";
 import { extname, resolve, sep } from "node:path";
@@ -43,7 +45,10 @@ await store.init();
 const practice = new PracticeService({ store, root });
 await practice.init();
 const modelConfig = new ModelConfig({ root });
-const generator = new QuestionGenerator({ root, service: practice, modelConfig });
+export const generator = new QuestionGenerator({ root, service: practice, modelConfig });
+export const agentTaskManager = new AgentTaskManager({ db: store.db, generator });
+agentTaskManager.init();
+if (agentsEnabled && process.env.NODE_ENV !== "test") agentTaskManager.start();
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -122,6 +127,171 @@ async function runCancellable(request, response, operation) {
     lifecycle.complete();
   }
 }
+function writeAgentStreamEvent(response, event) {
+  if (response.destroyed || response.writableEnded) return false;
+  try {
+    return response.write(`data: ${JSON.stringify(event)}\n\n`);
+  } catch {
+    return false;
+  }
+}
+
+async function streamAgentTask(request, response, body) {
+  response.writeHead(200, {
+    "content-type": "text/event-stream; charset=utf-8",
+    "cache-control": "no-cache, no-transform",
+    connection: "keep-alive",
+    "x-accel-buffering": "no",
+    "x-content-type-options": "nosniff",
+  });
+  response.flushHeaders?.();
+  // 上游模型可能长时间不返回事件；心跳只保活连接，不冒充任务进度。
+  const heartbeat = setInterval(() => {
+    if (!response.destroyed && !response.writableEnded) {
+      try { response.write(": keep-alive\n\n"); } catch { /* 连接关闭竞态 */ }
+    }
+  }, 15_000);
+  heartbeat.unref?.();
+  try {
+    const result = await runCancellable(request, response, (signal) => {
+      const onProgress = (event) => {
+        writeAgentStreamEvent(response, { type: "progress", event });
+      };
+      if (body.mode === "review") {
+        return generator.reviewAgentTask({ ...body, signal, onProgress });
+      }
+      if (body.mode && body.mode !== "run") {
+        throw Object.assign(new Error("未知的 Agent 任务模式"), {
+          status: 400,
+          code: "AGENT_TASK_MODE_INVALID",
+        });
+      }
+      return generator.runAgentTask({ ...body, signal, onProgress });
+    });
+    writeAgentStreamEvent(response, { type: "complete", result });
+  } catch (error) {
+    if (
+      request.aborted ||
+      response.destroyed ||
+      error.code === "LLM_GENERATION_CANCELLED" ||
+      error.name === "AbortError"
+    ) {
+      return;
+    }
+    writeAgentStreamEvent(response, {
+      type: "error",
+      error: String(error.message || "Agent 任务执行失败").slice(0, 1500),
+      code: error.code || "REQUEST_FAILED",
+      status: Number.isInteger(error.status) ? error.status : 500,
+    });
+  } finally {
+    clearInterval(heartbeat);
+    if (!response.destroyed && !response.writableEnded) response.end();
+  }
+}const TERMINAL_AGENT_TASK_STATES = new Set(["completed", "failed", "cancelled"]);
+
+function agentTaskOwnerKey(request) {
+  if (!authRequired) return "local";
+  const authorization = String(request.headers.authorization || "");
+  const provided = authorization.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length).trim()
+    : String(request.headers["x-architect-token"] || "").trim();
+  return `token:${createHash("sha256").update(provided).digest("hex")}`;
+}
+
+function sendPersistedTaskEvent(response, taskId, event) {
+  if (response.destroyed || response.writableEnded) return false;
+  let message;
+  if (event.type === "progress") {
+    message = { type: "progress", event: event.payload, taskId, eventSeq: event.seq };
+  } else if (event.type === "task_completed") {
+    message = { type: "complete", result: event.payload.result, taskId, eventSeq: event.seq };
+  } else if (event.type === "task_failed") {
+    message = {
+      type: "error",
+      error: event.payload.message || "Agent 任务执行失败",
+      code: event.payload.code || "AGENT_TASK_FAILED",
+      status: 500,
+      taskId,
+      eventSeq: event.seq,
+    };
+  } else {
+    message = {
+      type: event.type,
+      event: event.payload,
+      taskId,
+      eventSeq: event.seq,
+      at: event.createdAt,
+    };
+  }
+  try {
+    return response.write(`id: ${event.seq}\ndata: ${JSON.stringify(message)}\n\n`);
+  } catch {
+    return false;
+  }
+}
+
+async function streamPersistedAgentTaskEvents(request, response, taskId, ownerKey, url) {
+  const initial = agentTaskManager.store.getTask(taskId, ownerKey, { includePayload: false });
+  if (!initial) throw Object.assign(new Error("任务不存在"), { status: 404, code: "AGENT_TASK_NOT_FOUND" });
+  const headerCursor = Number(request.headers["last-event-id"]);
+  const queryCursor = Number(url.searchParams.get("after") || 0);
+  const cursorValue = Number.isSafeInteger(headerCursor) && headerCursor >= 0
+    ? Math.max(headerCursor, Number.isSafeInteger(queryCursor) && queryCursor >= 0 ? queryCursor : 0)
+    : queryCursor;
+  if (!Number.isSafeInteger(cursorValue) || cursorValue < 0 || cursorValue > initial.eventSeq) {
+    throw Object.assign(new Error("事件游标无效"), { status: 400, code: "AGENT_TASK_CURSOR_INVALID" });
+  }
+
+  response.writeHead(200, {
+    "content-type": "text/event-stream; charset=utf-8",
+    "cache-control": "no-cache, no-transform",
+    connection: "keep-alive",
+    "x-accel-buffering": "no",
+    "x-content-type-options": "nosniff",
+  });
+  response.flushHeaders?.();
+  let closed = false;
+  let cursor = cursorValue;
+  const close = () => { closed = true; };
+  const heartbeat = setInterval(() => {
+    if (!response.destroyed && !response.writableEnded) {
+      try { response.write(": keep-alive\n\n"); } catch { close(); }
+    }
+  }, 15_000);
+  heartbeat.unref?.();
+  response.once("close", close);
+  request.once("aborted", close);
+
+  try {
+    while (!closed && !response.destroyed && !response.writableEnded) {
+      const events = agentTaskManager.store.listEvents(taskId, ownerKey, cursor, 200);
+      if (events === null) break;
+      for (const event of events) {
+        if (!sendPersistedTaskEvent(response, taskId, event)) {
+          close();
+          break;
+        }
+        cursor = event.seq;
+      }
+      if (closed) break;
+      const current = agentTaskManager.store.getTask(taskId, ownerKey, { includePayload: false });
+      if (!current) break;
+      if (TERMINAL_AGENT_TASK_STATES.has(current.status) && cursor >= current.eventSeq) break;
+      await new Promise((resolve) => {
+        const timer = setTimeout(resolve, 400);
+        timer.unref?.();
+      });
+    }
+  } finally {
+    clearInterval(heartbeat);
+    response.removeListener("close", close);
+    request.removeListener("aborted", close);
+    if (!response.destroyed && !response.writableEnded) response.end();
+  }
+}
+
+
 
 const libraryFiles = new Map([
   ["/lib/figures.mjs", resolve(root, "src/figures.mjs")],
@@ -308,6 +478,63 @@ async function route(request, response) {
         apiKey,
       }),
     );
+  }
+  if (pathname.startsWith("/api/agents/tasks")) {
+    if (!agentsEnabled) {
+      throw Object.assign(new Error("Agent 执行能力已关闭，请通过启动环境显式开启"), {
+        status: 403,
+        code: "AGENT_DISABLED",
+      });
+    }
+    const ownerKey = agentTaskOwnerKey(request);
+    if (request.method === "POST" && pathname === "/api/agents/tasks") {
+      const body = await readJson(request, 250_000);
+      const idempotencyKey = String(request.headers["idempotency-key"] || body.idempotencyKey || "");
+      const created = agentTaskManager.store.createTask({ ownerKey, idempotencyKey, payload: body });
+      agentTaskManager.start();
+      return sendJson(response, created.replayed ? 200 : 202, {
+        task: created.task,
+        replayed: created.replayed,
+        eventsUrl: `/api/agents/tasks/${created.task.id}/events`,
+        statusUrl: `/api/agents/tasks/${created.task.id}`,
+      });
+    }
+    if (request.method === "GET" && pathname === "/api/agents/tasks") {
+      return sendJson(response, 200, {
+        tasks: agentTaskManager.store.listTasks(ownerKey, url.searchParams.get("limit") || 10),
+      });
+    }
+    const eventsMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/events$/);    if (request.method === "GET" && eventsMatch) {
+      return streamPersistedAgentTaskEvents(
+        request,
+        response,
+        decodeURIComponent(eventsMatch[1]),
+        ownerKey,
+        url,
+      );
+    }
+    const cancelMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)\/cancel$/);    if (request.method === "POST" && cancelMatch) {
+      await readJson(request);
+      const task = agentTaskManager.store.cancelTask(decodeURIComponent(cancelMatch[1]), ownerKey);
+      if (!task) throw Object.assign(new Error("任务不存在"), { status: 404, code: "AGENT_TASK_NOT_FOUND" });
+      return sendJson(response, 200, { task });
+    }
+    const taskMatch = pathname.match(/^\/api\/agents\/tasks\/([^/]+)$/);    if (request.method === "GET" && taskMatch) {
+      const task = agentTaskManager.store.getTask(decodeURIComponent(taskMatch[1]), ownerKey);
+      if (!task) throw Object.assign(new Error("任务不存在"), { status: 404, code: "AGENT_TASK_NOT_FOUND" });
+      return sendJson(response, 200, { task });
+    }
+    throw Object.assign(new Error("Agent 任务接口不存在"), { status: 404, code: "AGENT_TASK_ROUTE_NOT_FOUND" });
+  }
+  if (request.method === "POST" && pathname === "/api/agents/stream") {
+    if (!agentsEnabled) {
+      throw Object.assign(new Error("Agent 执行能力已关闭，请通过启动环境显式开启"), {
+        status: 403,
+        code: "AGENT_DISABLED",
+      });
+    }
+    const body = await readJson(request, 250_000);
+    return streamAgentTask(request, response, body);
   }
   if (request.method === "POST" && pathname === "/api/agents/run") {
     if (!agentsEnabled) {

@@ -9,7 +9,7 @@
       content="软考高级系统架构设计师章节练习、自动判卷与错题回顾"
     />
     <link rel="icon" href="/favicon.svg" />
-    <link rel="stylesheet" href="/styles.css?v=20261010-learning-ui3" />
+    <link rel="stylesheet" href="/styles.css?v=20261103-agent-persistent1" />
   </head>
   <body>
     <div class="app-shell">
@@ -32,6 +32,17 @@
             <button class="nav-button" data-view="paper"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h6"/></svg><span class="label">论文写作</span></button>
             <button class="nav-button" data-view="wiki"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="8" cy="18" r="2"/><path d="M8 7l8 1M7 16l1-8M9 17l7-7"/></svg><span class="label">知识库</span></button>
             <button class="nav-button" data-view="materials"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg><span class="label">资料</span></button>
+          </div>
+          <div class="nav-group">
+            <p class="nav-group-label">AI 工作区</p>
+            <button class="nav-button" data-view="agents" aria-label="Agent 工作区">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3v3M5.6 6.6l2.1 2.1M3 13h3M18 13h3M16.3 8.7l2.1-2.1M12 18v3"/>
+                <rect x="7" y="9" width="10" height="9" rx="3"/>
+                <path d="M10 13h.01M14 13h.01M10 16h4"/>
+              </svg>
+              <span class="label">Agent 工作区</span>
+            </button>
           </div>
           <div class="nav-group">
             <p class="nav-group-label">管理</p>
@@ -821,6 +832,187 @@
       </section>
 
       <section id="data-view" class="view page-view">
+      <section id="agents-view" class="view page-view agent-workspace-view">
+        <header class="page-heading agent-page-heading">
+          <div>
+            <p class="eyebrow">LOCAL AI ORCHESTRATION</p>
+            <h1>Agent 工作区</h1>
+            <p>将不同模型组织成有明确职责的角色，再按任务需要选择单体、并行或评审协作。</p>
+          </div>
+          <span class="agent-local-badge"><span aria-hidden="true"></span> 本机运行 · 配置仅保存在本机</span>
+        </header>
+        <section class="agent-workspace-hero" aria-label="工作区概览">
+          <div class="agent-workspace-hero-copy">
+            <span class="agent-workspace-kicker">YOUR AI TEAM</span>
+            <h2>让每个 Agent 都有清晰的职责</h2>
+            <p>供应商负责连接模型，Agent 负责定义角色，工作台负责组织协作。先完成配置，再用真实任务检验分工是否有效。</p>
+          </div>
+          <div class="agent-workspace-orbit" aria-hidden="true">
+            <span class="orbit-node orbit-node-main">AI</span><span class="orbit-node orbit-node-one">A</span><span class="orbit-node orbit-node-two">B</span><span class="orbit-node orbit-node-three">C</span>
+            <i class="orbit-ring orbit-ring-one"></i><i class="orbit-ring orbit-ring-two"></i>
+          </div>
+        </section>
+        <div class="agent-workspace-metrics" aria-live="polite">
+          <article class="agent-metric-card"><span class="agent-metric-label">已启用 Agent</span><strong id="agent-metric-enabled">—</strong><span class="agent-metric-foot">可参与任务的角色</span></article>
+          <article class="agent-metric-card"><span class="agent-metric-label">模型供应商</span><strong id="agent-metric-providers">—</strong><span class="agent-metric-foot">独立管理接口与凭据</span></article>
+          <article class="agent-metric-card agent-metric-default"><span class="agent-metric-label">默认执行角色</span><strong id="agent-metric-default">尚未配置</strong><span id="agent-metric-default-model" class="agent-metric-foot">先添加供应商和 Agent</span></article>
+        </div>
+        <nav class="agent-workspace-tabs" role="tablist" aria-label="Agent 工作区导航">
+          <button id="agent-tab-team" class="agent-workspace-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="agent-panel-team" data-agent-tab="team">
+            <span>Agent 团队</span><small id="agent-tab-team-meta">角色与职责</small>
+          </button>
+          <button id="agent-tab-providers" class="agent-workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="agent-panel-providers" data-agent-tab="providers">
+            <span>模型供应商</span><small id="agent-tab-provider-meta">连接与模型</small>
+          </button>
+          <button id="agent-tab-tasks" class="agent-workspace-tab" type="button" role="tab" aria-selected="false" aria-controls="agent-panel-tasks" data-agent-tab="tasks">
+            <span>任务工作台</span><small id="agent-tab-task-meta">协作与结果</small>
+          </button>
+        </nav>
+
+        <div class="agent-workspace-savebar">
+          <div class="agent-savebar-copy">
+            <span id="agent-workspace-save-state" class="agent-save-state" role="status">正在读取配置…</span>
+            <small>Agent 与供应商修改共用一次保存；运行任务前必须先保存。</small>
+          </div>
+          <button id="mc-save" class="primary agent-save-button" type="button">保存工作区</button>
+        </div>
+
+        <section id="agent-panel-team" class="agent-tab-panel is-active" role="tabpanel" aria-labelledby="agent-tab-team" data-agent-panel="team">
+          <section class="panel agent-config-panel">
+            <div class="agent-section-intro">
+              <div>
+                <span class="agent-section-index">01 / YOUR AGENT TEAM</span>
+                <h2>角色与职责</h2>
+                <p>为不同工作分配清晰角色。一个模型可以支撑多个角色，每个角色拥有独立的职责说明和系统提示词。</p>
+              </div>
+              <span id="agent-team-health" class="agent-section-status">正在读取团队…</span>
+            </div>
+            <div class="agent-team-toolbar">
+              <div>
+                <h3>快速创建角色</h3>
+                <p>从常用角色开始，再按你的模型能力调整提示词。</p>
+              </div>
+              <button id="agent-add" class="secondary" type="button">＋ 自定义 Agent</button>
+            </div>
+            <div class="agent-role-templates" aria-label="Agent 角色模板">
+              <button class="agent-role-template" type="button" data-agent-role-template="exam-tutor">
+                <span class="agent-template-mark">教</span>
+                <span><strong>备考导师</strong><small>知识讲解 · 考点拆解</small></span>
+                <span class="agent-template-add" aria-hidden="true">＋</span>
+              </button>
+              <button class="agent-role-template" type="button" data-agent-role-template="architecture-reviewer">
+                <span class="agent-template-mark">评</span>
+                <span><strong>架构评审</strong><small>方案对比 · 风险检查</small></span>
+                <span class="agent-template-add" aria-hidden="true">＋</span>
+              </button>
+              <button class="agent-role-template" type="button" data-agent-role-template="source-checker">
+                <span class="agent-template-mark">核</span>
+                <span><strong>资料核查员</strong><small>证据定位 · 事实核验</small></span>
+                <span class="agent-template-add" aria-hidden="true">＋</span>
+              </button>
+            </div>
+            <div class="agent-list-heading">
+              <div><h3>已配置的 Agent</h3><p>调整角色、模型和可用状态；关闭高级设置可让列表保持紧凑。</p></div>
+              <label class="agent-default-field">默认执行角色<select id="agent-default" aria-label="默认执行 Agent"></select></label>
+            </div>
+            <div id="agent-list" class="agent-config-list"></div>
+          </section>
+        </section>
+
+        <section id="agent-panel-providers" class="agent-tab-panel" role="tabpanel" aria-labelledby="agent-tab-providers" data-agent-panel="providers" hidden>
+          <section class="panel agent-config-panel agent-provider-panel">
+            <div class="agent-section-intro">
+              <div>
+                <span class="agent-section-index">02 / MODEL CONNECTIONS</span>
+                <h2>模型供应商</h2>
+                <p>统一管理 API 兼容服务和本机 Claude CLI。凭据保存在本机服务端；更换供应商不会自动更改已有 Agent 的绑定。</p>
+              </div>
+              <button id="mc-add-provider" class="secondary" type="button">＋ 添加供应商</button>
+            </div>
+            <div class="agent-provider-guidance">
+              <span class="agent-provider-guidance-icon" aria-hidden="true">i</span>
+              <p>先填写接口地址和 API Key，再获取模型列表。Agent 绑定的是具体供应商和模型；修改后记得保存工作区。</p>
+            </div>
+            <div id="provider-list" class="provider-list"></div>
+            <div id="mc-fetch-result" class="mc-fetch-result" role="status" aria-live="polite" hidden></div>
+          </section>
+        </section>
+
+        <section id="agent-panel-tasks" class="agent-tab-panel" role="tabpanel" aria-labelledby="agent-tab-tasks" data-agent-panel="tasks" hidden>
+          <section class="panel agent-task-panel">
+            <div class="agent-section-intro agent-task-intro">
+              <div>
+                <span class="agent-section-index">03 / TASK ORCHESTRATION</span>
+                <h2>协作任务</h2>
+                <p>描述一个明确任务，选择参与角色并运行。这里展示本次调用结果，不会自动写入题库或学习进度。</p>
+              </div>
+              <span class="agent-task-local-note"><span aria-hidden="true"></span> 服务端持久任务</span>
+            </div>
+            <details id="agent-task-history-details" class="agent-task-history">
+              <summary>
+                <span class="agent-task-history-summary-copy"><strong>近期任务历史</strong><small>仅保存你主动留存的结果</small></span>
+                <span id="agent-task-history-count" class="agent-task-history-count">0 / 8 条</span>
+              </summary>
+              <div class="agent-task-history-panel">
+                <div class="agent-task-history-toolbar">
+                  <p>此处仅保存你主动留存的最近 8 条浏览器历史，保存在当前浏览器 localStorage，不做应用层加密，也不会上传到服务端。已提交任务的提示词、回答和执行事件另存于服务端本机 SQLite，终态任务最长保留 7 天，供页面关闭后恢复；请勿提交密码、API Key 或其他敏感内容。</p>
+                  <button id="agent-task-history-clear" class="ghost" type="button" disabled>清空历史</button>
+                </div>
+                <div id="agent-task-history-list" class="agent-task-history-list" role="list" aria-live="polite"></div>
+              </div>
+            </details>
+            <div class="agent-task-layout">            </details>
+            <section class="agent-server-tasks">
+              <div class="agent-server-tasks-heading">
+                <div><h3>服务端任务记录</h3><p>页面断开不影响后台执行；重新打开后可继续跟踪、查看结果或取消。</p></div>
+                <div class="agent-server-tasks-toolbar"><span id="agent-server-task-count">0</span><button id="agent-server-task-refresh" class="ghost" type="button">刷新</button></div>
+              </div>
+              <div id="agent-server-task-list" class="agent-server-task-list" role="list" aria-live="polite">
+                <p class="agent-server-task-empty">正在读取服务端任务…</p>
+              </div>
+            </section>
+            <div class="agent-task-layout">
+              <div class="agent-task-main">
+                <div class="agent-strategy-heading"><div><h3>选择协作方式</h3><p>先确定协作结构，再选择参与角色。</p></div></div>
+                <div class="agent-strategy-grid" role="group" aria-label="Agent 协作策略">
+                  <button class="agent-strategy-card is-selected" type="button" aria-pressed="true" data-agent-strategy="single"><span class="agent-strategy-icon" aria-hidden="true">01</span><strong>单 Agent</strong><span>由一个角色独立完成任务</span><small>1 次调用 · 适合日常任务</small></button>
+                  <button class="agent-strategy-card" type="button" aria-pressed="false" data-agent-strategy="parallel"><span class="agent-strategy-icon" aria-hidden="true">02</span><strong>并行回答</strong><span>多个角色同时给出独立观点</span><small>最多 4 个 Agent · 便于比较</small></button>
+                  <button class="agent-strategy-card" type="button" aria-pressed="false" data-agent-strategy="battle"><span class="agent-strategy-icon" aria-hidden="true">03</span><strong>对战评审</strong><span>多份答案交给评审角色综合</span><small>额外 1 次评审调用</small></button>
+                </div>
+                <select id="agent-task-strategy" class="agent-strategy-source" aria-label="协作策略" aria-hidden="true" tabindex="-1"><option value="single">单 Agent</option><option value="parallel">并行回答</option><option value="battle">对战评审</option></select>
+                <div id="agent-strategy-preview" class="agent-strategy-preview" aria-live="polite">
+                  <span class="agent-strategy-preview-mark" aria-hidden="true">01</span>
+                  <div><strong id="agent-strategy-preview-title">单 Agent · 独立完成</strong><p id="agent-strategy-preview-copy">由一个角色处理任务，适合日常答疑和内容起草。</p></div>
+                  <span id="agent-task-call-estimate" class="agent-task-call-estimate">预计 1 次模型调用</span>
+                </div>
+                <div class="agent-task-selection">
+                  <div class="agent-task-selection-heading"><div><h3>参与本次任务</h3><p>并行与对战至少选择 2 个已启用 Agent，最多 4 个。</p></div><span id="agent-selected-count" class="agent-selected-count">已选 1 个</span></div>
+                  <fieldset class="agent-task-members"><legend class="sr-only">选择参与任务的 Agent</legend><div id="agent-task-members"></div></fieldset>
+                  <label id="agent-task-judge-wrap" class="agent-judge-field" hidden><span>评审角色</span><select id="agent-task-judge" aria-label="选择评审 Agent"></select><small>评审 Agent 会读取成功返回的候选答案，并生成一份综合结果。</small></label>
+                  <p id="agent-task-validation" class="agent-task-validation" role="alert" hidden></p>
+                </div>
+                <div class="agent-prompt-heading"><div><h3>描述你的任务</h3><p>给出背景、目标和期望输出。可以从常用模板开始修改。</p></div><span class="agent-prompt-limit">最多 16,000 字</span></div>
+                <textarea id="agent-task-prompt" rows="6" maxlength="16000" aria-label="Agent 任务内容" placeholder="例如：请从系统架构设计师考试的角度，比较事件驱动架构与消息队列的关系。列出适用场景、可靠性风险和容易混淆的考点。"></textarea>
+                <div class="agent-prompt-footer">
+                  <div class="agent-prompt-templates" aria-label="任务模板"><span>试试：</span><button type="button" data-agent-prompt-template="请从系统架构设计师考试的角度解释这个概念，先给定义，再说明核心机制、适用场景、优缺点和易混淆点：">概念讲解</button><button type="button" data-agent-prompt-template="请对比以下两个架构方案，按适用场景、质量属性、复杂度、风险和成本逐项分析，最后给出选择建议：">方案对比</button><button type="button" data-agent-prompt-template="请以架构评审的方式检查以下设计，列出关键风险、潜在故障点、安全问题和可执行的改进建议：">架构评审</button></div>
+                  <span id="agent-task-char-count" class="agent-task-char-count" aria-live="polite">0 / 16,000</span>
+                </div>
+                <div class="agent-task-actions">
+                  <button id="agent-task-run" class="primary agent-task-run-button" type="button">运行 Agent 任务 <span aria-hidden="true">→</span></button>
+                  <div id="agent-task-progress" class="generate-progress agent-task-progress" hidden><span class="spinner" aria-hidden="true"></span><span id="agent-task-progress-text" role="status" aria-live="polite">正在运行 Agent 任务…</span><div id="agent-task-plan" class="agent-task-plan" hidden></div><div id="agent-task-progress-roles" class="agent-task-progress-roles" aria-live="polite"></div><button id="agent-task-cancel" class="ghost generation-cancel" type="button" hidden>停止任务</button></div>
+                  <span class="agent-task-cost-hint">调用次数为估算值；实际费用取决于模型和 token 用量。</span>
+                </div>
+              </div>
+              <aside class="agent-task-aside">
+                <div class="agent-task-aside-card"><span class="agent-aside-icon" aria-hidden="true">↗</span><h3>如何选择策略？</h3><div class="agent-strategy-guide"><div><strong>单 Agent</strong><p>日常问答、概念解释、草稿生成。</p></div><div><strong>并行回答</strong><p>需要不同视角、交叉检查或方案对比。</p></div><div><strong>对战评审</strong><p>希望在多份答案基础上得到一份综合结论。</p></div></div></div>
+                <div class="agent-task-safety-note"><strong>使用边界</strong><p>Agent 输出是模型生成内容，可能遗漏或出错。关键结论请核对教材、正式资料和原始证据。</p><p>任务结果默认不保存。点击保存后，仅留在当前浏览器最近 8 条记录中；可逐条删除或一键清空。</p></div>
+              </aside>
+            </div>
+            <div id="agent-task-result" class="agent-task-result" role="region" aria-live="polite" aria-label="Agent 任务结果" hidden></div>
+          </section>
+        </section>
+      </section>
+
         <div class="page-heading">
           <div>
             <h1>数据管理</h1>
@@ -837,68 +1029,6 @@
             <span id="content-health-status" class="availability"></span>
           </div>
           <div id="content-health-body" aria-busy="false" aria-live="polite"></div>
-        </section>
-        <section class="panel data-panel model-config-panel">
-          <div class="panel-heading">
-            <div>
-              <h2>模型配置</h2>
-            </div>
-            <span class="availability">多个供应商 · 默认单 Agent</span>
-          </div>
-          <div class="workspace-section-heading">
-            <div>
-              <h3>供应商</h3>
-              <p>每个供应商保存自己的接口和模型列表，API Key 只在本机服务端使用。</p>
-            </div>
-            <button id="mc-add-provider" class="secondary" type="button">添加供应商</button>
-          </div>
-          <div id="provider-list" class="provider-list"></div>
-          <div class="workspace-section-heading agent-section-heading">
-            <div>
-              <h3>Agent</h3>
-              <p>用角色提示词固定职责；单 Agent 适合日常生成，并行和对战只在明确选择时调用多个模型。</p>
-            </div>
-            <button id="agent-add" class="secondary" type="button">添加 Agent</button>
-          </div>
-          <div id="agent-list" class="agent-config-list"></div>
-          <div class="workspace-default-row">
-            <label>默认 Agent<select id="agent-default"></select></label>
-            <button id="mc-save" class="primary" type="button">保存工作区</button>
-          </div>
-          <div id="mc-fetch-result" class="mc-fetch-result" hidden></div>
-          <section class="agent-task-panel">
-            <div class="workspace-section-heading">
-              <div>
-                <h3>Agent 工作台</h3>
-                <p>把需要比较的任务放在这里。结果不会自动写入题库，确认后再复制到具体工作流。</p>
-              </div>
-            </div>
-            <div class="agent-task-controls">
-              <label>协作策略<select id="agent-task-strategy">
-                <option value="single">单 Agent · 1 次调用</option>
-                <option value="parallel">并行回答 · 比较多个结果</option>
-                <option value="battle">对战评审 · 再综合 1 次</option>
-              </select></label>
-              <label>评审 Agent<select id="agent-task-judge"></select></label>
-            </div>
-            <fieldset class="agent-task-members">
-              <legend>参与 Agent</legend>
-              <div id="agent-task-members"></div>
-            </fieldset>
-            <label>任务<textarea id="agent-task-prompt" rows="5" placeholder="例如：比较事件驱动架构与消息队列在高并发系统中的边界，并给出备考时容易混淆的概念。"></textarea></label>
-            <div class="agent-task-actions">
-              <button id="agent-task-run" class="primary" type="button">运行任务</button>
-              <div id="agent-task-progress" class="generate-progress" hidden>
-                <span class="spinner" aria-hidden="true"></span>
-                <span id="agent-task-progress-text">正在运行 Agent 任务…</span>
-                <button id="agent-task-cancel" class="ghost generation-cancel" type="button" hidden>
-                  停止任务
-                </button>
-              </div>
-              <span class="muted">对战模式会额外调用评审 Agent</span>
-            </div>
-            <div id="agent-task-result" class="agent-task-result" hidden></div>
-          </section>
         </section>
         <section class="panel data-panel">
           <div class="data-row">
@@ -1076,6 +1206,6 @@
       </div>
     </dialog>
     <div id="toast" role="status" aria-live="polite"></div>
-    <script type="module" src="/app.js?v=20261010-full-audit1"></script>
+    <script type="module" src="/app.js?v=20261103-agent-persistent1"></script>
   </body>
 </html>

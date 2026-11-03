@@ -6,8 +6,43 @@ export function element(tag, { className, text, attrs = {} } = {}, children = []
   const node = document.createElement(tag);
   if (className) node.className = className;
   if (text !== undefined) node.textContent = String(text);
-  for (const [key, value] of Object.entries(attrs))
+  const booleanAttributes = new Set([
+    "allowfullscreen",
+    "async",
+    "autofocus",
+    "autoplay",
+    "checked",
+    "controls",
+    "default",
+    "defer",
+    "disabled",
+    "formnovalidate",
+    "hidden",
+    "inert",
+    "ismap",
+    "itemscope",
+    "loop",
+    "multiple",
+    "muted",
+    "nomodule",
+    "novalidate",
+    "open",
+    "playsinline",
+    "readonly",
+    "required",
+    "reversed",
+    "selected",
+  ]);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value === null || value === undefined) continue;
+    if (booleanAttributes.has(key.toLowerCase())) {
+      if (value) node.setAttribute(key, "");
+      else node.removeAttribute(key);
+      if (key in node) node[key] = Boolean(value);
+      continue;
+    }
     node.setAttribute(key, String(value));
+  }
   node.append(...children.filter(Boolean));
   return node;
 }

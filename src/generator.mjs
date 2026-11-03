@@ -10,6 +10,134 @@ import {
   readMindMap,
 } from "./mindmap.mjs";
 import { validateEssaySample } from "./essay.mjs";
+export const AGENT_OUTPUT_QUALITY_GATE = "agent-output-contract-v1";
+
+const MAX_ANSWER_LENGTH = 40_000;
+const MAX_LIST_ITEMS = 12;
+const MAX_LIST_ITEM_LENGTH = 1_000;
+
+export function buildAgentTaskPlan({ strategy = "single", agents = [], judgeAgent = null } = {}) {
+  if (!["single", "parallel", "battle"].includes(strategy)) {
+    throw new TypeError("不支持的 Agent 协作策略");
+  }
+  const selected = (Array.isArray(agents) ? agents : []).slice(0, strategy === "single" ? 1 : 4);
+  const workerSteps = selected.map((agent, index) => ({
+    id: `worker-${index + 1}`,
+    type: "worker",
+    role: "worker",
+    agentId: String(agent?.id || ""),
+    agentName: String(agent?.name || `Worker ${index + 1}`),
+    dependsOn: [],
+    execution: strategy === "single" ? "direct" : "parallel",
+  }));
+  const steps = [...workerSteps];
+  if (strategy === "battle" && judgeAgent) {
+    steps.push({
+      id: "review",
+      type: "review",
+      role: "evaluator",
+      agentId: String(judgeAgent.id || ""),
+      agentName: String(judgeAgent.name || "综合评审 Agent"),
+      dependsOn: workerSteps.map((step) => step.id),
+      minimumSuccessfulDependencies: 2,
+      execution: "after_workers",
+      onInsufficientDependencies: "skip",
+    });
+  }
+  return {
+    version: 1,
+    router: {
+      id: "local-deterministic-router",
+      mode: "deterministic",
+      decision: strategy === "battle"
+        ? "并行派发候选 Worker；至少两个成功后启动独立评审"
+        : strategy === "parallel"
+          ? "并行派发相互隔离的 Worker"
+          : "派发一个 Worker",
+    },
+    strategy,
+    execution: {
+      mode: strategy === "single" ? "single" : "parallel_then_review",
+      workerCount: workerSteps.length,
+      maxParallelWorkers: workerSteps.length,
+    },
+    steps,
+    qualityGates: [
+      {
+        id: AGENT_OUTPUT_QUALITY_GATE,
+        stage: "worker_and_review",
+        scope: "contract_only",
+        checks: ["answer_non_empty", "answer_size", "confidence_range", "key_points_shape", "concerns_shape"],
+      },
+      ...(strategy === "battle" ? [{
+        id: "battle-review-quorum",
+        stage: "review",
+        minimumSuccessfulWorkers: 2,
+      }] : []),
+    ],
+  };
+}
+
+export function evaluateAgentOutput(output) {
+  const issues = [];
+  const value = output && typeof output === "object" && !Array.isArray(output) ? output : {};
+  if (typeof value.answer !== "string" || !value.answer.trim()) {
+    issues.push("answer_required");
+  } else if (value.answer.length > MAX_ANSWER_LENGTH) {
+    issues.push("answer_too_large");
+  }
+  if (!Number.isFinite(value.confidence) || value.confidence < 0 || value.confidence > 1) {
+    issues.push("confidence_out_of_range");
+  }
+  for (const key of ["key_points", "concerns"]) {
+    const list = value[key];
+    if (!Array.isArray(list)) {
+      issues.push(`${key}_must_be_array`);
+      continue;
+    }
+    if (list.length > MAX_LIST_ITEMS) issues.push(`${key}_too_many_items`);
+    if (list.some((item) => typeof item !== "string" || !item.trim() || item.length > MAX_LIST_ITEM_LENGTH)) {
+      issues.push(`${key}_contains_invalid_item`);
+    }
+  }
+  return {
+    gate: AGENT_OUTPUT_QUALITY_GATE,
+    passed: issues.length === 0,
+    issues,
+  };
+}
+
+export function summarizeAgentTaskQuality({ results = [], strategy = "single", synthesis = null, synthesisError = "" } = {}) {
+  const items = Array.isArray(results) ? results : [];
+  const workers = {
+    passed: items.filter((item) => item?.quality?.passed === true).length,
+    failed: items.filter((item) => item?.quality?.passed === false).length,
+    notEvaluated: items.filter((item) => item?.quality?.passed == null).length,
+  };
+  const review = strategy !== "battle"
+    ? "not_required"
+    : synthesis
+      ? "passed"
+      : synthesisError
+        ? "failed"
+        : "skipped";
+  const workerCount = items.length;
+  const allWorkersPassed = workerCount > 0 && workers.passed === workerCount;
+  const status = allWorkersPassed && review !== "failed"
+    ? "passed"
+    : workers.passed > 0 || review === "passed"
+      ? "partial"
+      : "failed";
+  return {
+    gate: AGENT_OUTPUT_QUALITY_GATE,
+    status,
+    workers,
+    review,
+    note: "该门禁只检查输出结构与完整性，不判断事实、推理或引用是否正确。",
+  };
+}
+
+
 
 const MAX_SOURCE_CHARACTERS = 120_000;
 
@@ -1584,7 +1712,15 @@ export class QuestionGenerator {
     agentIds = [],
     judgeAgentId,
     signal,
+    onProgress,
   } = {}) {
+    const notify = (event) => {
+      try {
+        onProgress?.({ at: new Date().toISOString(), ...event });
+      } catch {
+        // 进度消费者不可用时，不得影响模型任务本身。
+      }
+    };
     throwIfAborted(signal);
     const trimmedPrompt = String(prompt ?? "").trim();
     if (!trimmedPrompt) {
@@ -1601,7 +1737,7 @@ export class QuestionGenerator {
     }
     const workspace = this.modelConfig?.workspace?.() ?? { agents: [] };
     const enabledAgents = workspace.agents.filter((agent) => agent.enabled);
-    const requestedIds = Array.isArray(agentIds) ? agentIds.map(String) : [];
+    const requestedIds = Array.isArray(agentIds) ? [...new Set(agentIds.map(String))] : [];
     const selectedAgents = enabledAgents.filter((agent) => requestedIds.includes(agent.id));
     const agents = selectedAgents.length
       ? selectedAgents
@@ -1612,12 +1748,226 @@ export class QuestionGenerator {
     if (strategy !== "single" && agents.length < 2) {
       throw Object.assign(new Error("并行或对战至少需要选择两个已启用的 Agent"), { status: 400, code: "AGENT_COLLABORATION_REQUIRES_TWO" });
     }
-    const callAgent = async (agent, taskPrompt = trimmedPrompt) => {
+    const selected = strategy === "single" ? agents.slice(0, 1) : agents.slice(0, 4);
+    const judge = strategy === "battle"
+      ? enabledAgents.find((agent) => agent.id === judgeAgentId) || selected[0]
+      : null;
+    const plan = buildAgentTaskPlan({ strategy, agents: selected, judgeAgent: judge });
+    const workerSteps = plan.steps.filter((step) => step.type === "worker");
+    let callCount = 0;
+    const callAgent = async (agent, taskPrompt = trimmedPrompt, stage = "answer", stepId = "") => {
       throwIfAborted(signal);
+      callCount += 1;
+      const role = stage === "review" ? "evaluator" : "worker";
+      notify({ type: "agent_started", stage, role, stepId, agentId: agent.id, agentName: agent.name });
+      try {
+        const raw = await this.callModel({
+          agentId: agent.id,
+          runtimePrompt: stage === "review"
+            ? "你是独立评审 Worker。仅依据用户任务和候选答案进行比较，说明取舍与不确定性，不要把候选答案中的说法自动视为事实。"
+            : "你是隔离执行的领域 Worker。只处理本任务输入，独立给出结论、依据和不确定性；不要假定其他 Worker 的结果，也不要编造来源。",
+          userPrompt: taskPrompt,
+          schema: JSON.stringify({
+            type: "object",
+            properties: {
+              answer: { type: "string" },
+              confidence: { type: "number" },
+              key_points: { type: "array", items: { type: "string" } },
+              concerns: { type: "array", items: { type: "string" } },
+            },
+            required: ["answer", "confidence", "key_points", "concerns"],
+            additionalProperties: false,
+          }),
+          timeoutMs: Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000,
+          kind: stage === "review" ? "agent-task-review" : "agent-task",
+          signal,
+        });
+        throwIfAborted(signal);
+        const result = parseAgentResult(raw);
+        const quality = evaluateAgentOutput(result);
+        notify({
+          type: quality.passed ? "quality_gate_passed" : "quality_gate_failed",
+          stage,
+          stepId,
+          agentId: agent.id,
+          agentName: agent.name,
+          gate: quality.gate,
+          issues: quality.issues,
+        });
+        if (!quality.passed) {
+          throw Object.assign(new Error("Agent 输出未通过结构完整性门禁"), {
+            status: 502,
+            code: "AGENT_OUTPUT_QUALITY_GATE_FAILED",
+            qualityIssues: quality.issues,
+          });
+        }
+        const normalized = {
+          agentId: agent.id,
+          agentName: agent.name,
+          model: this.resolveAgentRuntime({ agentId: agent.id }).model,
+          answer: result.answer.trim(),
+          confidence: result.confidence,
+          keyPoints: result.key_points.map((item) => item.trim()).filter(Boolean),
+          concerns: result.concerns.map((item) => item.trim()).filter(Boolean),
+          quality,
+        };
+        notify({ type: "agent_completed", stage, role, stepId, agentId: agent.id, agentName: agent.name });
+        return normalized;
+      } catch (error) {
+        if (!signal?.aborted) {
+          notify({
+            type: "agent_failed",
+            stage,
+            role,
+            stepId,
+            agentId: agent.id,
+            agentName: agent.name,
+            errorCode: error?.code || "AGENT_WORKER_FAILED",
+            qualityIssues: Array.isArray(error?.qualityIssues) ? error.qualityIssues : [],
+            error: String(error?.message || "调用失败").slice(0, 1000),
+          });
+          if (!error?.qualityIssues) {
+            notify({ type: "quality_gate_skipped", stage, stepId, agentId: agent.id, reason: "OUTPUT_NOT_AVAILABLE" });
+          }
+        }
+        throw error;
+      }
+    };
+
+    this.running = true;
+    try {
+      notify({ type: "plan_created", plan });
+      notify({
+        type: "task_started",
+        strategy,
+        totalAgents: selected.length,
+        agentIds: selected.map((agent) => agent.id),
+      });
+      const settled = await Promise.allSettled(selected.map((agent, index) =>
+        callAgent(agent, trimmedPrompt, "answer", workerSteps[index]?.id || ""),
+      ));
+      throwIfAborted(signal);
+      const results = settled.map((item, index) =>
+        item.status === "fulfilled"
+          ? item.value
+          : {
+              agentId: selected[index].id,
+              agentName: selected[index].name,
+              error: String(item.reason?.message || "调用失败").slice(0, 1000),
+              errorCode: item.reason?.code || "AGENT_WORKER_FAILED",
+              quality: item.reason?.qualityIssues
+                ? { gate: "agent-output-contract-v1", passed: false, issues: item.reason.qualityIssues }
+                : { gate: "agent-output-contract-v1", passed: null, issues: [] },
+            },
+      );
+      const successful = results.filter((result) => !result.error);
+      let synthesis = null;
+      let synthesisError = "";
+      if (strategy === "battle" && successful.length >= 2) {
+        throwIfAborted(signal);
+        const comparison = successful
+          .map((result) => `【${result.agentName}】\n${result.answer}\n关注点：${result.concerns.join("；")}`)
+          .join("\n\n");
+        notify({ type: "review_started", stepId: "review", role: "evaluator", agentId: judge.id, agentName: judge.name });
+        try {
+          const judged = await callAgent(
+            judge,
+            `${trimmedPrompt}\n\n请评审以下多个候选答案，指出各自优缺点，给出一个综合后的最终答案。\n${comparison}`,
+            "review",
+            "review",
+          );
+          throwIfAborted(signal);
+          synthesis = { ...judged, mode: "battle", judgedBy: judge.name };
+        } catch (error) {
+          if (signal?.aborted) throw error;
+          synthesisError = String(error?.message || "综合评审失败").slice(0, 1000);
+          notify({ type: "review_failed", stepId: "review", agentId: judge.id, agentName: judge.name, error: synthesisError });
+        }
+      } else if (strategy === "battle") {
+        notify({
+          type: "review_skipped",
+          reason: "INSUFFICIENT_ANSWERS",
+          successfulAgents: successful.length,
+          requiredAgents: 2,
+        });
+      }
+      const quality = summarizeAgentTaskQuality({ results, strategy, synthesis, synthesisError });
+      const result = { strategy, plan, results, synthesis, synthesisError, quality, callCount };
+      notify({
+        type: "task_completed",
+        callCount,
+        successfulAgents: successful.length,
+        failedAgents: results.length - successful.length,
+        reviewCompleted: Boolean(synthesis),
+        reviewFailed: Boolean(synthesisError),
+        qualityStatus: quality.status,
+      });
+      return result;
+    } finally {
+      this.running = false;
+    }
+  }
+
+  async reviewAgentTask({
+    prompt,
+    results = [],
+    judgeAgentId,
+    signal,
+    onProgress,
+  } = {}) {
+    const notify = (event) => {
+      try {
+        onProgress?.({ at: new Date().toISOString(), ...event });
+      } catch {
+        // 进度消费者不可用时，不得影响模型任务本身。
+      }
+    };
+    throwIfAborted(signal);
+    const trimmedPrompt = String(prompt ?? "").trim();
+    if (!trimmedPrompt) {
+      throw Object.assign(new Error("请先输入任务内容"), { status: 400, code: "AGENT_PROMPT_REQUIRED" });
+    }
+    const candidates = (Array.isArray(results) ? results : [])
+      .filter((item) => item && !item.error && String(item.answer || "").trim())
+      .slice(0, 4)
+      .map((item) => ({
+        agentName: String(item.agentName || "Agent").slice(0, 120),
+        answer: String(item.answer).slice(0, 30_000),
+        concerns: Array.isArray(item.concerns) ? item.concerns.slice(0, 12).map((value) => String(value).slice(0, 1000)) : [],
+      }));
+    if (candidates.length < 2) {
+      throw Object.assign(new Error("至少需要两个成功的 Agent 回答才能重新评审"), {
+        status: 400,
+        code: "AGENT_REVIEW_REQUIRES_TWO",
+      });
+    }
+    if (this.running) {
+      throw Object.assign(new Error("已有 Agent 任务正在运行，请稍后重试"), {
+        status: 409,
+        code: "LLM_GENERATION_BUSY",
+      });
+    }
+    const workspace = this.modelConfig?.workspace?.() ?? { agents: [] };
+    const enabledAgents = workspace.agents.filter((agent) => agent.enabled);
+    const judge = enabledAgents.find((agent) => agent.id === judgeAgentId)
+      || enabledAgents.find((agent) => agent.id === workspace.defaultAgentId)
+      || enabledAgents[0];
+    if (!judge) {
+      throw Object.assign(new Error("请先配置并启用评审 Agent"), {
+        status: 400,
+        code: "AGENT_NOT_CONFIGURED",
+      });
+    }
+    const comparison = candidates
+      .map((item) => `【${item.agentName}】\n${item.answer}\n关注点：${item.concerns.join("；")}`)
+      .join("\n\n");
+    this.running = true;
+    notify({ type: "review_started", agentId: judge.id, agentName: judge.name, retry: true });
+    try {
       const raw = await this.callModel({
-        agentId: agent.id,
-        runtimePrompt: "你正在参与一个受控的 Agent 协作任务。请只根据任务内容作答，区分事实、推断和不确定性。",
-        userPrompt: taskPrompt,
+        agentId: judge.id,
+        runtimePrompt: "你是一名严谨的架构评审员。请比较候选答案，区分事实、推断与不确定性，避免编造依据。",
+        userPrompt: `${trimmedPrompt}\n\n请评审以下多个候选答案，指出各自优缺点，给出一个综合后的最终答案。\n${comparison}`,
         schema: JSON.stringify({
           type: "object",
           properties: {
@@ -1630,51 +1980,55 @@ export class QuestionGenerator {
           additionalProperties: false,
         }),
         timeoutMs: Number(process.env.ARCHITECT_AGENT_TIMEOUT_MS) || 600_000,
-        kind: "agent-task",
+        kind: "agent-task-review",
         signal,
       });
       throwIfAborted(signal);
-      const result = parseAgentResult(raw);
-      return {
-        agentId: agent.id,
-        agentName: agent.name,
-        model: this.resolveAgentRuntime({ agentId: agent.id }).model,
-        answer: String(result.answer || "").trim(),
-        confidence: Math.max(0, Math.min(1, Number(result.confidence) || 0)),
-        keyPoints: Array.isArray(result.key_points) ? result.key_points.map(String).filter(Boolean) : [],
-        concerns: Array.isArray(result.concerns) ? result.concerns.map(String).filter(Boolean) : [],
+      const value = parseAgentResult(raw);
+      const quality = evaluateAgentOutput(value);
+      notify({
+        type: quality.passed ? "quality_gate_passed" : "quality_gate_failed",
+        stage: "review",
+        stepId: "review",
+        agentId: judge.id,
+        agentName: judge.name,
+        gate: quality.gate,
+        issues: quality.issues,
+      });
+      if (!quality.passed) {
+        throw Object.assign(new Error("综合评审输出未通过结构完整性门禁"), {
+          status: 502,
+          code: "AGENT_OUTPUT_QUALITY_GATE_FAILED",
+          qualityIssues: quality.issues,
+        });
+      }
+      const synthesis = {
+        agentId: judge.id,
+        agentName: judge.name,
+        model: this.resolveAgentRuntime({ agentId: judge.id }).model,
+        judgedBy: judge.name,
+        mode: "battle",
+        answer: value.answer.trim(),
+        confidence: value.confidence,
+        keyPoints: value.key_points.map((item) => item.trim()).filter(Boolean),
+        concerns: value.concerns.map((item) => item.trim()).filter(Boolean),
+        quality,
       };
-    };
-    this.running = true;
-    try {
-      const settled = await Promise.allSettled(
-        (strategy === "single" ? agents.slice(0, 1) : agents.slice(0, 4)).map((agent) => callAgent(agent)),
-      );
-      throwIfAborted(signal);
-      const results = settled.map((item, index) =>
-        item.status === "fulfilled"
-          ? item.value
-          : { agentId: agents[index].id, agentName: agents[index].name, error: item.reason?.message || "调用失败" },
-      );
-      const successful = results.filter((result) => !result.error);
-      if (!successful.length) {
-        throw Object.assign(new Error("所有选中的 Agent 都调用失败"), { status: 502, code: "AGENT_ALL_FAILED" });
+      notify({ type: "agent_completed", stage: "review", agentId: judge.id, agentName: judge.name });
+      return { synthesis, callCount: 1 };
+    } catch (error) {
+      if (!signal?.aborted) {
+        notify({
+          type: "agent_failed",
+          stage: "review",
+          agentId: judge.id,
+          agentName: judge.name,
+          errorCode: error?.code || "AGENT_REVIEW_FAILED",
+          qualityIssues: Array.isArray(error?.qualityIssues) ? error.qualityIssues : [],
+          error: String(error?.message || "综合评审失败").slice(0, 1000),
+        });
       }
-      let synthesis = null;
-      if (strategy === "battle" && successful.length >= 2) {
-        throwIfAborted(signal);
-        const judge = enabledAgents.find((agent) => agent.id === judgeAgentId) || agents[0];
-        const comparison = successful
-          .map((result) => `【${result.agentName}】\n${result.answer}\n关注点：${result.concerns.join("；")}`)
-          .join("\n\n");
-        const judged = await callAgent(
-          judge,
-          `${trimmedPrompt}\n\n请评审以下多个候选答案，指出各自优缺点，给出一个综合后的最终答案。\n${comparison}`,
-        );
-        throwIfAborted(signal);
-        synthesis = { ...judged, mode: "battle", judgedBy: judge.name };
-      }
-      return { strategy, results, synthesis };
+      throw error;
     } finally {
       this.running = false;
     }

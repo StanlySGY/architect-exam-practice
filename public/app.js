@@ -3,6 +3,13 @@ import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
 import { $, element, emptyMessage } from "/ui.js";
 import {
+import {
+  AGENT_TASK_HISTORY_LIMIT,
+  clearAgentTaskHistory,
+  loadAgentTaskHistory,
+  removeAgentTaskHistory,
+  saveAgentTaskHistory,
+} from "/agent-task-history.mjs";
   currentWikiGraph,
   destroyWikiGraph,
   fitWikiGraph,
@@ -38,6 +45,16 @@ const state = {
   loadVersions: new Map(),
   modelWorkspace: { providers: [], agents: [], defaultAgentId: "" },
   caseOffset: 0,
+  modelWorkspaceSavedSignature: "",
+  modelWorkspaceLoaded: false,
+  agentSelectedIds: null,
+  agentWorkspaceTab: "team",
+  lastAgentTask: null,
+  agentTaskHistory: [],
+  agentTaskBusy: false,
+  agentTaskProgressRows: new Map(),
+  activeAgentTaskId: "",
+  agentServerTasks: [],
   caseLimit: 4,
   caseTotal: 0,
   caseLoadId: 0,
@@ -313,6 +330,397 @@ async function api(path, options = {}, authRetried = false) {
 }
 
 function resolveElements(target) {
+async function streamAgentRequest(path, body, {
+  signal: callerSignal,
+  timeoutMs = LONG_API_TIMEOUT_MS,
+  onProgress = () => {},
+} = {}, authRetried = false) {
+  const controller = new AbortController();
+  let timedOut = false;
+  let timer = null;
+  let removeAbortListener = () => {};
+  const timeout = Number(timeoutMs);
+  if (!Number.isFinite(timeout) || timeout < 0) {
+    throw new TypeError("timeoutMs 必须是非负数");
+  }
+  const abortFromCaller = () => controller.abort(callerSignal.reason);
+  if (callerSignal) {
+    if (callerSignal.aborted) controller.abort(callerSignal.reason);
+    else {
+      callerSignal.addEventListener("abort", abortFromCaller, { once: true });
+      removeAbortListener = () => callerSignal.removeEventListener("abort", abortFromCaller);
+    }
+  }
+  if (timeout > 0) {
+    timer = setTimeout(() => {
+      timedOut = true;
+      controller.abort(new DOMException("请求超时", "TimeoutError"));
+    }, timeout);
+  }
+  const cleanup = () => {
+    if (timer) clearTimeout(timer);
+    removeAbortListener();
+  };
+  try {
+    const headers = { "content-type": "application/json", accept: "text/event-stream" };
+    try {
+      const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+      if (token) headers.authorization = `Bearer ${token}`;
+    } catch {
+      // 本机无认证模式不依赖 sessionStorage。
+    }
+    const response = await fetch(path, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    });
+    if (!response.ok) {
+      const payload = await response.json().catch(() => ({}));
+      cleanup();
+      if (
+        response.status === 401 &&
+        payload.code === "AUTH_REQUIRED" &&
+        !authRetried
+      ) {
+        const token = await promptDialog({
+          title: "需要访问令牌",
+          message: "服务端已开启访问控制，请输入访问令牌。",
+          placeholder: "访问令牌",
+          type: "password",
+        });
+        if (token?.trim()) {
+          try {
+            sessionStorage.setItem(ACCESS_TOKEN_KEY, token.trim());
+          } catch {
+            // 下一次请求仍可由当前页面重新输入。
+          }
+          return streamAgentRequest(path, body, { callerSignal, timeoutMs, onProgress }, true);
+        }
+      }
+      const error = new Error(payload.error || `请求失败（${response.status}）`);
+      error.code = payload.code || "REQUEST_FAILED";
+      error.status = response.status;
+      throw error;
+    }
+    if (!response.body?.getReader) {
+      throw new Error("浏览器不支持读取 Agent 进度流，请升级浏览器后重试");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let buffer = "";
+    let completed = false;
+    let result = null;
+    const dispatch = (block) => {
+      const data = block
+        .split(/\r?\n/)
+        .filter((line) => line.startsWith("data:"))
+        .map((line) => line.slice(5).trimStart())
+        .join("\n");
+      if (!data) return;
+      let message;
+      try {
+        message = JSON.parse(data);
+      } catch {
+        throw new Error("Agent 进度事件格式无效");
+      }
+      if (message.type === "progress" && message.event) {
+        try {
+          onProgress(message.event);
+        } catch {
+          // UI 更新失败不应中断模型任务。
+        }
+      } else if (message.type === "complete") {
+        result = message.result;
+        completed = true;
+      } else if (message.type === "error") {
+        const error = new Error(message.error || "Agent 任务执行失败");
+        error.code = message.code || "REQUEST_FAILED";
+        error.status = message.status || 500;
+        throw error;
+      }
+    };
+
+    while (!completed) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      buffer += decoder.decode(chunk.value, { stream: true });
+      let boundary;
+      while ((boundary = buffer.search(/\r?\n\r?\n/)) >= 0) {
+        const block = buffer.slice(0, boundary);
+        const separator = buffer.slice(boundary).match(/^\r?\n\r?\n/)[0];
+        buffer = buffer.slice(boundary + separator.length);
+        dispatch(block);
+        if (completed) break;
+      }
+    }
+    if (timedOut) {
+      const error = new Error("Agent 任务超时，请稍后重试");
+      error.code = "REQUEST_TIMEOUT";
+      error.name = "TimeoutError";
+      error.status = 408;
+      throw error;
+    }
+    if (!completed) {
+      throw new Error("Agent 进度连接提前结束，任务结果未完整返回");
+    }
+    return result;
+  } catch (error) {
+    if (callerSignal?.aborted) throw error;
+    if (timedOut) {
+      const timeoutError = new Error("Agent 任务超时，请稍后重试");
+      timeoutError.code = "REQUEST_TIMEOUT";
+      timeoutError.name = "TimeoutError";
+      timeoutError.status = 408;
+      throw timeoutError;
+    }
+    throw error;
+  } finally {
+    cleanup();
+  }
+}
+
+const AGENT_ACTIVE_TASK_STORAGE_KEY = "architect-agent-active-task";
+const AGENT_DURABLE_TASK_TIMEOUT_MS = 30 * 60_000;
+
+function readActiveAgentTaskReference() {
+  try {
+    const value = JSON.parse(localStorage.getItem(AGENT_ACTIVE_TASK_STORAGE_KEY) || "null");
+    return value && typeof value.taskId === "string" ? value : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeActiveAgentTaskReference(taskId) {
+  state.activeAgentTaskId = taskId || "";
+  try {
+    if (taskId) localStorage.setItem(AGENT_ACTIVE_TASK_STORAGE_KEY, JSON.stringify({ taskId, updatedAt: Date.now() }));
+    else localStorage.removeItem(AGENT_ACTIVE_TASK_STORAGE_KEY);
+  } catch {
+    // 服务端任务仍然持久化；本机快捷引用仅用于刷新后的便捷恢复。
+  }
+}
+
+async function cancelDurableAgentTask(taskId) {
+  if (!taskId) return null;
+  return api(`/api/agents/tasks/${encodeURIComponent(taskId)}/cancel`, {
+    method: "POST",
+    body: "{}",
+    timeoutMs: 10_000,
+  });
+}
+
+async function readDurableAgentTaskEvents(taskId, afterSeq, { signal, onProgress }, authRetried = false) {
+  const headers = {
+    accept: "text/event-stream",
+    "last-event-id": String(afterSeq),
+  };
+  try {
+    const token = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+    if (token) headers.authorization = `Bearer ${token}`;
+  } catch {
+    // 本机无认证模式不依赖 sessionStorage。
+  }
+
+  const response = await fetch(`/api/agents/tasks/${encodeURIComponent(taskId)}/events`, {
+    method: "GET",
+    headers,
+    signal,
+  });
+  if (!response.ok) {
+    const payload = await response.json().catch(() => ({}));
+    if (response.status === 401 && payload.code === "AUTH_REQUIRED" && !authRetried) {
+      const token = await promptDialog({
+        title: "需要访问令牌",
+        message: "服务端已开启访问控制，请输入访问令牌。",
+        placeholder: "访问令牌",
+        type: "password",
+      });
+      if (token?.trim()) {
+        try { sessionStorage.setItem(ACCESS_TOKEN_KEY, token.trim()); } catch { /* 下次请求可重新输入 */ }
+        return readDurableAgentTaskEvents(taskId, afterSeq, { signal, onProgress }, true);
+      }
+    }
+    const error = new Error(payload.error || `无法连接任务事件流（${response.status}）`);
+    error.code = payload.code || "AGENT_TASK_STREAM_FAILED";
+    error.status = response.status;
+    throw error;
+  }
+  if (!response.body?.getReader) throw new Error("浏览器不支持读取 Agent 事件流");
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let cursor = afterSeq;
+  let terminal = null;
+  const dispatch = (block) => {
+    const lines = block.split(/\r?\n/);
+    const idLine = lines.find((line) => line.startsWith("id:"));
+    if (idLine) {
+      const nextCursor = Number(idLine.slice(3).trim());
+      if (Number.isSafeInteger(nextCursor) && nextCursor > cursor) cursor = nextCursor;
+    }
+    const data = lines.filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trimStart()).join("\n");
+    if (!data) return;
+    const message = JSON.parse(data);
+    if (message.eventSeq && Number.isSafeInteger(Number(message.eventSeq))) {
+      cursor = Math.max(cursor, Number(message.eventSeq));
+    }
+    if (message.type === "progress" && message.event) {
+      try { onProgress(message.event); } catch { /* UI 更新失败不应中断任务 */ }
+    } else if (message.type === "task_started" || message.type === "task_resumed" || message.type === "task_requeued") {
+      try {
+        onProgress({
+          type: "task_started",
+          totalAgents: 1,
+          resumed: message.type !== "task_started",
+          attempt: message.event?.attempt,
+        });
+      } catch { /* UI 更新失败不应中断任务 */ }
+    } else if (message.type === "task_cancel_requested") {
+      try { onProgress({ type: "task_cancel_requested" }); } catch { /* UI 更新失败不应中断任务 */ }
+    } else if (message.type === "complete" || message.type === "error" || message.type === "task_cancelled") {
+      terminal = message;
+    }
+  };
+
+  try {
+    while (!terminal) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+      buffer += decoder.decode(chunk.value, { stream: true });
+      let boundary;
+      while ((boundary = buffer.search(/\r?\n\r?\n/)) >= 0) {
+        const separator = buffer.slice(boundary).match(/^\r?\n\r?\n/)[0];
+        const block = buffer.slice(0, boundary);
+        buffer = buffer.slice(boundary + separator.length);
+        dispatch(block);
+        if (terminal) break;
+      }
+    }
+  } finally {
+    try { await reader.cancel(); } catch { /* 服务器可能已结束流 */ }
+  }
+  return { cursor, terminal };
+}
+
+async function watchDurableAgentTask(taskId, { signal, onProgress = () => {}, timeoutMs = AGENT_DURABLE_TASK_TIMEOUT_MS } = {}) {
+  const deadline = Date.now() + timeoutMs;
+  let cursor = 0;
+  let cancelPromise = null;
+  const requestCancellation = () => {
+    if (!cancelPromise) {
+      cancelPromise = cancelDurableAgentTask(taskId).catch((error) => {
+        showToast(error.message || "取消任务请求未能发送；服务端任务状态仍可查询", true);
+      });
+    }
+  };
+  const onAbort = () => { void requestCancellation(); };
+  if (signal) {
+    if (signal.aborted) onAbort();
+    else signal.addEventListener("abort", onAbort, { once: true });
+  }
+
+  try {
+    while (Date.now() < deadline) {
+      if (signal?.aborted) {
+        await requestCancellation();
+        throw new DOMException("任务已取消", "AbortError");
+      }
+      const status = await api(`/api/agents/tasks/${encodeURIComponent(taskId)}`, {
+        method: "GET",
+        signal,
+        timeoutMs: 15_000,
+      });
+      const task = status.task;
+      if (task.status === "completed") {
+        writeActiveAgentTaskReference("");
+        void loadAgentServerTasks();
+        return task.result;
+      }
+      if (task.status === "failed") {
+        writeActiveAgentTaskReference("");
+        void loadAgentServerTasks();
+        const error = new Error(task.error?.message || "Agent 任务执行失败");
+        error.code = task.error?.code || "AGENT_TASK_FAILED";
+        error.status = 500;
+        throw error;
+      }
+      if (task.status === "cancelled") {
+        writeActiveAgentTaskReference("");
+        void loadAgentServerTasks();
+        const error = new Error(task.error?.message || "Agent 任务已取消");
+        error.code = "LLM_GENERATION_CANCELLED";
+        error.status = 499;
+        throw error;
+      }
+      if (signal?.aborted) continue;
+
+      try {
+        const streamed = await readDurableAgentTaskEvents(taskId, cursor, { signal, onProgress });
+        cursor = streamed.cursor;
+        if (streamed.terminal?.type === "complete") {
+          writeActiveAgentTaskReference("");
+          void loadAgentServerTasks();
+          return streamed.terminal.result;
+        }
+        if (streamed.terminal?.type === "error") {
+          const error = new Error(streamed.terminal.error || "Agent 任务执行失败");
+          error.code = streamed.terminal.code || "AGENT_TASK_FAILED";
+          error.status = streamed.terminal.status || 500;
+          throw error;
+        }
+        if (streamed.terminal?.type === "task_cancelled") {
+          writeActiveAgentTaskReference("");
+          const error = new Error("Agent 任务已取消");
+          error.code = "LLM_GENERATION_CANCELLED";
+          error.status = 499;
+          throw error;
+        }
+      } catch (error) {
+        if (signal?.aborted) {
+          await requestCancellation();
+          throw new DOMException("任务已取消", "AbortError");
+        }
+        if (error.status && error.status < 500 && error.status !== 429) throw error;
+        // 连接断开/临时服务故障时保留 taskId 和游标，重新查询后继续订阅。
+      }
+      await new Promise((resolve) => setTimeout(resolve, 300));
+    }
+    const error = new Error("任务仍在服务端运行，当前页面停止等待；可从服务端任务列表继续跟踪。");
+    error.code = "AGENT_TASK_WATCH_TIMEOUT";
+    error.status = 408;
+    throw error;
+  } finally {
+    signal?.removeEventListener("abort", onAbort);
+  }
+}
+
+async function createDurableAgentTask(payload, { signal, onProgress = () => {} } = {}) {
+  const idempotencyKey = globalThis.crypto?.randomUUID?.()
+    || `agent-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+  // 创建请求本身不绑定 UI AbortSignal：若用户在服务器接受后立即停止，仍需取得 taskId 再发出持久取消请求。
+  const created = await api("/api/agents/tasks", {
+    method: "POST",
+    headers: { "Idempotency-Key": idempotencyKey },
+    body: JSON.stringify(payload),
+    timeoutMs: 30_000,
+  });
+  const taskId = created.task?.id;
+  if (!taskId) throw new Error("服务端没有返回持久任务 ID");
+  state.activeAgentTaskId = taskId;
+  writeActiveAgentTaskReference(taskId);
+  void loadAgentServerTasks();
+  if (signal?.aborted) {
+    await cancelDurableAgentTask(taskId).catch(() => {});
+    throw new DOMException("任务已取消", "AbortError");
+  }
+  return watchDurableAgentTask(taskId, { signal, onProgress });
+}
+
   const targets = Array.isArray(target) ? target : [target];
   return targets
     .map((item) => (typeof item === "string" ? $(item) : item))
@@ -569,7 +977,10 @@ function switchView(view) {
     loadContentHealth();
     loadQuestionIssues();
     loadAuditLog();
-    loadModelConfig();
+  }
+  if (view === "agents") {
+    if (state.modelWorkspaceLoaded) renderModelWorkspace();
+    else loadModelConfig();
   }
 }
 
@@ -2847,14 +3258,14 @@ function providerTypeSelect(provider) {
   return select;
 }
 
-function providerNode(provider) {
+function providerNode(provider, index = 0) {
   const card = element("article", { className: "provider-card", attrs: { "data-provider-id": provider.id } });
-  const nameInput = element("input", { attrs: { type: "text", "aria-label": "供应商名称" } });
+  const nameInput = element("input", { attrs: { type: "text", "aria-label": "供应商名称", placeholder: "为供应商命名" } });
   nameInput.value = provider.name;
   const deleteButton = element("button", {
     className: "workspace-delete",
-    text: "删除供应商",
-    attrs: { type: "button" },
+    text: "删除",
+    attrs: { type: "button", title: "删除此供应商", disabled: state.modelWorkspace.providers.length <= 1 },
   });
   deleteButton.addEventListener("click", () => {
     state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
@@ -2863,21 +3274,37 @@ function providerNode(provider) {
       return;
     }
     state.modelWorkspace.providers = state.modelWorkspace.providers.filter((item) => item.id !== provider.id);
-    state.modelWorkspace.agents = state.modelWorkspace.agents.filter((agent) => agent.providerId !== provider.id);
-    if (!state.modelWorkspace.agents.length) state.modelWorkspace.defaultAgentId = "";
+    const boundAgents = state.modelWorkspace.agents.filter((agent) => agent.providerId === provider.id);
+    if (boundAgents.length) {
+      setAgentWorkspaceTab("team");
+      showToast("该供应商仍被 " + boundAgents.length + " 个 Agent 使用，请先为这些角色更换供应商", true);
+      return;
+    }
     renderModelWorkspace();
   });
-  const baseUrl = element("input", { className: "provider-base-url", attrs: { type: "url", placeholder: "https://api.example.com/v1" } });
+    updateWorkspaceDirtyState();
+  const baseUrl = element("input", { className: "provider-base-url", attrs: { type: "url", placeholder: "https://api.example.com/v1", autocomplete: "url" } });
   baseUrl.value = provider.baseUrl;
-  const apiKey = element("input", { className: "provider-api-key", attrs: { type: "password", placeholder: "留空表示无需鉴权" } });
+  const apiKey = element("input", { className: "provider-api-key", attrs: { type: "password", placeholder: "留空表示无需鉴权", autocomplete: "new-password" } });
   apiKey.value = provider.apiKey;
   const type = providerTypeSelect(provider);
   const model = modelSelectNode(provider.models, provider.defaultModel, "provider-default-model");
-  const fetchButton = element("button", { className: "secondary mc-provider-fetch", text: "获取模型列表", attrs: { type: "button" } });
-  const fetchState = element("span", { className: "provider-fetch-state", text: provider.models.length ? `${provider.models.length} 个模型可选` : "尚未获取模型" });
+  const fetchButton = element("button", { className: "secondary mc-provider-fetch", text: "获取模型列表", attrs: { type: "button", disabled: provider.type === "claude-cli" } });
+  const fetchState = element("span", { className: "provider-fetch-state", text: provider.models.length ? provider.models.length + " 个模型" : "尚未获取模型" });
   fetchButton.addEventListener("click", () => fetchProviderModels(provider.id));
   card.append(
-    element("div", { className: "provider-card-header" }, [nameInput, deleteButton]),
+  type.addEventListener("change", () => {
+    fetchButton.disabled = type.value === "claude-cli";
+    const badge = card.querySelector(".provider-type-badge");
+    if (badge) badge.textContent = type.value === "claude-cli" ? "CLI" : "API";
+    updateWorkspaceDirtyState();
+  });
+    element("div", { className: "provider-card-header" }, [
+      element("span", { className: "provider-card-index", text: String(index + 1).padStart(2, "0") }),
+      nameInput,
+      element("span", { className: "provider-type-badge", text: provider.type === "claude-cli" ? "CLI" : "API" }),
+      deleteButton,
+    ]),
     element("div", { className: "provider-card-grid" }, [
       element("label", { text: "接口类型" }, [type]),
       element("label", { text: "默认模型" }, [model]),
@@ -2889,11 +3316,20 @@ function providerNode(provider) {
   return card;
 }
 
-function agentNode(agent) {
-  const card = element("article", { className: "agent-config-card", attrs: { "data-agent-id": agent.id } });
-  const nameInput = element("input", { attrs: { type: "text", "aria-label": "Agent 名称" } });
+function agentNode(agent, index = 0) {
+  const cardClass = "agent-config-card" + (agent.enabled ? "" : " is-disabled")
+    + (state.modelWorkspace.defaultAgentId === agent.id ? " is-default" : "");
+  const card = element("article", {
+    className: cardClass,
+    attrs: { "data-agent-id": agent.id },
+  });
+  const nameInput = element("input", { attrs: { type: "text", "aria-label": "Agent 名称", placeholder: "为角色命名" } });
   nameInput.value = agent.name;
-  const deleteButton = element("button", { className: "workspace-delete", text: "删除 Agent", attrs: { type: "button" } });
+  const deleteButton = element("button", {
+    className: "workspace-delete",
+    text: "删除",
+    attrs: { type: "button", title: "删除此 Agent", disabled: state.modelWorkspace.agents.length <= 1 },
+  });
   deleteButton.addEventListener("click", () => {
     state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
     if (state.modelWorkspace.agents.length <= 1) {
@@ -2901,33 +3337,70 @@ function agentNode(agent) {
       return;
     }
     state.modelWorkspace.agents = state.modelWorkspace.agents.filter((item) => item.id !== agent.id);
-    if (state.modelWorkspace.defaultAgentId === agent.id) state.modelWorkspace.defaultAgentId = state.modelWorkspace.agents[0]?.id || "";
+    if (state.modelWorkspace.defaultAgentId === agent.id) {
+      state.modelWorkspace.defaultAgentId = state.modelWorkspace.agents.find((item) => item.enabled)?.id || "";
+    }
+    state.agentSelectedIds = (state.agentSelectedIds || []).filter((id) => id !== agent.id);
     renderModelWorkspace();
   });
+    updateWorkspaceDirtyState();
   const providerSelect = element("select", { className: "agent-provider" });
   providerSelect.append(...state.modelWorkspace.providers.map((provider) => element("option", { text: provider.name, attrs: { value: provider.id } })));
   providerSelect.value = agent.providerId;
   const provider = state.modelWorkspace.providers.find((item) => item.id === agent.providerId) || state.modelWorkspace.providers[0];
-  let modelSelect = modelSelectNode(provider?.models, agent.model, "agent-model");
+  const modelSelect = modelSelectNode(provider?.models, agent.model, "agent-model");
   providerSelect.addEventListener("change", () => {
     const nextProvider = state.modelWorkspace.providers.find((item) => item.id === providerSelect.value);
-    modelSelect = modelSelectNode(nextProvider?.models, "", "agent-model");
-    card.querySelector(".agent-model")?.replaceWith(modelSelect);
+    const nextModel = modelSelectNode(nextProvider?.models, "", "agent-model");
+    card.querySelector(".agent-model")?.replaceWith(nextModel);
+    updateWorkspaceDirtyState();
   });
-  const description = element("input", { className: "agent-description", attrs: { type: "text", placeholder: "简短说明这个 Agent 的职责" } });
+  const description = element("input", { className: "agent-description", attrs: { type: "text", placeholder: "例如：负责拆解复杂问题、列出关键假设" } });
   description.value = agent.description;
-  const prompt = element("textarea", { className: "agent-prompt", attrs: { rows: "4", placeholder: "例如：优先指出概念边界，引用知识库条目，避免编造资料外事实。" } });
+  const prompt = element("textarea", { className: "agent-prompt", attrs: { rows: "5", placeholder: "定义角色的专业领域、工作步骤、输出结构和约束。提示词越具体，角色分工越稳定。" } });
   prompt.value = agent.systemPrompt;
-  const enabled = element("input", { attrs: { type: "checkbox" } });
+  const promptDetails = element("details", { className: "agent-prompt-details" }, [
+    element("summary", { text: "高级设置 · 系统提示词" }),
+    element("p", { className: "agent-prompt-help", text: "这里定义 Agent 的长期职责和输出规则；任务输入框只填写本次具体问题。" }),
+    element("label", { className: "agent-prompt", text: "系统提示词" }, [prompt]),
+  ]);
+  const enabled = element("input", { attrs: { type: "checkbox", "aria-label": "允许参与任务" } });
   enabled.checked = agent.enabled;
   card.append(
-    element("div", { className: "agent-config-card-header" }, [nameInput, deleteButton]),
+  enabled.addEventListener("change", () => {
+    state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
+    if (!enabled.checked) {
+      if (Array.isArray(state.agentSelectedIds)) {
+        state.agentSelectedIds = state.agentSelectedIds.filter((id) => id !== agent.id);
+      }
+      if (state.modelWorkspace.defaultAgentId === agent.id) {
+        state.modelWorkspace.defaultAgentId = state.modelWorkspace.agents.find((item) => item.enabled)?.id || "";
+      }
+    } else if (!state.modelWorkspace.defaultAgentId) {
+      state.modelWorkspace.defaultAgentId = agent.id;
+    }
+    renderModelWorkspace();
+    updateWorkspaceDirtyState();
+  });
+    element("div", { className: "agent-config-card-header" }, [
+      element("span", { className: "agent-card-index", text: String(index + 1).padStart(2, "0") }),
+      nameInput,
+      state.modelWorkspace.defaultAgentId === agent.id ? element("span", { className: "agent-default-badge", text: "默认角色" }) : null,
+      element("span", { className: "agent-enabled-badge" + (agent.enabled ? "" : " is-off"), text: agent.enabled ? "已启用" : "已停用" }),
+      deleteButton,
+    ]),
     element("div", { className: "agent-config-grid" }, [
       element("label", { text: "绑定供应商" }, [providerSelect]),
       element("label", { text: "使用模型" }, [modelSelect]),
-      element("label", { text: "职责说明" }, [description]),
-      element("label", { className: "agent-prompt", text: "角色提示词" }, [prompt]),
-      element("label", { className: "agent-task-member" }, [enabled, element("span", { text: "允许参与任务" })]),
+      element("label", { className: "agent-description-field", text: "角色职责" }, [description]),
+      promptDetails,
+      element("label", { className: "agent-enabled-control" }, [
+        enabled,
+        element("span", { className: "agent-enabled-copy" }, [
+          element("strong", { text: "允许参与任务" }),
+          element("small", { text: "停用后不会出现在协作选择中" }),
+        ]),
+      ]),
     ]),
   );
   return card;
@@ -2964,11 +3437,195 @@ function collectWorkspaceDraft() {
   return {
     providers,
     agents,
-    defaultAgentId: $("#agent-default")?.value || agents[0]?.id || "",
+    defaultAgentId: $("#agent-default")?.value || agents.find((agent) => agent.enabled)?.id || "",
   };
 }
 
 function renderModelWorkspace() {
+function workspaceSignature(workspace) {
+  return JSON.stringify(workspaceDraft(workspace || {}));
+}
+
+function setAgentWorkspaceTab(tab) {
+  const allowed = new Set(["team", "providers", "tasks"]);
+  const activeTab = allowed.has(tab) ? tab : "team";
+  state.agentWorkspaceTab = activeTab;
+  document.querySelectorAll("[data-agent-tab]").forEach((button) => {
+    const active = button.dataset.agentTab === activeTab;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+    button.tabIndex = active ? 0 : -1;
+  });
+  document.querySelectorAll("[data-agent-panel]").forEach((panel) => {
+    const active = panel.dataset.agentPanel === activeTab;
+    panel.classList.toggle("is-active", active);
+    panel.hidden = !active;
+  });
+}
+
+function updateAgentWorkspaceMetrics() {
+  const workspace = state.modelWorkspace;
+  const enabledAgents = workspace.agents.filter((agent) => agent.enabled);
+  const enabledNode = $("#agent-metric-enabled");
+  const providerNodeValue = $("#agent-metric-providers");
+  const defaultNode = $("#agent-metric-default");
+  const modelNode = $("#agent-metric-default-model");
+  if (enabledNode) enabledNode.textContent = String(enabledAgents.length);
+  if (providerNodeValue) providerNodeValue.textContent = String(workspace.providers.length);
+  const defaultAgent = workspace.agents.find((agent) => agent.id === workspace.defaultAgentId);
+  const provider = workspace.providers.find((item) => item.id === defaultAgent?.providerId);
+  if (defaultNode) defaultNode.textContent = defaultAgent?.name || "尚未配置";
+  if (modelNode) modelNode.textContent = defaultAgent
+    ? (provider?.name || "未绑定供应商") + " · " + (defaultAgent.model || provider?.defaultModel || "未选择模型")
+    : "先添加供应商和 Agent";
+  const teamMeta = $("#agent-tab-team-meta");
+  const providerMeta = $("#agent-tab-provider-meta");
+  const taskMeta = $("#agent-tab-task-meta");
+  const teamHealth = $("#agent-team-health");
+  if (teamMeta) teamMeta.textContent = workspace.agents.length + " 个角色";
+  if (providerMeta) providerMeta.textContent = workspace.providers.length + " 个连接";
+  if (taskMeta) taskMeta.textContent = enabledAgents.length >= 2 ? "支持多角色协作" : "单角色运行";
+  if (teamHealth) {
+    teamHealth.textContent = enabledAgents.length
+      ? enabledAgents.length + " 个角色可参与任务"
+      : "尚无已启用的角色";
+    teamHealth.classList.toggle("is-empty", enabledAgents.length === 0);
+  }
+}
+
+function syncWorkspaceDraftFromForm() {
+  state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
+  updateAgentWorkspaceMetrics();
+  updateWorkspaceDirtyState();
+}
+
+function updateWorkspaceDirtyState() {
+  const saveButton = $("#mc-save");
+  const status = $("#agent-workspace-save-state");
+  if (!saveButton || !status) return;
+  const current = workspaceSignature(collectWorkspaceDraft());
+  const dirty = !state.modelWorkspaceSavedSignature || current !== state.modelWorkspaceSavedSignature;
+  status.textContent = dirty ? "有未保存的修改" : "配置已保存";
+  status.classList.toggle("is-dirty", dirty);
+  status.classList.toggle("is-saved", !dirty);
+  saveButton.disabled = !dirty;
+  saveButton.textContent = dirty ? "保存更改" : "已保存";
+}
+
+function renderAgentMembers() {
+  const members = $("#agent-task-members");
+  if (!members) return;
+  const enabledAgents = state.modelWorkspace.agents.filter((agent) => agent.enabled);
+  const previous = Array.isArray(state.agentSelectedIds) ? state.agentSelectedIds : null;
+  const fallbackAgentId = enabledAgents.find((agent) => agent.id === state.modelWorkspace.defaultAgentId)?.id || enabledAgents[0]?.id;
+  const selectedIds = new Set((previous || [fallbackAgentId])
+    .filter((id) => enabledAgents.some((agent) => agent.id === id)));
+  if (enabledAgents.length && !selectedIds.size) {
+    selectedIds.add(fallbackAgentId);
+  }
+  if (!enabledAgents.length) {
+    members.replaceChildren(element("div", { className: "agent-members-empty", text: "还没有可用的 Agent。请先添加角色并启用。" }));
+  } else {
+    members.replaceChildren(...enabledAgents.map((agent) => {
+      const checkbox = element("input", { attrs: { type: "checkbox", value: agent.id, "aria-label": "选择 " + agent.name } });
+      checkbox.checked = selectedIds.has(agent.id);
+      checkbox.addEventListener("change", () => {
+        let checked = [...members.querySelectorAll("input:checked")];
+        if (checked.length > 4) {
+          checkbox.checked = false;
+          showToast("一次最多选择 4 个 Agent", true);
+          checked = [...members.querySelectorAll("input:checked")];
+        }
+        state.agentSelectedIds = checked.map((input) => input.value);
+        syncAgentStrategyUi();
+      });
+      const provider = state.modelWorkspace.providers.find((item) => item.id === agent.providerId);
+      const subtitle = agent.description || ((provider?.name || "未绑定供应商") + " · " + (agent.model || provider?.defaultModel || "未选模型"));
+      return element("label", { className: "agent-task-member-card" }, [
+        checkbox,
+        element("span", { className: "agent-member-avatar", text: (agent.name || "A").slice(0, 1).toUpperCase(), attrs: { "aria-hidden": "true" } }),
+        element("span", { className: "agent-member-copy" }, [
+          element("strong", { text: agent.name }),
+          element("small", { text: subtitle }),
+        ]),
+        element("span", { className: "agent-member-check", text: "✓", attrs: { "aria-hidden": "true" } }),
+      ]);
+    }));
+  }
+  syncAgentStrategyUi();
+}
+
+function syncAgentStrategyUi() {
+  const strategySelect = $("#agent-task-strategy");
+  if (!strategySelect) return;
+  let strategy = strategySelect.value;
+  const members = $("#agent-task-members");
+  let selectedInputs = [...(members?.querySelectorAll("input:checked") || [])];
+  if (strategy === "single" && selectedInputs.length > 1) {
+    selectedInputs.slice(1).forEach((input) => { input.checked = false; });
+    selectedInputs = selectedInputs.slice(0, 1);
+    state.agentSelectedIds = selectedInputs.map((input) => input.value);
+  }
+  const selectedCount = selectedInputs.length;
+  const enabledCount = state.modelWorkspace.agents.filter((agent) => agent.enabled).length;
+  if (strategy !== "single" && enabledCount < 2) {
+    strategy = "single";
+    strategySelect.value = "single";
+  }
+  document.querySelectorAll("[data-agent-strategy]").forEach((button) => {
+    const active = button.dataset.agentStrategy === strategy;
+    button.classList.toggle("is-selected", active);
+    button.setAttribute("aria-pressed", String(active));
+    button.disabled = button.dataset.agentStrategy !== "single" && enabledCount < 2;
+  });
+  const judgeWrap = $("#agent-task-judge-wrap");
+  if (judgeWrap) judgeWrap.hidden = strategy !== "battle";
+  const preview = {
+    single: {
+      mark: "01",
+      title: "单 Agent · 独立完成",
+      copy: "由一个角色处理任务，适合日常答疑和内容起草。",
+    },
+    parallel: {
+      mark: "02",
+      title: "并行回答 · 多视角比较",
+      copy: "所选角色分别回答同一问题，便于比较差异和关注点。",
+    },
+    battle: {
+      mark: "03",
+      title: "对战评审 · 生成综合结论",
+      copy: "先并行收集候选答案，再由评审角色综合；评审会额外调用一次模型。",
+    },
+  }[strategy];
+  const previewMark = $("#agent-strategy-preview .agent-strategy-preview-mark");
+  const previewTitle = $("#agent-strategy-preview-title");
+  const previewCopy = $("#agent-strategy-preview-copy");
+  const callEstimate = $("#agent-task-call-estimate");
+  if (previewMark) previewMark.textContent = preview.mark;
+  if (previewTitle) previewTitle.textContent = preview.title;
+  if (previewCopy) previewCopy.textContent = preview.copy;
+  if (callEstimate) {
+    const plannedCalls = strategy === "single" ? (selectedCount ? 1 : 0)
+      : strategy === "battle" ? selectedCount + (selectedCount >= 2 ? 1 : 0)
+        : selectedCount;
+    callEstimate.textContent = plannedCalls
+      ? "预计 " + plannedCalls + " 次模型调用"
+      : "请先选择 Agent";
+  }
+  const count = $("#agent-selected-count");
+  if (count) {
+    count.textContent = "已选 " + selectedCount + " 个";
+    count.classList.toggle("is-invalid", strategy !== "single" && selectedCount < 2);
+  }
+  const hint = $("#agent-task-validation");
+  if (hint && !hint.hidden) {
+    hint.textContent = strategy === "single"
+      ? (selectedCount < 1 ? "请至少选择一个已启用的 Agent。" : "")
+      : (selectedCount < 2 ? "并行与对战模式至少需要选择 2 个 Agent。" : "");
+    hint.hidden = !hint.textContent;
+  }
+}
+
   ensureWorkspaceDraft();
   const providerList = $("#provider-list");
   const agentList = $("#agent-list");
@@ -2976,17 +3633,26 @@ function renderModelWorkspace() {
   providerList.replaceChildren(...state.modelWorkspace.providers.map(providerNode));
   agentList.replaceChildren(...state.modelWorkspace.agents.map(agentNode));
   const defaultSelect = $("#agent-default");
-  defaultSelect.replaceChildren(...state.modelWorkspace.agents.map((agent) => element("option", { text: agent.name, attrs: { value: agent.id } })));
-  defaultSelect.value = state.modelWorkspace.defaultAgentId || state.modelWorkspace.agents[0]?.id || "";
+  defaultSelect.replaceChildren(...state.modelWorkspace.agents.map((agent) => element("option", {
+    text: agent.name + (agent.enabled ? "" : "（已停用）"),
+    attrs: { value: agent.id, disabled: !agent.enabled },
+  })));
+  const enabledDefault = state.modelWorkspace.agents.find((agent) => agent.id === state.modelWorkspace.defaultAgentId && agent.enabled);
+  const effectiveDefault = enabledDefault || state.modelWorkspace.agents.find((agent) => agent.enabled);
+  if (effectiveDefault && state.modelWorkspace.defaultAgentId !== effectiveDefault.id) {
+    state.modelWorkspace.defaultAgentId = effectiveDefault.id;
+  }
+  defaultSelect.value = effectiveDefault?.id || "";
   const judgeSelect = $("#agent-task-judge");
-  judgeSelect.replaceChildren(...state.modelWorkspace.agents.filter((agent) => agent.enabled).map((agent) => element("option", { text: agent.name, attrs: { value: agent.id } })));
-  judgeSelect.value = state.modelWorkspace.defaultAgentId || state.modelWorkspace.agents.find((agent) => agent.enabled)?.id || "";
-  const members = $("#agent-task-members");
-  members.replaceChildren(...state.modelWorkspace.agents.filter((agent) => agent.enabled).map((agent) => {
-    const checkbox = element("input", { attrs: { type: "checkbox", value: agent.id } });
-    checkbox.checked = agent.id === state.modelWorkspace.defaultAgentId;
-    return element("label", { className: "agent-task-member" }, [checkbox, element("span", { text: agent.name })]);
-  }));
+  const enabledAgents = state.modelWorkspace.agents.filter((agent) => agent.enabled);
+  judgeSelect.replaceChildren(...(enabledAgents.length
+    ? enabledAgents.map((agent) => element("option", { text: agent.name, attrs: { value: agent.id } }))
+    : [element("option", { text: "请先启用 Agent", attrs: { value: "" } })]));
+  judgeSelect.value = effectiveDefault?.id || enabledAgents[0]?.id || "";
+  renderAgentMembers();
+  updateAgentWorkspaceMetrics();
+  setAgentWorkspaceTab(state.agentWorkspaceTab);
+  updateWorkspaceDirtyState();
 }
 
 async function loadModelConfig() {
@@ -2994,9 +3660,17 @@ async function loadModelConfig() {
     const config = await api("/api/model-config");
     state.modelWorkspace = workspaceDraft(config);
     renderModelWorkspace();
+    state.modelWorkspaceSavedSignature = workspaceSignature(state.modelWorkspace);
+    state.modelWorkspaceLoaded = true;
+    state.agentSelectedIds = null;
   } catch (error) {
     showToast(error.message, true);
   }
+    const status = $("#agent-workspace-save-state");
+    if (status) {
+      status.textContent = "配置加载失败";
+      status.classList.add("is-error");
+    }
 }
 
 async function saveModelConfig() {
@@ -3011,13 +3685,14 @@ async function saveModelConfig() {
     });
     state.modelWorkspace = workspaceDraft(config);
     renderModelWorkspace();
+    state.modelWorkspaceSavedSignature = workspaceSignature(state.modelWorkspace);
+    state.modelWorkspaceLoaded = true;
     showToast("模型工作区已保存并生效");
     await loadModelStatus();
   } catch (error) {
     showToast(error.message, true);
   } finally {
-    button.disabled = false;
-    button.textContent = "保存工作区";
+    updateWorkspaceDirtyState();
   }
 }
 
@@ -3074,18 +3749,74 @@ function addProvider() {
   });
   renderModelWorkspace();
 }
+  setAgentWorkspaceTab("providers");
+  requestAnimationFrame(() => {
+    const card = document.querySelector('[data-provider-id="' + CSS.escape(providerId) + '"]');
+    card?.scrollIntoView({ behavior: "smooth", block: "center" });
+    card?.querySelector(".provider-card-header input")?.focus();
+  });
+}
+
+const AGENT_ROLE_TEMPLATES = {
+  "exam-tutor": {
+    name: "备考导师",
+    description: "负责知识点讲解、考点拆解和循序渐进的学习指导",
+    systemPrompt: "你是一名严谨的系统架构设计师备考导师。先判断学习者的问题属于哪个知识领域，再用准确、易懂的语言解释概念。优先采用“定义—原理—适用场景—优缺点—易混淆点—考试提示”的结构。对于不在官方考试大纲或教程明确覆盖范围内的前沿内容，标注为拓展知识，不把它说成必考点。不要编造真题、教材原文或官方结论；不确定时明确说明。",
+  },
+  "architecture-reviewer": {
+    name: "架构评审",
+    description: "从质量属性、约束、风险和成本角度评审技术方案",
+    systemPrompt: "你是一名资深系统架构评审专家。评审时先复述目标与约束，再从性能、可用性、可靠性、安全性、可维护性、可扩展性和成本等维度分析。区分事实、假设与建议；指出关键权衡、单点故障、容量瓶颈和迁移风险。给出优先级明确、可以落地的改进建议。不要为了显得全面而臆造数据或系统现状。",
+  },
+  "source-checker": {
+    name: "资料核查员",
+    description: "检查事实、证据出处、版本信息和不确定性",
+    systemPrompt: "你是一名严谨的技术资料核查员。逐项检查结论是否有可追溯证据，区分原始来源、二手解读、推断和个人建议。优先要求文档标题、发布机构、版本、日期、章节或页码等定位信息。证据不足时标注“待核实”，禁止伪造链接、页码、标准条款或官方口径。发现来源之间冲突时并列展示，不要擅自消解冲突。",
+  },
+};
+
+function addAgentFromTemplate(templateId) {
+  const template = AGENT_ROLE_TEMPLATES[templateId];
+  if (!template) return;
+  state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
+  const provider = state.modelWorkspace.providers[0];
+  if (!provider) {
+    setAgentWorkspaceTab("providers");
+    showToast("请先配置模型供应商", true);
+    return;
+  }
+  const agentId = "agent-" + Date.now();
+  state.modelWorkspace.agents.push({
+    id: agentId,
+    name: template.name,
+    description: template.description,
+    providerId: provider.id,
+    model: provider.defaultModel || provider.models[0] || "",
+    systemPrompt: template.systemPrompt,
+    enabled: true,
+  });
+  if (!state.modelWorkspace.defaultAgentId) state.modelWorkspace.defaultAgentId = agentId;
+  renderModelWorkspace();
+  setAgentWorkspaceTab("team");
+  showToast("已添加“" + template.name + "”，保存后即可使用");
+  requestAnimationFrame(() => {
+    const card = document.querySelector('[data-agent-id="' + CSS.escape(agentId) + '"]');
+    card?.scrollIntoView({ behavior: "smooth", block: "center" });
+    card?.querySelector(".agent-config-card-header input")?.focus();
+  });
 
 function addAgent() {
   state.modelWorkspace = workspaceDraft(collectWorkspaceDraft());
   const provider = state.modelWorkspace.providers[0];
   if (!provider) {
     showToast("请先添加供应商", true);
+    setAgentWorkspaceTab("providers");
     return;
   }
   const agentId = `agent-${Date.now()}`;
   state.modelWorkspace.agents.push({
     id: agentId,
-    name: `Agent ${state.modelWorkspace.agents.length + 1}`,
+    name: "Agent " + (state.modelWorkspace.agents.length + 1),
     description: "",
     providerId: provider.id,
     model: provider.defaultModel || provider.models[0] || "",
@@ -3093,64 +3824,906 @@ function addAgent() {
     enabled: true,
   });
   renderModelWorkspace();
+  if (!state.modelWorkspace.defaultAgentId) state.modelWorkspace.defaultAgentId = agentId;
+}
+  setAgentWorkspaceTab("team");
+  requestAnimationFrame(() => {
+    const card = document.querySelector('[data-agent-id="' + CSS.escape(agentId) + '"]');
+    card?.scrollIntoView({ behavior: "smooth", block: "center" });
+    card?.querySelector(".agent-config-card-header input")?.focus();
+  });
+
+function agentTaskPlainText(result) {
+  const lines = [
+    "Agent 协作结果 · " + (result.strategy === "battle" ? "对战评审" : result.strategy === "parallel" ? "并行回答" : "单 Agent"),
+    "",
+  ];
+  for (const item of result.results || []) {
+    lines.push("【" + (item.agentName || "Agent") + "】" + (item.error ? "（调用失败）" : " · " + (item.model || "默认模型") + " · 置信度 " + Math.round((item.confidence || 0) * 100) + "%"));
+    lines.push(item.error || item.answer || "未返回内容");
+    if (item.keyPoints?.length) lines.push("关键要点：" + item.keyPoints.join("；"));
+    if (item.concerns?.length) lines.push("需要留意：" + item.concerns.join("；"));
+    lines.push("");
+  }
+  if (result.synthesis) {
+    lines.push("【综合评审 · " + (result.synthesis.judgedBy || "评审 Agent") + "】");
+    lines.push(result.synthesis.answer || "");
+  }
+  return lines.join("\n").trim();
 }
 
-function renderAgentTaskResult(result) {
-  const box = $("#agent-task-result");
-  const answers = (result.results || []).map((item) => element("div", { className: "agent-task-answer" }, [
-    element("div", { className: "agent-task-meta" }, [
-      element("strong", { text: item.agentName }),
-      element("span", { text: item.error ? "调用失败" : `${item.model || "默认模型"} · 置信度 ${Math.round((item.confidence || 0) * 100)}%` }),
-    ]),
-    element("p", { text: item.error || item.answer }),
-    item.keyPoints?.length ? element("ul", {}, item.keyPoints.map((point) => element("li", { text: point }))) : null,
-  ]));
-  const synthesis = result.synthesis
-    ? element("div", { className: "agent-task-answer agent-task-synthesis" }, [
-        element("h4", { text: `综合结果 · ${result.synthesis.judgedBy || "评审 Agent"}` }),
-        element("p", { text: result.synthesis.answer }),
-      ])
-    : null;
-  box.replaceChildren(
-    element("h4", { text: result.strategy === "battle" ? "对战与评审结果" : result.strategy === "parallel" ? "并行回答结果" : "Agent 回答" }),
-    ...answers,
-    synthesis,
-  );
+
+function renderAgentTaskHistory(records = loadAgentTaskHistory()) {
+  state.agentTaskHistory = records;
+  const list = $("#agent-task-history-list");
+  const count = $("#agent-task-history-count");
+  const clearButton = $("#agent-task-history-clear");
+  if (!list || !count || !clearButton) return;
+  count.textContent = records.length + " / " + AGENT_TASK_HISTORY_LIMIT + " 条";
+  clearButton.disabled = records.length === 0;
+  if (!records.length) {
+    list.replaceChildren(element("p", {
+      className: "agent-task-history-empty",
+      text: "还没有保存的任务。运行完成后，点击结果区的“保存到本机历史”即可留存。",
+    }));
+    return;
+  }
+  list.replaceChildren(...records.map((record) => {
+    const successCount = record.result.results.filter((item) => !item.error).length;
+    const failureCount = record.result.results.length - successCount;
+    const dateLabel = new Date(record.createdAt).toLocaleString("zh-CN", {
+      month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
+    });
+    const strategyLabel = record.strategy === "battle" ? "对战评审" : record.strategy === "parallel" ? "并行回答" : "单 Agent";
+    const row = element("article", { className: "agent-task-history-row", attrs: { role: "listitem" } }, [
+      element("div", { className: "agent-task-history-copy" }, [
+        element("div", { className: "agent-task-history-meta" }, [
+          element("strong", { text: dateLabel }),
+          element("span", { text: strategyLabel }),
+          element("span", { text: successCount + " 成功" + (failureCount ? " · " + failureCount + " 失败" : "") }),
+          element("span", { text: record.callCount + " 次调用" }),
+        ]),
+        element("p", { text: record.prompt }),
+      ]),
+      element("div", { className: "agent-task-history-actions" }, [
+        element("button", { className: "secondary", text: "查看结果", attrs: { type: "button" } }),
+        element("button", { className: "ghost agent-history-delete", text: "删除", attrs: { type: "button", "aria-label": "删除这条历史记录" } }),
+      ]),
+    ]);
+    row.querySelector(".agent-task-history-actions .secondary").addEventListener("click", () => openAgentTaskHistory(record.id));
+    row.querySelector(".agent-history-delete").addEventListener("click", () => {
+      const deleted = removeAgentTaskHistory(record.id);
+      if (!deleted.ok) {
+        showToast("无法访问本机浏览器存储，未能删除历史记录", true);
+        return;
+      }
+      if (state.lastAgentTask?.historyId === record.id) {
+        state.lastAgentTask.historyId = "";
+        const saveButton = $("#agent-task-result .agent-save-history");
+        if (saveButton) {
+          saveButton.disabled = false;
+          saveButton.textContent = "保存到本机历史";
+        }
+      }
+      renderAgentTaskHistory(deleted.items);
+      showToast("已删除这条历史记录");
+    });
+    return row;
+  }));
+}
+
+function agentServerTaskStatusLabel(status) {
+  return ({
+    queued: "排队中",
+    running: "运行中",
+    cancelling: "正在取消",
+    completed: "已完成",
+    failed: "失败",
+    cancelled: "已取消",
+  })[status] || status || "未知";
+}
+
+function serverTaskViewResult(task) {
+  if (task.request?.mode !== "review") return task.result || null;
+  const candidates = Array.isArray(task.request.results) ? task.request.results : [];
+  return {
+    strategy: "battle",
+    results: candidates.map((item) => ({
+      agentId: item.agentId || "",
+      agentName: item.agentName || "Agent",
+      answer: item.answer || "",
+      concerns: item.concerns || [],
+      keyPoints: [],
+      confidence: 0,
+    })),
+    synthesis: task.result?.synthesis || null,
+    synthesisError: task.result?.synthesis ? "" : task.error?.message || "",
+    quality: task.result?.quality || null,
+    callCount: task.result?.callCount || 1,
+  };
+}
+
+function showAgentServerTaskResult(task, result = serverTaskViewResult(task)) {
+  const request = task.request || {};
+  if (!result) {
+    showToast(task.error?.message || "任务尚未产生可展示的结果", task.status === "failed");
+    return;
+  }
+  const strategy = request.mode === "review" ? "battle" : request.strategy || result.strategy || "single";
+  const agentIds = request.mode === "review"
+    ? (request.results || []).map((item) => item.agentId).filter(Boolean)
+    : request.agentIds || [];
+  const durationMs = task.startedAt && task.finishedAt
+    ? Math.max(0, Date.parse(task.finishedAt) - Date.parse(task.startedAt))
+    : 0;
+  const callCount = Number(result.callCount) || (result.results || []).length + (result.synthesis ? 1 : 0);
+  state.lastAgentTask = {
+    prompt: request.prompt || "",
+    strategy,
+    agentIds,
+    judgeAgentId: request.judgeAgentId || "",
+    result,
+    durationMs,
+    callCount,
+    completedAt: task.finishedAt || task.updatedAt,
+    serverTaskId: task.id,
+  };
+  const prompt = $("#agent-task-prompt");
+  if (prompt && request.prompt) {
+    prompt.value = request.prompt;
+    prompt.dispatchEvent(new Event("input", { bubbles: true }));
+  }
+  const strategySelect = $("#agent-task-strategy");
+  if (strategySelect && request.mode !== "review") strategySelect.value = strategy;
+  if (request.mode !== "review") {
+    state.agentSelectedIds = agentIds;
+    renderAgentMembers();
+    syncAgentStrategyUi();
+    const judge = $("#agent-task-judge");
+    if (judge && request.judgeAgentId) judge.value = request.judgeAgentId;
+  }
+  renderAgentTaskResult(result, { durationMs, callCount });
+  setAgentWorkspaceTab("tasks");
+}
+
+function renderAgentServerTasks(tasks = []) {
+  state.agentServerTasks = tasks;
+  const list = $("#agent-server-task-list");
+  const count = $("#agent-server-task-count");
+  if (!list || !count) return;
+  count.textContent = String(tasks.length);
+  if (!tasks.length) {
+    list.replaceChildren(element("p", {
+      className: "agent-server-task-empty",
+      text: "还没有服务端任务。运行后的任务会在本机 SQLite 保留，页面关闭后仍可恢复。",
+    }));
+    return;
+  }
+  const rows = tasks.map((task) => {
+    const isActive = ["queued", "running", "cancelling"].includes(task.status);
+    const dateLabel = new Date(task.updatedAt || task.createdAt).toLocaleString("zh-CN", {
+      month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit",
+    });
+    const row = element("article", {
+      className: "agent-server-task-row status-" + String(task.status || "unknown"),
+      attrs: { role: "listitem" },
+    }, [
+      element("div", { className: "agent-server-task-copy" }, [
+        element("div", { className: "agent-server-task-meta" }, [
+          element("strong", { text: agentTaskStatusLabel(task.status) }),
+          element("span", { text: dateLabel }),
+          element("span", { text: "尝试 " + (task.attemptCount || 0) + " 次" }),
+          element("span", { text: "事件 #" + (task.eventSeq || 0) }),
+        ]),
+        element("small", { text: "任务 ID · " + task.id }),
+      ]),
+      element("div", { className: "agent-server-task-actions" }, [
+        element("button", {
+          className: "secondary agent-server-task-open",
+          text: isActive ? "继续跟踪" : "查看结果",
+          attrs: { type: "button" },
+        }),
+        isActive ? element("button", {
+          className: "ghost agent-server-task-cancel",
+          text: "取消",
+          attrs: { type: "button" },
+        }) : null,
+      ]),
+    ]);
+    row.querySelector(".agent-server-task-open").addEventListener("click", () => {
+      void openAgentServerTask(task.id);
+    });
+    row.querySelector(".agent-server-task-cancel")?.addEventListener("click", () => {
+      void cancelAgentServerTask(task.id);
+    });
+    return row;
+  });
+  list.replaceChildren(...rows);
+}
+
+async function loadAgentServerTasks({ quiet = true } = {}) {
+  const list = $("#agent-server-task-list");
+  if (!list) return;
+  try {
+    const data = await api("/api/agents/tasks?limit=12", { method: "GET", timeoutMs: 15_000 });
+    renderAgentServerTasks(data.tasks || []);
+  } catch (error) {
+    if (!quiet) showToast(error.message || "服务端任务列表加载失败", true);
+    if (!state.agentServerTasks.length) {
+      list.replaceChildren(element("p", {
+        className: "agent-server-task-empty",
+        text: error.code === "AGENT_DISABLED" ? "服务端 Agent 任务功能尚未开启。" : "暂时无法读取服务端任务列表。",
+      }));
+    }
+  }
+}
+
+async function cancelAgentServerTask(taskId) {
+  try {
+    await cancelDurableAgentTask(taskId);
+    await loadAgentServerTasks();
+    showToast("已提交任务取消请求");
+  } catch (error) {
+    showToast(error.message || "取消任务失败", true);
+  }
+}
+
+async function openAgentServerTask(taskId) {
+  if (state.agentTaskBusy) return;
+  try {
+    let { task } = await api(`/api/agents/tasks/${encodeURIComponent(taskId)}`, {
+      method: "GET",
+      timeoutMs: 15_000,
+    });
+    if (["queued", "running", "cancelling"].includes(task.status)) {
+      const operation = beginAgentTaskUiOperation("恢复任务跟踪");
+      try {
+        const result = await watchDurableAgentTask(taskId, {
+          signal: operation.signal,
+          onProgress: updateAgentTaskProgress,
+        });
+        const refreshed = await api(`/api/agents/tasks/${encodeURIComponent(taskId)}`, { method: "GET" });
+        task = refreshed.task;
+        showAgentServerTaskResult(task, result);
+        showToast("已从服务端恢复任务结果");
+      } finally {
+        state.agentTaskBusy = false;
+        operation.finish();
+      }
+    } else {
+      showAgentServerTaskResult(task);
+      if (task.status === "failed") showToast(task.error?.message || "任务执行失败", true);
+      else if (task.status === "cancelled") showToast("该任务已取消");
+    }
+  } catch (error) {
+    if (error.code === "LLM_GENERATION_CANCELLED" || error.name === "AbortError") {
+      showToast("已停止当前任务跟踪；服务端正在处理取消请求");
+    } else {
+      showToast(error.message || "恢复服务端任务失败", true);
+    }
+  } finally {
+    state.agentTaskBusy = false;
+    await loadAgentServerTasks();
+  }
+}
+
+function openAgentTaskHistory(id) {
+  const record = state.agentTaskHistory.find((item) => item.id === id);
+  if (!record) return;
+  const prompt = $("#agent-task-prompt");
+  prompt.value = record.prompt;
+  prompt.dispatchEvent(new Event("input", { bubbles: true }));
+  $("#agent-task-strategy").value = record.strategy;
+  state.agentSelectedIds = record.agentIds.filter((agentId) =>
+    state.modelWorkspace.agents.some((agent) => agent.id === agentId && agent.enabled));
+  renderAgentMembers();
+  syncAgentStrategyUi();
+  const judge = $("#agent-task-judge");
+  if (record.judgeAgentId && [...judge.options].some((option) => option.value === record.judgeAgentId)) {
+    judge.value = record.judgeAgentId;
+  }
+  state.lastAgentTask = { ...record, completedAt: record.createdAt, historyId: record.id, restored: true };
+  setAgentWorkspaceTab("tasks");
+  $("#agent-task-history-details").open = true;
+  renderAgentTaskResult(record.result, {
+    durationMs: record.durationMs,
+    callCount: record.callCount,
+    historyId: record.id,
+  });
+  showToast("已载入历史结果；再次运行前请检查当前角色配置");
+}
+
+async function clearAgentTaskHistoryWithConfirmation() {
+  if (!state.agentTaskHistory.length) return;
+  const confirmed = await confirmDialog({
+    title: "清空 Agent 历史",
+    message: "将删除当前浏览器保存的全部 Agent 任务记录，不能撤销。此操作不会影响模型配置、题库或学习记录。",
+    confirmText: "清空历史",
+    danger: true,
+  });
+  if (!confirmed) return;
+  const cleared = clearAgentTaskHistory();
+  if (!cleared.ok) {
+    showToast("无法访问本机浏览器存储，未能清空历史", true);
+    return;
+  }
+  if (state.lastAgentTask) {
+    state.lastAgentTask.historyId = "";
+    const saveButton = $("#agent-task-result .agent-save-history");
+    if (saveButton) {
+      saveButton.disabled = false;
+      saveButton.textContent = "保存到本机历史";
+    }
+  }
+  renderAgentTaskHistory(cleared.items);
+  showToast("Agent 历史已清空");
+}
+
+function renderAgentTaskPlan(plan) {
+  const box = $("#agent-task-plan");
+  if (!box) return;
+  const steps = Array.isArray(plan?.steps) ? plan.steps : [];
+  const rows = steps.map((step) => {
+    const isReview = step.type === "review";
+    const dependencyText = isReview
+      ? `依赖 ${(step.dependsOn || []).length} 个 Worker；至少 2 个成功后执行`
+      : step.execution === "parallel" ? "独立上下文 · 并行执行" : "独立上下文 · 单步执行";
+    return element("li", { className: "agent-task-plan-step" + (isReview ? " is-review" : "") }, [
+      element("span", { className: "agent-task-plan-role", text: isReview ? "Evaluator" : "Worker" }),
+      element("strong", { text: step.agentName || "Agent" }),
+      element("small", { text: dependencyText }),
+    ]);
+  });
   box.hidden = false;
+  box.replaceChildren(
+    element("div", { className: "agent-task-plan-heading" }, [
+      element("strong", { text: "Router 任务计划" }),
+      element("span", { text: plan?.router?.mode === "deterministic" ? "本地规则路由 · 不额外调用模型" : "任务计划" }),
+    ]),
+    element("ol", { className: "agent-task-plan-steps" }, rows),
+    element("p", { className: "agent-task-plan-note", text: "输出门禁只检查结构完整性，不代表答案事实正确。" }),
+  );
 }
 
-async function runAgentTask() {
-  const button = $("#agent-task-run");
-  const prompt = $("#agent-task-prompt").value.trim();
-  const strategy = $("#agent-task-strategy").value;
-  const agentIds = [...document.querySelectorAll('#agent-task-members input:checked')].map((input) => input.value);
-  const task = beginGenerationTask({
+function agentTaskPlanText(plan) {
+  if (!plan || !Array.isArray(plan.steps)) return "";
+  const workers = plan.steps.filter((step) => step.type === "worker").length;
+  const reviewer = plan.steps.find((step) => step.type === "review");
+  return `Router 计划：${workers} 个独立 Worker${plan.execution?.mode === "parallel_then_review" ? " 并行执行" : " 执行"}${reviewer ? `，随后由 ${reviewer.agentName || "Evaluator"} 在至少 2 个 Worker 成功后评审` : ""}。`;
+}
+
+function agentTaskQualityText(quality) {
+  if (!quality) return "输出质量门禁：未返回检查结果。";
+  const workers = quality.workers || {};
+  const review = {
+    passed: "通过",
+    failed: "未通过",
+    pending: "等待重新评审",
+    skipped: "因成功 Worker 不足而跳过",
+    not_required: "不适用",
+  }[quality.review] || "未执行";
+  return `结构完整性门禁：Worker ${workers.passed || 0} 通过、${workers.failed || 0} 未通过、${workers.notEvaluated || 0} 未检查；综合评审：${review}。该门禁不判断事实正确性。`;
+}
+function refreshAgentTaskQuality(result, reviewOverride) {
+  if (!result) return;
+  const items = Array.isArray(result.results) ? result.results : [];
+  const workers = {
+    passed: items.filter((item) => item?.quality?.passed === true).length,
+    failed: items.filter((item) => item?.quality?.passed === false).length,
+    notEvaluated: items.filter((item) => item?.quality?.passed == null).length,
+  };
+  const review = reviewOverride || (result.strategy !== "battle"
+    ? "not_required"
+    : result.synthesis
+      ? "passed"
+      : result.synthesisError
+        ? "failed"
+        : "skipped");
+  const allWorkersPassed = items.length > 0 && workers.passed === items.length;
+  const status = allWorkersPassed && ["passed", "not_required"].includes(review)
+    ? "passed"
+    : workers.passed > 0 || review === "passed"
+      ? "partial"
+      : "failed";
+  result.quality = {
+    ...(result.quality || {}),
+    gate: result.quality?.gate || "agent-output-contract-v1",
+    status,
+    workers,
+    review,
+    note: result.quality?.note || "该门禁只检查输出结构与完整性，不判断事实、推理或引用是否正确。",
+  };
+}
+
+function updateAgentTaskProgress(event) {
+  const list = $("#agent-task-progress-roles");
+  const summary = $("#agent-task-progress-text");
+  if (!list || !summary) return;
+  if (event.type === "plan_created") {
+    renderAgentTaskPlan(event.plan);
+    summary.textContent = `Router 已规划 ${event.plan?.steps?.length || 0} 个执行步骤，准备派发 Worker…`;
+    return;
+  }
+  if (event.type === "quality_gate_passed" || event.type === "quality_gate_failed") {
+    const gateStatus = event.type === "quality_gate_passed" ? "通过" : "未通过";
+    summary.textContent = `${event.agentName || "Agent"} 的结构完整性门禁${gateStatus}${event.issues?.length ? "：" + event.issues.join("、") : ""}。`;
+    return;
+  }
+  if (event.type === "quality_gate_skipped") return;
+  if (event.type === "task_started") {
+    summary.textContent = `已启动 ${event.totalAgents || 0} 个 Worker，等待执行结果…`;
+    return;
+  }
+  if (event.type === "agent_started" || event.type === "review_started") {
+    const stage = event.stage === "review" || event.type === "review_started" ? "review" : "answer";
+    const id = String(event.agentId || event.agentName || "agent");
+    const key = stage + ":" + id;
+    let row = state.agentTaskProgressRows.get(key);
+    if (!row) {
+      row = element("div", { className: "agent-task-progress-row is-running" }, [
+        element("span", { className: "agent-task-progress-stage", text: stage === "review" ? "评审" : "回答" }),
+        element("strong", { text: event.agentName || "Agent" }),
+        element("span", { className: "agent-task-progress-status", text: "执行中" }),
+      ]);
+      state.agentTaskProgressRows.set(key, row);
+      list.append(row);
+    } else {
+      row.className = "agent-task-progress-row is-running";
+      row.querySelector(".agent-task-progress-status").textContent = "执行中";
+    }
+    summary.textContent = stage === "review"
+      ? "角色回答已返回，正在进行综合评审…"
+      : "正在执行角色任务，完成结果会逐项显示…";
+    return;
+  }
+  if (event.type === "agent_completed" || event.type === "agent_failed") {
+    const stage = event.stage === "review" ? "review" : "answer";
+    const key = stage + ":" + String(event.agentId || event.agentName || "agent");
+    const row = state.agentTaskProgressRows.get(key);
+    if (row) {
+      const failed = event.type === "agent_failed";
+      row.className = "agent-task-progress-row " + (failed ? "is-failed" : "is-complete");
+      row.querySelector(".agent-task-progress-status").textContent = failed ? "失败" : "已完成";
+      if (failed) row.title = event.error || "调用失败";
+    }
+    const completed = [...state.agentTaskProgressRows.values()].filter((item) =>
+      item.classList.contains("is-complete") || item.classList.contains("is-failed")).length;
+    summary.textContent = `已返回 ${completed} 项执行结果${event.type === "agent_failed" ? "，有角色失败，可单独重试" : ""}。`;
+    return;
+  }
+  if (event.type === "review_skipped") {
+    summary.textContent = "成功回答不足 2 个，已跳过综合评审；可以先重试失败角色。";
+    return;
+  }
+  if (event.type === "task_completed") {
+    summary.textContent = `任务结束：${event.successfulAgents} 个角色成功，${event.failedAgents} 个失败，共 ${event.callCount} 次模型调用。`;
+  }
+}
+
+function beginAgentTaskUiOperation(label) {
+  state.agentTaskBusy = true;
+  state.agentTaskProgressRows.clear();
+  $("#agent-task-progress-roles").replaceChildren();
+  const planBox = $("#agent-task-plan");
+  if (planBox) {
+    planBox.hidden = true;
+    planBox.replaceChildren();
+  }
+  return beginGenerationTask({
     key: "agent-task",
-    button,
+    button: $("#agent-task-run"),
     progress: $("#agent-task-progress"),
     progressText: $("#agent-task-progress-text"),
     cancel: $("#agent-task-cancel"),
-    label: "运行 Agent 任务",
+    label,
   });
-  try {
-    const result = await api("/api/agents/run", {
-      method: "POST",
-      body: JSON.stringify({ prompt, strategy, agentIds, judgeAgentId: $("#agent-task-judge").value }),
-      signal: task.signal,
-      timeoutMs: LONG_API_TIMEOUT_MS,
+}
+
+function persistUpdatedAgentTaskHistory(task) {
+  if (!task?.historyId) return true;
+  const saved = saveAgentTaskHistory({
+    id: task.historyId,
+    createdAt: task.completedAt || new Date().toISOString(),
+    prompt: task.prompt || "",
+    strategy: task.strategy || task.result?.strategy || "single",
+    agentIds: task.agentIds || [],
+    judgeAgentId: task.judgeAgentId || "",
+    durationMs: task.durationMs,
+    callCount: task.callCount,
+    result: task.result,
+  });
+  if (!saved.ok) {
+    task.historySyncFailed = true;
+    showToast("本次重试结果已更新，但同步历史失败；可以点击“重新同步历史”再次尝试", true);
+    return false;
+  }
+  task.historySyncFailed = false;
+  renderAgentTaskHistory(saved.items);
+  return true;
+}
+
+function renderAgentTaskResult(result, meta = {}) {
+  const box = $("#agent-task-result");
+  const items = result.results || [];
+  const succeeded = items.filter((item) => !item.error).length;
+  const failed = items.length - succeeded;
+  const canRetryReview = result.strategy === "battle" && items.filter((item) => !item.error && item.answer).length >= 2;
+  const actions = element("div", { className: "agent-result-actions" }, [
+    element("button", {
+      className: "secondary agent-save-history",
+      text: meta.historyNeedsSync ? "重新同步历史" : meta.historyId ? "已保存到历史" : "保存到本机历史",
+      attrs: { type: "button", disabled: Boolean(meta.historyId && !meta.historyNeedsSync) },
+    }),
+    element("button", { className: "secondary agent-copy-result", text: "复制全部结果", attrs: { type: "button" } }),
+  ]);
+  const heading = element("div", { className: "agent-result-heading" }, [
+    element("div", {}, [
+      element("span", { className: "agent-section-index", text: "TASK OUTPUT" }),
+      element("h3", { text: result.synthesis ? "综合结果与角色回答" : "角色回答" }),
+      element("p", { text: succeeded + " 个 Agent 成功" + (failed ? " · " + failed + " 个失败" : "") + "。请比较观点和依据，不要只看置信度。" }),
+      element("p", { className: "agent-quality-summary", text: agentTaskQualityText(result.quality) }),
+      result.plan ? element("p", { className: "agent-plan-summary", text: agentTaskPlanText(result.plan) }) : null,
+      element("span", { className: "agent-result-run-meta", text: (meta.durationMs != null ? "耗时 " + (meta.durationMs / 1000).toFixed(1) + " 秒" : "") + (meta.callCount != null ? " · " + meta.callCount + " 次模型调用" : "") }),
+    ]),
+    actions,
+  ]);
+  actions.querySelector(".agent-save-history").addEventListener("click", () => {
+    const task = state.lastAgentTask;
+    if (!task?.result) {
+      showToast("当前没有可保存的任务结果", true);
+      return;
+    }
+    const id = task.historyId || "agent-task-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8);
+    const saved = saveAgentTaskHistory({
+      id,
+      createdAt: task.completedAt || new Date().toISOString(),
+      prompt: task.prompt || "",
+      strategy: task.strategy || result.strategy || "single",
+      agentIds: task.agentIds || [],
+      judgeAgentId: task.judgeAgentId || "",
+      durationMs: task.durationMs ?? meta.durationMs,
+      callCount: task.callCount ?? meta.callCount,
+      result: task.result,
     });
-    renderAgentTaskResult(result);
+    if (!saved.ok) {
+      showToast(saved.reason === "invalid" ? "结果内容过大或格式异常，未能保存" : "本机浏览器存储不可用，未能保存历史", true);
+      return;
+    }
+    task.historyId = id;
+    task.historySyncFailed = false;
+    renderAgentTaskHistory(saved.items);
+    $("#agent-task-history-details").open = true;
+    const saveHistoryButton = actions.querySelector(".agent-save-history");
+    saveHistoryButton.disabled = true;
+    saveHistoryButton.textContent = "已保存到历史";
+    showToast("已保存到本机浏览器历史");
+  });
+  heading.querySelector(".agent-copy-result").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(agentTaskPlainText(result));
+      showToast("结果已复制");
+    } catch {
+      showToast("复制失败，请检查浏览器剪贴板权限", true);
+    }
+  });
+  const answers = items.map((item, index) => {
+    const isError = Boolean(item.error);
+    const percent = Math.round((item.confidence || 0) * 100);
+    const card = element("article", { className: "agent-result-card" + (isError ? " is-error" : "") }, [
+      element("div", { className: "agent-result-card-head" }, [
+        element("span", { className: "agent-result-number", text: String(index + 1).padStart(2, "0") }),
+        element("div", { className: "agent-result-identity" }, [
+          element("strong", { text: item.agentName || "Agent" }),
+          element("small", { text: isError ? "本次调用未成功" : (item.model || "默认模型") }),
+        ]),
+        element("span", { className: "agent-result-status" + (isError ? " is-error" : " is-success"), text: isError ? "失败" : "已完成" }),
+      ]),
+      isError
+        ? element("p", { className: "agent-result-error", text: item.error })
+        : element("div", { className: "agent-result-body" }, [
+            element("div", { className: "agent-confidence" }, [
+              element("span", { text: "模型自评置信度" }),
+              element("strong", { text: percent + "%" }),
+            ]),
+            element("div", { className: "agent-confidence-track", attrs: { role: "meter", "aria-label": (item.agentName || "Agent") + " 置信度", "aria-valuemin": "0", "aria-valuemax": "100", "aria-valuenow": String(percent) } }, [
+              element("span", { attrs: { style: "width:" + percent + "%" } }),
+            ]),
+            element("p", { className: "agent-result-answer", text: item.answer || "未返回内容" }),
+            item.keyPoints?.length ? element("div", { className: "agent-result-detail" }, [
+              element("strong", { text: "关键要点" }),
+              element("ul", {}, item.keyPoints.map((point) => element("li", { text: point }))),
+            ]) : null,
+            item.concerns?.length ? element("div", { className: "agent-result-detail agent-result-concerns" }, [
+              element("strong", { text: "需要留意" }),
+              element("ul", {}, item.concerns.map((point) => element("li", { text: point }))),
+            ]) : null,
+          ]),
+      element("div", { className: "agent-result-card-actions" }, [
+        element("button", { className: "ghost agent-copy-one", text: "复制此回答", attrs: { type: "button" } }),
+        isError
+          ? element("button", {
+              className: "secondary agent-retry-one",
+              text: "重试此角色",
+              attrs: { type: "button", disabled: state.agentTaskBusy },
+            })
+          : null,
+      ]),
+    ]);
+    card.querySelector(".agent-copy-one").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(agentTaskPlainText({ strategy: result.strategy, results: [item] }));
+        showToast("已复制 " + (item.agentName || "Agent") + " 的回答");
+      } catch {
+        showToast("复制失败，请检查浏览器剪贴板权限", true);
+      }
+    });
+    card.querySelector(".agent-retry-one")?.addEventListener("click", () => retryAgentResult(item.agentId));
+    return card;
+  });
+  const synthesis = result.synthesis
+    ? element("article", { className: "agent-synthesis-card" }, [
+        element("div", { className: "agent-synthesis-kicker" }, [
+          element("span", { text: "FINAL REVIEW" }),
+          element("strong", { text: "综合评审 · " + (result.synthesis.judgedBy || "评审 Agent") }),
+        ]),
+        element("p", { className: "agent-result-answer", text: result.synthesis.answer || "评审角色未返回综合结果。" }),
+        result.synthesis.keyPoints?.length ? element("div", { className: "agent-result-detail" }, [
+          element("strong", { text: "综合要点" }),
+          element("ul", {}, result.synthesis.keyPoints.map((point) => element("li", { text: point }))),
+        ]) : null,
+        result.synthesis.concerns?.length ? element("div", { className: "agent-result-detail agent-result-concerns" }, [
+          element("strong", { text: "仍需核实" }),
+          element("ul", {}, result.synthesis.concerns.map((point) => element("li", { text: point }))),
+        ]) : null,
+      ])
+    : result.strategy === "battle"
+      ? element("article", { className: "agent-synthesis-card agent-synthesis-pending" }, [
+          element("strong", { text: result.synthesisError ? "综合评审失败" : "综合评审未执行" }),
+          element("p", { text: result.synthesisError || "至少需要两个 Agent 成功返回答案才能执行综合评审。" }),
+          result.synthesisError && canRetryReview
+            ? element("button", {
+                className: "secondary agent-retry-review",
+                text: "仅重试综合评审",
+                attrs: { type: "button", disabled: state.agentTaskBusy },
+              })
+            : null,
+        ])
+      : null;
+  synthesis?.querySelector(".agent-retry-review")?.addEventListener("click", retryAgentReview);
+  box.replaceChildren(
+    heading,
+    synthesis,
+  );
+    element("div", { className: "agent-result-grid" }, answers),
+  box.hidden = false;
+}
+  box.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function retryAgentResult(agentId) {
+  if (state.agentTaskBusy) return;
+  const taskRecord = state.lastAgentTask;
+  const agent = state.modelWorkspace.agents.find((item) => item.id === agentId && item.enabled);
+  if (!taskRecord?.result || !agent) {
+    showToast("该角色已不可用，请检查 Agent 配置", true);
+    return;
+  }
+  const failedIndex = taskRecord.result.results.findIndex((item) => item.agentId === agentId && item.error);
+  if (failedIndex < 0) {
+    showToast("没有找到该角色的失败记录", true);
+    return;
+  }
+  if (workspaceSignature(collectWorkspaceDraft()) !== state.modelWorkspaceSavedSignature) {
+    showToast("Agent 配置有未保存的修改，请先保存再重试", true);
+    return;
+  }
+
+  const operation = beginAgentTaskUiOperation("重试失败角色");
+  const startedAt = performance.now();
+  try {
+    const retried = await createDurableAgentTask({
+      mode: "run",
+      prompt: taskRecord.prompt,
+      strategy: "single",
+      agentIds: [agentId],
+    }, {
+      signal: operation.signal,
+      onProgress: updateAgentTaskProgress,
+    });
+    const replacement = retried.results?.find((item) => item.agentId === agentId) || retried.results?.[0];
+    if (!replacement) throw new Error("重试请求没有返回角色结果");
+    const nextResults = [...taskRecord.result.results];
+    nextResults[failedIndex] = replacement;
+    taskRecord.result = { ...taskRecord.result, results: nextResults };
+    if (taskRecord.strategy === "battle" && !replacement.error) {
+      const successfulCount = nextResults.filter((item) => !item.error && item.answer).length;
+      taskRecord.result = {
+        ...taskRecord.result,
+        synthesis: null,
+        synthesisError: successfulCount >= 2
+          ? "候选答案已更新，之前的综合评审已过期，请重新评审。"
+          : "当前成功回答不足 2 个，暂时无法进行综合评审。",
+      };
+      refreshAgentTaskQuality(taskRecord.result, successfulCount >= 2 ? "pending" : "skipped");
+    } else {
+      refreshAgentTaskQuality(taskRecord.result);
+    }
+    taskRecord.callCount = (Number(taskRecord.callCount) || 0) + (Number(retried.callCount) || 1);
+    taskRecord.durationMs = (Number(taskRecord.durationMs) || 0) + Math.round(performance.now() - startedAt);
+    taskRecord.completedAt = new Date().toISOString();
+    state.agentTaskBusy = false;
+    persistUpdatedAgentTaskHistory(taskRecord);
+    renderAgentTaskResult(taskRecord.result, {
+      durationMs: taskRecord.durationMs,
+      callCount: taskRecord.callCount,
+      historyId: taskRecord.historyId,
+      historyNeedsSync: Boolean(taskRecord.historySyncFailed),
+    });
+    showToast(replacement.error ? "该角色仍未成功，可检查模型配置后再次重试" : "已更新该角色的回答");
   } catch (error) {
-    if (isGenerationCancelled(error, task.signal)) {
+    if (isGenerationCancelled(error, operation.signal)) {
+      $("#agent-task-progress-text").textContent = "重试已停止";
+      showToast("已停止角色重试");
+    } else {
+      showToast(error.message || "角色重试失败", true);
+    }
+  } finally {
+    state.agentTaskBusy = false;
+    operation.finish();
+  }
+}
+
+async function retryAgentReview() {
+  if (state.agentTaskBusy) return;
+  const taskRecord = state.lastAgentTask;
+  const successful = taskRecord?.result?.results?.filter((item) => !item.error && item.answer) || [];
+  if (!taskRecord || taskRecord.strategy !== "battle" || successful.length < 2) {
+    showToast("至少需要两个成功的角色回答才能重新评审", true);
+    return;
+  }
+  if (workspaceSignature(collectWorkspaceDraft()) !== state.modelWorkspaceSavedSignature) {
+    showToast("Agent 配置有未保存的修改，请先保存再重试", true);
+    return;
+  }
+
+  const operation = beginAgentTaskUiOperation("重试综合评审");
+  const startedAt = performance.now();
+  let reviewStarted = false;
+  try {
+    const retried = await createDurableAgentTask({
+      mode: "review",
+      prompt: taskRecord.prompt,
+      results: taskRecord.result.results,
+      judgeAgentId: taskRecord.judgeAgentId || $("#agent-task-judge").value,
+    }, {
+      signal: operation.signal,
+      onProgress: (event) => {
+        if (event.type === "review_started" || (event.type === "agent_started" && event.stage === "review")) {
+          reviewStarted = true;
+        }
+        updateAgentTaskProgress(event);
+      },
+    });
+    if (!retried.synthesis) throw new Error("评审接口未返回综合结果");
+    taskRecord.result = { ...taskRecord.result, synthesis: retried.synthesis, synthesisError: "" };
+    refreshAgentTaskQuality(taskRecord.result, "passed");
+    taskRecord.callCount = (Number(taskRecord.callCount) || 0) + (Number(retried.callCount) || 1);
+    taskRecord.durationMs = (Number(taskRecord.durationMs) || 0) + Math.round(performance.now() - startedAt);
+    taskRecord.completedAt = new Date().toISOString();
+    state.agentTaskBusy = false;
+    persistUpdatedAgentTaskHistory(taskRecord);
+    renderAgentTaskResult(taskRecord.result, {
+      durationMs: taskRecord.durationMs,
+      callCount: taskRecord.callCount,
+      historyId: taskRecord.historyId,
+      historyNeedsSync: Boolean(taskRecord.historySyncFailed),
+    });
+    showToast("综合评审已更新，原有角色回答没有重新调用");
+  } catch (error) {
+    if (isGenerationCancelled(error, operation.signal)) {
+      $("#agent-task-progress-text").textContent = "评审重试已停止";
+      showToast("已停止综合评审重试");
+      return;
+    }
+    taskRecord.result = { ...taskRecord.result, synthesis: null, synthesisError: error.message || "综合评审重试失败" };
+    if (reviewStarted) taskRecord.callCount = (Number(taskRecord.callCount) || 0) + 1;
+    taskRecord.durationMs = (Number(taskRecord.durationMs) || 0) + Math.round(performance.now() - startedAt);
+    taskRecord.completedAt = new Date().toISOString();
+    state.agentTaskBusy = false;
+    persistUpdatedAgentTaskHistory(taskRecord);
+    renderAgentTaskResult(taskRecord.result, {
+      durationMs: taskRecord.durationMs,
+      callCount: taskRecord.callCount,
+      historyId: taskRecord.historyId,
+      historyNeedsSync: Boolean(taskRecord.historySyncFailed),
+    });
+    showToast(error.message || "综合评审重试失败", true);
+  } finally {
+    state.agentTaskBusy = false;
+    operation.finish();
+  }
+
+async function runAgentTask() {
+  if (state.agentTaskBusy) return;
+  const prompt = $("#agent-task-prompt").value.trim();
+  const strategy = $("#agent-task-strategy").value;
+  const agentIds = [...document.querySelectorAll('#agent-task-members input:checked')].map((input) => input.value);
+  const validation = $("#agent-task-validation");
+  const enabledCount = state.modelWorkspace.agents.filter((agent) => agent.enabled).length;
+  const required = strategy === "single" ? 1 : 2;
+  if (!prompt) {
+    validation.textContent = "请先描述本次任务的目标和背景。";
+    validation.hidden = false;
+    $("#agent-task-prompt").focus();
+    return;
+  }
+  if (agentIds.length < required || enabledCount < required) {
+    validation.textContent = strategy === "single"
+      ? "请至少选择一个已启用的 Agent。"
+      : "当前策略需要至少选择 2 个已启用的 Agent，请调整参与角色或切换为单 Agent。";
+    validation.hidden = false;
+    $("#agent-task-members").scrollIntoView({ behavior: "smooth", block: "center" });
+    return;
+  }
+  validation.hidden = true;
+  const currentSignature = workspaceSignature(collectWorkspaceDraft());
+  if (currentSignature !== state.modelWorkspaceSavedSignature) {
+    validation.textContent = "工作区存在未保存的修改。请先保存配置，再运行任务，避免调用旧的角色设置。";
+    validation.hidden = false;
+    $("#mc-save").focus();
+    return;
+  }
+
+  $("#agent-task-result").hidden = true;
+  const operation = beginAgentTaskUiOperation("运行 Agent 任务");
+  const startedAt = performance.now();
+  const judgeAgentId = $("#agent-task-judge").value;
+  try {
+    const result = await createDurableAgentTask({
+      mode: "run",
+      prompt,
+      strategy,
+      agentIds,
+      judgeAgentId,
+    }, {
+      signal: operation.signal,
+      onProgress: updateAgentTaskProgress,
+    });
+    const durationMs = Math.round(performance.now() - startedAt);
+    const callCount = Number(result.callCount) || (result.results || []).length + (result.synthesis ? 1 : 0);
+    state.lastAgentTask = {
+      prompt,
+      strategy,
+      agentIds,
+      judgeAgentId,
+      result,
+      durationMs,
+      callCount,
+      completedAt: new Date().toISOString(),
+    };
+    state.agentTaskBusy = false;
+    renderAgentTaskResult(result, { durationMs, callCount });
+    const failed = (result.results || []).filter((item) => item.error).length;
+    if (failed || result.synthesisError) {
+      showToast("任务已返回部分结果；失败项可单独重试", true);
+    } else {
+      showToast("Agent 任务已完成");
+    }
+  } catch (error) {
+    if (isGenerationCancelled(error, operation.signal)) {
+      $("#agent-task-progress-text").textContent = "任务已停止";
       showToast("已停止 Agent 任务");
       return;
     }
     showToast(error.message, true);
+    validation.textContent = error.message;
+    validation.hidden = false;
+    validation.scrollIntoView({ behavior: "smooth", block: "center" });
   } finally {
-    task.finish();
+    state.agentTaskBusy = false;
+    operation.finish();
   }
 }
-
 async function refreshAfterDataChange() {
   state.session = null;
   resetExamSaveState();
@@ -5525,9 +7098,59 @@ function openWikiAskDrawer() {
     const active = document.activeElement;
     wikiAskReturnFocus =
       active instanceof HTMLElement && !drawer.contains(active)
+document.querySelectorAll("[data-agent-tab]").forEach((button, index, buttons) => {
+  button.addEventListener("click", () => setAgentWorkspaceTab(button.dataset.agentTab));
+  button.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+    event.preventDefault();
+    const nextIndex = (index + (event.key === "ArrowRight" ? 1 : buttons.length - 1)) % buttons.length;
+    buttons[nextIndex].focus();
+    setAgentWorkspaceTab(buttons[nextIndex].dataset.agentTab);
+  });
+});
+document.querySelectorAll("[data-agent-role-template]").forEach((button) => {
+  button.addEventListener("click", () => addAgentFromTemplate(button.dataset.agentRoleTemplate));
+});
         ? active
         : $("#wiki-ask-open");
   }
+$("#provider-list").addEventListener("input", syncWorkspaceDraftFromForm);
+$("#provider-list").addEventListener("change", syncWorkspaceDraftFromForm);
+$("#agent-list").addEventListener("input", syncWorkspaceDraftFromForm);
+$("#agent-list").addEventListener("change", syncWorkspaceDraftFromForm);
+$("#agent-default").addEventListener("change", () => {
+  state.modelWorkspace.defaultAgentId = $("#agent-default").value;
+  renderModelWorkspace();
+  updateWorkspaceDirtyState();
+});
+$("#agent-task-strategy").addEventListener("change", syncAgentStrategyUi);
+document.querySelectorAll("[data-agent-strategy]").forEach((button) => {
+  button.addEventListener("click", () => {
+    $("#agent-task-strategy").value = button.dataset.agentStrategy;
+    syncAgentStrategyUi();
+  });
+});
+$("#agent-task-prompt").addEventListener("input", () => {
+  const count = $("#agent-task-prompt").value.length;
+  $("#agent-task-char-count").textContent = count.toLocaleString("zh-CN") + " / 16,000";
+  $("#agent-task-char-count").classList.toggle("is-near-limit", count > 14_400);
+  $("#agent-task-validation").hidden = true;
+});
+document.querySelectorAll("[data-agent-prompt-template]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const prompt = $("#agent-task-prompt");
+    const prefix = button.dataset.agentPromptTemplate;
+    prompt.value = prompt.value.trim() ? prompt.value.trim() + "\n\n" + prefix : prefix;
+    prompt.focus();
+    prompt.dispatchEvent(new Event("input", { bubbles: true }));
+    prompt.setSelectionRange(prompt.value.length, prompt.value.length);
+  });
+});
+$("#agent-task-members").addEventListener("change", syncAgentStrategyUi);
+$("#agent-task-history-clear").addEventListener("click", clearAgentTaskHistoryWithConfirmation);
+$("#agent-server-task-refresh").addEventListener("click", () => { void loadAgentServerTasks({ quiet: false }); });
+renderAgentTaskHistory();
+void loadAgentServerTasks();
   drawer.hidden = false;
   drawer.setAttribute("aria-hidden", "false");
   $("#wiki-ask-backdrop").hidden = false;

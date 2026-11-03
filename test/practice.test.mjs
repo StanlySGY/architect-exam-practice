@@ -3,7 +3,7 @@ import { mkdtemp, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import test from "node:test";
-import { QuestionGenerator } from "../src/generator.mjs";
+import { AGENT_OUTPUT_QUALITY_GATE, QuestionGenerator, buildAgentTaskPlan, evaluateAgentOutput } from "../src/generator.mjs";
 import { parseFreeplane } from "../src/mindmap.mjs";
 import { ModelConfig } from "../src/model-config.mjs";
 import { PracticeService } from "../src/questions.mjs";
@@ -276,6 +276,114 @@ test("案例和论文列表支持分页且保留筛选总数", async (t) => {
   assert.equal(papers.records[0].title, "论文 3");
 });
 
+test("Router 为不同策略生成有依赖关系的 Worker 执行计划", () => {
+  const agents = [
+    { id: "tutor", name: "备考导师" },
+    { id: "reviewer", name: "架构评审" },
+  ];
+  const single = buildAgentTaskPlan({ strategy: "single", agents });
+  assert.equal(single.router.mode, "deterministic");
+  assert.equal(single.steps.length, 1);
+  assert.equal(single.steps[0].role, "worker");
+  assert.equal(single.steps[0].execution, "direct");
+
+  const parallel = buildAgentTaskPlan({ strategy: "parallel", agents });
+  assert.equal(parallel.steps.length, 2);
+  assert.ok(parallel.steps.every((step) => step.role === "worker" && step.dependsOn.length === 0));
+  assert.ok(parallel.steps.every((step) => step.execution === "parallel"));
+
+  const battle = buildAgentTaskPlan({
+    strategy: "battle",
+    agents,
+    judgeAgent: { id: "judge", name: "独立评审" },
+  });
+  assert.equal(battle.steps.length, 3);
+  assert.deepEqual(battle.steps[2].dependsOn, ["worker-1", "worker-2"]);
+  assert.equal(battle.steps[2].minimumSuccessfulDependencies, 2);
+  assert.equal(battle.steps[2].role, "evaluator");
+  assert.equal(battle.qualityGates[0].id, AGENT_OUTPUT_QUALITY_GATE);
+});
+
+test("Agent 输出契约门禁检查结构完整性，不把自评置信度误当成正确性", () => {
+  const passed = evaluateAgentOutput({
+    answer: "有依据的架构结论",
+    confidence: 0.8,
+    key_points: ["可用性"],
+    concerns: [],
+  });
+  assert.equal(passed.passed, true);
+  assert.deepEqual(passed.issues, []);
+
+  const failed = evaluateAgentOutput({
+    answer: "   ",
+    confidence: 1.2,
+    key_points: "不是数组",
+    concerns: [""],
+  });
+  assert.equal(failed.passed, false);
+  assert.ok(failed.issues.includes("answer_required"));
+  assert.ok(failed.issues.includes("confidence_out_of_range"));
+  assert.ok(failed.issues.includes("key_points_must_be_array"));
+  assert.ok(failed.issues.includes("concerns_contains_invalid_item"));
+});
+
+test("Agent Worker 返回 Router 计划，空答案无法通过结构完整性门禁", async (t) => {
+  const { service } = await fixture(t);
+  const modelConfig = {
+    workspace: () => ({
+      defaultAgentId: "agent-one",
+      providers: [{
+        id: "provider-one",
+        type: "openai-compatible",
+        baseUrl: "http://model.test/v1",
+        apiKey: "secret",
+        models: ["test-model"],
+        defaultModel: "test-model",
+      }],
+      agents: [{
+        id: "agent-one",
+        name: "备考导师",
+        providerId: "provider-one",
+        model: "test-model",
+        enabled: true,
+      }],
+    }),
+  };
+  const generator = new QuestionGenerator({ root, service, modelConfig });
+  const originalFetch = globalThis.fetch;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  globalThis.fetch = async () => ({
+    ok: true,
+    headers: { get: () => "application/json" },
+    json: async () => ({
+      choices: [{
+        message: {
+          content: JSON.stringify({
+            answer: "   ",
+            confidence: 0.8,
+            key_points: [],
+            concerns: [],
+          }),
+        },
+      }],
+    }),
+  });
+  const events = [];
+  const result = await generator.runAgentTask({
+    prompt: "解释架构权衡",
+    strategy: "single",
+    onProgress: (event) => events.push(event),
+  });
+  assert.equal(result.plan.router.mode, "deterministic");
+  assert.equal(result.plan.steps[0].role, "worker");
+  assert.equal(result.results[0].errorCode, "AGENT_OUTPUT_QUALITY_GATE_FAILED");
+  assert.equal(result.results[0].quality.passed, false);
+  assert.equal(result.quality.workers.failed, 1);
+  assert.equal(result.quality.status, "failed");
+  assert.ok(events.some((event) => event.type === "plan_created"));
+  assert.ok(events.some((event) => event.type === "quality_gate_failed" && event.issues.includes("answer_required")));
+});
+
 test("默认 Agent 工作流只调用一次模型", async (t) => {
   const { service } = await fixture(t);
   const modelConfig = {
@@ -320,10 +428,242 @@ test("默认 Agent 工作流只调用一次模型", async (t) => {
       }),
     };
   };
-  const result = await generator.runAgentTask({ prompt: "比较两种架构", strategy: "single" });
+  const events = [];
+  const result = await generator.runAgentTask({
+    prompt: "比较两种架构",
+    strategy: "single",
+    onProgress: (event) => events.push(event),
+  });
   assert.equal(calls, 1);
   assert.equal(result.results.length, 1);
   assert.equal(result.results[0].answer, "结论");
+  assert.equal(result.callCount, 1);
+  assert.ok(events.some((event) => event.type === "agent_started" && event.stage === "answer"));
+  assert.ok(events.some((event) => event.type === "agent_completed" && event.stage === "answer"));
+  assert.ok(events.some((event) => event.type === "task_completed"));
+});
+
+
+test("并行任务保留成功角色，单独标记失败角色并允许只重试该角色", async (t) => {
+  const { service } = await fixture(t);
+  const modelConfig = {
+    workspace: () => ({
+      defaultAgentId: "agent-one",
+      providers: [{
+        id: "provider-one",
+        type: "openai-compatible",
+        baseUrl: "http://model.test/v1",
+        apiKey: "secret",
+        models: ["bad-model", "good-model"],
+        defaultModel: "good-model",
+      }],
+      agents: [
+        { id: "agent-one", name: "失败角色", providerId: "provider-one", model: "bad-model", enabled: true },
+        { id: "agent-two", name: "成功角色", providerId: "provider-one", model: "good-model", enabled: true },
+      ],
+    }),
+  };
+  const generator = new QuestionGenerator({ root, service, modelConfig });
+  const originalFetch = globalThis.fetch;
+  let allowFailure = true;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  globalThis.fetch = async (_url, options) => {
+    const request = JSON.parse(options.body);
+    const content = request.model === "bad-model" && allowFailure
+      ? "this is not JSON"
+      : JSON.stringify({
+          answer: request.model === "bad-model" ? "重试后的结论" : "成功角色的结论",
+          confidence: 0.8,
+          key_points: ["依据"],
+          concerns: [],
+        });
+    return {
+      ok: true,
+      headers: { get: () => "application/json" },
+      json: async () => ({ choices: [{ message: { content } }] }),
+    };
+  };
+  const events = [];
+  const first = await generator.runAgentTask({
+    prompt: "比较两种架构",
+    strategy: "parallel",
+    agentIds: ["agent-one", "agent-two"],
+    onProgress: (event) => events.push(event),
+  });
+  assert.equal(first.results.length, 2);
+  assert.match(first.results.find((item) => item.agentId === "agent-one").error, /JSON/);
+  assert.equal(first.results.find((item) => item.agentId === "agent-two").answer, "成功角色的结论");
+  assert.equal(first.callCount, 2);
+  assert.ok(events.some((event) => event.type === "agent_failed" && event.agentId === "agent-one"));
+  assert.ok(events.some((event) => event.type === "agent_completed" && event.agentId === "agent-two"));
+
+  allowFailure = false;
+  const retried = await generator.runAgentTask({
+    prompt: "比较两种架构",
+    strategy: "single",
+    agentIds: ["agent-one"],
+  });
+  assert.equal(retried.results[0].answer, "重试后的结论");
+  assert.equal(retried.results[0].agentId, "agent-one");
+  assert.equal(retried.callCount, 1);
+});
+
+test("对战评审失败不会丢失候选答案，可只重试评审 Agent", async (t) => {
+  const { service } = await fixture(t);
+  const modelConfig = {
+    workspace: () => ({
+      defaultAgentId: "agent-one",
+      providers: [{
+        id: "provider-one",
+        type: "openai-compatible",
+        baseUrl: "http://model.test/v1",
+        apiKey: "secret",
+        models: ["candidate-model", "judge-model"],
+        defaultModel: "candidate-model",
+      }],
+      agents: [
+        { id: "agent-one", name: "候选一", providerId: "provider-one", model: "candidate-model", enabled: true },
+        { id: "agent-two", name: "候选二", providerId: "provider-one", model: "candidate-model", enabled: true },
+        { id: "agent-judge", name: "评审角色", providerId: "provider-one", model: "judge-model", enabled: true },
+      ],
+    }),
+  };
+  const generator = new QuestionGenerator({ root, service, modelConfig });
+  const originalFetch = globalThis.fetch;
+  let reviewAvailable = false;
+  let judgeCalls = 0;
+  t.after(() => { globalThis.fetch = originalFetch; });
+  globalThis.fetch = async (_url, options) => {
+    const request = JSON.parse(options.body);
+    let content;
+    if (request.model === "judge-model") {
+      judgeCalls += 1;
+      content = reviewAvailable
+        ? JSON.stringify({
+            answer: "综合评审结论",
+            confidence: 0.91,
+            key_points: ["综合取舍"],
+            concerns: ["验证负载边界"],
+          })
+        : "review output is not JSON";
+    } else {
+      content = JSON.stringify({
+        answer: request.model + " 的独立结论",
+        confidence: 0.8,
+        key_points: ["候选要点"],
+        concerns: [],
+      });
+    }
+    return {
+      ok: true,
+      headers: { get: () => "application/json" },
+      json: async () => ({ choices: [{ message: { content } }] }),
+    };
+  };
+  const events = [];
+  const first = await generator.runAgentTask({
+    prompt: "请比较候选方案",
+    strategy: "battle",
+    agentIds: ["agent-one", "agent-two"],
+    judgeAgentId: "agent-judge",
+    onProgress: (event) => events.push(event),
+  });
+  assert.equal(first.results.filter((item) => !item.error).length, 2);
+  assert.equal(first.synthesis, null);
+  assert.match(first.synthesisError, /JSON/);
+  assert.equal(first.callCount, 3);
+  assert.ok(events.some((event) => event.type === "review_failed"));
+  const callsBeforeRetry = judgeCalls;
+
+  reviewAvailable = true;
+  const reviewEvents = [];
+  const retried = await generator.reviewAgentTask({
+    prompt: "请比较候选方案",
+    results: first.results,
+    judgeAgentId: "agent-judge",
+    onProgress: (event) => reviewEvents.push(event),
+  });
+  assert.equal(judgeCalls - callsBeforeRetry, 1);
+  assert.equal(retried.callCount, 1);
+  assert.equal(retried.synthesis.answer, "综合评审结论");
+  assert.ok(reviewEvents.some((event) => event.type === "review_started"));
+  assert.ok(reviewEvents.some((event) => event.type === "agent_completed" && event.stage === "review"));
+});
+
+test("Agent SSE 路由发送结构化错误事件并保留传统 JSON API", async (t) => {
+  const directory = await mkdtemp(join(tmpdir(), "architect-agent-stream-"));
+  const keys = [
+    "NODE_ENV",
+    "HOST",
+    "ARCHITECT_DATA_FILE",
+    "ARCHITECT_ENABLE_AGENTS",
+    "ARCHITECT_ACCESS_TOKEN",
+  ];
+  const previous = new Map(keys.map((key) => [key, process.env[key]]));
+  process.env.NODE_ENV = "test";
+  process.env.HOST = "127.0.0.1";
+  process.env.ARCHITECT_DATA_FILE = join(directory, "state.sqlite");
+  process.env.ARCHITECT_ENABLE_AGENTS = "true";
+  delete process.env.ARCHITECT_ACCESS_TOKEN;
+
+  let server;
+  try {
+    ({ server } = await import("../server.mjs?agent-stream-contract"));
+    await new Promise((resolve, reject) => {
+      server.once("error", reject);
+      server.listen(0, "127.0.0.1", resolve);
+    });
+  } catch (error) {
+    for (const [key, value] of previous) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    await rm(directory, { recursive: true, force: true });
+    throw error;
+  }
+
+  t.after(async () => {
+    server.closeAllConnections?.();
+    await new Promise((resolve) => server.close(resolve));
+    await rm(directory, { recursive: true, force: true });
+    for (const [key, value] of previous) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  });
+
+  const address = server.address();
+  const origin = `http://127.0.0.1:${address.port}`;
+  const postStream = async (body) => fetch(`${origin}/api/agents/stream`, {
+    method: "POST",
+    headers: { "content-type": "application/json", origin },
+    body: JSON.stringify(body),
+  });
+
+  const invalidPrompt = await postStream({ mode: "run", prompt: "" });
+  assert.equal(invalidPrompt.status, 200);
+  assert.match(invalidPrompt.headers.get("content-type") || "", /text\/event-stream/);
+  assert.equal(invalidPrompt.headers.get("cache-control"), "no-cache, no-transform");
+  const invalidBody = await invalidPrompt.text();
+  const invalidEvent = invalidBody.split(/\r?\n/).find((line) => line.startsWith("data: "));
+  assert.ok(invalidEvent, "SSE error frame should be present");
+  const invalidMessage = JSON.parse(invalidEvent.slice(6));
+  assert.equal(invalidMessage.type, "error");
+  assert.equal(invalidMessage.code, "AGENT_PROMPT_REQUIRED");
+
+  const invalidMode = await postStream({ mode: "unknown", prompt: "test" });
+  const invalidModeBody = await invalidMode.text();
+  const invalidModeFrame = invalidModeBody.split(/\r?\n/).find((line) => line.startsWith("data: "));
+  assert.ok(invalidModeFrame);
+  assert.equal(JSON.parse(invalidModeFrame.slice(6)).code, "AGENT_TASK_MODE_INVALID");
+
+  const legacy = await fetch(`${origin}/api/agents/run`, {
+    method: "POST",
+    headers: { "content-type": "application/json", origin },
+    body: JSON.stringify({ prompt: "" }),
+  });
+  assert.equal(legacy.status, 400);
+  assert.equal((await legacy.json()).code, "AGENT_PROMPT_REQUIRED");
 });
 
 test("停止 Agent 任务会中断模型请求并释放运行锁", async (t) => {
