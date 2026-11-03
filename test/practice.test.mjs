@@ -3264,10 +3264,23 @@ test("240 分钟连考按 120/150 分钟切换，并在服务端恢复同考期�
   assert.equal(service.pendingContinuousExam(), null);
   const retry = await service.createCaseExam({ continuousSessionId: exam.id });
   assert.equal(retry.id, caseExam.id, "retry must resume the same paper and timer");
+  assert.equal(caseExam.earliestSubmitAt, new Date(base + 180 * 60 * 1000).toISOString());
   time = new Date(base + 160 * 60 * 1000).toISOString();
   const resumed = service.activeCaseExam();
   assert.equal(resumed.id, caseExam.id);
   assert.equal(resumed.remainingSeconds, 80 * 60);
+  time = new Date(base + 179 * 60 * 1000).toISOString();
+  assert.throws(
+    () => service.caseExamForGrading(caseExam.id),
+    (error) => error.code === "CONTINUOUS_EXAM_CASE_SUBMIT_TOO_EARLY" && error.status === 409,
+  );
+  await assert.rejects(
+    () => service.saveCaseExamGrade({ examId: caseExam.id, grade: { total_score: 50, max_score: 75 } }),
+    (error) => error.code === "CONTINUOUS_EXAM_CASE_SUBMIT_TOO_EARLY" && error.status === 409,
+  );
+  time = new Date(base + 180 * 60 * 1000).toISOString();
+  await service.saveCaseExamGrade({ examId: caseExam.id, grade: { total_score: 50, max_score: 75 } });
+  assert.equal(service.activeCaseExam(), null, "case exam becomes complete once the final hand-in window opens and grading is saved");
 });
 
 test("120 分钟交卷时案例可用剩余 120 分钟，240 分钟后才首次进入则拒绝", async (t) => {
@@ -3291,6 +3304,14 @@ test("120 分钟交卷时案例可用剩余 120 分钟，240 分钟后才首次�
   await service.grade({ sessionId: exam.id, answers: {} });
   const cases = await service.createCaseExam({ continuousSessionId: exam.id });
   assert.equal(cases.durationSeconds, 120 * 60);
+  assert.equal(cases.earliestSubmitAt, new Date(base + 180 * 60 * 1000).toISOString());
+  time = new Date(base + 179 * 60 * 1000).toISOString();
+  assert.throws(
+    () => service.caseExamForGrading(cases.id),
+    (error) => error.code === "CONTINUOUS_EXAM_CASE_SUBMIT_TOO_EARLY" && error.status === 409,
+  );
+  time = new Date(base + 180 * 60 * 1000).toISOString();
+  assert.ok(service.caseExamForGrading(cases.id), "case grading is allowed at the start of the final 60-minute window");
 
   time = new Date(base).toISOString();
   const { service: expiredService, store: expiredStore } = await fixture(t, () => time);

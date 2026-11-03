@@ -4,9 +4,10 @@ import { resolve } from "node:path";
 import test from "node:test";
 
 const root = resolve(import.meta.dirname, "..");
-const [html, app] = await Promise.all([
+const [html, app, caseExamService] = await Promise.all([
   readFile(resolve(root, "public/index.html"), "utf8"),
   readFile(resolve(root, "public/app.js"), "utf8"),
+  readFile(resolve(root, "src/service/case-exam.mjs"), "utf8"),
 ]);
 
 test("现行 240 分钟连考入口默认关闭，并明确完整试卷条件", () => {
@@ -24,6 +25,9 @@ test("连考前端说明最短交卷时间、案例接续、断点恢复和两�
   assert.match(app, /api\("\/api\/case-exams"/);
   assert.match(app, /mcq\?\.total === 75 && Number\(mcq\.correct\) >= 45/);
   assert.match(app, /caseScoreOn75 >= 45/);
+  assert.match(app, /earliestSubmitAt/);
+  assert.match(app, /本场开始满 180 分钟后开放交卷/);
+  assert.match(caseExamService, /240 分钟连考的案例分析只能在考试结束前 60 分钟进入交卷窗口/);
 });
 
 test("学习进度必须先完成本单元自检，巩固没有匹配题时不会拿其他章节题替代", () => {

@@ -285,11 +285,41 @@ export class CaseExamDomain extends DataDomain {
       );
     const publicExam = { ...exam };
     delete publicExam.caseSnapshots;
+    const earliestSubmitAt = exam.continuousSessionId
+      ? new Date(
+          Date.parse(exam.startedAt) +
+            Math.max(0, Number(exam.durationSeconds) - 60 * 60) * 1000,
+        ).toISOString()
+      : null;
     return {
       ...publicExam,
       cases: payloadCases,
       remainingSeconds: this.remainingSecondsOf(exam),
+      earliestSubmitAt,
     };
+  }
+
+  assertCaseExamSubmissionWindow(exam) {
+    if (!exam?.continuousSessionId) return;
+    const elapsedSeconds =
+      (Date.parse(this.now()) - Date.parse(exam.startedAt)) / 1000;
+    const minimumCaseSeconds = Math.max(
+      0,
+      Number(exam.durationSeconds) - 60 * 60,
+    );
+    if (elapsedSeconds < minimumCaseSeconds) {
+      const earliestSubmitAt = new Date(
+        Date.parse(exam.startedAt) + minimumCaseSeconds * 1000,
+      ).toISOString();
+      throw Object.assign(
+        new Error("240 分钟连考的案例分析只能在考试结束前 60 分钟进入交卷窗口"),
+        {
+          status: 409,
+          code: "CONTINUOUS_EXAM_CASE_SUBMIT_TOO_EARLY",
+          earliestSubmitAt,
+        },
+      );
+    }
   }
 
   activeCaseExam() {
@@ -307,6 +337,7 @@ export class CaseExamDomain extends DataDomain {
     const state = this.store.snapshot();
     const exam = state.caseExams.find((item) => item.id === examId);
     if (!exam) return null;
+    this.assertCaseExamSubmissionWindow(exam);
     return {
       exam,
       cases: this.resolveCaseExamCases(exam, state),
@@ -367,6 +398,7 @@ export class CaseExamDomain extends DataDomain {
         throw Object.assign(new Error("该模拟卷已判过分"), { status: 409 });
       if (exam.abandonedAt)
         throw Object.assign(new Error("该模拟卷已放弃"), { status: 409 });
+      this.assertCaseExamSubmissionWindow(exam);
       exam.grade = grade;
       exam.gradedAt = this.now();
       return { examId, gradedAt: exam.gradedAt };

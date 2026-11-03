@@ -6985,7 +6985,7 @@ function fillCaseExamCountdown(exam) {
   const countdown = caseExamTimerElement();
   const label = element("span", {
     text: exam.continuousSessionId
-      ? `240 分钟连考总剩余时间 · 案例阶段共 ${exam.cases.length} 道`
+      ? `240 分钟连考总剩余时间 · 案例阶段共 ${exam.cases.length} 道 · 满 180 分钟后开放交卷`
       : `剩余时间 · 共 ${exam.cases.length} 道案例`,
   });
   timerBox.replaceChildren(countdown, label);
@@ -6997,6 +6997,17 @@ function fillCaseExamCountdown(exam) {
     const seconds = remaining % 60;
     countdown.textContent = `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
     countdown.classList.toggle("urgent", remaining <= 300);
+    const submit = document.querySelector("#case-exam-stage .case-exam-submit");
+    const earliestSubmitAt = exam.continuousSessionId
+      ? Date.parse(exam.earliestSubmitAt || new Date(deadline - 60 * 60 * 1000).toISOString())
+      : 0;
+    const canSubmit = !exam.continuousSessionId || Date.now() >= earliestSubmitAt;
+    if (submit && remaining > 0) {
+      submit.disabled = !canSubmit;
+      submit.textContent = canSubmit
+        ? "交卷并由 AI 判分"
+        : "本场开始满 180 分钟后开放交卷";
+    }
     if (remaining <= 2 && remaining > 0) {
       document.querySelectorAll("#case-exam-stage .case-answer").forEach((textarea) => {
         saveCaseExamTextarea(exam, textarea).catch((error) => {
@@ -7135,6 +7146,18 @@ async function abandonCaseExam(examId) {
 
 async function submitCaseExam(exam, button) {
   if (button.disabled) return;
+  const earliestSubmitAt = exam.continuousSessionId
+    ? Date.parse(exam.earliestSubmitAt || new Date(
+        Date.parse(exam.startedAt) + Math.max(0, Number(exam.durationSeconds) - 60 * 60) * 1000,
+      ).toISOString())
+    : 0;
+  if (exam.continuousSessionId && Date.now() < earliestSubmitAt) {
+    const remainingMinutes = Math.ceil(
+      (earliestSubmitAt - Date.now()) / 60_000,
+    );
+    showToast(`连考案例分析需在本场开始满 180 分钟后才能交卷，还需 ${remainingMinutes} 分钟。`, true);
+    return;
+  }
   const stage = document.querySelector("#case-exam-stage");
   const textareas = stage.querySelectorAll(".case-answer");
   const expired = caseExamExpired(exam);
