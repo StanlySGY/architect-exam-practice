@@ -4,10 +4,11 @@ import { resolve } from "node:path";
 import test from "node:test";
 
 const root = resolve(import.meta.dirname, "..");
-const [html, app, caseExamService] = await Promise.all([
+const [html, app, caseExamService, css] = await Promise.all([
   readFile(resolve(root, "public/index.html"), "utf8"),
   readFile(resolve(root, "public/app.js"), "utf8"),
   readFile(resolve(root, "src/service/case-exam.mjs"), "utf8"),
+  readFile(resolve(root, "public/styles.css"), "utf8"),
 ]);
 
 test("现行 240 分钟连考入口默认关闭，并明确完整试卷条件", () => {
@@ -34,4 +35,22 @@ test("学习进度必须先完成本单元自检，巩固没有匹配题时不�
   assert.match(app, /请先完成本节的 \$\{incompleteChecks\.length\} 项自检/);
   assert.match(app, /当前没有知识点精准匹配且已审校的题目/);
   assert.match(app, /api\(`\/api\/learning-reinforcement\?unitId=/);
+});
+
+test("课程核验状态和资料依据必须在核心讲解前展示，并区分不同核验级别", () => {
+  const start = app.indexOf("function renderLearningPath(");
+  const end = app.indexOf("async function loadLearningPath(", start);
+  const renderer = app.slice(start, end);
+  const primaryLesson = renderer.indexOf('className: "learning-topic learning-topic-primary"');
+  assert.ok(primaryLesson > 0, "核心课程内容节点应存在");
+  assert.ok(renderer.indexOf("contentStatusNode,") < primaryLesson, "核验状态必须先于核心讲解");
+  assert.ok(renderer.indexOf("learningEvidenceNode,") < primaryLesson, "资料依据入口必须先于核心讲解");
+  assert.match(renderer, /部分核验 · 仍需教材复核/);
+  assert.match(renderer, /资料链接可访问，不等于正文足以支持全部讲解/);
+  assert.match(renderer, /暂无登记依据/);
+  assert.match(css, /\.learning-content-status\.is-verified/);
+  assert.match(css, /\.learning-content-status\.is-partial/);
+  assert.match(css, /\.learning-content-status\.is-missing/);
+  assert.match(css, /\.learning-content-status\{flex-wrap:wrap;gap:9px\}/);
+  assert.match(css, /\.learning-content-status-copy\{flex:1 1 calc\(100% - 18px\)\}/);
 });

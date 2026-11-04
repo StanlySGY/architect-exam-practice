@@ -1635,9 +1635,49 @@ function renderLearningPath(data) {
       item.scope ? element("p", { text: "边界说明：" + item.scope }) : null,
       item.reviewStatus || item.reviewedOn
         ? element("small", { text: [item.reviewStatus, item.reviewedOn].filter(Boolean).join(" · ") })
-        : null,
+      : null,
     ]);
   });
+  const contentStatus = unit.contentStatus === "verified"
+    ? {
+        tone: "verified",
+        label: "已完成本轮证据核验",
+        detail: "当前登记的命题与证据已通过本轮审校；这不代表官方命题、考题答案或考试结果保证。",
+      }
+    : unit.contentStatus === "partial"
+      ? {
+          tone: "partial",
+          label: "部分核验 · 仍需教材复核",
+          detail: "本节仍有内容需要对照指定版本教材和官方资料复核；资料链接可访问，不等于正文足以支持全部讲解。",
+        }
+      : {
+          tone: "missing",
+          label: "待补充与核验",
+          detail: "当前资料依据尚不完整；请先回查指定版本教材和官方资料，再将本页作为辅助解释。",
+        };
+  const contentStatusNode = element("section", {
+    className: `learning-content-status is-${contentStatus.tone}`,
+    attrs: { role: "status", "aria-label": "本节课程内容核验状态" },
+  }, [
+    element("span", { className: "status-dot", attrs: { "aria-hidden": "true" } }),
+    element("div", { className: "learning-content-status-copy" }, [
+      element("strong", { text: `内容核验：${contentStatus.label}` }),
+      element("p", { text: contentStatus.detail }),
+    ]),
+    element("span", {
+      className: "learning-evidence-count",
+      text: evidenceNodes.length ? `${evidenceNodes.length} 条登记依据` : "暂无登记依据",
+    }),
+  ]);
+  const learningEvidenceNode = evidenceNodes.length
+    ? element("details", { className: "learning-topic learning-evidence" }, [
+        element("summary", { text: `查看本节资料依据与核验边界（${evidenceNodes.length} 条）` }),
+        element("ul", { className: "learning-evidence-list" }, evidenceNodes),
+      ])
+    : element("section", { className: "learning-topic learning-evidence-missing" }, [
+        element("h3", { text: "资料依据尚未登记" }),
+        element("p", { text: "当前单元没有可追溯的资料依据。请以指定版本教材和官方资料复核，不要仅凭本页面记忆。" }),
+      ]);
   const lessonContext = [];
   if (unit.prerequisites?.length) lessonContext.push(element("div", {}, [
     element("strong", { text: "前置知识" }),
@@ -1657,6 +1697,8 @@ function renderLearningPath(data) {
       element("span", { className: "learning-section-title", text: unit.sourceTitle }),
     ]),
     element("div", { className: "learning-content" }, [
+      contentStatusNode,
+      learningEvidenceNode,
       element("section", { className: "learning-topic learning-topic-primary" }, [
         element("span", { className: "learning-topic-index", text: "01" }),
         element("div", {}, [element("h3", { text: "这节先学什么" }), element("p", { text: unit.coreKnowledge })]),
@@ -1673,13 +1715,6 @@ function renderLearningPath(data) {
         element("h3", { text: "学习导航" }),
         ...lessonContext,
       ]) : null,
-      evidenceNodes.length ? element("details", { className: "learning-topic learning-evidence" }, [
-        element("summary", { text: `资料依据与核验边界（${evidenceNodes.length}）` }),
-        element("ul", { className: "learning-evidence-list" }, evidenceNodes),
-      ]) : element("section", { className: "learning-topic learning-evidence-missing" }, [
-        element("h3", { text: "资料依据" }),
-        element("p", { text: "当前单元没有登记可追溯的资料依据。请以指定版本教材和官方资料复核，不要仅凭本页面记忆。" }),
-      ]),
       element("section", { className: "learning-checks" }, [
         element("div", { className: "learning-checks-heading" }, [element("div", {}, [element("h3", { text: "学完自检" }), element("p", { text: "勾选你已经能独立解释的知识点" })]), element("span", { className: "learning-checks-count", text: (unit.selfChecks ?? []).filter((check) => check.completed).length + " / " + (unit.selfChecks ?? []).length })]),
         element("ul", { className: "learning-check-list" }, (unit.selfChecks ?? []).map((check) => {
@@ -1694,7 +1729,6 @@ function renderLearningPath(data) {
           return element("li", { className: check.completed ? "is-complete" : "" }, [checkbox, element("span", { text: check.prompt })]);
         })),
       ]),
-      element("div", { className: "learning-content-status" }, [element("span", { className: "status-dot", attrs: { "aria-hidden": "true" } }), element("span", { text: "课程内容状态：" + (unit.contentStatus === "verified" ? "已核验" : unit.contentStatus === "partial" ? "部分核验，仍需教材复核" : "待补充与核验") })]),
     ]),
     learningVisualizerLibraryNode(unit, element),
     element("div", { className: "learning-actions" }, [startButton, completeButton]),

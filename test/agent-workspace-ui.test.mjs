@@ -125,8 +125,11 @@ test("Agent 任务结果提供明确保存的本机历史、回看和删除入�
 test("服务端任务列表结构正确，显示任务摘要并为操作提供可访问名称", () => {
   assert.equal((html.match(/class="agent-task-layout"/g) || []).length, 1);
   assert.match(html, /<\/details>\s*<section class="agent-server-tasks">[\s\S]*?<\/section>\s*<div class="agent-task-layout">/);
-  assert.ok(html.includes("/styles.css?v=20261103-agent-fullwidth1"));
-  assert.ok(html.includes("/app.js?v=20261103-agent-persistent4"));
+  const styleVersion = html.match(/href="\/styles\.css\?v=([^"]+)"/)?.[1];
+  const appVersion = html.match(/src="\/app\.js\?v=([^"]+)"/)?.[1];
+  assert.ok(styleVersion, "首页样式表应启用版本化缓存");
+  assert.ok(appVersion, "首页应用脚本应启用版本化缓存");
+  assert.equal(styleVersion, appVersion, "首页 JS 与 CSS 应使用同一轮资源版本");
   assert.ok(app.includes("task.promptPreview"));
   assert.ok(app.includes("function agentServerTaskStatusLabel(status)"));
   assert.ok(app.includes("agentServerTaskStatusLabel(task.status)"));
