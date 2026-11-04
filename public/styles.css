@@ -1179,3 +1179,76 @@ kbd{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 
 @keyframes learning-packet-pulse{from{opacity:.45;transform:translateY(-50%) scale(.72)}to{opacity:1;transform:translateY(-50%) scale(1.18)}}
 @media(max-width:680px){#home-view .learning-concept-player{grid-template-columns:minmax(0,1fr)}#home-view .learning-concept-player-progress{grid-template-columns:minmax(0,1fr) auto}}
 @media(prefers-reduced-motion:reduce){#home-view .learning-concept-flow-step,#home-view .learning-concept-progress-fill{transition:none}#home-view .learning-concept-flow-step.is-active:after{animation:none}}
+
+/* Moving request/response packets: the diagram itself is animated, not a step-by-step slide. */
+#home-view .learning-visualizer-dynamic{overflow:hidden}
+#home-view .dynamic-flow-scenes{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 12px}
+#home-view .dynamic-flow-scene,#home-view .dynamic-flow-control,#home-view .dynamic-flow-speed{min-height:34px;padding:7px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface-faint);color:var(--muted);font-size:10px;font-weight:700;cursor:pointer}
+#home-view .dynamic-flow-scene[aria-pressed="true"]{border-color:var(--green);background:var(--accent);color:var(--accent-fg)}
+#home-view .dynamic-flow-canvas{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:11px;background:linear-gradient(180deg,var(--surface-faint),var(--card))}
+#home-view .dynamic-architecture-svg{display:block;width:100%;height:auto;min-height:190px;overflow:visible}
+#home-view .dynamic-architecture-stem{fill:none;stroke:var(--line);stroke-width:1.3;stroke-dasharray:3 4}
+#home-view .dynamic-architecture-route{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;opacity:.72}
+#home-view .dynamic-architecture-route.is-request{stroke:#25866a}
+#home-view .dynamic-architecture-route.is-response{stroke:#c18a32;stroke-dasharray:6 5}
+#home-view .dynamic-architecture-node{transition:opacity .2s}
+#home-view .dynamic-architecture-node-box{fill:var(--card);stroke:var(--line);stroke-width:1.5;transition:fill .18s,stroke .18s,stroke-width .18s}
+#home-view .dynamic-architecture-node-dot{fill:var(--muted)}
+#home-view .dynamic-architecture-node-title{fill:var(--ink);font-size:13px;font-weight:750}
+#home-view .dynamic-architecture-node-status{fill:var(--muted);font-size:10px}
+#home-view .dynamic-architecture-node.is-current .dynamic-architecture-node-box{fill:var(--accent);stroke:var(--green);stroke-width:2.5}
+#home-view .dynamic-architecture-node.is-current .dynamic-architecture-node-dot{fill:var(--green)}
+#home-view .dynamic-architecture-node.is-failed .dynamic-architecture-node-box{fill:var(--danger-bg);stroke:var(--red);stroke-dasharray:4 3}
+#home-view .dynamic-architecture-node.is-failed .dynamic-architecture-node-dot{fill:var(--red)}
+#home-view .dynamic-architecture-node.is-failed .dynamic-architecture-node-status{fill:var(--danger-ink)}
+#home-view .dynamic-architecture-node.is-takeover .dynamic-architecture-node-box{stroke:var(--green);stroke-width:2}
+#home-view .dynamic-architecture-node.is-bypassed{opacity:.38}
+#home-view .dynamic-architecture-lane-label{fill:var(--accent-fg);font-size:10px;font-weight:800}
+#home-view .dynamic-architecture-lane-label.is-response{fill:var(--warn-ink)}
+#home-view .dynamic-architecture-packet{pointer-events:none}
+#home-view .dynamic-architecture-packet.is-request .dynamic-architecture-packet-halo{fill:#25866a;opacity:.2}
+#home-view .dynamic-architecture-packet.is-request .dynamic-architecture-packet-core{fill:#25866a;stroke:#fff;stroke-width:2}
+#home-view .dynamic-architecture-packet.is-response .dynamic-architecture-packet-halo{fill:#c18a32;opacity:.2}
+#home-view .dynamic-architecture-packet.is-response .dynamic-architecture-packet-core{fill:#c18a32;stroke:#fff;stroke-width:2}
+#home-view .dynamic-flow-legend{display:flex;align-items:center;gap:17px;flex-wrap:wrap;padding:0 15px 12px;color:var(--muted);font-size:10px}
+#home-view .dynamic-flow-legend>span{display:inline-flex;align-items:center;gap:6px}
+#home-view .dynamic-flow-legend-dot{width:8px;height:8px;border-radius:50%;background:#25866a}
+#home-view .dynamic-flow-legend-dot.is-response{background:#c18a32}
+#home-view .dynamic-flow-motion-state{margin-left:auto;color:var(--accent-fg);font-weight:750}
+#home-view .dynamic-flow-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface-faint)}
+#home-view .dynamic-flow-controls{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#home-view .dynamic-flow-control{background:var(--card);color:var(--ink)}
+#home-view .dynamic-flow-control.is-primary{border-color:var(--green);background:var(--accent);color:var(--accent-fg)}
+#home-view .dynamic-flow-speed{background:var(--card)}
+#home-view .dynamic-flow-stage{min-width:0;color:var(--accent-fg);font-size:11px;text-align:right}
+#home-view .dynamic-flow-explanation{margin:12px 0 5px;color:var(--text-soft);font-size:12px;line-height:1.8}
+#home-view .dynamic-flow-boundary{margin:7px 0 0;color:var(--muted);font-size:10px;line-height:1.7}
+#home-view .dynamic-flow-concepts{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+#home-view .dynamic-flow-concepts span{padding:4px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface-faint);color:var(--muted);font-size:9px}
+#home-view .dynamic-flow-scene:focus-visible,#home-view .dynamic-flow-control:focus-visible,#home-view .dynamic-flow-speed:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@media(max-width:680px){#home-view .dynamic-flow-toolbar{align-items:flex-start;flex-direction:column}#home-view .dynamic-flow-stage{text-align:left}#home-view .dynamic-architecture-svg{min-height:155px}}
+@media(max-width:480px){#home-view .dynamic-flow-scene{flex:1 1 calc(50% - 7px);padding:7px 6px}#home-view .dynamic-flow-legend{gap:10px;padding-inline:10px}#home-view .dynamic-flow-motion-state{margin-left:0;flex-basis:100%}#home-view .dynamic-flow-controls{width:100%}#home-view .dynamic-flow-control{flex:1}#home-view .dynamic-flow-speed{flex:1}}
+@media(prefers-reduced-motion:reduce){#home-view .dynamic-architecture-node-box,#home-view .dynamic-architecture-node{transition:none}}
+
+#home-view .lambda-live-svg{display:block;width:100%;height:auto;min-height:190px;overflow:visible}
+#home-view .lambda-live-route{fill:none;stroke-width:3;stroke-linecap:round;stroke-dasharray:8 7;opacity:.72}
+#home-view .lambda-live-route.is-speed{stroke:#25866a}
+#home-view .lambda-live-route.is-batch{stroke:#c18a32}
+#home-view .lambda-live-node-box{fill:var(--card);stroke:var(--line);stroke-width:1.5;transition:stroke .18s,fill .18s,stroke-width .18s}
+#home-view .lambda-live-node-dot{fill:var(--muted)}
+#home-view .lambda-live-node-title{fill:var(--ink);font-size:14px;font-weight:800}
+#home-view .lambda-live-node-note{fill:var(--muted);font-size:10px}
+#home-view .lambda-live-node.is-source .lambda-live-node-box,#home-view .lambda-live-node.is-service .lambda-live-node-box{stroke:color-mix(in oklch,var(--green) 32%,var(--line))}
+#home-view .lambda-live-node.is-active .lambda-live-node-box{fill:var(--accent);stroke:var(--green);stroke-width:2.5}
+#home-view .lambda-live-node.is-batch .lambda-live-node-dot{fill:#c18a32}
+#home-view .lambda-live-node.is-speed .lambda-live-node-dot{fill:#25866a}
+#home-view .lambda-live-packet{pointer-events:none}
+#home-view .lambda-live-packet.is-speed .lambda-live-packet-halo{fill:#25866a;opacity:.18}
+#home-view .lambda-live-packet.is-speed .lambda-live-packet-core{fill:#25866a;stroke:#fff;stroke-width:2}
+#home-view .lambda-live-packet.is-batch .lambda-live-packet-halo{fill:#c18a32;opacity:.2}
+#home-view .lambda-live-packet.is-batch .lambda-live-packet-core{fill:#c18a32;stroke:#fff;stroke-width:2}
+#home-view .lambda-live-scene{min-height:34px;padding:7px 11px;border:1px solid var(--line);border-radius:7px;background:var(--surface-faint);color:var(--muted);font-size:10px;font-weight:700;cursor:pointer}
+#home-view .lambda-live-scene.is-selected{border-color:var(--green);background:var(--accent);color:var(--accent-fg)}
+#home-view .lambda-live-scene:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+@media(max-width:480px){#home-view .lambda-live-svg{min-height:145px}}
+@media(prefers-reduced-motion:reduce){#home-view .lambda-live-node-box{transition:none}}

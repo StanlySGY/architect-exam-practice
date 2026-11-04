@@ -377,24 +377,460 @@ function makeConceptVisualizer(element, config) {
   return root;
 }
 
-function architectureOverviewVisualizer(element) {
-  return makeConceptVisualizer(element, {
-    titleId: "architecture-overview-visual-title", kicker: "VISUAL EXPLAINER · 01",
-    title: "系统架构到底在描述什么？",
-    subtitle: "从系统边界出发，识别主要元素、关系、环境和设计原则。点击每个要素，理解它对架构设计的作用。",
-    badge: "教材样章支持核心定义",
-    flowLabel: "系统架构描述的五个要素",
-    flow: ["系统边界", "关键元素", "元素关系", "外部环境", "设计原则"],
-    nodeGroupLabel: "系统架构五个描述要素",
-    nodes: [
-      { title: "系统边界", short: "先明确研究对象", detail: "说明系统要解决什么问题、包含哪些职责，以及与哪些外部系统或参与者交互。边界不清，组件、接口和责任划分就容易混乱。", focus: "看题先圈定范围：讨论的是整个业务系统、子系统，还是一个部署单元？" },
-      { title: "关键元素", short: "识别主要组成", detail: "识别构成系统基本组织的主要元素，并说明各自承担什么职责。先按职责理解元素，再讨论使用何种框架、语言或产品实现。", focus: "不要只堆技术名词，要写清每个元素负责什么。" },
-      { title: "元素关系", short: "解释如何协作", detail: "描述元素之间的调用、依赖、消息传递、数据交换或协作约束。关系会影响运行行为、故障传播和变更范围。", focus: "架构图的箭头必须有含义：方向代表什么、传递什么、由谁发起？" },
-      { title: "外部环境", short: "放回真实上下文", detail: "用户、外部系统、组织流程、运行环境和约束都会影响架构选择，也可能成为接口、安全或可用性风险来源。", focus: "把外部参与者和边界外依赖标出来，避免内外职责混淆。" },
-      { title: "设计原则", short: "约束设计与演化", detail: "架构还包含指导设计和后续演化的原则，帮助团队在局部变化时维持整体方向；原则本身也要接受目标、约束和质量属性检验。", focus: "说明为什么选择这种组织方式，它支持什么目标，又牺牲了什么。" },
-    ],
-    boundary: "本图依据教材样章支持的架构基本组织核心描述整理，是概念框架，不是某一系统的部署图。架构也不等于一张图、某个框架或中间件。",
+function svgElement(tag, attributes = {}) {
+  const node = document.createElementNS("http://www.w3.org/2000/svg", tag);
+  for (const [name, value] of Object.entries(attributes)) node.setAttribute(name, String(value));
+  return node;
+}
+
+function requestFlowVisualizer(element) {
+  const nodeX = [90, 234, 378, 522, 666, 810];
+  const nodeNames = ["用户端", "API 网关", "缓存", "服务 A", "服务 B", "数据库"];
+  const scenarios = {
+    normal: {
+      label: "正常请求", outbound: [0, 1, 3, 5], inbound: [5, 3, 1, 0],
+      states: ["发起请求", "转发请求", "未经过", "处理请求", "未启用", "读写数据"],
+      message: "正常路径：请求经 API 网关进入应用服务，查询数据库，再沿调用链返回。",
+      processing: "服务 A 正在处理请求并等待数据库结果。",
+    },
+    cacheHit: {
+      label: "缓存命中", outbound: [0, 1, 2], inbound: [2, 1, 0],
+      states: ["发起请求", "转发请求", "命中 ✓", "直接绕过", "直接绕过", "未访问"],
+      message: "缓存命中：缓存直接返回已有数据，应用服务和数据库都不需要执行这次读取。",
+      processing: "缓存已命中，正在把缓存中的结果返回给客户端。",
+    },
+    cacheMiss: {
+      label: "缓存未命中", outbound: [0, 1, 2, 3, 5], inbound: [5, 3, 2, 1, 0],
+      states: ["发起请求", "转发请求", "未命中 ×", "回源查询", "未启用", "读取数据"],
+      message: "缓存未命中：请求先查缓存，再回源到应用服务和数据库；结果通常还会写回缓存。",
+      processing: "缓存未命中，应用服务正在访问数据库，并准备回填缓存。",
+    },
+    failover: {
+      label: "节点故障切换", outbound: [0, 1, 3, 4, 5], inbound: [5, 4, 1, 0],
+      states: ["发起请求", "重新路由", "未启用", "超时 / 故障", "接管处理", "读取数据"],
+      message: "故障切换：服务 A 超时后，网关/治理机制把请求转向服务 B；这要求超时、健康检查和重试策略配合。",
+      processing: "服务 B 已接管请求，正在完成数据库访问。",
+    },
+  };
+  let mode = "normal";
+  let speedFactor = 1;
+  let elapsed = 0;
+  let lastFrame = 0;
+  let frameHandle = null;
+  let running = false;
+  let lastAnnouncement = "";
+  let root = null;
+
+  const diagram = svgElement("svg", {
+    class: "dynamic-architecture-svg", viewBox: "0 0 900 280", role: "group",
+    "aria-label": "系统请求与响应在用户端、API 网关、缓存、应用服务和数据库之间移动的动态架构图",
   });
+  const defs = svgElement("defs");
+  const addMarker = (id, color) => {
+    const marker = svgElement("marker", { id, viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto-start-reverse" });
+    marker.append(svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: color }));
+    defs.append(marker);
+  };
+  addMarker("dynamic-request-arrow", "#25866a");
+  addMarker("dynamic-response-arrow", "#c18a32");
+  diagram.append(defs);
+
+  const stems = svgElement("g", { class: "dynamic-architecture-stems" });
+  nodeX.forEach((x) => stems.append(svgElement("path", {
+    d: `M ${x} 122 V 166 M ${x} 122 V 218`, class: "dynamic-architecture-stem",
+  })));
+  diagram.append(stems);
+  const requestPath = svgElement("path", { class: "dynamic-architecture-route is-request", "marker-end": "url(#dynamic-request-arrow)" });
+  const responsePath = svgElement("path", { class: "dynamic-architecture-route is-response", "marker-end": "url(#dynamic-response-arrow)" });
+  diagram.append(requestPath, responsePath);
+
+  const nodeGroups = nodeNames.map((name, index) => {
+    const group = svgElement("g", { class: "dynamic-architecture-node", "data-node": index });
+    group.append(
+      svgElement("rect", { x: nodeX[index] - 58, y: 27, width: 116, height: 95, rx: 11, class: "dynamic-architecture-node-box" }),
+      svgElement("circle", { cx: nodeX[index], cy: 48, r: 5, class: "dynamic-architecture-node-dot" }),
+    );
+    const title = svgElement("text", { x: nodeX[index], y: 76, "text-anchor": "middle", class: "dynamic-architecture-node-title" });
+    title.textContent = name;
+    const status = svgElement("text", { x: nodeX[index], y: 99, "text-anchor": "middle", class: "dynamic-architecture-node-status" });
+    status.textContent = "待命";
+    group.append(title, status);
+    diagram.append(group);
+    return { group, status };
+  });
+  const laneRequest = svgElement("text", { x: 18, y: 170, class: "dynamic-architecture-lane-label" });
+  laneRequest.textContent = "请求 →";
+  const laneResponse = svgElement("text", { x: 18, y: 238, class: "dynamic-architecture-lane-label is-response" });
+  laneResponse.textContent = "← 响应";
+  diagram.append(laneRequest, laneResponse);
+  const requestPacket = svgElement("g", { class: "dynamic-architecture-packet is-request" });
+  requestPacket.append(svgElement("circle", { r: 13, class: "dynamic-architecture-packet-halo" }), svgElement("circle", { r: 6, class: "dynamic-architecture-packet-core" }));
+  const responsePacket = svgElement("g", { class: "dynamic-architecture-packet is-response" });
+  responsePacket.append(svgElement("circle", { r: 13, class: "dynamic-architecture-packet-halo" }), svgElement("circle", { r: 6, class: "dynamic-architecture-packet-core" }));
+  diagram.append(requestPacket, responsePacket);
+
+  const sceneButtons = Object.entries(scenarios).map(([key, scenario]) => {
+    const button = element("button", { className: "dynamic-flow-scene", text: scenario.label, attrs: {
+      type: "button", "aria-pressed": String(key === mode),
+    } });
+    button.addEventListener("click", () => setMode(key));
+    return { key, button };
+  });
+  const play = element("button", { className: "dynamic-flow-control is-primary", text: "暂停动画", attrs: { type: "button", "aria-pressed": "true" } });
+  const reset = element("button", { className: "dynamic-flow-control", text: "重置", attrs: { type: "button" } });
+  const speed = element("select", { className: "dynamic-flow-speed", attrs: { "aria-label": "动态示意图播放速度" } }, [
+    element("option", { text: "慢速", attrs: { value: "0.65" } }),
+    element("option", { text: "正常", attrs: { value: "1", selected: true } }),
+    element("option", { text: "快速", attrs: { value: "1.5" } }),
+  ]);
+  const liveStage = element("strong", { className: "dynamic-flow-stage", text: "请求正在发出…", attrs: { "aria-live": "polite", "aria-atomic": "true" } });
+  const explanation = element("p", { className: "dynamic-flow-explanation", text: scenarios[mode].message });
+  const motionState = element("span", { className: "dynamic-flow-motion-state", text: "动态运行中" });
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+
+  function routeData(indices, y) {
+    return indices.map((index, step) => `${step === 0 ? "M" : "L"} ${nodeX[index]} ${y}`).join(" ");
+  }
+  function setMode(nextMode) {
+    if (!scenarios[nextMode]) return;
+    mode = nextMode;
+    const scenario = scenarios[mode];
+    requestPath.setAttribute("d", routeData(scenario.outbound, 166));
+    responsePath.setAttribute("d", routeData(scenario.inbound, 218));
+    nodeGroups.forEach(({ group, status }, index) => {
+      group.classList.toggle("is-bypassed", scenario.states[index].includes("绕过") || ["未启用", "未访问", "未经过"].includes(scenario.states[index]));
+      group.classList.toggle("is-failed", scenario.states[index].includes("故障"));
+      group.classList.toggle("is-takeover", scenario.states[index].includes("接管"));
+      status.textContent = scenario.states[index];
+    });
+    sceneButtons.forEach(({ key, button }) => button.setAttribute("aria-pressed", String(key === mode)));
+    explanation.textContent = scenario.message;
+    elapsed = 0;
+    lastFrame = 0;
+    lastAnnouncement = "";
+    updateFrame(0);
+  }
+  function placePacket(packet, path, progress) {
+    const length = path.getTotalLength();
+    if (progress === null || !length) {
+      packet.setAttribute("visibility", "hidden");
+      return;
+    }
+    const point = path.getPointAtLength(length * Math.max(0, Math.min(1, progress)));
+    packet.setAttribute("transform", `translate(${point.x} ${point.y})`);
+    packet.setAttribute("visibility", "visible");
+  }
+  function updateFrame(time) {
+    const cycle = 6800;
+    const phase = (time % cycle) / cycle;
+    const scenario = scenarios[mode];
+    let activeIndex = scenario.outbound[0];
+    let announcement = "";
+    if (phase < 0.43) {
+      const progress = phase / 0.43;
+      placePacket(requestPacket, requestPath, progress);
+      placePacket(responsePacket, responsePath, null);
+      const index = Math.min(scenario.outbound.length - 1, Math.floor(progress * scenario.outbound.length));
+      activeIndex = scenario.outbound[index];
+      announcement = `请求包正在经过：${nodeNames[activeIndex]}`;
+    } else if (phase < 0.53) {
+      placePacket(requestPacket, requestPath, null);
+      placePacket(responsePacket, responsePath, null);
+      activeIndex = scenario.outbound[scenario.outbound.length - 1];
+      announcement = scenario.processing;
+    } else if (phase < 0.96) {
+      const progress = (phase - 0.53) / 0.43;
+      placePacket(requestPacket, requestPath, null);
+      placePacket(responsePacket, responsePath, progress);
+      const index = Math.min(scenario.inbound.length - 1, Math.floor(progress * scenario.inbound.length));
+      activeIndex = scenario.inbound[index];
+      announcement = `响应包正在返回：${nodeNames[activeIndex]}`;
+    } else {
+      placePacket(requestPacket, requestPath, null);
+      placePacket(responsePacket, responsePath, null);
+      activeIndex = 0;
+      announcement = "本轮请求完成，下一轮即将开始。";
+    }
+    nodeGroups.forEach(({ group }, index) => group.classList.toggle("is-current", index === activeIndex));
+    if (announcement !== lastAnnouncement) {
+      liveStage.textContent = announcement;
+      lastAnnouncement = announcement;
+    }
+    diagram.dataset.phase = phase.toFixed(3);
+    diagram.dataset.activeNode = String(activeIndex);
+    diagram.dataset.running = String(running);
+  }
+  function tick(now) {
+    if (!running) return;
+    if (!root?.isConnected) {
+      running = false;
+      frameHandle = null;
+      return;
+    }
+    if (lastFrame) elapsed += Math.min(80, now - lastFrame) * speedFactor;
+    lastFrame = now;
+    updateFrame(elapsed);
+    frameHandle = requestAnimationFrame(tick);
+  }
+  function pause() {
+    running = false;
+    if (frameHandle !== null) cancelAnimationFrame(frameHandle);
+    frameHandle = null;
+    lastFrame = 0;
+    play.textContent = "播放动画";
+    play.setAttribute("aria-pressed", "false");
+    motionState.textContent = "已暂停";
+    diagram.dataset.running = "false";
+  }
+  function start() {
+    if (running) return;
+    running = true;
+    lastFrame = 0;
+    play.textContent = "暂停动画";
+    play.setAttribute("aria-pressed", "true");
+    motionState.textContent = "动态运行中";
+    frameHandle = requestAnimationFrame(tick);
+  }
+  play.addEventListener("click", () => { if (running) pause(); else start(); });
+  reset.addEventListener("click", () => {
+    elapsed = 0;
+    lastFrame = 0;
+    updateFrame(0);
+    liveStage.textContent = "请求从用户端重新开始。";
+    lastAnnouncement = liveStage.textContent;
+  });
+  speed.addEventListener("change", () => {
+    speedFactor = Number(speed.value) || 1;
+    lastFrame = 0;
+    updateFrame(elapsed);
+  });
+
+  root = element("section", { className: "learning-visualizer learning-visualizer-dynamic", attrs: {
+    "aria-labelledby": "architecture-dynamic-title",
+  } }, [
+    element("div", { className: "learning-visualizer-heading" }, [
+      element("div", {}, [
+        element("span", { className: "learning-visualizer-kicker", text: "LIVE ARCHITECTURE · 01" }),
+        element("h3", { text: "看一笔请求如何穿过系统架构", attrs: { id: "architecture-dynamic-title" } }),
+        element("p", { text: "图中的请求包和响应包会沿连线持续移动。切换场景，观察缓存如何缩短路径，以及服务故障后请求如何改道。" }),
+      ]),
+      element("span", { className: "learning-visualizer-badge", text: "实时数据流模拟" }),
+    ]),
+    element("div", { className: "dynamic-flow-scenes", attrs: { role: "group", "aria-label": "选择动态网络场景" } }, sceneButtons.map(({ button }) => button)),
+    element("div", { className: "dynamic-flow-canvas" }, [
+      diagram,
+      element("div", { className: "dynamic-flow-legend" }, [
+        element("span", {}, [element("i", { className: "dynamic-flow-legend-dot is-request" }), "请求包"]),
+        element("span", {}, [element("i", { className: "dynamic-flow-legend-dot is-response" }), "响应包"]),
+        motionState,
+      ]),
+    ]),
+    element("div", { className: "dynamic-flow-toolbar" }, [
+      element("div", { className: "dynamic-flow-controls" }, [play, reset, speed]),
+      liveStage,
+    ]),
+    explanation,
+    element("p", { className: "dynamic-flow-boundary", text: "这是用于理解请求路径的教学拓扑，不代表教材规定的固定部署结构。缓存策略、重试次数、超时阈值和故障转移能力都应由实际系统需求决定。" }),
+    element("div", { className: "dynamic-flow-concepts" }, ["系统边界", "关键元素", "元素关系", "外部环境", "设计原则"].map((label) => element("span", { text: label }))),
+  ]);
+  setMode(mode);
+  if (reducedMotion) {
+    running = false;
+    play.textContent = "播放动画";
+    play.setAttribute("aria-pressed", "false");
+    motionState.textContent = "系统已减少动态效果；可手动播放";
+  } else {
+    start();
+  }
+  return root;
+}
+
+function architectureOverviewVisualizer(element) {
+  return requestFlowVisualizer(element);
+}
+
+function lambdaStreamVisualizer(element) {
+  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+  let running = false;
+  let frameHandle = null;
+  let lastFrame = 0;
+  let elapsed = 0;
+  let speedFactor = 1;
+  let mode = "stream";
+  let root = null;
+  const diagram = svgElement("svg", {
+    class: "lambda-live-svg", viewBox: "0 0 860 330", role: "group",
+    "aria-label": "Lambda 架构实时数据沿速度层、历史数据沿批处理层，两路结果汇合到服务层",
+  });
+  const defs = svgElement("defs");
+  const addMarker = (id, color) => {
+    const marker = svgElement("marker", { id, viewBox: "0 0 10 10", refX: "8", refY: "5", markerWidth: "6", markerHeight: "6", orient: "auto" });
+    marker.append(svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: color }));
+    defs.append(marker);
+  };
+  addMarker("lambda-live-speed-arrow", "#25866a");
+  addMarker("lambda-live-batch-arrow", "#c18a32");
+  diagram.append(defs);
+  const route = (className, d, color) => {
+    const path = svgElement("path", { class: className, d, stroke: color, "marker-end": className.includes("batch") ? "url(#lambda-live-batch-arrow)" : "url(#lambda-live-speed-arrow)" });
+    diagram.append(path);
+    return path;
+  };
+  const sourceToBatch = route("lambda-live-route is-batch", "M 190 145 Q 255 78 330 82", "#c18a32");
+  const batchToService = route("lambda-live-route is-batch", "M 505 82 Q 585 82 660 145", "#c18a32");
+  const sourceToSpeed = route("lambda-live-route is-speed", "M 190 185 Q 255 252 330 248", "#25866a");
+  const speedToService = route("lambda-live-route is-speed", "M 505 248 Q 585 248 660 185", "#25866a");
+  const createNode = (x, y, w, h, title, subtitle, kind) => {
+    const group = svgElement("g", { class: "lambda-live-node " + kind });
+    group.append(svgElement("rect", { x, y, width: w, height: h, rx: 12, class: "lambda-live-node-box" }));
+    const dot = svgElement("circle", { cx: x + 17, cy: y + 19, r: 5, class: "lambda-live-node-dot" });
+    const heading = svgElement("text", { x: x + w / 2, y: y + 43, "text-anchor": "middle", class: "lambda-live-node-title" });
+    heading.textContent = title;
+    const note = svgElement("text", { x: x + w / 2, y: y + 65, "text-anchor": "middle", class: "lambda-live-node-note" });
+    note.textContent = subtitle;
+    group.append(dot, heading, note);
+    diagram.append(group);
+    return group;
+  };
+  const source = createNode(50, 115, 140, 100, "数据源", "事件日志 / 历史数据", "is-source");
+  const batch = createNode(330, 35, 175, 95, "批处理层", "历史全量 / 分区计算", "is-batch");
+  const speed = createNode(330, 200, 175, 95, "速度层", "近期事件 / 低延迟", "is-speed");
+  const service = createNode(660, 115, 160, 100, "服务层", "合并视图 / 对外查询", "is-service");
+  const packet = (kind) => {
+    const group = svgElement("g", { class: "lambda-live-packet " + kind });
+    group.append(svgElement("circle", { r: 12, class: "lambda-live-packet-halo" }), svgElement("circle", { r: 5.5, class: "lambda-live-packet-core" }));
+    diagram.append(group);
+    return group;
+  };
+  const streamPackets = [packet("is-speed"), packet("is-speed is-secondary")];
+  const batchPackets = [packet("is-batch"), packet("is-batch is-secondary"), packet("is-batch is-tertiary")];
+  const modeStream = element("button", { className: "lambda-live-scene is-selected", text: "新事件持续到达", attrs: { type: "button", "aria-pressed": "true" } });
+  const modeReplay = element("button", { className: "lambda-live-scene", text: "历史数据重算", attrs: { type: "button", "aria-pressed": "false" } });
+  const play = element("button", { className: "dynamic-flow-control is-primary", text: "暂停动画", attrs: { type: "button", "aria-pressed": "true" } });
+  const reset = element("button", { className: "dynamic-flow-control", text: "重置", attrs: { type: "button" } });
+  const speedSelect = element("select", { className: "dynamic-flow-speed", attrs: { "aria-label": "Lambda 数据流播放速度" } }, [
+    element("option", { text: "慢速", attrs: { value: "0.65" } }),
+    element("option", { text: "正常", attrs: { value: "1", selected: true } }),
+    element("option", { text: "快速", attrs: { value: "1.5" } }),
+  ]);
+  const stage = element("strong", { className: "dynamic-flow-stage", text: "实时事件沿速度层流动", attrs: { "aria-live": "polite" } });
+  const status = element("span", { className: "dynamic-flow-motion-state", text: "动态运行中" });
+  const explanation = element("p", { className: "dynamic-flow-explanation", text: "速度层持续处理新事件，让近期数据快速可见；批处理层在后台计算历史视图，两路结果在服务层协调。" });
+  const segments = {
+    speed: [sourceToSpeed, speedToService],
+    batch: [sourceToBatch, batchToService],
+  };
+  const lengths = Object.fromEntries(Object.entries(segments).map(([key, paths]) => [key, paths.map((path) => path.getTotalLength())]));
+  function locate(paths, segmentLengths, progress) {
+    const total = segmentLengths.reduce((sum, value) => sum + value, 0);
+    let remaining = Math.max(0, Math.min(.999999, progress)) * total;
+    for (let index = 0; index < paths.length; index++) {
+      if (remaining <= segmentLengths[index]) return paths[index].getPointAtLength(remaining);
+      remaining -= segmentLengths[index];
+    }
+    return paths.at(-1).getPointAtLength(segmentLengths.at(-1));
+  }
+  function move(packetNode, pathKey, progress) {
+    const point = locate(segments[pathKey], lengths[pathKey], progress);
+    packetNode.setAttribute("transform", `translate(${point.x} ${point.y})`);
+  }
+  function setMode(nextMode) {
+    mode = nextMode;
+    modeStream.classList.toggle("is-selected", mode === "stream");
+    modeReplay.classList.toggle("is-selected", mode === "rebuild");
+    modeStream.setAttribute("aria-pressed", String(mode === "stream"));
+    modeReplay.setAttribute("aria-pressed", String(mode === "rebuild"));
+    explanation.textContent = mode === "stream"
+      ? "速度层持续处理新事件，让近期数据快速可见；批处理层在后台计算历史视图，两路结果在服务层协调。"
+      : "历史重算：批处理层集中回放历史数据，多个批次依次进入服务层；速度层仍可接收实时事件，必须处理新旧结果的衔接。";
+    stage.textContent = mode === "stream" ? "实时事件沿速度层流动" : "历史批次正在重算并发布";
+    elapsed = 0;
+    lastFrame = 0;
+    updateFrame(0);
+  }
+  function updateFrame(time) {
+    const streamPeriod = 3000;
+    const batchPeriod = mode === "stream" ? 7200 : 4600;
+    streamPackets.forEach((item, index) => move(item, "speed", ((time / streamPeriod) + index * .52) % 1));
+    batchPackets.forEach((item, index) => {
+      const progress = ((time / batchPeriod) + index * (mode === "stream" ? .34 : .22)) % 1;
+      move(item, "batch", progress);
+      item.style.opacity = mode === "stream" && index > 0 ? ".34" : "1";
+    });
+    const batchActive = mode === "rebuild" || Math.floor(time / batchPeriod) !== Math.floor(Math.max(0, time - 80) / batchPeriod);
+    source.classList.add("is-active");
+    batch.classList.toggle("is-active", batchActive);
+    speed.classList.add("is-active");
+    service.classList.toggle("is-active", Math.sin((time % 2600) / 2600 * Math.PI * 2) > .25);
+    diagram.dataset.running = String(running);
+    diagram.dataset.mode = mode;
+    diagram.dataset.elapsed = String(Math.round(time));
+  }
+  function tick(now) {
+    if (!running) return;
+    if (!root?.isConnected) { running = false; frameHandle = null; return; }
+    if (lastFrame) elapsed += Math.min(80, now - lastFrame) * speedFactor;
+    lastFrame = now;
+    updateFrame(elapsed);
+    frameHandle = requestAnimationFrame(tick);
+  }
+  function pause() {
+    running = false;
+    if (frameHandle !== null) cancelAnimationFrame(frameHandle);
+    frameHandle = null;
+    lastFrame = 0;
+    play.textContent = "播放动画";
+    play.setAttribute("aria-pressed", "false");
+    status.textContent = "已暂停";
+    diagram.dataset.running = "false";
+  }
+  function start() {
+    if (running) return;
+    running = true;
+    lastFrame = 0;
+    play.textContent = "暂停动画";
+    play.setAttribute("aria-pressed", "true");
+    status.textContent = "动态运行中";
+    frameHandle = requestAnimationFrame(tick);
+  }
+  modeStream.addEventListener("click", () => setMode("stream"));
+  modeReplay.addEventListener("click", () => setMode("rebuild"));
+  play.addEventListener("click", () => { if (running) pause(); else start(); });
+  reset.addEventListener("click", () => { elapsed = 0; lastFrame = 0; updateFrame(0); });
+  speedSelect.addEventListener("change", () => { speedFactor = Number(speedSelect.value) || 1; lastFrame = 0; updateFrame(elapsed); });
+  root = element("section", { className: "learning-visualizer learning-visualizer-dynamic learning-visualizer-lambda-live", attrs: {
+    "aria-labelledby": "lambda-live-title",
+  } }, [
+    element("div", { className: "learning-visualizer-heading" }, [
+      element("div", {}, [
+        element("span", { className: "learning-visualizer-kicker", text: "LIVE DATA FLOW · 02" }),
+        element("h3", { text: "Lambda 架构：实时流和历史批次如何汇合？", attrs: { id: "lambda-live-title" } }),
+        element("p", { text: "绿色事件包持续穿过速度层，琥珀色批次包沿批处理层移动，两路数据最终进入服务层。" }),
+      ]),
+      element("span", { className: "learning-visualizer-badge", text: "双路径动态模拟" }),
+    ]),
+    element("div", { className: "dynamic-flow-scenes" }, [modeStream, modeReplay]),
+    element("div", { className: "dynamic-flow-canvas" }, [
+      diagram,
+      element("div", { className: "dynamic-flow-legend" }, [
+        element("span", {}, [element("i", { className: "dynamic-flow-legend-dot is-request" }), "实时事件 · 速度层"]),
+        element("span", {}, [element("i", { className: "dynamic-flow-legend-dot is-response" }), "历史批次 · 批处理层"]),
+        status,
+      ]),
+    ]),
+    element("div", { className: "dynamic-flow-toolbar" }, [
+      element("div", { className: "dynamic-flow-controls" }, [play, reset, speedSelect]), stage,
+    ]),
+    explanation,
+    element("p", { className: "dynamic-flow-boundary", text: "动画用于解释 Lambda 的双路径职责，不代表固定的计算引擎、批次大小或刷新周期。实际系统还需要定义结果合并、去重、覆盖顺序和一致性规则。" }),
+  ]);
+  setMode(mode);
+  if (reducedMotion) {
+    play.textContent = "播放动画";
+    play.setAttribute("aria-pressed", "false");
+    status.textContent = "系统已减少动态效果；可手动播放";
+  } else start();
+  return root;
 }
 
 function architectureDesignFlowVisualizer(element) {
@@ -603,7 +1039,7 @@ export function learningVisualizerNode(unit, element) {
     case "19.5": return lambdaKappaComparisonVisualizer(element);
     case "9.2.3.6": return inputDomainLab(element);
     case "9.2.3.7": return executionPathLab(element);
-    case "19.3.3": return lambdaArchitectureLab(element);
+    case "19.3.3": return lambdaStreamVisualizer(element);
     default: return null;
   }
 }
@@ -656,8 +1092,8 @@ export function learningVisualizerLibraryNode(currentUnit, element) {
   return element("details", { className: "learning-visualizer-library" }, [
     element("summary", { text: "知识可视化图解与互动实验 · " + examples.length + " 个专题" }),
     element("p", {
-      className: "learning-visualizer-library-intro",
-      text: "这些图解覆盖架构组成、设计决策、质量属性、分层、SOA、安全闭环与大数据架构。点击图中节点查看逐点解析；自选探索不会推进课程进度，也不会生成答题记录。",
+    className: "learning-visualizer-library-intro",
+      text: "动态图会让请求包、响应包和批流数据粒子沿架构链路持续移动，可切换缓存命中、节点故障和历史重算场景；其余概念图可点击节点逐点解析。自选探索不会推进课程进度，也不会生成答题记录。",
     }),
     ...examples.map((unit) => learningVisualizerNode(unit, element)),
   ]);

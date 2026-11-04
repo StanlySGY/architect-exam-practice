@@ -207,7 +207,7 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   for (const id of ["1.1", "7.2.1", "8.1.3", "13.1", "15.3", "18.4.1", "19.5", "9.2.3.6", "9.2.3.7", "19.3.3"]) {
     assert.ok(visualizers.includes(`case "${id}"`), `missing visualizer mapping: ${id}`);
   }
-  for (const title of ["系统架构到底在描述什么？", "架构设计不是先选技术栈", "质量属性场景", "分层架构：", "SOA 参考架构", "WPDRRC", "Lambda 与 Kappa"]) {
+  for (const title of ["看一笔请求如何穿过系统架构", "架构设计不是先选技术栈", "质量属性场景", "分层架构：", "SOA 参考架构", "WPDRRC", "Lambda 与 Kappa"]) {
     assert.ok(visualizers.includes(title), `missing knowledge visual: ${title}`);
   }
   assert.match(visualizers, /learning-concept-node-grid/);
@@ -226,6 +226,25 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.match(css, /\.learning-concept-flowline/);
   assert.match(css, /\.learning-concept-player-controls/);
   assert.match(css, /learning-packet-pulse/);
+  assert.match(visualizers, /function requestFlowVisualizer\(element\)/);
+  assert.match(visualizers, /getPointAtLength\(/);
+  assert.match(visualizers, /requestAnimationFrame\(tick\)/);
+  assert.match(visualizers, /cancelAnimationFrame\(frameHandle\)/);
+  for (const scenario of ["正常请求", "缓存命中", "缓存未命中", "节点故障切换"]) {
+    assert.ok(visualizers.includes(scenario), `missing animated network scenario: ${scenario}`);
+  }
+  assert.match(visualizers, /系统已减少动态效果/);
+  assert.match(css, /\.dynamic-architecture-packet\.is-request/);
+  assert.match(css, /\.dynamic-architecture-node\.is-current/);
+  assert.match(css, /\.dynamic-architecture-node\.is-failed/);
+  assert.match(css, /\.dynamic-flow-scenes/);
+  assert.match(visualizers, /function lambdaStreamVisualizer\(element\)/);
+  assert.match(visualizers, /lambda-live-speed-arrow/);
+  assert.match(visualizers, /lambda-live-batch-arrow/);
+  assert.match(visualizers, /case "19\.3\.3": return lambdaStreamVisualizer/);
+  assert.match(css, /\.lambda-live-packet\.is-speed/);
+  assert.match(css, /\.lambda-live-packet\.is-batch/);
+  assert.match(css, /\.lambda-live-node\.is-active/);
   assert.match(css, /\.learning-compare-architectures/);
   assert.match(css, /@media\(max-width:680px\).*learning-concept-node-grid/s);
   assert.match(css, /prefers-reduced-motion/);
