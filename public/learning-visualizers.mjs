@@ -225,7 +225,10 @@ function lambdaArchitectureLab(element) {
   ]);
 }
 function makeConceptVisualizer(element, config) {
-  let active = 0;
+  const timeline = config.timeline ?? config.nodes.map((node, index) => ({ nodeIndex: index, flowIndex: index }));
+  let activeStep = 0;
+  let timer = null;
+  let root = null;
   const detailStep = element("span", { className: "learning-concept-detail-step" });
   const detailTitle = element("strong", { className: "learning-concept-detail-title" });
   const detail = element("p", { className: "learning-concept-detail-text" });
@@ -239,28 +242,109 @@ function makeConceptVisualizer(element, config) {
       element("strong", { text: node.title }),
       element("small", { text: node.short }),
     ]);
-    button.addEventListener("click", () => { active = index; update(); });
+    button.addEventListener("click", () => {
+      pause();
+      const firstStep = timeline.findIndex((step) => step.nodeIndex === index);
+      activeStep = firstStep < 0 ? 0 : firstStep;
+      update();
+    });
     return button;
   });
-  function update() {
-    const node = config.nodes[active];
-    nodes.forEach((button, index) => {
-      button.classList.toggle("is-active", index === active);
-      button.setAttribute("aria-pressed", String(index === active));
-    });
-    detailStep.textContent = "知识点 " + (active + 1) + " / " + config.nodes.length;
-    detailTitle.textContent = node.title;
-    detail.textContent = node.detail;
-    focus.textContent = node.focus;
-  }
+  const flowSteps = [];
+  const flowArrows = [];
+  const flowChildren = [];
+  config.flow.forEach((label, index) => {
+    if (index) {
+      const arrow = element("span", { className: "learning-concept-flow-arrow", text: config.separator || "→", attrs: { "aria-hidden": "true" } });
+      flowArrows.push(arrow);
+      flowChildren.push(arrow);
+    }
+    const step = element("span", { className: "learning-concept-flow-step", text: label });
+    flowSteps.push(step);
+    flowChildren.push(step);
+  });
   const flow = element("div", { className: "learning-concept-flowline", attrs: {
     role: "img", "aria-label": config.flowLabel,
-  } }, config.flow.flatMap((label, index) => [
-    ...(index ? [element("span", { className: "learning-concept-flow-arrow", text: config.separator || "→", attrs: { "aria-hidden": "true" } })] : []),
-    element("span", { className: "learning-concept-flow-step", text: label }),
-  ]));
+  } }, flowChildren);
+  const previous = element("button", { className: "learning-concept-player-button", text: "上一步", attrs: { type: "button" } });
+  const play = element("button", { className: "learning-concept-player-button is-primary", text: "播放讲解", attrs: { type: "button" } });
+  const next = element("button", { className: "learning-concept-player-button", text: "下一步", attrs: { type: "button" } });
+  const speed = element("select", { className: "learning-concept-player-speed", attrs: { "aria-label": "播放速度" } }, [
+    element("option", { text: "慢速", attrs: { value: "2600" } }),
+    element("option", { text: "正常", attrs: { value: "1800", selected: true } }),
+    element("option", { text: "快速", attrs: { value: "1100" } }),
+  ]);
+  const progressLabel = element("span", { className: "learning-concept-progress-label" });
+  const progressFill = element("span", { className: "learning-concept-progress-fill" });
+  const progress = element("div", { className: "learning-concept-progress", attrs: { "aria-hidden": "true" } }, [progressFill]);
+  function pause() {
+    if (timer !== null) clearInterval(timer);
+    timer = null;
+    play.textContent = "播放讲解";
+    play.classList.remove("is-playing");
+  }
+  function setStep(index) {
+    activeStep = Math.max(0, Math.min(timeline.length - 1, index));
+    update();
+  }
+  function playFromHere() {
+    if (timer !== null) {
+      pause();
+      return;
+    }
+    if (activeStep >= timeline.length - 1) setStep(0);
+    play.textContent = "暂停讲解";
+    play.classList.add("is-playing");
+    timer = setInterval(() => {
+      if (!root?.isConnected) {
+        pause();
+        return;
+      }
+      if (activeStep >= timeline.length - 1) {
+        pause();
+        return;
+      }
+      setStep(activeStep + 1);
+      if (activeStep >= timeline.length - 1) pause();
+    }, Number(speed.value) || 1800);
+  }
+  function update() {
+    const current = timeline[activeStep];
+    const node = config.nodes[current.nodeIndex] ?? config.nodes[0];
+    nodes.forEach((button, index) => {
+      button.classList.toggle("is-active", index === current.nodeIndex);
+      button.setAttribute("aria-pressed", String(index === current.nodeIndex));
+    });
+    flowSteps.forEach((step, index) => {
+      const selected = index === current.flowIndex;
+      step.classList.toggle("is-active", selected);
+      if (selected) step.setAttribute("aria-current", "step");
+      else step.removeAttribute("aria-current");
+    });
+    const previousFlow = activeStep > 0 ? timeline[activeStep - 1].flowIndex : current.flowIndex;
+    flowArrows.forEach((arrow, index) => {
+      arrow.classList.toggle("is-active", Math.abs(current.flowIndex - previousFlow) === 1 && index === Math.min(current.flowIndex, previousFlow));
+    });
+    detailStep.textContent = (current.phase ? current.phase + " · " : "") + "步骤 " + (activeStep + 1) + " / " + timeline.length;
+    detailTitle.textContent = current.title || node.title;
+    detail.textContent = current.narration || node.detail;
+    focus.textContent = current.focus || node.focus;
+    progressLabel.textContent = (activeStep + 1) + " / " + timeline.length;
+    progressFill.style.width = ((activeStep + 1) / timeline.length * 100) + "%";
+    previous.disabled = activeStep === 0;
+    next.disabled = activeStep === timeline.length - 1;
+  }
+  previous.addEventListener("click", () => { pause(); setStep(activeStep - 1); });
+  next.addEventListener("click", () => { pause(); setStep(activeStep + 1); });
+  play.addEventListener("click", playFromHere);
+  speed.addEventListener("change", () => {
+    if (timer !== null) {
+      pause();
+      playFromHere();
+    }
+  });
   update();
-  return element("section", { className: "learning-visualizer learning-visualizer-concept", attrs: {
+  root = element("section", { className: "learning-visualizer learning-visualizer-concept", attrs: {
     "aria-labelledby": config.titleId,
   } }, [
     element("div", { className: "learning-visualizer-heading" }, [
@@ -275,6 +359,10 @@ function makeConceptVisualizer(element, config) {
       element("span", { className: "learning-concept-overline", text: config.flowHeading || "知识关系主线" }),
       flow,
     ]),
+    element("div", { className: "learning-concept-player" }, [
+      element("div", { className: "learning-concept-player-controls" }, [previous, play, next, speed]),
+      element("div", { className: "learning-concept-player-progress" }, [progress, progressLabel]),
+    ]),
     element("div", { className: "learning-concept-node-grid", attrs: {
       role: "group", "aria-label": config.nodeGroupLabel,
     } }, nodes),
@@ -286,6 +374,7 @@ function makeConceptVisualizer(element, config) {
       element("p", { text: config.boundary }),
     ]),
   ]);
+  return root;
 }
 
 function architectureOverviewVisualizer(element) {
@@ -359,6 +448,15 @@ function layeredArchitectureVisualizer(element) {
     flowHeading: "常见四层示意 · 请求向下，结果向上",
     flowLabel: "分层架构常见四层",
     flow: ["表现层", "中间层", "访问层", "数据层"],
+    timeline: [
+      { nodeIndex: 0, flowIndex: 0, phase: "请求进入", title: "请求到达表现层", narration: "用户或调用方发起操作。表现层接收输入、完成必要校验，并把业务请求交给中间层。", focus: "观察请求的起点：界面负责交互，不直接承担全部业务规则。" },
+      { nodeIndex: 1, flowIndex: 1, phase: "请求向下", title: "中间层组织业务", narration: "中间层执行应用流程和业务规则，决定需要哪些数据或下游能力，再通过访问层获取数据。", focus: "业务规则集中在业务职责所在的位置，避免散落到 UI 或数据库访问代码中。" },
+      { nodeIndex: 2, flowIndex: 2, phase: "请求向下", title: "访问层适配数据操作", narration: "访问层把业务需要转成具体的数据访问操作，隔离业务逻辑与底层存储细节。", focus: "访问层是适配与封装边界，不等于数据库本身。" },
+      { nodeIndex: 3, flowIndex: 3, phase: "到达数据层", title: "数据层读取或写入", narration: "数据层执行持久化、查询或更新。至此，请求路径到达数据端；接下来结果沿相反方向返回。", focus: "图中数据层是职责概念，实际存储产品应根据数据与访问需求选择。" },
+      { nodeIndex: 2, flowIndex: 2, phase: "响应返回", title: "数据结果返回访问层", narration: "存储操作完成后，结果先回到访问层，由它处理数据映射和访问细节，再交给业务层。", focus: "请求向下、结果向上；不要把返回路径误画成新的业务请求。" },
+      { nodeIndex: 1, flowIndex: 1, phase: "响应返回", title: "中间层组织业务结果", narration: "中间层根据返回的数据完成业务处理，生成应用层可消费的结果。", focus: "业务判断仍由业务层负责，数据访问层不替代业务决策。" },
+      { nodeIndex: 0, flowIndex: 0, phase: "响应完成", title: "表现层返回给调用方", narration: "表现层把业务结果转换为界面或接口响应，完成一次典型的分层请求往返。", focus: "这是常见示意路径；具体系统可能有缓存、异步消息或受控跨层访问。" },
+    ],
     nodeGroupLabel: "分层架构四个示意层",
     nodes: [
       { title: "表现层", short: "交互与输入输出", detail: "面向用户或调用方处理界面呈现、输入校验和交互组织，再将请求交给下层业务能力。", focus: "不要把页面展示逻辑和核心业务规则全部堆在表现层。" },

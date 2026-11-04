@@ -211,6 +211,11 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
     assert.ok(visualizers.includes(title), `missing knowledge visual: ${title}`);
   }
   assert.match(visualizers, /learning-concept-node-grid/);
+  assert.match(visualizers, /learning-concept-player/);
+  assert.match(visualizers, /播放讲解/);
+  assert.match(visualizers, /timeline: \[/);
+  assert.match(visualizers, /响应返回/);
+  assert.match(visualizers, /clearInterval\(timer\)/);
   assert.match(visualizers, /learning-compare-dimensions/);
   assert.match(visualizers, /aria-pressed/);
   assert.match(visualizers, /aria-atomic/);
@@ -219,6 +224,8 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.match(visualizers, /aria-live/);
   assert.match(css, /\.learning-visualizer/);
   assert.match(css, /\.learning-concept-flowline/);
+  assert.match(css, /\.learning-concept-player-controls/);
+  assert.match(css, /learning-packet-pulse/);
   assert.match(css, /\.learning-compare-architectures/);
   assert.match(css, /@media\(max-width:680px\).*learning-concept-node-grid/s);
   assert.match(css, /prefers-reduced-motion/);

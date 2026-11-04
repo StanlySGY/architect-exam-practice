@@ -1159,3 +1159,23 @@ kbd{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 
 @media(max-width:680px){#home-view .learning-compare-architectures{grid-template-columns:minmax(0,1fr)}#home-view .learning-concept-node-grid{grid-template-columns:repeat(2,minmax(0,1fr))}#home-view .learning-concept-flowline{justify-content:flex-start}}
 @media(max-width:560px){#home-view .learning-concept-node{min-height:88px;padding:10px}#home-view .learning-concept-boundary{grid-template-columns:minmax(0,1fr);gap:4px}#home-view .learning-compare-detail-columns{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){#home-view .learning-concept-node{transition:none}#home-view .learning-concept-node:hover{transform:none}}
+
+/* Guided playback: the active node advances with the narrated request/response step. */
+#home-view .learning-concept-player{display:grid;grid-template-columns:minmax(0,1fr) minmax(120px,.45fr);gap:14px;align-items:center;margin-top:12px;padding:11px 13px;border:1px solid var(--line);border-radius:9px;background:var(--surface-faint)}
+#home-view .learning-concept-player-controls{display:flex;align-items:center;flex-wrap:wrap;gap:7px}
+#home-view .learning-concept-player-button{min-height:34px;padding:7px 11px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font-size:10px;font-weight:700;cursor:pointer}
+#home-view .learning-concept-player-button.is-primary{border-color:var(--green);background:var(--accent);color:var(--accent-fg)}
+#home-view .learning-concept-player-button.is-playing{background:var(--surface-muted)}
+#home-view .learning-concept-player-button:disabled{opacity:.4;cursor:not-allowed}
+#home-view .learning-concept-player-speed{min-height:34px;padding:6px 8px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--muted);font-size:10px}
+#home-view .learning-concept-player-progress{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center}
+#home-view .learning-concept-progress{height:5px;overflow:hidden;border-radius:99px;background:var(--surface-muted)}
+#home-view .learning-concept-progress-fill{display:block;width:0;height:100%;border-radius:inherit;background:var(--green);transition:width .25s ease}
+#home-view .learning-concept-progress-label{color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
+#home-view .learning-concept-flow-step{position:relative;transition:background .2s,border-color .2s,box-shadow .2s}
+#home-view .learning-concept-flow-step.is-active{padding-right:24px;border-color:var(--green);background:var(--accent);color:var(--accent-fg);box-shadow:0 0 0 2px color-mix(in oklch,var(--green) 12%,transparent)}
+#home-view .learning-concept-flow-step.is-active:after{position:absolute;top:50%;right:9px;width:7px;height:7px;border-radius:50%;background:var(--green);content:"";transform:translateY(-50%);animation:learning-packet-pulse .7s ease-in-out infinite alternate}
+#home-view .learning-concept-flow-arrow.is-active{color:var(--green);transform:scale(1.22)}
+@keyframes learning-packet-pulse{from{opacity:.45;transform:translateY(-50%) scale(.72)}to{opacity:1;transform:translateY(-50%) scale(1.18)}}
+@media(max-width:680px){#home-view .learning-concept-player{grid-template-columns:minmax(0,1fr)}#home-view .learning-concept-player-progress{grid-template-columns:minmax(0,1fr) auto}}
+@media(prefers-reduced-motion:reduce){#home-view .learning-concept-flow-step,#home-view .learning-concept-progress-fill{transition:none}#home-view .learning-concept-flow-step.is-active:after{animation:none}}
