@@ -1,6 +1,10 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import {
+  calculateExecutionPathEstimate,
+  calculateInputDomainEstimate,
+} from "../public/learning-visualizers.mjs";
 
 const app = await readFile(new URL("../public/app.js", import.meta.url), "utf8");
 const html = await readFile(new URL("../public/index.html", import.meta.url), "utf8");
@@ -179,4 +183,28 @@ test("命题复习提示使用显式只读模块白名单，且练习只在提�
   assert.ok(reviewNotes.includes("humanSignOff: false"));
   assert.ok(css.includes(".question-review-note-references"));
   assert.ok(css.includes(".question-review-note-boundary"));
+});
+
+test("输入域与执行路径可视化的加权计算保持权重归一且区分简单平均", () => {
+  const input = calculateInputDomainEstimate(5);
+  assert.deepEqual(input.rows.map((row) => row.weight), [80, 15, 5]);
+  assert.equal(input.weighted, 97.45);
+  assert.ok(input.equal > 91.33 && input.equal < 91.34);
+  const path = calculateExecutionPathEstimate(10);
+  assert.deepEqual(path.rows.map((row) => row.weight), [70, 20, 10]);
+  assert.equal(path.weighted, 3.5);
+  assert.ok(path.equal > 8.33 && path.equal < 8.34);
+  assert.equal(calculateInputDomainEstimate(30).rows.reduce((sum, row) => sum + row.weight, 0), 100);
+  assert.throws(() => calculateInputDomainEstimate("bad"), /有限数字/);
+});
+
+test("交互式课程实验只挂载到明确对应单元，并声明示例边界与辅助技术说明", async () => {
+  const visualizers = await readFile(new URL("../public/learning-visualizers.mjs", import.meta.url), "utf8");
+  assert.ok(app.includes('import { learningVisualizerNode } from "/learning-visualizers.mjs";'));
+  assert.ok(app.includes("learningVisualizerNode(unit, element)"));
+  for (const id of ["9.2.3.6", "9.2.3.7", "19.3.3"]) assert.ok(visualizers.includes(`case "${id}"`));
+  assert.match(visualizers, /自拟示例|非教材公式/);
+  assert.match(visualizers, /aria-live/);
+  assert.match(css, /\.learning-visualizer/);
+  assert.match(css, /prefers-reduced-motion/);
 });

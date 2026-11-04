@@ -3,6 +3,7 @@ import { questionReviewNoteFor } from "/lib/question-review-notes.mjs";
 import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
 import { mountBeginnerRoadmap } from "/roadmap-ui.mjs";
+import { learningVisualizerNode } from "/learning-visualizers.mjs";
 import { $, element, emptyMessage } from "/ui.js";
 import {
   AGENT_TASK_HISTORY_LIMIT,
@@ -1662,6 +1663,7 @@ function renderLearningPath(data) {
       ]),
       topic("为什么要学习", unit.teaching?.why),
       topic("核心机制与方法", unit.teaching?.how),
+      learningVisualizerNode(unit, element),
       topic("应用场景", unit.teaching?.scenarios),
       topic("例子与演练", unit.teaching?.examples),
       topic("考试关注点", unit.examFocus, "learning-topic-exam"),
