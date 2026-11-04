@@ -150,6 +150,8 @@ function mergeLearningContent(unit, content) {
     checks: authoredChecks.length ? authoredChecks : unit.checks,
     contentStatus: authored.status === "verified" ? "verified" : authored.status === "partial" ? "partial" : unit.contentStatus,
     contentSource: { type: "course-content", path: "data/learning-content.json", status: authored.status ?? "partial" },
+    verificationReview: authored.verificationReview ?? null,
+    verificationPendingClaims: Array.isArray(authored.verificationPendingClaims) ? authored.verificationPendingClaims : [],
   };
 }
 

@@ -48,6 +48,10 @@ test("课程核验状态和资料依据必须在核心讲解前展示，并区�
   assert.match(renderer, /部分核验 · 仍需教材复核/);
   assert.match(renderer, /资料链接可访问，不等于正文足以支持全部讲解/);
   assert.match(renderer, /暂无登记依据/);
+  assert.match(renderer, /ai-source-cross-check-complete/);
+  assert.match(renderer, /verificationReviewNode,/);
+  assert.match(renderer, /这不是人工审批，也不代表整节课程已核验/);
+  assert.match(renderer, /verificationPendingClaims/);
   assert.match(css, /\.learning-content-status\.is-verified/);
   assert.match(css, /\.learning-content-status\.is-partial/);
   assert.match(css, /\.learning-content-status\.is-missing/);

@@ -1638,6 +1638,7 @@ function renderLearningPath(data) {
       : null,
     ]);
   });
+  const sourceReviewComplete = unit.verificationReview?.status === "ai-source-cross-check-complete";
   const contentStatus = unit.contentStatus === "verified"
     ? {
         tone: "verified",
@@ -1648,7 +1649,9 @@ function renderLearningPath(data) {
       ? {
           tone: "partial",
           label: "部分核验 · 仍需教材复核",
-          detail: "本节仍有内容需要对照指定版本教材和官方资料复核；资料链接可访问，不等于正文足以支持全部讲解。",
+          detail: sourceReviewComplete
+            ? "本轮 AI 来源交叉核查已完成，但指定版次教材逐页核对、考试口径确认和独立人工终审尚未完成，因此仍保持部分核验。"
+            : "本节仍有内容需要对照指定版本教材和官方资料复核；资料链接可访问，不等于正文足以支持全部讲解。",
         }
       : {
           tone: "missing",
@@ -1678,6 +1681,16 @@ function renderLearningPath(data) {
         element("h3", { text: "资料依据尚未登记" }),
         element("p", { text: "当前单元没有可追溯的资料依据。请以指定版本教材和官方资料复核，不要仅凭本页面记忆。" }),
       ]);
+  const verificationReviewNode = sourceReviewComplete
+    ? element("details", { className: "learning-topic learning-verification-review" }, [
+        element("summary", { text: `AI 来源交叉核查记录 · ${unit.verificationPendingClaims?.length ?? 0} 项仍待教材/人工确认` }),
+        element("p", { text: `${unit.verificationReview.reviewer ?? "AI 来源复核"} · ${unit.verificationReview.reviewedOn ?? "未记录日期"}` }),
+        element("p", { text: "这不是人工审批，也不代表整节课程已核验；只有指定教材逐项核对并完成独立人工终审后，才能重新评估整节状态。" }),
+        element("ul", { className: "learning-evidence-list" }, (unit.verificationPendingClaims ?? []).map((claim) =>
+          element("li", { className: "learning-evidence-item" }, [element("p", { text: claim })]),
+        )),
+      ])
+    : null;
   const lessonContext = [];
   if (unit.prerequisites?.length) lessonContext.push(element("div", {}, [
     element("strong", { text: "前置知识" }),
@@ -1698,6 +1711,7 @@ function renderLearningPath(data) {
     ]),
     element("div", { className: "learning-content" }, [
       contentStatusNode,
+      verificationReviewNode,
       learningEvidenceNode,
       element("section", { className: "learning-topic learning-topic-primary" }, [
         element("span", { className: "learning-topic-index", text: "01" }),

@@ -619,6 +619,9 @@ kbd{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 
 #home-view .learning-topic-exam{border-color:color-mix(in oklch,var(--amber) 35%,var(--line));background:color-mix(in oklch,var(--amber) 7%,var(--surface-faint))}
 #home-view .learning-topic-exam h3:before{background:var(--amber)}
 #home-view .learning-lesson-context,#home-view .learning-evidence{grid-column:1/-1}
+#home-view .learning-verification-review{grid-column:1/-1;border-style:dashed;border-color:color-mix(in oklch,var(--amber) 42%,var(--line));background:color-mix(in oklch,var(--amber) 4%,var(--card))}
+#home-view .learning-verification-review>summary{color:var(--ink);font-size:12px;font-weight:750;cursor:pointer;line-height:1.8}
+#home-view .learning-verification-review>p{margin:9px 0 0;color:var(--text-soft);font-size:11px;line-height:1.75}
 #home-view .learning-lesson-context>div+div{margin-top:12px}
 #home-view .learning-lesson-context strong{display:block;margin-bottom:4px;color:var(--ink);font-size:12px}
 #home-view .learning-evidence>summary{color:var(--ink);font-size:13px;font-weight:750;cursor:pointer;line-height:1.8}

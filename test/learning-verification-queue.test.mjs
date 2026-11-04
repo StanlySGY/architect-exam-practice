@@ -13,8 +13,9 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
 test('valid evidence for one subclaim does not close a unit with unresolved material claims',()=>{
  const evidence={url:'https://example.org/direct-source',supportedClaim:'one directly supported definition',scope:'one claim only',reviewedOn:'2026-10-10',reviewStatus:'source-supports-bounded-claim'};
  const report=buildVerificationQueue({units:{partialCoverage:{status:'partial',evidence:[evidence],verificationPendingClaims:['textbook taxonomy and formula remain unresolved']}}});
- assert.equal(report.unitsWithClaimLevelEvidence,1);assert.equal(report.unitsWithCompleteClaimEvidence,0);assert.equal(report.unitsMissingEvidence,1);
- assert.deepEqual(report.queue[0].missing,['unresolved material claim: textbook taxonomy and formula remain unresolved']);
+ assert.equal(report.unitsWithClaimLevelEvidence,1);assert.equal(report.unitsWithCompleteClaimEvidence,0);assert.equal(report.unitsMissingEvidence,0);assert.equal(report.unitsWithUnresolvedClaims,1);
+ assert.deepEqual(report.queue[0].missing,[]);
+ assert.deepEqual(report.queue[0].unresolvedClaims,['unresolved material claim: textbook taxonomy and formula remain unresolved']);
 });
 
 test('unverified local PDF provenance blocks completion even when a unit is marked verified',()=>{
@@ -375,8 +376,8 @@ test("NIST source evidence supports only the public-key and certificate-binding 
  const certificate=content.units["4.5.2"];
  assert.equal(publicKey.status,"partial");
  assert.equal(certificate.status,"partial");
- assert.ok(publicKey.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_cryptography" && e.reviewStatus==="source-supports-core-claim" && e.scope.includes("does not verify the entire learning unit")));
- assert.ok(certificate.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_certificate" && e.reviewStatus==="source-supports-core-claim" && e.scope.includes("does not establish that every certificate is valid")));
+  assert.ok(publicKey.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_cryptography" && e.reviewStatus==="source-supports-bounded-claim" && e.scope.includes("各算法实际支持的用途与安全假设不同")));
+  assert.ok(certificate.evidence?.some(e=>e.url==="https://csrc.nist.gov/glossary/term/public_key_certificate" && e.reviewStatus==="source-supports-bounded-claim" && e.scope.includes("不能把证书存在视为自动可信")));
 });
 
 
@@ -384,12 +385,12 @@ test("symmetric cryptography, vulnerability assessment and architecture-style cl
  const cases=[
   ["4.4.2","https://csrc.nist.gov/glossary/term/symmetric_key_algorithm","shared-key mechanism only"],
   ["7.3.1","https://www.sei.cmu.edu/documents/1119/1994_005_001_16331.pdf","component, connector and style/constraint concepts only"],
-  ["4.7.6","https://csrc.nist.gov/glossary/term/vulnerability_assessment","purpose of vulnerability assessment only"]
+   ["4.7.6","https://csrc.nist.gov/glossary/term/vulnerability_assessment","漏洞扫描器发现项","source-supports-bounded-claim"]
  ];
- for(const [id,url,scope] of cases){
-  const unit=content.units[id];
-  assert.equal(unit.status,"partial",id);
-  assert.ok(unit.evidence?.some(e=>e.url===url && e.reviewStatus==="source-supports-core-claim" && e.scope.includes(scope)),id);
+  for(const [id,url,scope,status="source-supports-core-claim"] of cases){
+    const unit=content.units[id];
+    assert.equal(unit.status,"partial",id);
+    assert.ok(unit.evidence?.some(e=>e.url===url && e.reviewStatus===status && e.scope.includes(scope)),id);
  }
 });
 
@@ -480,7 +481,7 @@ test('computer system foundations and systems engineering have scoped evidence',
 });
 
 
-test('GB 17859 level names and standard status have distinct sources',()=>{const u=content.units['4.8.1'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf'&&e.supportedClaim.includes('五个等级')&&e.scope.includes('不据此把五级直接等同于现行网络安全等级保护')));assert.ok(u.evidence?.some(e=>e.url==='https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7'&&e.supportedClaim.includes('标记为现行')&&e.scope.includes('只支持标准身份')));});
+test('GB 17859 level names and standard status have distinct sources',()=>{const u=content.units['4.8.1'];assert.equal(u.status,'partial');assert.ok(u.evidence?.some(e=>e.url==='https://zjic.zj.gov.cn/ywdh/szfg/202104/P020220711448085717700.pdf'&&e.supportedClaim.includes('五个安全保护能力等级名称')&&e.scope.includes('政府网站转载副本')&&e.scope.includes('尚未获得标准发布机关副本认证')));assert.ok(u.evidence?.some(e=>e.url==='https://openstd.samr.gov.cn/bzgk/std/newGbInfo?hcno=814B9ED6130F17C4B53EF6AA98BCD5A7'&&e.supportedClaim.includes('标记为“现行”')&&e.scope.includes('只支持标准身份')));});
 
 
 test('LAN WAN and system performance metrics have scoped evidence',()=>{
@@ -522,7 +523,7 @@ test('relational tables normalization database design and backup have scoped sou
 test('SWEBOK, database analysis, architecture concerns, UML interactions, layering, cloud-native and SOA claims have scoped primary-source evidence',()=>{const cases=[['5.1','https://www.computer.org/education/bodies-of-knowledge/software-engineering'],['6.3.2','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing'],['7.1.3','https://www.iso.org/cms/%20render/live/en/sites/isoorg/contents/data/standard/07/43/74393.html'],['9.1.4','https://csrc.nist.gov/glossary/term/reliability'],['10.2.1','https://www.omg.org/spec/UML/2.5.1'],['10.2.2','https://www.omg.org/spec/UML/2.5.1'],['10.2.3','https://www.omg.org/spec/UML/2.5.1'],['10.2.4','https://www.omg.org/spec/UML/2.5.1'],['13.1','https://learn.microsoft.com/en-us/azure/architecture/guide/architecture-styles/'],['14.1','https://glossary.cncf.io/cloud-native-tech/'],['15.1','https://docs.oasis-open.org/soa-rm/v1.0/soa-rm.html']];for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});
 
 
-test('security governance, software engineering and database design evidence is scoped to primary sources',()=>{const cases=[['4.1.3','https://csrc.nist.gov/glossary/term/attack_surface'],['4.2','https://www.nist.gov/cyberframework'],['4.3.2','https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final'],['4.3.3','https://csrc.nist.gov/pubs/sp/800/37/r2/final'],['4.5.1','https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final'],['4.5.3','https://www.rfc-editor.org/rfc/rfc8446.html'],['4.7.3','https://csrc.nist.gov/glossary/term/spoofing'],['4.7.5','https://csrc.nist.gov/glossary/term/denial_of_service'],['5.3','https://www.computer.org/education/bodies-of-knowledge/software-engineering'],['5.5','https://csrc.nist.gov/pubs/sp/800/218/final'],['5.6','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['5.7','https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/'],['6.1.1','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing'],['6.1.2','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing'],['6.1.3','https://www.postgresql.org/docs/current/tutorial-concepts.html'],['6.3.3','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing'],['6.3.5','https://www.postgresql.org/docs/current/indexes.html']];for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});
+test('security governance, software engineering and database design evidence is scoped to primary sources',()=>{const cases=[['4.1.3','https://csrc.nist.gov/glossary/term/attack_surface','2026-10-10'],['4.2','https://www.nist.gov/cyberframework','2026-10-10'],['4.3.2','https://csrc.nist.gov/pubs/sp/800/53/r5/upd1/final','2026-10-10'],['4.3.3','https://csrc.nist.gov/pubs/sp/800/37/r2/final','2026-11-04'],['4.5.1','https://csrc.nist.gov/pubs/sp/800/57/pt1/r5/final','2026-10-10'],['4.5.3','https://www.rfc-editor.org/info/rfc9846/','2026-11-04'],['4.7.3','https://csrc.nist.gov/glossary/term/spoofing','2026-11-04'],['4.7.5','https://csrc.nist.gov/glossary/term/denial_of_service','2026-10-10'],['5.3','https://www.computer.org/education/bodies-of-knowledge/software-engineering','2026-10-10'],['5.5','https://csrc.nist.gov/pubs/sp/800/218/final','2026-10-10'],['5.6','https://www.sei.cmu.edu/library/software-product-lines-collection/','2026-10-10'],['5.7','https://www.nasa.gov/reference/2-0-fundamentals-of-systems-engineering/','2026-10-10'],['6.1.1','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing','2026-10-10'],['6.1.2','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing','2026-10-10'],['6.1.3','https://www.postgresql.org/docs/current/tutorial-concepts.html','2026-10-10'],['6.3.3','https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-organizing','2026-10-10'],['6.3.5','https://www.postgresql.org/docs/current/indexes.html','2026-10-10']];for(const [id,url,reviewedOn] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn===reviewedOn),id);}});
 
 
 test('software architecture design and reliability mechanisms have scoped evidence',()=>{const cases=[['7.2.3','https://www.sei.cmu.edu/library/documenting-software-architectures-views-and-beyond/'],['7.2.5','https://www.sei.cmu.edu/library/documenting-software-architectures-views-and-beyond/'],['7.2.8','https://www.sei.cmu.edu/library/software-architecture-in-practice-4th-edition/'],['7.2.9','https://www.iso.org/standard/80710.html'],['7.4.2','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['7.4.3','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['7.4.4','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['7.5.1','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['7.5.2','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['7.5.4','https://www.sei.cmu.edu/library/software-product-lines-collection/'],['9.4.1','https://csrc.nist.gov/glossary/term/fault_tolerance'],['9.4.4','https://csrc.nist.gov/glossary/term/fault_tolerance']];for(const [id,url] of cases){const u=content.units[id];assert.equal(u.status,'partial',id);assert.ok(u.evidence?.some(e=>e.url===url&&e.supportedClaim&&e.scope&&e.reviewStatus==='source-supports-bounded-claim'&&e.reviewedOn==='2026-10-10'),id);}});
@@ -741,4 +742,29 @@ test('local PDF page cross-check resolves taxonomy claims while source provenanc
 test('all learning evidence records have human-readable source titles',()=>{
  let count=0;for(const [id,unit] of Object.entries(content.units)){for(const evidence of unit.evidence||[]){count++;assert.ok(typeof evidence.sourceTitle==='string'&&evidence.sourceTitle.trim().length>0,`${id}: ${evidence.url}`)}}
  assert.ok(count>0);
+});
+
+test('AI source cross-check records never upgrade whole-unit status and keep human review explicit', () => {
+  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2'];
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsWithSourceCrossCheck, ids.length);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length);
+  assert.equal(report.unitsMissingEvidence, 0, 'bounded evidence is not missing merely because whole-unit review is pending');
+  assert.ok(report.unitsWithUnresolvedClaims >= ids.length);
+  for (const id of ids) {
+    const unit = content.units[id];
+    assert.equal(unit.status, 'partial', id);
+    assert.equal(unit.verificationReview.status, 'ai-source-cross-check-complete', id);
+    assert.equal(unit.verificationReview.humanReviewRequired, true, id);
+    assert.ok(unit.verificationPendingClaims.length > 0, id);
+    const queued = report.queue.find(item => item.id === id);
+    assert.ok(queued, id + ' remains in human verification queue');
+    assert.ok(queued.reviewReasons.includes('AI source cross-check completed; independent textbook/human review still required'), id);
+    assert.match(queued.nextAction, /human-review/u, id);
+  }
+  const tls = content.units['4.5.3'];
+  assert.ok(tls.evidence.some(item => item.url === 'https://www.rfc-editor.org/info/rfc9846/' && item.reviewStatus === 'source-supports-bounded-claim'));
+  assert.ok(tls.evidence.some(item => /rfc8446(?:\.html)?$/u.test(item.url) && item.reviewStatus === 'background-only-needs-textbook-verification'));
+  const tdea = content.units['4.4.2.3'];
+  assert.ok(tdea.evidence.some(item => item.url === 'https://csrc.nist.gov/pubs/sp/800/67/r2/final' && item.supportedClaim.includes('2024-01-01')));
 });

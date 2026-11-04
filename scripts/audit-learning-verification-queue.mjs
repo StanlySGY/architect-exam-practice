@@ -47,7 +47,7 @@ export function buildVerificationQueue(content) {
     const provenanceWarning = hasValidLocalPdfProvenanceWarning(unit);
     const missing = [];
     if (!evidence.length) missing.push('no claim-level evidence record');
-    for (const claim of pendingClaims) missing.push(`unresolved material claim: ${claim}`);
+    const unresolvedClaims = pendingClaims.map(claim => `unresolved material claim: ${claim}`);
     if (unit?.status === 'verified' && !evidence.length) {
       missing.push('verified status without valid claim-level evidence');
     }
@@ -61,10 +61,16 @@ export function buildVerificationQueue(content) {
     if (unit?.status !== 'verified') reviewReasons.push(`whole-unit status is ${unit?.status ?? '(missing)'}`);
     if (provenanceWarning) reviewReasons.push('local PDF publisher provenance has not been independently authenticated');
     if (missing.length) reviewReasons.push(...missing);
+    if (unresolvedClaims.length) reviewReasons.push(...unresolvedClaims);
+    if (unit?.verificationReview?.status === 'ai-source-cross-check-complete' && unit.verificationReview.humanReviewRequired === true) {
+      reviewReasons.push('AI source cross-check completed; independent textbook/human review still required');
+    }
 
     let nextAction;
     if (!evidence.length) {
       nextAction = 'retrieve an authoritative source and record the exact supported claim and scope';
+    } else if (pendingClaims.length && unit?.verificationReview?.status === 'ai-source-cross-check-complete') {
+      nextAction = 'human-review each listed claim against the specified textbook edition and confirm its exam wording; keep the unit partial until independently approved';
     } else if (pendingClaims.length) {
       nextAction = 'resolve each listed material claim against a direct source; keep the unit partial';
     } else if (provenanceWarning) {
@@ -82,7 +88,9 @@ export function buildVerificationQueue(content) {
       what: String(unit?.what ?? ''),
       evidenceCount: evidence.length,
       pendingClaims,
+      verificationReview: unit?.verificationReview ?? null,
       missing,
+      unresolvedClaims,
       provenanceWarning,
       complete,
       reviewReasons,
@@ -130,8 +138,12 @@ export function buildVerificationQueue(content) {
     unitsWithClaimLevelEvidence: records.filter(record => record.evidenceCount > 0).length,
     unitsWithCompleteClaimEvidence: records.filter(record => record.complete).length,
     unitsAwaitingVerification: queue.length,
-    unitsMissingEvidence: records.filter(record => record.missing.length > 0).length,
-    unitsWithUnresolvedClaims: records.filter(record => record.pendingClaims.length > 0).length,
+    // Missing source evidence and unresolved claims are different review reasons.
+    // A unit can have several valid bounded sources while still needing textbook/human review.
+    unitsMissingEvidence: records.filter(record => record.evidenceCount === 0).length,
+    unitsWithUnresolvedClaims: records.filter(record => record.unresolvedClaims.length > 0).length,
+    unitsWithSourceCrossCheck: records.filter(record => record.verificationReview?.status === 'ai-source-cross-check-complete').length,
+    unitsWithSourceCrossCheckAwaitingHumanReview: records.filter(record => record.verificationReview?.status === 'ai-source-cross-check-complete' && record.verificationReview.humanReviewRequired === true).length,
     verifiedWithoutEvidence: records.filter(record => record.status === 'verified' && record.evidenceCount === 0).map(record => record.id),
     unitsWithLocalPdfCrossCheck: localPdfCrossChecks.length,
     unitsWithUnverifiedLocalPdfProvenance: localPdfProvenanceUnverified,
