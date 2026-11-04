@@ -27,7 +27,81 @@ export function calculateExecutionPathEstimate(timeoutShare = 10) {
   return { rows, weighted: weightedMean(rows), equal: rows.reduce((sum, row) => sum + row.rate, 0) / rows.length };
 }
 const pct = (value) => Number(value).toFixed(2) + "%";
-let weightedLabSequence = 0;
+let visualizerInstanceSequence = 0;
+function nextVisualizerId(prefix = "visualizer") {
+  visualizerInstanceSequence += 1;
+  return `${prefix}-${visualizerInstanceSequence}`;
+}
+
+function bindMotionLifecycle(root, { start, pause, status, isRunning }) {
+  const motionPreference = window.matchMedia?.("(prefers-reduced-motion: reduce)") ?? null;
+  const hasObserver = typeof IntersectionObserver === "function";
+  let visible = !hasObserver;
+  let pageVisible = document.visibilityState !== "hidden";
+  let manualChoice = null;
+  let disposed = false;
+  let everConnected = false;
+  let observer = null;
+
+  function sync() {
+    if (disposed) return;
+    if (!root.isConnected) {
+      pause();
+      if (everConnected) {
+        disposed = true;
+        observer?.disconnect();
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+        if (motionPreference?.removeEventListener) motionPreference.removeEventListener("change", onMotionPreferenceChange);
+        else motionPreference?.removeListener?.(onMotionPreferenceChange);
+      } else {
+        if (status) status.textContent = "等待图解挂载";
+        if (!hasObserver) requestAnimationFrame(sync);
+      }
+      return;
+    }
+    everConnected = true;
+    const reduced = Boolean(motionPreference?.matches);
+    const shouldRun = visible && pageVisible && (manualChoice === true || (manualChoice === null && !reduced));
+    if (shouldRun) start();
+    else pause();
+    if (status) {
+      status.textContent = manualChoice === false
+        ? "已手动暂停"
+        : !pageVisible
+          ? "页面在后台 · 已自动暂停"
+          : !visible
+            ? "离开视口 · 已自动暂停"
+            : reduced && manualChoice !== true
+              ? "减少动态效果已启用 · 可手动播放"
+              : reduced
+                ? "手动播放（减少动态效果偏好）"
+                : "动态运行中";
+    }
+  }
+  function onVisibilityChange() {
+    pageVisible = document.visibilityState !== "hidden";
+    sync();
+  }
+  function onMotionPreferenceChange() { sync(); }
+  function toggle() {
+    manualChoice = Boolean(isRunning()) ? false : true;
+    sync();
+  }
+
+  document.addEventListener("visibilitychange", onVisibilityChange);
+  if (motionPreference?.addEventListener) motionPreference.addEventListener("change", onMotionPreferenceChange);
+  else motionPreference?.addListener?.(onMotionPreferenceChange);
+  if (hasObserver) {
+    observer = new IntersectionObserver((entries) => {
+      visible = entries.some((entry) => entry.isIntersecting && entry.intersectionRatio >= 0.04);
+      sync();
+    }, { threshold: [0, 0.04, 0.12] });
+    observer.observe(root);
+  }
+  sync();
+  return { toggle, sync };
+}
+
 function makeWeightedLab(element, config) {
   let model = config.initial;
   let running = false;
@@ -37,13 +111,15 @@ function makeWeightedLab(element, config) {
   let speedFactor = 1;
   let root = null;
   const sampleCount = 80;
-  const markerPrefix = "learning-lab-" + (++weightedLabSequence);
+  const markerPrefix = nextVisualizerId("learning-lab");
+  const titleId = nextVisualizerId(config.titleId || "learning-lab-title");
+  const outputId = nextVisualizerId(config.outputId || "learning-lab-share");
   const laneY = [66, 132, 198];
   const slider = element("input", { attrs: {
     type: "range", min: String(config.min), max: String(config.max), step: "1", value: String(config.value),
-    "aria-label": config.sliderLabel, "aria-describedby": config.outputId,
+    "aria-label": config.sliderLabel, "aria-describedby": outputId,
   } });
-  const output = element("output", { text: config.value + "%", attrs: { id: config.outputId, "aria-live": "polite" } });
+  const output = element("output", { text: config.value + "%", attrs: { id: outputId, "aria-live": "polite" } });
   const reset = element("button", { className: "small-button", text: "恢复示例", attrs: { type: "button" } });
   const segments = config.initial.rows.map((row, i) => element("span", {
     className: "learning-lab-segment learning-lab-segment-" + (i + 1), attrs: { role: "presentation" },
@@ -219,15 +295,14 @@ function makeWeightedLab(element, config) {
   }
   slider.addEventListener("input", update);
   reset.addEventListener("click", () => { slider.value = String(config.value); update(); slider.focus(); });
-  play.addEventListener("click", () => { if (running) pause(); else start(); });
   resetMotion.addEventListener("click", () => { elapsed = 0; lastFrame = 0; updateFrame(0); });
   speed.addEventListener("change", () => { speedFactor = Number(speed.value) || 1; lastFrame = 0; updateFrame(elapsed); });
 
-  root = element("section", { className: "learning-visualizer learning-visualizer-weighted-dynamic", attrs: { "aria-labelledby": config.titleId } }, [
+  root = element("section", { className: "learning-visualizer learning-visualizer-weighted-dynamic", attrs: { "aria-labelledby": titleId } }, [
     element("div", { className: "learning-visualizer-heading" }, [
       element("div", {}, [
         element("span", { className: "learning-visualizer-kicker", text: config.kicker }),
-        element("h3", { text: config.title, attrs: { id: config.titleId } }),
+        element("h3", { text: config.title, attrs: { id: titleId } }),
         element("p", { text: config.subtitle }),
       ]),
       element("span", { className: "learning-visualizer-badge", text: config.badge }),
@@ -243,7 +318,7 @@ function makeWeightedLab(element, config) {
       element("div", { className: "learning-lab-visual" }, [
         element("div", { className: "learning-lab-section-title", text: "样本按运行权重分流，并按类别结果汇聚" }),
         svg,
-        element("div", { className: "learning-lab-motion-toolbar" }, [
+        element("div", { className: "dynamic-flow-toolbar learning-lab-motion-toolbar" }, [
           element("div", { className: "dynamic-flow-controls" }, [play, resetMotion, speed]), motionState,
         ]),
         element("p", { className: "learning-lab-sample-note", text: `动画用 ${sampleCount} 个示意样本按权重分配粒子；成功 / 失败粒子数按类别比率取整，仅用于直观理解，不代表随机试验结果。` }),
@@ -264,9 +339,8 @@ function makeWeightedLab(element, config) {
     ]),
   ]);
   update();
-  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-  if (reducedMotion) motionState.textContent = "系统已减少动态效果；可手动播放";
-  else start();
+  const motion = bindMotionLifecycle(root, { start, pause, status: motionState, isRunning: () => running });
+  play.addEventListener("click", motion.toggle);
   return root;
 }
 function inputDomainLab(element) {
@@ -274,7 +348,7 @@ function inputDomainLab(element) {
     initial: calculateInputDomainEstimate(5), calculate: calculateInputDomainEstimate,
     min: 5, max: 30, value: 5, outputId: "input-domain-share-value",
     sliderLabel: "异常输入在实际运行中的占比", rateLabel: "成功率",
-    titleId: "input-domain-lab-title", kicker: "INTERACTIVE LAB · 01",
+    titleId: "input-domain-lab-title", kicker: "可靠性实验 · 01",
     title: "输入域权重实验：为什么不能简单平均？",
     subtitle: "改变异常输入在真实运行中的占比，观察整体成功率如何变化；各类别成功率保持不变。",
     badge: "自拟示例 · 非教材原题",
@@ -294,7 +368,7 @@ function executionPathLab(element) {
     initial: calculateExecutionPathEstimate(10), calculate: calculateExecutionPathEstimate,
     min: 5, max: 30, value: 10, outputId: "execution-path-share-value",
     sliderLabel: "超时路径在实际执行中的占比", rateLabel: "条件失效率",
-    titleId: "execution-path-lab-title", kicker: "INTERACTIVE LAB · 02",
+    titleId: "execution-path-lab-title", kicker: "可靠性实验 · 02",
     title: "执行路径实验：覆盖到，不等于经常执行",
     subtitle: "调高超时路径的真实执行占比，观察整体失效概率如何改变；各路径条件失效率保持不变。",
     badge: "简化加权示例 · 非教材公式",
@@ -352,6 +426,7 @@ function requestFlowVisualizer(element) {
   let running = false;
   let lastAnnouncement = "";
   let root = null;
+  const instanceId = nextVisualizerId("request-flow");
 
   const diagram = svgElement("svg", {
     class: "dynamic-architecture-svg", viewBox: "0 0 900 280", role: "group",
@@ -363,8 +438,8 @@ function requestFlowVisualizer(element) {
     marker.append(svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: color }));
     defs.append(marker);
   };
-  addMarker("dynamic-request-arrow", "#25866a");
-  addMarker("dynamic-response-arrow", "#c18a32");
+  addMarker(`${instanceId}-request-arrow`, "#25866a");
+  addMarker(`${instanceId}-response-arrow`, "#c18a32");
   diagram.append(defs);
 
   const stems = svgElement("g", { class: "dynamic-architecture-stems" });
@@ -372,8 +447,8 @@ function requestFlowVisualizer(element) {
     d: `M ${x} 122 V 166 M ${x} 122 V 218`, class: "dynamic-architecture-stem",
   })));
   diagram.append(stems);
-  const requestPath = svgElement("path", { class: "dynamic-architecture-route is-request", "marker-end": "url(#dynamic-request-arrow)" });
-  const responsePath = svgElement("path", { class: "dynamic-architecture-route is-response", "marker-end": "url(#dynamic-response-arrow)" });
+  const requestPath = svgElement("path", { class: "dynamic-architecture-route is-request", "marker-end": `url(#${instanceId}-request-arrow)` });
+  const responsePath = svgElement("path", { class: "dynamic-architecture-route is-response", "marker-end": `url(#${instanceId}-response-arrow)` });
   diagram.append(requestPath, responsePath);
 
   const nodeGroups = nodeNames.map((name, index) => {
@@ -418,7 +493,6 @@ function requestFlowVisualizer(element) {
   const liveStage = element("strong", { className: "dynamic-flow-stage", text: "请求正在发出…", attrs: { "aria-live": "polite", "aria-atomic": "true" } });
   const explanation = element("p", { className: "dynamic-flow-explanation", text: scenarios[mode].message });
   const motionState = element("span", { className: "dynamic-flow-motion-state", text: "动态运行中" });
-  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
 
   function routeData(indices, y) {
     return indices.map((index, step) => `${step === 0 ? "M" : "L"} ${nodeX[index]} ${y}`).join(" ");
@@ -523,7 +597,6 @@ function requestFlowVisualizer(element) {
     motionState.textContent = "动态运行中";
     frameHandle = requestAnimationFrame(tick);
   }
-  play.addEventListener("click", () => { if (running) pause(); else start(); });
   reset.addEventListener("click", () => {
     elapsed = 0;
     lastFrame = 0;
@@ -538,12 +611,12 @@ function requestFlowVisualizer(element) {
   });
 
   root = element("section", { className: "learning-visualizer learning-visualizer-dynamic", attrs: {
-    "aria-labelledby": "architecture-dynamic-title",
+    "aria-labelledby": `${instanceId}-title`,
   } }, [
     element("div", { className: "learning-visualizer-heading" }, [
       element("div", {}, [
-        element("span", { className: "learning-visualizer-kicker", text: "LIVE ARCHITECTURE · 01" }),
-        element("h3", { text: "看一笔请求如何穿过系统架构", attrs: { id: "architecture-dynamic-title" } }),
+        element("span", { className: "learning-visualizer-kicker", text: "动态模拟 · 01" }),
+        element("h3", { text: "看一笔请求如何穿过系统架构", attrs: { id: `${instanceId}-title` } }),
         element("p", { text: "图中的请求包和响应包会沿连线持续移动。切换场景，观察缓存如何缩短路径，以及服务故障后请求如何改道。" }),
       ]),
       element("span", { className: "learning-visualizer-badge", text: "实时数据流模拟" }),
@@ -566,14 +639,8 @@ function requestFlowVisualizer(element) {
     element("div", { className: "dynamic-flow-concepts" }, ["系统边界", "关键元素", "元素关系", "外部环境", "设计原则"].map((label) => element("span", { text: label }))),
   ]);
   setMode(mode);
-  if (reducedMotion) {
-    running = false;
-    play.textContent = "播放动画";
-    play.setAttribute("aria-pressed", "false");
-    motionState.textContent = "系统已减少动态效果；可手动播放";
-  } else {
-    start();
-  }
+  const motion = bindMotionLifecycle(root, { start, pause, status: motionState, isRunning: () => running });
+  play.addEventListener("click", motion.toggle);
   return root;
 }
 
@@ -582,7 +649,6 @@ function architectureOverviewVisualizer(element) {
 }
 
 function lambdaStreamVisualizer(element) {
-  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
   let running = false;
   let frameHandle = null;
   let lastFrame = 0;
@@ -590,6 +656,7 @@ function lambdaStreamVisualizer(element) {
   let speedFactor = 1;
   let mode = "stream";
   let root = null;
+  const instanceId = nextVisualizerId("lambda-stream");
   const diagram = svgElement("svg", {
     class: "lambda-live-svg", viewBox: "0 0 860 330", role: "group",
     "aria-label": "Lambda 架构实时数据沿速度层、历史数据沿批处理层，两路结果汇合到服务层",
@@ -600,11 +667,11 @@ function lambdaStreamVisualizer(element) {
     marker.append(svgElement("path", { d: "M 0 0 L 10 5 L 0 10 z", fill: color }));
     defs.append(marker);
   };
-  addMarker("lambda-live-speed-arrow", "#25866a");
-  addMarker("lambda-live-batch-arrow", "#c18a32");
+  addMarker(`${instanceId}-speed-arrow`, "#25866a");
+  addMarker(`${instanceId}-batch-arrow`, "#c18a32");
   diagram.append(defs);
   const route = (className, d, color) => {
-    const path = svgElement("path", { class: className, d, stroke: color, "marker-end": className.includes("batch") ? "url(#lambda-live-batch-arrow)" : "url(#lambda-live-speed-arrow)" });
+    const path = svgElement("path", { class: className, d, stroke: color, "marker-end": className.includes("batch") ? `url(#${instanceId}-batch-arrow)` : `url(#${instanceId}-speed-arrow)` });
     diagram.append(path);
     return path;
   };
@@ -636,8 +703,8 @@ function lambdaStreamVisualizer(element) {
   };
   const streamPackets = [packet("is-speed"), packet("is-speed is-secondary")];
   const batchPackets = [packet("is-batch"), packet("is-batch is-secondary"), packet("is-batch is-tertiary")];
-  const modeStream = element("button", { className: "lambda-live-scene is-selected", text: "新事件持续到达", attrs: { type: "button", "aria-pressed": "true" } });
-  const modeReplay = element("button", { className: "lambda-live-scene", text: "历史数据重算", attrs: { type: "button", "aria-pressed": "false" } });
+  const modeStream = element("button", { className: "dynamic-flow-scene", text: "新事件持续到达", attrs: { type: "button", "aria-pressed": "true" } });
+  const modeReplay = element("button", { className: "dynamic-flow-scene", text: "历史数据重算", attrs: { type: "button", "aria-pressed": "false" } });
   const play = element("button", { className: "dynamic-flow-control is-primary", text: "暂停动画", attrs: { type: "button", "aria-pressed": "true" } });
   const reset = element("button", { className: "dynamic-flow-control", text: "重置", attrs: { type: "button" } });
   const speedSelect = element("select", { className: "dynamic-flow-speed", attrs: { "aria-label": "Lambda 数据流播放速度" } }, [
@@ -727,16 +794,15 @@ function lambdaStreamVisualizer(element) {
   }
   modeStream.addEventListener("click", () => setMode("stream"));
   modeReplay.addEventListener("click", () => setMode("rebuild"));
-  play.addEventListener("click", () => { if (running) pause(); else start(); });
   reset.addEventListener("click", () => { elapsed = 0; lastFrame = 0; updateFrame(0); });
   speedSelect.addEventListener("change", () => { speedFactor = Number(speedSelect.value) || 1; lastFrame = 0; updateFrame(elapsed); });
   root = element("section", { className: "learning-visualizer learning-visualizer-dynamic learning-visualizer-lambda-live", attrs: {
-    "aria-labelledby": "lambda-live-title",
+    "aria-labelledby": `${instanceId}-title`,
   } }, [
     element("div", { className: "learning-visualizer-heading" }, [
       element("div", {}, [
-        element("span", { className: "learning-visualizer-kicker", text: "LIVE DATA FLOW · 02" }),
-        element("h3", { text: "Lambda 架构：实时流和历史批次如何汇合？", attrs: { id: "lambda-live-title" } }),
+        element("span", { className: "learning-visualizer-kicker", text: "动态模拟 · 02" }),
+        element("h3", { text: "Lambda 架构：实时流和历史批次如何汇合？", attrs: { id: `${instanceId}-title` } }),
         element("p", { text: "绿色事件包持续穿过速度层，琥珀色批次包沿批处理层移动，两路数据最终进入服务层。" }),
       ]),
       element("span", { className: "learning-visualizer-badge", text: "双路径动态模拟" }),
@@ -757,15 +823,10 @@ function lambdaStreamVisualizer(element) {
     element("p", { className: "dynamic-flow-boundary", text: "动画用于解释 Lambda 的双路径职责，不代表固定的计算引擎、批次大小或刷新周期。实际系统还需要定义结果合并、去重、覆盖顺序和一致性规则。" }),
   ]);
   setMode(mode);
-  if (reducedMotion) {
-    play.textContent = "播放动画";
-    play.setAttribute("aria-pressed", "false");
-    status.textContent = "系统已减少动态效果；可手动播放";
-  } else start();
+  const motion = bindMotionLifecycle(root, { start, pause, status, isRunning: () => running });
+  play.addEventListener("click", motion.toggle);
   return root;
 }
-
-let courseMotionSequence = 0;
 
 function courseMotionVisualizer(element, config) {
   let mode = config.defaultMode || Object.keys(config.modes || {})[0] || "default";
@@ -776,7 +837,7 @@ function courseMotionVisualizer(element, config) {
   let speedFactor = 1;
   let selectedNode = 0;
   let root = null;
-  const prefix = "course-motion-" + (++courseMotionSequence);
+  const prefix = nextVisualizerId("course-motion");
   const diagram = svgElement("svg", {
     class: "course-motion-svg",
     viewBox: config.viewBox || "0 0 900 300",
@@ -912,6 +973,7 @@ function courseMotionVisualizer(element, config) {
   function updateNodeDetail() {
     const node = config.nodes[selectedNode];
     nodeButtons.forEach((button, index) => button.setAttribute("aria-pressed", String(index === selectedNode)));
+    nodeRecords.forEach(({ group }, index) => group.classList.toggle("is-selected", index === selectedNode));
     detailStep.textContent = `模块 ${selectedNode + 1} / ${config.nodes.length}`;
     detailTitle.textContent = node.title;
     detailText.textContent = node.detail || node.short || "";
@@ -992,7 +1054,6 @@ function courseMotionVisualizer(element, config) {
     motionState.textContent = "动态运行中";
     frameHandle = requestAnimationFrame(tick);
   }
-  play.addEventListener("click", () => { if (running) pause(); else start(); });
   reset.addEventListener("click", () => { elapsed = 0; lastFrame = 0; updateFrame(0); });
   speed.addEventListener("change", () => { speedFactor = Number(speed.value) || 1; lastFrame = 0; updateFrame(elapsed); });
 
@@ -1001,7 +1062,7 @@ function courseMotionVisualizer(element, config) {
   } }, [
     element("div", { className: "learning-visualizer-heading" }, [
       element("div", {}, [
-        element("span", { className: "learning-visualizer-kicker", text: config.kicker || "MOVING CONCEPT · LIVE" }),
+        element("span", { className: "learning-visualizer-kicker", text: config.kicker || "动态模拟 · 架构关系" }),
         element("h3", { text: config.title, attrs: { id: prefix + "-title" } }),
         element("p", { text: config.subtitle || "图中的数据粒子持续沿真实连线移动；暂停、调速或切换场景观察架构关系。" }),
       ]),
@@ -1028,10 +1089,8 @@ function courseMotionVisualizer(element, config) {
   updateNodeDetail();
   if (config.modes) setMode(mode);
   else updateFrame(0);
-  const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-  if (reducedMotion) {
-    motionState.textContent = "系统已减少动态效果；可手动播放";
-  } else start();
+  const motion = bindMotionLifecycle(root, { start, pause, status: motionState, isRunning: () => running });
+  play.addEventListener("click", motion.toggle);
   return root;
 }
 
@@ -1351,14 +1410,53 @@ export function learningVisualizerLibraryNode(currentUnit, element) {
       id: "19.3.3", chapter: 19, chapterTitle: "大数据架构",
       title: "Lambda 架构分层", coreKnowledge: "理解批处理层、速度层和服务层的职责与数据流。",
     },
-  ].filter((item) => item.id !== String(currentUnit?.id ?? ""));
+  ].sort((left, right) => left.chapter - right.chapter || left.id.localeCompare(right.id, undefined, { numeric: true }))
+    .filter((item) => item.id !== String(currentUnit?.id ?? ""));
   if (!examples.length) return null;
-  return element("details", { className: "learning-visualizer-library" }, [
-    element("summary", { text: "知识可视化图解与互动实验 · " + examples.length + " 个专题" }),
+  const visualizers = examples.map((unit) => {
+    const root = learningVisualizerNode(unit, element);
+    if (!root) return null;
+    root.id = nextVisualizerId("visualizer-topic");
+    root.dataset.visualizerUnit = unit.id;
+    root.querySelector("h3")?.setAttribute("tabindex", "-1");
+    return root;
+  }).filter(Boolean);
+  let library;
+  let activeTopic = -1;
+  const topicButtons = examples.map((unit, index) => {
+    const button = element("button", { className: "learning-visualizer-topic-link", attrs: {
+      type: "button", "aria-controls": visualizers[index].id,
+    } }, [
+      element("span", { className: "learning-visualizer-topic-index", text: String(index + 1).padStart(2, "0") }),
+      element("span", { className: "learning-visualizer-topic-copy" }, [
+        element("strong", { text: unit.title }),
+        element("small", { text: `第 ${unit.chapter} 章 · ${unit.id}` }),
+      ]),
+    ]);
+    button.addEventListener("click", () => {
+      library.open = true;
+      activeTopic = index;
+      topicButtons.forEach((item, itemIndex) => {
+        if (itemIndex === activeTopic) item.setAttribute("aria-current", "location");
+        else item.removeAttribute("aria-current");
+      });
+      const target = visualizers[index];
+      const reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+      requestAnimationFrame(() => {
+        target.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth", block: "start" });
+        target.querySelector("h3")?.focus({ preventScroll: true });
+      });
+    });
+    return button;
+  });
+  library = element("details", { className: "learning-visualizer-library" }, [
+    element("summary", { text: "专题导航与动态图解 · " + examples.length + " 个专题" }),
     element("p", {
-    className: "learning-visualizer-library-intro",
-      text: "架构专题中的请求包、响应包、决策流、安全事件和批流粒子会沿 SVG 连线持续移动；可靠性实验会按运行权重分流样本，并展示成功 / 失效结果。可暂停、调速、切换场景或调整参数，自选探索不会推进课程进度，也不会生成答题记录。",
+      className: "learning-visualizer-library-intro",
+      text: "先从专题导航跳到想看的图。图解进入视口时才自动播放，滚离视口或切到后台会自动暂停；手动暂停会保留。可切换场景、调速、调整参数并点击模块查看考试要点。自选探索不会推进课程进度，也不会生成答题记录。",
     }),
-    ...examples.map((unit) => learningVisualizerNode(unit, element)),
+    element("nav", { className: "learning-visualizer-topic-nav", attrs: { "aria-label": "知识可视化专题导航" } }, topicButtons),
+    ...visualizers,
   ]);
+  return library;
 }
