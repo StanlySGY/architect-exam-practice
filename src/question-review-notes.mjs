@@ -34,6 +34,34 @@ const NOTES = Object.freeze({
     boundary:
       "这是本地学习提示，不是官方真题出处证明，也不是整题答案的人工批准。题目仍标记为模拟题；答案核验状态仍为 not-established。不要把 NASA 各文档的定义推广成所有行业/标准通用的唯一术语口径。",
   }),
+  "real-2020年下半年-003": Object.freeze({
+    sourceType: "real",
+    answerVerification: "calculation-only",
+    humanSignOff: false,
+    title: "位示图容量：GB/MB 的十进制与二进制口径",
+    label: "答案依赖未明示的单位假设",
+    summary:
+      "题库解析按 1 GB=1024 MB、1 MB=1024 KB 计算得到 2400 个字，和选项 A 一致；但题干只写 GB、MB，没有声明二进制约定。SI 前缀 G/M 是十进制，IEC 二进制前缀应写 Gi/Mi。",
+    points: [
+      "按题库解析采用的二进制约定：块数 = 300×1024/4 = 76800；每块 1 bit，32 bit/字，因此 76800/32 = 2400 个字。",
+      "按 SI 十进制 GB/MB：300 GB ÷ 4 MB = 75000 个块，需要 75000 bit；32 bit/字并向上取整，位示图需 2344 个字。该结果不在给出的选项中。",
+      "BIPM 的 SI 前缀表定义 G=10^9、M=10^6；NIST 对 IEC 二进制前缀区分 Ki=2^10、Mi=2^20、Gi=2^30，并明确区分 1 MB=10^6 B 与 1 MiB=2^20 B。",
+    ],
+    takeaway:
+      "现有选项强烈暗示出题者意图使用二进制容量换算，所以 A=2400 可在该约定下复算成立；但不能把 GB/MB 本身教成 1024 进制。严谨题干应写 GiB/MiB，或明确声明本题使用 1 GB=1024 MB 的历史约定。",
+    references: [
+      {
+        label: "BIPM — SI prefixes（G=10^9、M=10^6）",
+        url: "https://www.bipm.org/en/measurement-units/si-prefixes",
+      },
+      {
+        label: "NIST — Definitions of the SI units: The binary prefixes（Ki/Mi/Gi 与 MB/GB 对照）",
+        url: "https://physics.nist.gov/cuu/Units/binary.html",
+      },
+    ],
+    boundary:
+      "题库将该条标记为历年真题，但本提示不验证原卷版本或题面转录授权；第三方解析的选项答案仍不等同于官方答案认证。这里仅复算两套单位约定下的结果，答案核验状态为 calculation-only，且没有人工签核。",
+  }),
 });
 
 export function questionReviewNoteFor(questionId) {

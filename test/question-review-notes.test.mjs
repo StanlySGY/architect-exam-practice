@@ -28,7 +28,21 @@ test("question review notes return defensive copies and are absent for unrelated
   const secondRead = questionReviewNoteFor("mock-2026年5月-模拟卷5-002");
   assert.equal(secondRead.points.includes("local mutation"), false);
   assert.notEqual(secondRead.references[0].label, "changed");
-  assert.equal(questionReviewNoteFor("real-2020年下半年-003"), null);
+  assert.equal(questionReviewNoteFor("real-2022年下半年-015"), null);
+});
+
+test("bitmap note distinguishes SI decimal units from IEC binary units without treating the assumption as official fact", () => {
+  const note = questionReviewNoteFor("real-2020年下半年-003");
+  assert.ok(note);
+  assert.match(note.title, /GB\/MB/);
+  assert.equal(note.sourceType, "real");
+  assert.equal(note.answerVerification, "calculation-only");
+  assert.equal(note.humanSignOff, false);
+  assert.ok(note.points.some((item) => item.includes("76800/32 = 2400")));
+  assert.ok(note.points.some((item) => item.includes("2344 个字")));
+  assert.ok(note.references.some((item) => item.url.includes("bipm.org")));
+  assert.ok(note.references.some((item) => item.url.includes("physics.nist.gov")));
+  assert.match(note.boundary, /不验证原卷版本/);
 });
 
 test("MTBF source register preserves three versioned NASA references and remains unsigned", () => {
@@ -44,4 +58,19 @@ test("MTBF source register preserves three versioned NASA references and remains
   assert.match(handbook.supports, /MTTF\/\(MTTF\+MTTR\)/);
   assert.match(handbook.supports, /MTBF\/\(MTBF\+MDT\)/);
   assert.match(handbook.limitations, /convenience reference/);
+});
+
+test("bitmap source register preserves the 2026-11-04 BIPM and NIST unit-prefix checks", () => {
+  const register = JSON.parse(readFileSync(new URL("../docs/audits/bank-claim-evidence-register-2026-10-13.json", import.meta.url), "utf8"));
+  const record = register.records.find((item) => item.recordId === "bitmap-block-count-binary-prefix-assumption");
+  assert.ok(record);
+  assert.equal(record.lastReviewedOn, "2026-11-04");
+  assert.equal(record.answerVerification, "calculation-only");
+  const bipm = record.sourceEvidence.find((item) => item.url.includes("bipm.org"));
+  const nist = record.sourceEvidence.find((item) => item.url.includes("physics.nist.gov"));
+  assert.ok(bipm && nist);
+  assert.equal(bipm.checkedOn, "2026-11-04");
+  assert.equal(nist.checkedOn, "2026-11-04");
+  assert.match(bipm.supports, /10\^9.*10\^6/);
+  assert.match(nist.supports, /MiB=2\^20.*MB=10\^6/);
 });

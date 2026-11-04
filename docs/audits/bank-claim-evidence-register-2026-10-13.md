@@ -77,7 +77,7 @@
 
 ## 续查批次：位示图单位约定与 CPU 计算复核（2026-10-13）
 
-- `bitmap-block-count-binary-prefix-assumption`：300GB 磁盘、4MB 物理块的位示图答案 2,400 字，在 1GB=1,024MB 的二进制换算约定下算术成立。BIPM 的 SI 前缀中 G=10⁹、M=10⁶；NIST 另列出 Gi/Mi 等二进制前缀。因此题目省略单位约定会产生歧义，应在解析明确写出采用的换算规则。来源：[BIPM — SI prefixes](https://www.bipm.org/en/measurement-units/si-prefixes)、[NIST — binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)。
+- `bitmap-block-count-binary-prefix-assumption`：300GB 磁盘、4MB 物理块的位示图答案 2,400 字，在 1GB=1,024MB 的二进制换算约定下算术成立；若按 SI 十进制 GB/MB，则为 75,000 个块，位图需 75,000 bit，向上取整为 2,344 个 32 位字，题面给出的选项不包含该值。BIPM 的 SI 前缀中 G=10⁹、M=10⁶；NIST 列出 Ki/Mi/Gi 等二进制前缀并明确与 KB/MB/GB 区分。因此题目省略单位约定会产生歧义，应在题干或解析明确写出采用的换算规则。来源：[BIPM — SI prefixes](https://www.bipm.org/en/measurement-units/si-prefixes)、[NIST — binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)。
 - `cpu-clock-cycle-time-calculation`：6×10⁹ 个周期 ÷ 2.4×10⁹ 周期/秒 = 2.5 秒，算术和量纲一致；该计算仅复核题面给定值，不验证周期数来源或实际程序运行时间。
 
 ## 续查批次：Kafka Consumer 默认参数版本差异（2026-10-13）

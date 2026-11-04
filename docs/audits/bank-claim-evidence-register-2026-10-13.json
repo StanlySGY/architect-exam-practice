@@ -915,6 +915,7 @@
       "recordId": "bitmap-block-count-binary-prefix-assumption",
       "disposition": "assumption-sensitive-calculation",
       "topic": "Bitmap block count depends on binary versus SI storage units",
+      "lastReviewedOn": "2026-11-04",
       "targets": [
         {
           "itemId": "real-2020年下半年-003",
@@ -938,18 +939,18 @@
           "title": "SI prefixes",
           "publisher": "Bureau International des Poids et Mesures (BIPM)",
           "sourceKind": "government-standard-guidance",
-          "checkedOn": "2026-10-13",
-          "supports": "The SI prefixes giga (G) and mega (M) represent decimal factors 10^9 and 10^6, respectively.",
-          "limitations": "This defines SI decimal prefixes; it does not determine the unstated unit convention intended by an older Chinese exam question."
+          "checkedOn": "2026-11-04",
+          "supports": "BIPM's current SI prefix table defines giga (G) as 10^9 and mega (M) as 10^6.",
+          "limitations": "This defines SI decimal prefixes; it does not determine the unstated unit convention intended by the older Chinese exam question."
         },
         {
           "url": "https://physics.nist.gov/cuu/Units/binary.html",
           "title": "Definitions of the SI units: The binary prefixes",
           "publisher": "National Institute of Standards and Technology (NIST)",
           "sourceKind": "government-standard-guidance",
-          "checkedOn": "2026-10-13",
-          "supports": "NIST describes IEC binary prefixes such as Ki, Mi and Gi for powers of 2; for example 1 GiB = 2^30 bytes, while 1 GB = 10^9 bytes.",
-          "limitations": "This clarifies unit notation, not the exam author's intended convention. The multiple-choice options indicate the intended calculation uses 1 GB = 1024 MB."
+          "checkedOn": "2026-11-04",
+          "supports": "NIST lists IEC binary prefixes Ki=2^10, Mi=2^20 and Gi=2^30; it explicitly distinguishes 1 MiB=2^20 bytes from 1 MB=10^6 bytes, and 1 GiB=2^30 bytes from 1 GB=10^9 bytes.",
+          "limitations": "This clarifies standardized unit notation and common historical ambiguity; it does not determine the exam author's intended convention. The multiple-choice options strongly suggest the intended calculation uses binary multiples despite the GB/MB symbols."
         }
       ],
       "conclusion": "按题目常见的二进制换算约定，300×1024/4=76,800 个物理块，每块需要 1 位，32 位一字，因此 76,800/32=2,400 字，选项 A 与该约定一致。严格按 SI 十进制 GB/MB 计算则块数为 75,000，位示图需要向上取整至 2,344 个 32 位字；题干没有明示单位约定，因此这是约定敏感题而非纯粹无条件的算术结论。",
