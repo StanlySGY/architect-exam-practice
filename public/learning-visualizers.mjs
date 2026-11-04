@@ -224,9 +224,285 @@ function lambdaArchitectureLab(element) {
     ]),
   ]);
 }
+function makeConceptVisualizer(element, config) {
+  let active = 0;
+  const detailStep = element("span", { className: "learning-concept-detail-step" });
+  const detailTitle = element("strong", { className: "learning-concept-detail-title" });
+  const detail = element("p", { className: "learning-concept-detail-text" });
+  const focus = element("small", { className: "learning-concept-detail-focus" });
+  const nodes = config.nodes.map((node, index) => {
+    const button = element("button", { className: "learning-concept-node", attrs: {
+      type: "button", "aria-pressed": String(index === 0),
+      "aria-label": "查看 " + node.title + " 的解释",
+    } }, [
+      element("span", { className: "learning-concept-node-index", text: String(index + 1).padStart(2, "0") }),
+      element("strong", { text: node.title }),
+      element("small", { text: node.short }),
+    ]);
+    button.addEventListener("click", () => { active = index; update(); });
+    return button;
+  });
+  function update() {
+    const node = config.nodes[active];
+    nodes.forEach((button, index) => {
+      button.classList.toggle("is-active", index === active);
+      button.setAttribute("aria-pressed", String(index === active));
+    });
+    detailStep.textContent = "知识点 " + (active + 1) + " / " + config.nodes.length;
+    detailTitle.textContent = node.title;
+    detail.textContent = node.detail;
+    focus.textContent = node.focus;
+  }
+  const flow = element("div", { className: "learning-concept-flowline", attrs: {
+    role: "img", "aria-label": config.flowLabel,
+  } }, config.flow.flatMap((label, index) => [
+    ...(index ? [element("span", { className: "learning-concept-flow-arrow", text: config.separator || "→", attrs: { "aria-hidden": "true" } })] : []),
+    element("span", { className: "learning-concept-flow-step", text: label }),
+  ]));
+  update();
+  return element("section", { className: "learning-visualizer learning-visualizer-concept", attrs: {
+    "aria-labelledby": config.titleId,
+  } }, [
+    element("div", { className: "learning-visualizer-heading" }, [
+      element("div", {}, [
+        element("span", { className: "learning-visualizer-kicker", text: config.kicker }),
+        element("h3", { text: config.title, attrs: { id: config.titleId } }),
+        element("p", { text: config.subtitle }),
+      ]),
+      element("span", { className: "learning-visualizer-badge", text: config.badge }),
+    ]),
+    element("div", { className: "learning-concept-flow-wrap" }, [
+      element("span", { className: "learning-concept-overline", text: config.flowHeading || "知识关系主线" }),
+      flow,
+    ]),
+    element("div", { className: "learning-concept-node-grid", attrs: {
+      role: "group", "aria-label": config.nodeGroupLabel,
+    } }, nodes),
+    element("div", { className: "learning-concept-detail", attrs: { "aria-live": "polite", "aria-atomic": "true" } }, [
+      detailStep, detailTitle, detail, focus,
+    ]),
+    element("div", { className: "learning-concept-boundary" }, [
+      element("strong", { text: config.boundaryTitle || "理解边界" }),
+      element("p", { text: config.boundary }),
+    ]),
+  ]);
+}
+
+function architectureOverviewVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "architecture-overview-visual-title", kicker: "VISUAL EXPLAINER · 01",
+    title: "系统架构到底在描述什么？",
+    subtitle: "从系统边界出发，识别主要元素、关系、环境和设计原则。点击每个要素，理解它对架构设计的作用。",
+    badge: "教材样章支持核心定义",
+    flowLabel: "系统架构描述的五个要素",
+    flow: ["系统边界", "关键元素", "元素关系", "外部环境", "设计原则"],
+    nodeGroupLabel: "系统架构五个描述要素",
+    nodes: [
+      { title: "系统边界", short: "先明确研究对象", detail: "说明系统要解决什么问题、包含哪些职责，以及与哪些外部系统或参与者交互。边界不清，组件、接口和责任划分就容易混乱。", focus: "看题先圈定范围：讨论的是整个业务系统、子系统，还是一个部署单元？" },
+      { title: "关键元素", short: "识别主要组成", detail: "识别构成系统基本组织的主要元素，并说明各自承担什么职责。先按职责理解元素，再讨论使用何种框架、语言或产品实现。", focus: "不要只堆技术名词，要写清每个元素负责什么。" },
+      { title: "元素关系", short: "解释如何协作", detail: "描述元素之间的调用、依赖、消息传递、数据交换或协作约束。关系会影响运行行为、故障传播和变更范围。", focus: "架构图的箭头必须有含义：方向代表什么、传递什么、由谁发起？" },
+      { title: "外部环境", short: "放回真实上下文", detail: "用户、外部系统、组织流程、运行环境和约束都会影响架构选择，也可能成为接口、安全或可用性风险来源。", focus: "把外部参与者和边界外依赖标出来，避免内外职责混淆。" },
+      { title: "设计原则", short: "约束设计与演化", detail: "架构还包含指导设计和后续演化的原则，帮助团队在局部变化时维持整体方向；原则本身也要接受目标、约束和质量属性检验。", focus: "说明为什么选择这种组织方式，它支持什么目标，又牺牲了什么。" },
+    ],
+    boundary: "本图依据教材样章支持的架构基本组织核心描述整理，是概念框架，不是某一系统的部署图。架构也不等于一张图、某个框架或中间件。",
+  });
+}
+
+function architectureDesignFlowVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "architecture-design-flow-title", kicker: "VISUAL EXPLAINER · 02",
+    title: "架构设计不是先选技术栈：决策链应该这样走",
+    subtitle: "把需求、架构驱动因素、设计策略、职责分配、迭代和复审连起来，观察每一步如何约束下一步。",
+    badge: "课程内容 + SEI 方法边界",
+    flowLabel: "架构设计决策链",
+    flow: ["需求与约束", "架构驱动因素", "设计策略", "职责与接口", "迭代分解", "评估复审"],
+    nodeGroupLabel: "架构设计决策阶段",
+    nodes: [
+      { title: "需求与约束", short: "功能 / 质量 / 外部条件", detail: "同时收集功能需求、质量属性需求、外部约束，以及已有资产、技术和组织因素。性能、安全、成本和交付时间不能被功能清单替代。", focus: "常见失分点：只抄业务功能，不识别质量属性和外部约束。" },
+      { title: "架构驱动因素", short: "筛选真正影响结构的要求", detail: "从输入中识别对系统结构和关键决策影响最大的因素，明确优先级、冲突和假设。它们决定设计要优先解决什么。", focus: "把题干中的高风险质量场景和硬约束提炼为驱动因素。" },
+      { title: "设计策略", short: "模式 / 风格 / 战术", detail: "围绕驱动因素选择候选架构风格、设计概念、模式或策略，并解释其如何回应需求。策略是候选决策，不是脱离上下文的标准答案。", focus: "写清“因为哪个约束，所以采用哪项策略”，不要先定技术再找理由。" },
+      { title: "职责与接口", short: "元素 / 连接件 / 部署", detail: "识别架构元素和连接方式，为元素分配职责，定义接口、交互和必要的部署边界，再检查跨组件约束。", focus: "把策略落到可检查的结构：谁负责、如何交互、边界在哪里。" },
+      { title: "迭代分解", short: "递归细化高风险部分", detail: "架构设计是迭代和风险驱动的过程。对尚未解决的部分继续分解、做原型或验证关键机制，再根据反馈修订设计。", focus: "不是一次画完；要针对不确定性和高风险点逐步细化。" },
+      { title: "评估与复审", short: "验证需求并记录取舍", detail: "检查架构是否回应驱动因素，识别风险、敏感点和权衡点；通过复审、原型和测试证据反馈设计，并记录决策理由。", focus: "案例答题可按“需求—决策—机制—风险—验证”形成闭环。" },
+    ],
+    boundary: "本图概括当前课程单元与 SEI Attribute-Driven Design 的共同主线；不代表所有项目必须采用完全相同的阶段名称、顺序或工具。",
+  });
+}
+
+function qualityScenarioVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "quality-scenario-visual-title", kicker: "VISUAL EXPLAINER · 03",
+    title: "把“系统要高性能”拆成能评估的质量属性场景",
+    subtitle: "质量属性场景把模糊形容词变成可分析的六个要素。选择一个要素，看看它回答什么问题。",
+    badge: "SEI 支持场景化方法",
+    flowLabel: "质量属性场景六要素",
+    flow: ["刺激源", "刺激", "环境", "制品", "响应", "响应度量"],
+    nodeGroupLabel: "质量属性场景的六个要素",
+    nodes: [
+      { title: "刺激源", short: "谁或什么发起？", detail: "说明刺激来自哪个参与者、外部系统、设备或内部事件。来源不同，负载模式和响应责任也可能不同。", focus: "追问：是谁触发了这个要求？" },
+      { title: "刺激", short: "具体发生了什么？", detail: "描述触发系统关注的事件，例如请求到达、节点故障、配置变更或未经授权的访问尝试。不要只写“性能变差”这样的结果词。", focus: "把事件写成可观察、可复现的动作。" },
+      { title: "环境", short: "在什么条件下？", detail: "说明刺激发生时系统处于何种状态，例如正常运行、高峰负载、降级运行或维护窗口。相同刺激在不同环境下可能要求不同响应。", focus: "遗漏环境条件，会让测试无法复现，也让方案比较失去前提。" },
+      { title: "制品", short: "影响系统的哪一部分？", detail: "指出受到刺激的系统对象，例如服务、数据存储、网络链路、部署节点或业务流程。范围越清晰，越容易把场景对应到架构决策。", focus: "把属性要求落到实际受影响的架构元素。" },
+      { title: "响应", short: "系统应该如何表现？", detail: "描述系统在该条件下应采取的动作或可观察结果，例如完成请求、隔离故障、维持核心功能或拒绝越权操作。", focus: "响应要能被验证，不要只写“保持稳定”“确保安全”。" },
+      { title: "响应度量", short: "如何判定达标？", detail: "为响应定义可测量的指标、阈值或检查方法。具体数值必须来自业务目标、合同、标准或项目约束，不能由图解随意编造。", focus: "没有度量口径，就难以比较方案或证明架构满足要求。" },
+    ],
+    boundary: "六要素是通用场景拆解框架。页面没有替你设定性能阈值或可用性目标；实际数值必须来自题干、需求或可核验来源。",
+  });
+}
+
+function layeredArchitectureVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "layered-architecture-visual-title", kicker: "VISUAL EXPLAINER · 04",
+    title: "分层架构：每一层既提供服务，也依赖下一层",
+    subtitle: "从上到下跟踪一次请求，再反向理解结果返回。点击层名称查看职责与常见边界。",
+    badge: "课程图解 · 需结合教材",
+    flowHeading: "常见四层示意 · 请求向下，结果向上",
+    flowLabel: "分层架构常见四层",
+    flow: ["表现层", "中间层", "访问层", "数据层"],
+    nodeGroupLabel: "分层架构四个示意层",
+    nodes: [
+      { title: "表现层", short: "交互与输入输出", detail: "面向用户或调用方处理界面呈现、输入校验和交互组织，再将请求交给下层业务能力。", focus: "不要把页面展示逻辑和核心业务规则全部堆在表现层。" },
+      { title: "中间层", short: "业务规则与流程", detail: "承载主要业务规则、应用流程和服务编排，协调业务操作并向下层请求数据或持久化能力。", focus: "分层的关键是职责边界，不是必须采用某个具体框架。" },
+      { title: "访问层", short: "数据访问与适配", detail: "隔离业务逻辑与底层存储细节，封装查询、持久化或外部数据访问方式，便于替换和维护。", focus: "访问层不等于数据库本身，也不应把业务决策随意下沉。" },
+      { title: "数据层", short: "持久化与数据管理", detail: "负责数据持久化、组织和相关数据服务。具体实现可以是关系数据库、NoSQL 或其他存储，但选择应取决于数据与访问需求。", focus: "数据层是职责层，不是某个数据库产品的代名词。" },
+    ],
+    boundary: "四层只是常见示意，不是固定配置。课程导图指出层数可增减或合并；层数过多会带来调用、性能、可靠性和维护成本。",
+  });
+}
+
+function soaReferenceVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "soa-reference-visual-title", kicker: "VISUAL EXPLAINER · 05",
+    title: "SOA 参考架构：不是只有 ESB，而是一组协作服务",
+    subtitle: "六类服务承担不同职责。点击模块理解它提供什么能力，以及它和其他模块如何配合。",
+    badge: "课程导图 · 职责关系示意",
+    flowHeading: "六类服务职责并列，ESB 提供连接能力",
+    flowLabel: "SOA参考架构六类服务",
+    separator: "·",
+    flow: ["连接", "业务逻辑", "控制", "开发", "业务优化", "IT管理"],
+    nodeGroupLabel: "SOA参考架构六类服务",
+    nodes: [
+      { title: "连接服务", short: "ESB 与服务互联", detail: "通过消息、事件和服务连接完成注册发现、路由、转换、协议适配和安全等工作，使服务能够协作。", focus: "ESB 是中介连接能力，不等同于某一个具体产品。" },
+      { title: "业务逻辑服务", short: "封装业务能力", detail: "包括应用与信息访问、业务应用和伙伴服务，封装既有系统能力，并为新应用或外部伙伴提供可调用的业务服务。", focus: "判断服务边界时，回到业务能力和复用目标，而不只是拆分代码。" },
+      { title: "控制服务", short: "协调信息、流程和交互", detail: "通过信息服务、流程服务和交互服务组织数据整合、业务流程控制与用户访问。它负责协调，而不是取代所有业务逻辑。", focus: "把业务能力提供者和流程/交互协调者区分开。" },
+      { title: "开发服务", short: "支撑服务全生命周期", detail: "为建模、设计、实现和测试提供方法、组件与工具支持，帮助团队按统一方式构建和维护服务。", focus: "开发服务关注工程支撑，不是运行时业务请求的必经节点。" },
+      { title: "业务创新与优化", short: "监控并改进流程", detail: "通过业务流程管理和活动监控分析运行表现、发现瓶颈，推动流程改进和业务响应优化。", focus: "服务上线不是终点，还要观察效果并根据反馈持续优化。" },
+      { title: "IT 服务管理", short: "保障运行与治理", detail: "提供安全、目录、系统管理、资源虚拟化、监控、配置和运行保障等支撑能力。", focus: "治理和运维能力要纳入架构，而不是等上线后再补。" },
+    ],
+    boundary: "这是按课程导图整理的职责关系图，不代表所有 SOA 实现都必须照此固定拓扑部署。ESB 能力过度集中也可能形成性能瓶颈或单点风险。",
+  });
+}
+
+function wpdrRcVisualizer(element) {
+  return makeConceptVisualizer(element, {
+    titleId: "wpdrrc-visual-title", kicker: "VISUAL EXPLAINER · 06",
+    title: "WPDRRC：把安全工作看成持续反馈的闭环",
+    subtitle: "六个环节不是孤立名词：预警指导保护，检测触发响应，恢复与复盘再反馈到前面的策略。",
+    badge: "课程导图 · 六环节闭环",
+    flowLabel: "WPDRRC六个环节与反馈",
+    flow: ["W 预警", "P 保护", "D 检测", "R 响应", "R 恢复", "C 反击", "反馈到 W / P"],
+    nodeGroupLabel: "WPDRRC六个环节",
+    nodes: [
+      { title: "W · 预警 Warning", short: "监测风险信号", detail: "课程导图列出的工作包括资产监测、威胁情报、态势感知、风险评估和安全预警。预警信息帮助组织提前调整防护重点。", focus: "记忆关键词：监测、情报、态势、风险、预警。" },
+      { title: "P · 保护 Protect", short: "降低暴露与风险", detail: "课程导图列出的措施包括身份管理、访问控制、加密、隔离、加固、备份和安全策略。保护措施应对应具体资产和威胁。", focus: "记忆关键词：身份、权限、加密、隔离、加固、备份。" },
+      { title: "D · 检测 Detect", short: "发现异常与攻击", detail: "通过漏洞扫描、入侵检测、日志分析、行为分析和异常发现，识别防护措施未能阻止或新出现的风险。", focus: "检测不是响应本身；发现后还要研判并进入处置。" },
+      { title: "R · 响应 React", short: "研判并处置事件", detail: "课程导图列出的响应工作包括告警研判、隔离、阻断、取证、通报和应急处置。需要按事件影响和组织流程协调。", focus: "记忆关键词：研判、隔离、阻断、取证、通报、处置。" },
+      { title: "R · 恢复 Restore", short: "恢复业务与能力", detail: "包括故障修复、数据恢复、业务连续性、灾备切换和复盘改进。恢复之后还要检查业务是否真正回到可接受状态。", focus: "恢复不是简单重启服务，还要验证数据和业务连续性。" },
+      { title: "C · 反击 Counterattack", short: "阻断攻击链并强化防御", detail: "课程导图将其描述为追踪攻击来源、阻断攻击链、开展对抗和强化防御；所有操作都必须在法律允许和明确授权范围内。", focus: "特别注意合法性和授权边界，不能把反击解释为任意攻击第三方。" },
+    ],
+    boundary: "人员、策略、技术是模型的三大支撑要素，不是第七个环节。图中反馈关系用于表达持续改进；具体环节定义和考试表述仍以指定教材为准。",
+  });
+}
+
+function lambdaKappaComparisonVisualizer(element) {
+  const dimensions = [
+    { label: "处理路径", lambda: "批处理层与速度层两条路径并行，结果由服务层协调。", kappa: "统一使用流处理路径，历史数据通过事件重放进入同一处理逻辑。" },
+    { label: "代码维护", lambda: "同一业务逻辑可能在批处理和实时路径各实现一份，存在重复维护风险。", kappa: "处理逻辑更集中，但需要保证流处理逻辑能覆盖业务计算要求。" },
+    { label: "准确性", lambda: "批处理层可承担历史数据的最终重算；速度层结果可能是暂时或近似视图。", kappa: "依赖流语义、事件重放和状态一致性，不能因单路径就假设结果天然准确。" },
+    { label: "实时性", lambda: "速度层让近期事件更快可见，但需要处理两条路径结果衔接。", kappa: "数据路径更直接；实时表现仍取决于流引擎、状态和负载。" },
+    { label: "历史重算", lambda: "批处理层适合对历史数据进行全量或分区重算。", kappa: "依赖日志保留、可重放能力和流处理平台，历史回放可能带来成本。" },
+    { label: "复杂度", lambda: "批层、速度层和结果协调使基础设施及运维较复杂。", kappa: "路径和代码可以更统一，但对日志、重放、状态管理和流处理能力要求更高。" },
+  ];
+  let active = 0;
+  const detailLabel = element("span", { className: "learning-concept-detail-step" });
+  const lambdaText = element("p", {});
+  const kappaText = element("p", {});
+  const buttons = dimensions.map((item, index) => {
+    const button = element("button", { className: "learning-compare-dimension", text: item.label, attrs: {
+      type: "button", "aria-pressed": String(index === 0),
+    } });
+    button.addEventListener("click", () => { active = index; update(); });
+    return button;
+  });
+  const pill = (text, kind) => element("span", { className: "learning-compare-node " + kind, text });
+  function update() {
+    const item = dimensions[active];
+    buttons.forEach((button, index) => {
+      button.classList.toggle("is-active", index === active);
+      button.setAttribute("aria-pressed", String(index === active));
+    });
+    detailLabel.textContent = "比较维度 " + (active + 1) + " / " + dimensions.length + " · " + item.label;
+    lambdaText.textContent = item.lambda;
+    kappaText.textContent = item.kappa;
+  }
+  update();
+  return element("section", { className: "learning-visualizer learning-visualizer-comparison", attrs: {
+    "aria-labelledby": "lambda-kappa-compare-title",
+  } }, [
+    element("div", { className: "learning-visualizer-heading" }, [
+      element("div", {}, [
+        element("span", { className: "learning-visualizer-kicker", text: "VISUAL EXPLAINER · 07" }),
+        element("h3", { text: "Lambda 与 Kappa：差别在处理路径，不是名字", attrs: { id: "lambda-kappa-compare-title" } }),
+        element("p", { text: "先看两种架构的数据路径，再切换比较维度。考试中要把选择理由和业务约束对应起来。" }),
+      ]),
+      element("span", { className: "learning-visualizer-badge", text: "课程图解 · 对比选择" }),
+    ]),
+    element("div", { className: "learning-compare-architectures" }, [
+      element("div", { className: "learning-compare-architecture" }, [
+        element("div", { className: "learning-compare-heading" }, [element("strong", { text: "Lambda · 批流双路径" }), element("small", { text: "历史重算 + 低延迟补充" })]),
+        element("div", { className: "learning-compare-lambda-flow" }, [
+          pill("事件 / 数据", "is-source"),
+          element("div", { className: "learning-compare-branches" }, [pill("批处理层", "is-batch"), pill("速度层", "is-speed")]),
+          pill("服务层", "is-service"),
+        ]),
+        element("small", { className: "learning-compare-caption", text: "两路结果需要定义合并、去重和更新规则" }),
+      ]),
+      element("div", { className: "learning-compare-architecture" }, [
+        element("div", { className: "learning-compare-heading" }, [element("strong", { text: "Kappa · 单一流路径" }), element("small", { text: "实时处理 + 历史重放" })]),
+        element("div", { className: "learning-compare-kappa-flow" }, [
+          pill("事件日志 / 重放", "is-source"), pill("统一流处理", "is-speed"), pill("状态 / 查询视图", "is-service"),
+        ]),
+        element("small", { className: "learning-compare-caption", text: "依赖日志保留、重放能力与状态一致性" }),
+      ]),
+    ]),
+    element("div", { className: "learning-compare-selector" }, [
+      element("span", { className: "learning-concept-overline", text: "切换比较维度" }),
+      element("div", { className: "learning-compare-dimensions", attrs: { role: "group", "aria-label": "选择架构比较维度" } }, buttons),
+    ]),
+    element("div", { className: "learning-compare-detail", attrs: { "aria-live": "polite", "aria-atomic": "true" } }, [
+      detailLabel,
+      element("div", { className: "learning-compare-detail-columns" }, [
+        element("div", {}, [element("strong", { text: "Lambda" }), lambdaText]),
+        element("div", {}, [element("strong", { text: "Kappa" }), kappaText]),
+      ]),
+    ]),
+    element("div", { className: "learning-concept-boundary" }, [
+      element("strong", { text: "如何作选择" }),
+      element("p", { text: "按实时延迟、历史重算频率、日志保留与重放成本、处理逻辑是否可流化、结果一致性和团队能力综合判断。Kappa 并非天然更优；Lambda 也不是所有场景都需要。" }),
+    ]),
+  ]);
+}
+
 export function learningVisualizerNode(unit, element) {
   if (!unit || typeof element !== "function") return null;
   switch (String(unit.id)) {
+    case "1.1": return architectureOverviewVisualizer(element);
+    case "7.2.1": return architectureDesignFlowVisualizer(element);
+    case "8.1.3": return qualityScenarioVisualizer(element);
+    case "13.1": return layeredArchitectureVisualizer(element);
+    case "15.3": return soaReferenceVisualizer(element);
+    case "18.4.1": return wpdrRcVisualizer(element);
+    case "19.5": return lambdaKappaComparisonVisualizer(element);
     case "9.2.3.6": return inputDomainLab(element);
     case "9.2.3.7": return executionPathLab(element);
     case "19.3.3": return lambdaArchitectureLab(element);
@@ -237,6 +513,34 @@ export function learningVisualizerNode(unit, element) {
 export function learningVisualizerLibraryNode(currentUnit, element) {
   if (typeof element !== "function") return null;
   const examples = [
+    {
+      id: "1.1", chapter: 1, chapterTitle: "绪论",
+      title: "系统架构的五个描述要素", coreKnowledge: "从边界、元素、关系、环境和原则理解架构。",
+    },
+    {
+      id: "7.2.1", chapter: 7, chapterTitle: "系统架构设计基础知识",
+      title: "架构设计决策链", coreKnowledge: "把需求、架构驱动因素、策略、职责和复审连成闭环。",
+    },
+    {
+      id: "8.1.3", chapter: 8, chapterTitle: "系统质量属性与架构评估",
+      title: "质量属性场景六要素", coreKnowledge: "把抽象的质量要求转成可分析、可测试的场景。",
+    },
+    {
+      id: "13.1", chapter: 13, chapterTitle: "层次式架构设计理论与实践",
+      title: "分层架构职责与调用", coreKnowledge: "理解表现、中间、访问和数据层的职责边界。",
+    },
+    {
+      id: "15.3", chapter: 15, chapterTitle: "面向服务架构设计理论与实践",
+      title: "SOA 参考架构", coreKnowledge: "识别连接、业务逻辑、控制、开发、优化和 IT 管理服务。",
+    },
+    {
+      id: "18.4.1", chapter: 18, chapterTitle: "安全架构设计理论与实践",
+      title: "WPDRRC 安全闭环", coreKnowledge: "把预警、保护、检测、响应、恢复和反击连成反馈闭环。",
+    },
+    {
+      id: "19.5", chapter: 19, chapterTitle: "大数据架构设计理论与实践",
+      title: "Lambda / Kappa 架构对比", coreKnowledge: "围绕处理路径、实时性、重算和复杂度选择架构。",
+    },
     {
       id: "9.2.3.6", chapter: 9, chapterTitle: "软件可靠性基础知识",
       title: "输入域分类模型", coreKnowledge: "按输入类别的实际使用权重估计使用可靠性。",
@@ -252,10 +556,10 @@ export function learningVisualizerLibraryNode(currentUnit, element) {
   ].filter((item) => item.id !== String(currentUnit?.id ?? ""));
   if (!examples.length) return null;
   return element("details", { className: "learning-visualizer-library" }, [
-    element("summary", { text: "自选互动实验 · " + examples.length + " 个知识点" }),
+    element("summary", { text: "知识可视化图解与互动实验 · " + examples.length + " 个专题" }),
     element("p", {
       className: "learning-visualizer-library-intro",
-      text: "独立探索这些概念，不会推进课程进度，也不会生成答题记录。所有演示参数均标注其示例边界。",
+      text: "这些图解覆盖架构组成、设计决策、质量属性、分层、SOA、安全闭环与大数据架构。点击图中节点查看逐点解析；自选探索不会推进课程进度，也不会生成答题记录。",
     }),
     ...examples.map((unit) => learningVisualizerNode(unit, element)),
   ]);

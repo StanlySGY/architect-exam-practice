@@ -204,9 +204,22 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.ok(app.includes("learningVisualizerNode(unit, element)"));
   assert.ok(app.includes("learningVisualizerLibraryNode(unit, element)"));
   assert.ok(visualizers.includes("export function learningVisualizerLibraryNode"));
-  for (const id of ["9.2.3.6", "9.2.3.7", "19.3.3"]) assert.ok(visualizers.includes(`case "${id}"`));
+  for (const id of ["1.1", "7.2.1", "8.1.3", "13.1", "15.3", "18.4.1", "19.5", "9.2.3.6", "9.2.3.7", "19.3.3"]) {
+    assert.ok(visualizers.includes(`case "${id}"`), `missing visualizer mapping: ${id}`);
+  }
+  for (const title of ["系统架构到底在描述什么？", "架构设计不是先选技术栈", "质量属性场景", "分层架构：", "SOA 参考架构", "WPDRRC", "Lambda 与 Kappa"]) {
+    assert.ok(visualizers.includes(title), `missing knowledge visual: ${title}`);
+  }
+  assert.match(visualizers, /learning-concept-node-grid/);
+  assert.match(visualizers, /learning-compare-dimensions/);
+  assert.match(visualizers, /aria-pressed/);
+  assert.match(visualizers, /aria-atomic/);
+  assert.match(visualizers, /知识可视化图解与互动实验/);
   assert.match(visualizers, /自拟示例|非教材公式/);
   assert.match(visualizers, /aria-live/);
   assert.match(css, /\.learning-visualizer/);
+  assert.match(css, /\.learning-concept-flowline/);
+  assert.match(css, /\.learning-compare-architectures/);
+  assert.match(css, /@media\(max-width:680px\).*learning-concept-node-grid/s);
   assert.match(css, /prefers-reduced-motion/);
 });
