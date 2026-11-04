@@ -1100,3 +1100,12 @@ kbd{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 
 @media(max-width:760px){#home-view .learning-lab-layout{grid-template-columns:minmax(0,1fr)}#home-view .learning-lambda-diagram{grid-template-columns:minmax(0,1fr);gap:7px}#home-view .learning-lambda-arrow{transform:rotate(90deg);line-height:1}#home-view .learning-lambda-branches{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){#home-view .learning-visualizer{padding:17px}#home-view .learning-visualizer-heading{flex-direction:column;gap:9px}#home-view .learning-lab-results{grid-template-columns:minmax(0,1fr)}#home-view .learning-lab-data-row{grid-template-columns:minmax(0,1fr) 40px minmax(65px,auto);gap:7px}#home-view .learning-lambda-branches{grid-template-columns:minmax(0,1fr)}}
 @media(prefers-reduced-motion:reduce){#home-view .learning-lab-segment,#home-view .learning-lambda-node{transition:none}}
+
+#home-view .learning-visualizer-library{margin:0 28px 20px;border:1px solid var(--line);border-radius:11px;background:var(--surface-faint);overflow:hidden}
+#home-view .learning-visualizer-library>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;color:var(--ink);font-size:12px;font-weight:750;cursor:pointer;list-style:none}
+#home-view .learning-visualizer-library>summary::-webkit-details-marker{display:none}
+#home-view .learning-visualizer-library>summary:after{content:"展开实验";color:var(--accent-fg);font-size:10px;font-weight:700}
+#home-view .learning-visualizer-library[open]>summary:after{content:"收起实验"}
+#home-view .learning-visualizer-library-intro{margin:0;padding:0 16px 12px;color:var(--muted);font-size:10px;line-height:1.7}
+#home-view .learning-visualizer-library[open]>.learning-visualizer{margin:0 12px 12px}
+@media(max-width:620px){#home-view .learning-visualizer-library{margin:0 20px 17px}#home-view .learning-visualizer-library>summary{align-items:flex-start;flex-direction:column;gap:4px}}

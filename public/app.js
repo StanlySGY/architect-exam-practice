@@ -3,7 +3,7 @@ import { questionReviewNoteFor } from "/lib/question-review-notes.mjs";
 import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
 import { mountBeginnerRoadmap } from "/roadmap-ui.mjs";
-import { learningVisualizerNode } from "/learning-visualizers.mjs";
+import { learningVisualizerLibraryNode, learningVisualizerNode } from "/learning-visualizers.mjs";
 import { $, element, emptyMessage } from "/ui.js";
 import {
   AGENT_TASK_HISTORY_LIMIT,
@@ -1696,6 +1696,7 @@ function renderLearningPath(data) {
       ]),
       element("div", { className: "learning-content-status" }, [element("span", { className: "status-dot", attrs: { "aria-hidden": "true" } }), element("span", { text: "课程内容状态：" + (unit.contentStatus === "verified" ? "已核验" : unit.contentStatus === "partial" ? "部分核验，仍需教材复核" : "待补充与核验") })]),
     ]),
+    learningVisualizerLibraryNode(unit, element),
     element("div", { className: "learning-actions" }, [startButton, completeButton]),
     element("p", { className: "muted learning-disclaimer", text: data.disclaimer }),
   );

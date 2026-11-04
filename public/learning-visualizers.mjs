@@ -233,3 +233,30 @@ export function learningVisualizerNode(unit, element) {
     default: return null;
   }
 }
+
+export function learningVisualizerLibraryNode(currentUnit, element) {
+  if (typeof element !== "function") return null;
+  const examples = [
+    {
+      id: "9.2.3.6", chapter: 9, chapterTitle: "软件可靠性基础知识",
+      title: "输入域分类模型", coreKnowledge: "按输入类别的实际使用权重估计使用可靠性。",
+    },
+    {
+      id: "9.2.3.7", chapter: 9, chapterTitle: "软件可靠性基础知识",
+      title: "执行路径分析模型", coreKnowledge: "将路径出现概率与路径条件失效概率结合。",
+    },
+    {
+      id: "19.3.3", chapter: 19, chapterTitle: "大数据架构",
+      title: "Lambda 架构分层", coreKnowledge: "理解批处理层、速度层和服务层的职责与数据流。",
+    },
+  ].filter((item) => item.id !== String(currentUnit?.id ?? ""));
+  if (!examples.length) return null;
+  return element("details", { className: "learning-visualizer-library" }, [
+    element("summary", { text: "自选互动实验 · " + examples.length + " 个知识点" }),
+    element("p", {
+      className: "learning-visualizer-library-intro",
+      text: "独立探索这些概念，不会推进课程进度，也不会生成答题记录。所有演示参数均标注其示例边界。",
+    }),
+    ...examples.map((unit) => learningVisualizerNode(unit, element)),
+  ]);
+}

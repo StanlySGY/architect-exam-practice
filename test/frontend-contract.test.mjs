@@ -200,8 +200,10 @@ test("输入域与执行路径可视化的加权计算保持权重归一且区�
 
 test("交互式课程实验只挂载到明确对应单元，并声明示例边界与辅助技术说明", async () => {
   const visualizers = await readFile(new URL("../public/learning-visualizers.mjs", import.meta.url), "utf8");
-  assert.ok(app.includes('import { learningVisualizerNode } from "/learning-visualizers.mjs";'));
+  assert.ok(app.includes('import { learningVisualizerLibraryNode, learningVisualizerNode } from "/learning-visualizers.mjs";'));
   assert.ok(app.includes("learningVisualizerNode(unit, element)"));
+  assert.ok(app.includes("learningVisualizerLibraryNode(unit, element)"));
+  assert.ok(visualizers.includes("export function learningVisualizerLibraryNode"));
   for (const id of ["9.2.3.6", "9.2.3.7", "19.3.3"]) assert.ok(visualizers.includes(`case "${id}"`));
   assert.match(visualizers, /自拟示例|非教材公式/);
   assert.match(visualizers, /aria-live/);
