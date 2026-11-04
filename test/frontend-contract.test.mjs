@@ -194,7 +194,13 @@ test("输入域与执行路径可视化的加权计算保持权重归一且区�
   assert.deepEqual(path.rows.map((row) => row.weight), [70, 20, 10]);
   assert.equal(path.weighted, 3.5);
   assert.ok(path.equal > 8.33 && path.equal < 8.34);
-  assert.equal(calculateInputDomainEstimate(30).rows.reduce((sum, row) => sum + row.weight, 0), 100);
+  const highAbnormal = calculateInputDomainEstimate(30);
+  assert.deepEqual(highAbnormal.rows.map((row) => row.weight), [55, 15, 30]);
+  assert.equal(highAbnormal.weighted, 92.7);
+  const highTimeout = calculateExecutionPathEstimate(30);
+  assert.deepEqual(highTimeout.rows.map((row) => row.weight), [50, 20, 30]);
+  assert.equal(highTimeout.weighted, 7.3);
+  assert.equal(highAbnormal.rows.reduce((sum, row) => sum + row.weight, 0), 100);
   assert.throws(() => calculateInputDomainEstimate("bad"), /有限数字/);
 });
 
@@ -207,15 +213,11 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   for (const id of ["1.1", "7.2.1", "8.1.3", "13.1", "15.3", "18.4.1", "19.5", "9.2.3.6", "9.2.3.7", "19.3.3"]) {
     assert.ok(visualizers.includes(`case "${id}"`), `missing visualizer mapping: ${id}`);
   }
-  for (const title of ["看一笔请求如何穿过系统架构", "架构设计不是先选技术栈", "质量属性场景", "分层架构：", "SOA 参考架构", "WPDRRC", "Lambda 与 Kappa"]) {
+  for (const title of ["看一笔请求如何穿过系统架构", "架构设计是一条会反复迭代的决策链", "质量属性场景", "分层架构：", "SOA 参考架构", "WPDRRC", "Lambda 与 Kappa"]) {
     assert.ok(visualizers.includes(title), `missing knowledge visual: ${title}`);
   }
-  assert.match(visualizers, /learning-concept-node-grid/);
-  assert.match(visualizers, /learning-concept-player/);
-  assert.match(visualizers, /播放讲解/);
-  assert.match(visualizers, /timeline: \[/);
-  assert.match(visualizers, /响应返回/);
-  assert.match(visualizers, /clearInterval\(timer\)/);
+  assert.match(visualizers, /course-motion-node-list/);
+  assert.match(visualizers, /learning-concept-detail/);
   assert.match(visualizers, /learning-compare-dimensions/);
   assert.match(visualizers, /aria-pressed/);
   assert.match(visualizers, /aria-atomic/);
@@ -250,6 +252,16 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.match(css, /prefers-reduced-motion/);
   assert.match(visualizers, /function courseMotionVisualizer\(element, config\)/);
   assert.match(visualizers, /getPointAtLength\(route\.length \* directed\)/);
+  assert.match(visualizers, /function makeWeightedLab\(element, config\)/);
+  assert.match(visualizers, /const sampleCount = 80/);
+  assert.match(visualizers, /function renderParticles\(\)/);
+  assert.match(visualizers, /rateIsFailure: false/);
+  assert.match(visualizers, /rateIsFailure: true/);
+  assert.match(visualizers, /function updateFrame\(time\)/);
+  assert.match(visualizers, /learning-lab-flow-svg/);
+  assert.doesNotMatch(visualizers, /function makeConceptVisualizer\(/);
+  assert.doesNotMatch(visualizers, /function lambdaArchitectureLab\(/);
+  assert.doesNotMatch(visualizers, /function legacy[A-Za-z]+Visualizer\(/);
   for (const title of ["架构设计是一条会反复迭代的决策链", "质量属性场景：让模糊要求变成可测量的响应", "分层架构：请求逐层向下，结果沿原路返回", "SOA 参考架构：服务通过 ESB 协作", "WPDRRC：安全工作是一条持续反馈的闭环", "Lambda 与 Kappa：看数据粒子走哪条路"]) {
     assert.ok(visualizers.includes(title), `missing moving concept diagram: ${title}`);
   }
@@ -261,4 +273,7 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.match(css, /\.course-motion-route\.is-feedback/);
   assert.match(css, /\.course-motion-packet\.is-batch/);
   assert.match(css, /\.course-motion-node-button\[aria-pressed="true"\]/);
+  assert.match(css, /\.learning-lab-flow-particle\.is-success/);
+  assert.match(css, /\.learning-lab-flow-particle\.is-failure/);
+  assert.match(css, /\.learning-lab-motion-toolbar/);
 });
