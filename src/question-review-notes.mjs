@@ -13,6 +13,7 @@ const NOTES = Object.freeze({
       "按 NASA 2008 Reliability-Centered Maintenance Guide §14.3，固有可用性 Ai = MTBF/(MTBF+MTTR)，该指南在本节将 MTBF 括注为 Mean Time Between Failure（also, Mean Time to Failure）。",
       "NASA 2018 NASA-HDBK-8709.22（引用 NASA-STD-8729.1）将固有可用性写为 MTTF/(MTTF+MTTR)，而运行可用性写为 MTBF/(MTBF+MDT)；手册同时在缩写表中分别列出 MTBF、MTTF 和 MTTR。",
       "NASA 2023 恒定失效率/修复率公式页给出 MTBF/(MTBF+MTTR)，但前提包括常数失效率、常数修复率和指数分布模型。",
+      "解析末尾“MTTF/MTTR/MTBF 几乎每年必考 1 题”没有完整官方历年原卷序列和统计口径支撑，应视为作者押题判断，而不是已证实的考试规律。",
     ],
     takeaway:
       "本题按题干给定 MTBF=999 h、MTTR=1 h，并采用解析开头的固有可用性公式，算术 999/(999+1)=99.9% 成立。更严谨的解析应明确本题 MTBF 表示平均运行/故障间隔，并删去无条件的“MTBF = MTTF + MTTR”；若采用另一套标准口径，应重新定义变量，而不是在同一推导中静默换符号。",

@@ -10,6 +10,7 @@ test("MTBF ambiguity note explains context-specific NASA definitions without app
   assert.match(note.summary, /不能把这条等式当成通用恒等式/);
   assert.ok(note.points.some((item) => item.includes("NASA-HDBK-8709.22")));
   assert.ok(note.points.some((item) => item.includes("常数失效率")));
+  assert.ok(note.points.some((item) => item.includes("几乎每年必考 1 题")));
   assert.ok(note.takeaway.includes("999/(999+1)=99.9%"));
   assert.equal(note.sourceType, "mock");
   assert.equal(note.answerVerification, "not-established");
