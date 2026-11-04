@@ -2162,6 +2162,7 @@ function resultDetailNode(detail, index) {
     [
       element("div", { className: "result-main" }, mainChildren),
       element("div", { className: "analysis" }, analysisChildren),
+      questionReviewNoteNode(detail),
       element("div", { className: "result-actions" }, [
         reportButtonNode(detail.id),
       ]),

@@ -173,6 +173,8 @@ test("命题复习提示使用显式只读模块白名单，且练习只在提�
   assert.ok(app.includes("function questionReviewNoteNode(question)"));
   const questionNode = app.slice(app.indexOf("function questionNode("), app.indexOf("function renderAnswerSheet("));
   assert.ok(questionNode.indexOf("questionReviewNoteNode(question)") > questionNode.indexOf("if (checked)"));
+  const resultDetail = app.slice(app.indexOf("function resultDetailNode("), app.indexOf("function renderResult("));
+  assert.ok(resultDetail.includes("questionReviewNoteNode(detail)"));
   assert.ok(reviewNotes.includes('answerVerification: "not-established"'));
   assert.ok(reviewNotes.includes("humanSignOff: false"));
   assert.ok(css.includes(".question-review-note-references"));
