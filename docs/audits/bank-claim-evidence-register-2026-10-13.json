@@ -30,6 +30,7 @@
       "recordId": "availability-mtbf-definition-conflict",
       "disposition": "internal-definition-conflict",
       "topic": "MTBF / MTTF / MTTR availability formula",
+      "lastReviewedOn": "2026-11-04",
       "targets": [
         {
           "itemId": "mock-2026年5月-模拟卷5-002",
@@ -53,22 +54,31 @@
           "title": "Formulas: Inherent Availability and Reliability with Constant Failure and Repair Rates",
           "publisher": "NASA",
           "sourceKind": "government-standard-guidance",
-          "checkedOn": "2026-10-13",
-          "supports": "NASA's steady-state inherent-availability formula is A = MTBF/(MTBF + MTTR) under its stated constant failure/repair rate model; it defines MTBF as mean time between failure and MTTR as mean time to repair.",
-          "limitations": "The formula is tied to the source's model and nomenclature. Some texts use MTTF for mean operating time to failure and write A = MTTF/(MTTF + MTTR). These expressions require consistent definitions of the uptime interval and MTBF. The NASA formula does not support the answer's separate blanket identity MTBF = MTTF + MTTR without qualifying the term definitions."
+          "checkedOn": "2026-11-04",
+          "supports": "NASA's limiting steady-state inherent-availability equation is Ai = MTBF/(MTBF + MTTR) for the sheet's constant failure/repair-rate model; its nomenclature defines MTBF as element mean time between failure and MTTR as element mean time to repair.",
+          "limitations": "The sheet explicitly assumes constant failure and repair rates and an exponential distribution. It supports the formula and its own symbols under that model; it does not establish a universal relationship MTBF = MTTF + MTTR or prove that every discipline uses the same MTBF/MTTF definitions."
         },
         {
           "url": "https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf",
           "title": "Reliability-Centered Maintenance Guide for Facilities and Collateral Equipment",
           "publisher": "NASA",
           "sourceKind": "government-standard-guidance",
-          "checkedOn": "2026-10-13",
-          "supports": "Section 14.3 gives inherent availability Ai = MTBF/(MTBF+MTTR) and describes MTBF as mean time between failure (also, mean time to failure); the glossary calls MTTR mean time to repair.",
-          "limitations": "This 2008 guide uses MTBF and MTTF as alternative nomenclature for the operating/failure interval. It does not support the answer's claim that MTBF is necessarily MTTF + MTTR. Use one definition consistently, and distinguish inherent availability from operational availability."
+          "checkedOn": "2026-11-04",
+          "supports": "Section 14.3 (printed p.14-4) gives inherent availability Ai = MTBF/(MTBF+MTTR), and explicitly glosses MTBF as Mean Time Between Failure (also, Mean Time to Failure); MTTR is Mean Time to Repair or Replace. It separately defines operational availability Ao = MTBM/(MTBM+MDT).",
+          "limitations": "This 2008 guide uses MTBF as an alternative name for the operating/failure interval in this section. Its terminology must not be generalized across all documents or domains. The distinction from operational availability also means Ai and Ao should not be mixed."
+        },
+        {
+          "url": "https://ntrs.nasa.gov/api/citations/20180004878/downloads/20180004878.pdf?attachment=true",
+          "title": "NASA-HDBK-8709.22 — Safety and Mission Assurance Acronyms, Abbreviations, and Definitions",
+          "publisher": "National Aeronautics and Space Administration (NASA)",
+          "sourceKind": "government-standard-guidance",
+          "checkedOn": "2026-11-04",
+          "supports": "The 2018 handbook's acronym table lists MTBF (Mean Time Between Failure), MTTF (Mean Time To Failure), and MTTR (Mean Time To Repair) separately (PDF p.16). Its §4 definitions, citing NASA-STD-8729.1, define inherent availability using MTTF/(MTTF+MTTR) and operational availability using MTBF/(MTBF+MDT) (PDF p.28).",
+          "limitations": "The handbook says it is a convenience reference and directs readers to originating documents for the most current definitions. This is a particular NASA-STD-8729.1 terminology context, not proof that every source must use these terms identically; it does show that MTBF, MTTF, MTTR and MDT must not be silently interchanged within one derivation."
         }
       ],
-      "conclusion": "解析一边用 MTBF/(MTBF+MTTR) 计算 999/(999+1)=99.9%，该计算符合 NASA 给出的稳态固有可用性公式及其 MTBF/MTTR 口径；但解析随后称“MTBF = MTTF + MTTR”并改用 A=MTTF/(MTTF+MTTR)，未先定义这两种平均时间的计量起止点，造成术语口径矛盾。答案 C 可在题目默认 MTBF 指平均运行间隔的常见口径下得到支持，但整段解析仍需澄清定义。",
-      "recommendedAction": "采用单一术语口径：若题目按固有可用性惯用式 A=MTBF/(MTBF+MTTR) 并给定 MTBF=999 h、MTTR=1 h，则保留 C=99.9%，删除或重写“MTBF=MTTF+MTTR”的混用解释；如果将 MTBF 定义为已包含修复时间的日历间隔，则应重新给出相互一致的公式及题目参数。来源支持公式范围，不代表整道题已经完成权威答案认证。",
+      "conclusion": "NASA 2023 公式页在恒定失效率/修复率与指数分布假设下给出固有可用性 Ai=MTBF/(MTBF+MTTR)；NASA 2008 RCM Guide §14.3 也以该式定义 Ai，并在该节将 MTBF 括注为 Mean Time to Failure。NASA 2018 NASA-HDBK-8709.22 则按其引用的 NASA-STD-8729.1 将固有可用性写为 MTTF/(MTTF+MTTR)，运行可用性写为 MTBF/(MTBF+MDT)，且缩写表分列 MTBF、MTTF、MTTR。以上材料反映术语随引用文件和可用性口径而异，不支持把“MTBF = MTTF + MTTR”当作通用恒等式。题目按解析开头公式及给定 MTBF=999 h、MTTR=1 h 计算为 99.9%，算术成立；但解析随后无说明切换符号，内部定义不一致，需澄清。",
+      "recommendedAction": "对这道题，若采用解析开头的 NASA RCM Guide / NASA 2023 公式口径，应明确将 999 h 作为该模型中的平均运行/故障间隔，保留 Ai=MTBF/(MTBF+MTTR)=999/(999+1)=99.9%，删除无条件的“MTBF=MTTF+MTTR”及后续静默换符号。若采用 NASA-STD-8729.1 的定义口径，则应明确给出 MTTF=999 h，并区分运行可用性 MTBF/(MTBF+MDT)。不要将不同来源的变量定义拼接成恒等式。算术复算不证明整道题答案已获得权威认证。",
       "answerVerification": "not-established"
     },
     {

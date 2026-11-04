@@ -7,6 +7,8 @@ const html = await readFile(new URL("../public/index.html", import.meta.url), "u
 const css = await readFile(new URL("../public/styles.css", import.meta.url), "utf8");
 const roadmapUi = await readFile(new URL("../public/roadmap-ui.mjs", import.meta.url), "utf8");
 const reviewPage = await readFile(new URL("../public/exam-review-2026.html", import.meta.url), "utf8");
+const server = await readFile(new URL("../server.mjs", import.meta.url), "utf8");
+const reviewNotes = await readFile(new URL("../src/question-review-notes.mjs", import.meta.url), "utf8");
 
 test("前端共享 API 提供默认超时并合并调用方取消信号", () => {
   assert.match(app, /const DEFAULT_API_TIMEOUT_MS = 30_000/);
@@ -163,4 +165,16 @@ test("学习路线进度条向辅助技术公开当前完成比例", () => {
   assert.match(roadmapUi, /aria-valuemax/);
   assert.match(roadmapUi, /aria-valuenow/);
   assert.match(roadmapUi, /aria-valuetext/);
+});
+
+test("命题复习提示使用显式只读模块白名单，且练习只在提交答案后显示", () => {
+  assert.ok(app.includes('import { questionReviewNoteFor } from "/lib/question-review-notes.mjs";'));
+  assert.ok(server.includes('["/lib/question-review-notes.mjs", resolve(root, "src/question-review-notes.mjs")]'));
+  assert.ok(app.includes("function questionReviewNoteNode(question)"));
+  const questionNode = app.slice(app.indexOf("function questionNode("), app.indexOf("function renderAnswerSheet("));
+  assert.ok(questionNode.indexOf("questionReviewNoteNode(question)") > questionNode.indexOf("if (checked)"));
+  assert.ok(reviewNotes.includes('answerVerification: "not-established"'));
+  assert.ok(reviewNotes.includes("humanSignOff: false"));
+  assert.ok(css.includes(".question-review-note-references"));
+  assert.ok(css.includes(".question-review-note-boundary"));
 });

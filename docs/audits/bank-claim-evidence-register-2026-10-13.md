@@ -9,7 +9,7 @@
 | `aws-lambda-timeout-scope` | `mock-2026年5月-模拟卷2-029` | AWS 官方文档支持普通 Lambda 函数的 900 秒（15 分钟）配置上限，但文档也列出特定 Managed Instances 异步/事件源映射场景的 5,400 秒例外。 | 保留作特定产品示例，明确普通函数与特定运行模式的范围；不能推广为所有 FaaS 的统一限制。来源：[AWS Lambda quotas](https://docs.aws.amazon.com/lambda/latest/dg/gettingstarted-limits.html)。 |
 | `lora-trainable-parameter-ratio` | `mock-2026年5月-模拟卷3-068`、`mock-2026年5月-模拟卷5-065` | 原论文支持 LoRA 冻结预训练权重、训练低秩矩阵；GPT-3 175B 示例提到可训练参数可低至 0.01%。单个例子不能证明所有模型通常都落在 0.1%–1%，更不能推出任意“大模型”都可单卡微调。 | 将比例限定到具体模型、rank、目标层和设置；删去无条件的单卡能力保证，或给出可复现的模型/显存/量化条件。来源：[LoRA 原论文（arXiv:2106.09685）](https://arxiv.org/abs/2106.09685)。 |
 | `wbs-100-percent-rule` | `mock-2026年5月-模拟卷4-035` | PMI 资料支持 WBS 覆盖范围内全部工作、子层汇总对应父层的 100% 规则，并强调分解层级要适合项目管理。 | 可保留 100% 规则核心解释；该来源不认证整道模拟题为真题，也不单独验证所有其他选项。来源：[PMI — Proactive Standard - Work Breakdown Structures](https://www.pmi.org/learning/library/practice-standard-work-breakdown-structures-8063)。 |
-| `availability-mtbf-definition-conflict` | `mock-2026年5月-模拟卷5-002` | NASA 的稳态固有可用性公式支持 `MTBF/(MTBF+MTTR)`；`999/(999+1)=99.9%` 算术正确，但解析随后写出 `MTBF = MTTF + MTTR` 并改用 `MTTF/(MTTF+MTTR)`，没有统一平均时间的计量起止点。 | 答案 C 可在惯用固有可用性口径下成立；应重写冲突的术语解释，不因一个选项算对就宣称整题已核验。来源：[NASA — Inherent Availability formula](https://www.nasa.gov/wp-content/uploads/2023/11/170508-formulas-inherent-availability-and-reliability-with-constant-failure-and-repair-rates.pdf)、[NASA Reliability-Centered Maintenance Guide §14.3 and Glossary](https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf)。 |
+| `availability-mtbf-definition-conflict` | `mock-2026年5月-模拟卷5-002` | NASA 2023 公式页和 2008 RCM Guide §14.3 在各自口径下支持 `MTBF/(MTBF+MTTR)`；2008 指南在该节将 MTBF 括注为 Mean Time to Failure。NASA-HDBK-8709.22（2018，引用 NASA-STD-8729.1）则把固有可用性写为 `MTTF/(MTTF+MTTR)`、运行可用性写为 `MTBF/(MTBF+MDT)`，并在缩写表分列 MTBF、MTTF、MTTR。不能把 `MTBF = MTTF + MTTR` 当作通用恒等式。题目按解析开头公式算术为 99.9%，但解析后续静默换符号，口径不一致。 | 按单一来源定义重写解析，明确固有/运行可用性、运行时间和停机时间口径；删除无条件的 `MTBF=MTTF+MTTR`。答案核验仍为 `not-established`。来源：[NASA 2023 Availability formulas](https://www.nasa.gov/wp-content/uploads/2023/11/170508-formulas-inherent-availability-and-reliability-with-constant-failure-and-repair-rates.pdf)、[NASA RCM Guide §14.3（印刷页14-4）](https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf)、[NASA-HDBK-8709.22（2018）](https://ntrs.nasa.gov/api/citations/20180004878/downloads/20180004878.pdf?attachment=true)。 |
 | `cpu-execution-time-calculation` | `mock-2026年5月-模拟卷6-007` | 独立复算 `6×10⁹ cycles ÷ 2.4×10⁹ cycles/s = 2.5 s`，数量级和单位一致。 | 仅标“计算已复算”；不等于真题来源或整题已核验。 |
 | `amdahl-limit-calculation` | `mock-2026年5月-模拟卷7-056` | 在可并行比例 80%、处理器数趋向无穷且不另计额外开销的假设下，理论上限 `S = 1/(1−0.8) = 5`，推导一致。 | 保留“理论上限”与模型前提；不作为经验性能承诺。 |
 | `cache-binary-unit-assumption` | `mock-2026年5月-模拟卷3-006` | 位数推导按 `1 GB = 2³⁰ B`、`1 KB = 2¹⁰ B` 的二进制计算约定自洽；单位缩写本身若按 SI 十进制解释则并非同一含义。 | 在题干或解析明确使用的二进制单位约定，避免将默认约定写成普遍定义。 |
@@ -321,3 +321,20 @@
 - real-essay-unit-test-coverage-over-80-percent-is-project-goal 已新增对“分支覆盖≥80%”的定位；测试覆盖率是团队目标示例而非通用要求，需明确覆盖度量类型且不能单独证明测试质量。
 
 上述记录保持未核实状态；新架构/版本资料仅用于限定适用范围，不代表已通过真实环境性能测试。
+
+## 2026-11-04 复核补记：MTBF / MTTF / MTTR 可用性口径
+
+本次只更新登记 availability-mtbf-definition-conflict，未修改相邻只读题库中的题干、选项、答案或解析字段。
+
+- NASA 2023 单页公式资料在“恒定失效率与修复率”模型下给出固有可用性 Ai = MTBF/(MTBF+MTTR)，并明确假设失效率、修复率为常数，采用指数分布；因此不能脱离模型假设推广公式。
+- NASA 2008《Reliability-Centered Maintenance Guide》§14.3（印刷页 14-4）也给出 Ai = MTBF/(MTBF+MTTR)，并在该节写明 MTBF = Mean Time Between Failure（also, Mean Time to Failure）；本节的 MTTR 为 Mean Time to Repair or Replace。它还单独给出运行可用性 Ao = MTBM/(MTBM+MDT)，说明 MTBM/MDT 与 MTBF/MTTR 不是同一组变量。
+- NASA-HDBK-8709.22（2018-03-08）是引用 NASA 安全、可靠性和质量保证原始文件定义的参考手册，且明确提示应回到 originating document 确认最新定义。它的缩写表分别列出 MTBF、MTTF、MTTR；§4（引用 NASA-STD-8729.1，PDF 第 28 页）将固有可用性写为 MTTF/(MTTF+MTTR)，运行可用性写为 MTBF/(MTBF+MDT)。
+- 因此，不应将 MTBF = MTTF + MTTR 当成通用恒等式。不同文件/领域的变量定义和可用性测量口径必须连同引用标准一起使用。本题解析在首个公式下的 999/(999+1)=99.9% 算术成立；后续未经说明就将 MTBF 改称 MTTF，构成解释内部不一致。
+- 题目继续保持模拟题属性；答案核验维持 not-established。这条记录没有人工签核，不证明题目来源，也不等于整题答案已获权威认证。
+
+来源：
+- [NASA — Formulas: Inherent Availability and Reliability with Constant Failure and Repair Rates](https://www.nasa.gov/wp-content/uploads/2023/11/170508-formulas-inherent-availability-and-reliability-with-constant-failure-and-repair-rates.pdf)
+- [NASA — Reliability-Centered Maintenance Guide（2008），§14.3](https://www.nasa.gov/wp-content/uploads/2023/06/nasa-rcmguide.pdf)
+- [NASA-HDBK-8709.22（2018）](https://ntrs.nasa.gov/api/citations/20180004878/downloads/20180004878.pdf?attachment=true)
+
+应用内新增题目级复习提示：该提示只针对 mock-2026年5月-模拟卷5-002，题库管理页可见；正式练习在作答提交后才显示。提示包含可定位资料和适用范围，明确答案仍为 not-established，不会修改外部题库、答案或来源分类。

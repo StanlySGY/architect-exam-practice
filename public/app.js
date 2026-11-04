@@ -1,4 +1,5 @@
 import { renderQuestionFigure } from "/lib/figures.mjs";
+import { questionReviewNoteFor } from "/lib/question-review-notes.mjs";
 import { renderMarkdown } from "/lib/markdown.mjs";
 import { validateEssaySample } from "/lib/essay.mjs";
 import { mountBeginnerRoadmap } from "/roadmap-ui.mjs";
@@ -190,6 +191,28 @@ function answerTrustNode(item) {
     }));
   }
   return element("div", { className: `source-trust source-trust-${trust.code}` }, children);
+}
+
+function questionReviewNoteNode(question) {
+  const note = questionReviewNoteFor(question?.id);
+  if (!note) return null;
+  return element("section", { className: "question-review-note", attrs: { "aria-label": "命题审校提示" } }, [
+    element("div", { className: "question-review-note-heading" }, [
+      element("strong", { text: "审校提示：" + note.title }),
+      element("span", { text: note.label }),
+    ]),
+    element("p", { text: note.summary }),
+    element("ul", {}, note.points.map((point) => element("li", { text: point }))),
+    element("p", { className: "question-review-note-takeaway", text: note.takeaway }),
+    element("div", { className: "question-review-note-references" }, [
+      element("strong", { text: "可定位的原始资料" }),
+      ...note.references.map((reference) => element("a", {
+        text: reference.label,
+        attrs: { href: reference.url, target: "_blank", rel: "noopener noreferrer" },
+      })),
+    ]),
+    element("p", { className: "question-review-note-boundary", text: note.boundary }),
+  ]);
 }
 
 function isImportedItem(item) {
@@ -1288,6 +1311,7 @@ function questionNode(question, index, total) {
           : null,
         element("p", { text: checked.analysis }),
         aiAnalysisNode(checked.aiAnalysis),
+        questionReviewNoteNode(question),
         sourceNodeNode(question.sourceNode),
         state.session?.mode === "review" && checked.isCorrect
           ? scheduleNode(checked.schedule)
@@ -2544,6 +2568,7 @@ function bankQuestionNode(question) {
       element("p", { text: question.analysis }),
       aiAnalysisNode(question.aiAnalysis),
     ]),
+    questionReviewNoteNode(question),
     sourceNodeNode(question.sourceNode),
     element(
       "div",

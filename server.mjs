@@ -299,6 +299,7 @@ const libraryFiles = new Map([
   ["/lib/figures.mjs", resolve(root, "src/figures.mjs")],
   ["/lib/markdown.mjs", resolve(root, "src/markdown.mjs")],
   ["/lib/essay.mjs", resolve(root, "src/essay.mjs")],
+  ["/lib/question-review-notes.mjs", resolve(root, "src/question-review-notes.mjs")],
 ]);
 
 async function serveLibrary(pathname, request, method, response) {
