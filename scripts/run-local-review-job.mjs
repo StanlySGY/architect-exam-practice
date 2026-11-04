@@ -127,6 +127,9 @@ export function classifyHttpStatus(status) {
 export function isRetryableSourceStatus(status) {
   return ['network-error', 'server-error', 'retry-or-rate-limited'].includes(status);
 }
+export function shouldFallbackToGet(status) {
+  return !Number.isInteger(status) || status < 200 || status >= 300;
+}
 export function collectEvidenceUrls(content) {
   const map = new Map();
   for (const [id, unit] of Object.entries(content?.units ?? {})) {
@@ -307,7 +310,10 @@ async function checkSource(item) {
     let result = await curlProbe(item.url, 'HEAD');
     let method = 'HEAD';
     let headStatus = null;
-    if ([401, 403, 405, 501].includes(result.httpStatus)) {
+    // Some origins reject or mis-handle HEAD (including with 404) while serving
+    // the same resource normally to GET. Treat HEAD as a hint only and confirm
+    // every non-2xx response with a bounded one-byte GET before classifying it.
+    if (shouldFallbackToGet(result.httpStatus)) {
       headStatus = result.httpStatus;
       result = await curlProbe(item.url, 'GET');
       method = 'GET';
@@ -612,7 +618,7 @@ async function main() {
       },
       safety: {
         localApiRequests: 'GET only',
-        externalRequests: 'HEAD; GET Range fallback',
+        externalRequests: 'HEAD; GET Range fallback on every non-2xx HEAD response',
         modelCalls: 0,
         sqliteWrites: 0,
         questionMutations: 0,

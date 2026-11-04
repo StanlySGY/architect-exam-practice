@@ -81,7 +81,7 @@ test('supplemental reliability sources remain bounded alongside local textbook p
     ['9.2.3.3', 'https://www.nationalacademies.org/read/18987/chapter/11', '回归方法'],
     ['9.2.3.4', 'https://doi.org/10.1016/0026-2714(83)91372-0', 'Duane'],
     ['9.2.3.6', 'https://doi.org/10.1016/0026-2714(78)91139-3', '输入域'],
-    ['9.2.3.7', 'https://doi.org/10.7631/issn.1000-2243.2008.1.59', '路径'],
+    ['9.2.3.7', 'https://xbzrb1.fzu.edu.cn/ch/reader/view_abstract.aspx?file_no=20080117&flag=1', '路径', '2026-11-04'],
     ['9.2.3.8', 'https://doi.org/10.1016/0026-2714(83)91372-0', 'NHPP'],
     ['9.2.3.9', 'https://doi.org/10.1002/asm.3150060404', 'Markov'],
     ['9.2.3.10', 'https://www.nationalacademies.org/read/18987/chapter/11', 'Gamma']
@@ -91,13 +91,13 @@ test('supplemental reliability sources remain bounded alongside local textbook p
     assert.equal(content.units[id].status, 'partial', id);
     assert.deepEqual(content.units[id].verificationPendingClaims, [], id); assert.ok(content.units[id].textbookCrossCheck, id);
   }
-  for (const [id, url, claimFragment] of supplementalSources) {
+  for (const [id, url, claimFragment, reviewedOn = '2026-10-10'] of supplementalSources) {
     const unit = content.units[id];
     assert.ok(
       unit.evidence.some(e =>
         e.url === url &&
         e.reviewStatus === 'source-supports-bounded-claim' &&
-        e.reviewedOn === '2026-10-10' &&
+        e.reviewedOn === reviewedOn &&
         e.scope &&
         /(不证明|不替代)/.test(e.scope) &&
         e.supportedClaim.toLowerCase().includes(claimFragment.toLowerCase())
@@ -219,7 +219,7 @@ test('Fuzhou University journal record verifies the component-reliability paper 
   const journalRecord = unit.evidence.find(e => e.url === 'https://xbzrb1.fzu.edu.cn/ch/reader/view_abstract.aspx?file_no=20080117&flag=1');
   assert.ok(journalRecord, 'official journal abstract page should be retained as a direct source');
   assert.equal(journalRecord.reviewStatus, 'source-supports-bounded-claim');
-  assert.equal(journalRecord.reviewedOn, '2026-10-12');
+  assert.equal(journalRecord.reviewedOn, '2026-11-04');
   assert.match(journalRecord.sourceAuthority, /魏建新、叶少珍/);
   assert.match(journalRecord.sourceAuthority, /10\.7631\/issn\.1000-2243\.2008\.1\.59/);
   assert.match(journalRecord.supportedClaim, /操作剖面.*构件使用上下文.*系统功能路径划分/);
@@ -230,6 +230,22 @@ test('Fuzhou University journal record verifies the component-reliability paper 
   assert.equal(report.unitsMissingEvidence, 0);
   assert.ok(unit.textbookCrossCheck);
 });
+
+test('NIST IoT guidance distinguishes the 2021 final publication from the 2026 Rev. 1 initial public draft', () => {
+  const unit = content.units['11.4.5'];
+  const finalPublication = unit.evidence.find(e => e.url === 'https://csrc.nist.gov/pubs/sp/800/213/final');
+  const revisionDraft = unit.evidence.find(e => e.url === 'https://csrc.nist.gov/pubs/sp/800/213/r1/ipd');
+  assert.ok(finalPublication, 'the 2021 final publication remains recorded');
+  assert.ok(revisionDraft, 'the 2026 Rev. 1 initial public draft is recorded separately');
+  assert.equal(revisionDraft.reviewedOn, '2026-11-04');
+  assert.match(revisionDraft.sourceAuthority, /Initial Public Draft/);
+  assert.match(revisionDraft.sourceAuthority, /2026-06-24/);
+  assert.match(revisionDraft.supportedClaim, /采购与集成可能改变系统风险评估/);
+  assert.match(revisionDraft.scope, /不是最终版/);
+  assert.match(revisionDraft.scope, /不能把草案内容描述为已生效的最终要求/);
+  assert.equal(unit.status, 'partial');
+});
+
 test('official preview and repost metadata do not authenticate the locally available PDF copy', () => {
   assert.ok(audit.includes('https://www.tup.tsinghua.edu.cn/upload/books/yz/091901-01.pdf'));
   assert.ok(audit.includes('样章共 23 页'));

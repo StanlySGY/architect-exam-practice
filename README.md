@@ -49,6 +49,7 @@
 
 - [零基础学习路线](./docs/beginner-study-roadmap.md)：考试结构、每周学习闭环、三科准备方法和首页路线说明。
 - [公开真题与题库来源核查](./docs/public-question-sources.md)：GitHub 来源、许可边界、答案可信度和题目接入规则。
+- [2026-11-04 学习资料来源 URL 复核](./docs/audits/source-url-verification-2026-11-04.md)：链接状态复核方法、来源映射基线、NIST/Fuzhou 证据更新和未核验边界。
 - [WSL 本地长任务复核流程](./docs/local-long-running-review-job.md)：后台来源检查、断点续跑、真题来源映射、人工复核包和评分校准边界。
 - [2026 年 10 月考后复盘](./docs/2026-exam-review.md)：当次机考节奏、综合知识/案例/论文回忆线索及下一轮训练重点；首页也可打开独立复盘页。
 

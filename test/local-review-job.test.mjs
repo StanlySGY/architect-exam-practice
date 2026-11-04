@@ -8,6 +8,7 @@ import {
   classifyHttpStatus,
   collectEvidenceUrls,
   isRetryableSourceStatus,
+  shouldFallbackToGet,
 } from '../scripts/run-local-review-job.mjs';
 
 test('source authority classifier distinguishes primary publishers and public standards agencies', () => {
@@ -33,6 +34,15 @@ test('HTTP 403 is access restriction, not proof of a missing source', () => {
   assert.equal(isRetryableSourceStatus('server-error'), true);
   assert.equal(isRetryableSourceStatus('not-found'), false);
   assert.equal(isRetryableSourceStatus('access-restricted'), false);
+});
+
+test('every non-2xx HEAD response is confirmed with bounded GET before classifying URL status', () => {
+  for (const status of [null, 0, 301, 302, 400, 401, 403, 404, 405, 410, 429, 500, 503]) {
+    assert.equal(shouldFallbackToGet(status), true, `HEAD ${status} must fall back to GET`);
+  }
+  for (const status of [200, 204, 206]) {
+    assert.equal(shouldFallbackToGet(status), false, `HEAD ${status} is already a successful response`);
+  }
 });
 
 test('learning source URL collection deduplicates URLs while retaining unit provenance', () => {
