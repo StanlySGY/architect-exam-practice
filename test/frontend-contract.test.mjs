@@ -248,4 +248,17 @@ test("交互式课程实验只挂载到明确对应单元，并声明示例边�
   assert.match(css, /\.learning-compare-architectures/);
   assert.match(css, /@media\(max-width:680px\).*learning-concept-node-grid/s);
   assert.match(css, /prefers-reduced-motion/);
+  assert.match(visualizers, /function courseMotionVisualizer\(element, config\)/);
+  assert.match(visualizers, /getPointAtLength\(route\.length \* directed\)/);
+  for (const title of ["架构设计是一条会反复迭代的决策链", "质量属性场景：让模糊要求变成可测量的响应", "分层架构：请求逐层向下，结果沿原路返回", "SOA 参考架构：服务通过 ESB 协作", "WPDRRC：安全工作是一条持续反馈的闭环", "Lambda 与 Kappa：看数据粒子走哪条路"]) {
+    assert.ok(visualizers.includes(title), `missing moving concept diagram: ${title}`);
+  }
+  for (const mode of ["直接服务调用", "流程编排", "查询读取", "写入更新"]) {
+    assert.ok(visualizers.includes(mode), `missing interactive motion scene: ${mode}`);
+  }
+  assert.match(visualizers, /function tick\(now\)[\s\S]*?requestAnimationFrame\(tick\)/);
+  assert.match(visualizers, /系统已减少动态效果；可手动播放/);
+  assert.match(css, /\.course-motion-route\.is-feedback/);
+  assert.match(css, /\.course-motion-packet\.is-batch/);
+  assert.match(css, /\.course-motion-node-button\[aria-pressed="true"\]/);
 });
