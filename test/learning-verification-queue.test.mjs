@@ -745,14 +745,14 @@ test('all learning evidence records have human-readable source titles',()=>{
 });
 
 test('AI source cross-check records never upgrade whole-unit status and keep human review explicit', () => {
-  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2'];
+  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2','5.1','5.2','5.3','5.4','5.5','5.6','5.7'];
   const report = buildVerificationQueue(content);
   assert.equal(report.unitsWithSourceCrossCheck, ids.length);
   assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length);
   assert.equal(report.unitsMissingEvidence, 0, 'bounded evidence is not missing merely because whole-unit review is pending');
   assert.ok(report.unitsWithUnresolvedClaims >= ids.length);
-  assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 32);
-  assert.equal(ids.reduce((sum, id) => sum + content.units[id].evidence.length, 0), 71);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 47);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].evidence.length, 0), 96);
   for (const id of ids) {
     const unit = content.units[id];
     assert.equal(unit.status, 'partial', id);
@@ -769,4 +769,33 @@ test('AI source cross-check records never upgrade whole-unit status and keep hum
   assert.ok(tls.evidence.some(item => /rfc8446(?:\.html)?$/u.test(item.url) && item.reviewStatus === 'background-only-needs-textbook-verification'));
   const tdea = content.units['4.4.2.3'];
   assert.ok(tdea.evidence.some(item => item.url === 'https://csrc.nist.gov/pubs/sp/800/67/r2/final' && item.supportedClaim.includes('2024-01-01')));
+});
+
+test('chapter 5 software engineering content tracks current standards and bounds Cleanroom/CBSE claims', () => {
+  const ids = ['5.1','5.2','5.3','5.4','5.5','5.6','5.7'];
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsWithSourceCrossCheck, 30);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, 30);
+  assert.equal(ids.reduce((sum,id)=>sum+content.units[id].verificationPendingClaims.length,0),15);
+  assert.equal(ids.reduce((sum,id)=>sum+content.units[id].evidence.length,0),25);
+  for (const id of ids) {
+    assert.equal(content.units[id].status,'partial',id);
+    assert.equal(content.units[id].verificationReview.status,'ai-source-cross-check-complete',id);
+    assert.equal(content.units[id].verificationReview.humanReviewRequired,true,id);
+  }
+  const lifecycle = content.units['5.1'].evidence.find(item => item.url === 'https://www.iso.org/standard/90219.html');
+  assert.ok(lifecycle && lifecycle.supportedClaim.includes('2026-04'));
+  assert.ok(lifecycle.scope.includes('不规定') || lifecycle.scope.includes('不要求'));
+  const reqFinal = content.units['5.2'].evidence.find(item => item.url === 'https://www.iso.org/standard/72089.html');
+  const reqDraft = content.units['5.2'].evidence.find(item => item.url === 'https://www.iso.org/standard/94091.html');
+  assert.ok(reqFinal && reqFinal.supportedClaim.includes('2018'));
+  assert.ok(reqDraft && reqDraft.reviewStatus === 'background-only-needs-textbook-verification');
+  const cleanroom = content.units['5.5'];
+  assert.ok(cleanroom.evidence.some(item => item.url === 'https://www.sei.cmu.edu/library/cleanroom-software-engineering-reference/' && item.supportedClaim.includes('零失败')));
+  assert.ok(cleanroom.what.includes('目标') && cleanroom.what.includes('不是') && cleanroom.what.includes('绝对'));
+  const cbse = content.units['5.6'];
+  assert.ok(cbse.what.includes('接口契约') && cbse.how.includes('持续升级管理'));
+  assert.ok(cbse.confusions.includes('软件产品线工程'));
+  assert.ok(content.units['5.7'].confusions.includes('相互影响'));
+  assert.ok(content.units['5.7'].verificationPendingClaims.some(claim=>claim.includes('四个 P')));
 });

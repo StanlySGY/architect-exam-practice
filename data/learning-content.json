@@ -3336,14 +3336,14 @@
     },
     "5.1": {
       "status": "partial",
-      "what": "软件工程以系统化、规范化、可量化的方法开发、运行和维护软件，以控制成本、进度、质量和风险。",
-      "why": "理解「软件工程以系统化、规范化、可量化的方法开发、运行和维护软件，以控制成本、进度、质量和风险。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "从生命周期、过程、方法、人员和项目管理几个层次理解，并把每种方法放回适用条件。",
-      "confusions": "软件工程不是单一开发模型；过程、技术方法和项目管理解决的问题不同。",
+      "what": "软件工程是以工程化、系统化和可管理的方法开发、运行、维护与演进软件的学科与实践领域；其知识不仅包括编码，还涉及需求、设计、构造、测试、维护、质量、工程管理、运行和安全等。",
+      "why": "复杂软件需要在功能、质量、成本、进度、风险和长期维护之间做权衡；仅提高编码速度不能替代需求、架构、测试和运行治理。",
+      "how": "从生命周期和利益相关方目标出发，识别需求与约束，选择适合的过程和方法，设计并构造软件，验证/确认交付结果，再通过运维、维护和反馈持续演进。",
+      "confusions": "软件工程是较宽的知识与实践领域；软件开发方法/生命周期模型只是组织工作的不同方式，项目管理负责协调目标、资源、风险和交付，不应将三者当成同义词。",
       "scenarios": "例如一个交付周期紧、需求仍在变化的业务系统，团队需要同时管理需求变更、开发活动、测试和发布风险；软件工程关注的是如何用可重复的过程与度量把这些活动组织起来，而不是只选择一种编程技术。",
       "examples": "例如支付业务项目在迭代开发中新增合规要求：团队需要更新需求基线、调整设计与测试范围，并通过版本和变更管理保持交付物一致；这里体现的是工程过程对成本、进度、质量和风险的共同控制。",
-      "examFocus": "重点区分软件工程、软件开发方法和项目管理：题目出现成本、进度、质量、风险、过程和维护等综合约束时，应从工程化视角判断，而不是只寻找某个编码技术。",
-      "pitfalls": "软件工程不是“选一个开发模型就结束”，也不是单纯的项目管理；如果只谈编码效率而忽略需求、质量、配置、测试和维护，就漏掉了工程化控制的关键。",
+      "examFocus": "能够从需求、设计、构造、测试、维护、质量和管理等方面说明工程化开发的范围；题目给出成本/进度/质量/风险约束时，应说明过程与技术决策的依据。",
+      "pitfalls": "不要把软件工程缩减为“按某个模型写代码”；不同方法可组合、迭代或裁剪，工程过程也需要在运行反馈中持续改进。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3364,8 +3364,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "软件工程要解决的不只是“写代码”，还要控制哪些工程目标？为什么需要过程化方法？",
-        "面对需求持续变化的项目，你能指出至少两个需要工程化管理的活动，并说明它们分别控制什么风险吗？"
+        "列出软件生命周期中至少五类活动，并说明它们之间为什么可能迭代而非只执行一次。",
+        "一个团队编码速度很快，但需求变更无追踪、缺少测试与发布回滚机制，为什么仍不能称为工程过程成熟？"
       ],
       "evidence": [
         {
@@ -3376,19 +3376,50 @@
           "scope": "只支持软件工程作为有组织知识领域的概念；不证明本单元列出的全部过程、度量和项目管理结论。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IEEE Computer Society — Software Engineering Body of Knowledge (SWEBOK Guide v4.0a)",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society — Software Engineering Body of Knowledge (SWEBOK Guide v4.0a)",
+          "supportedClaim": "SWEBOK v4.0a 以 18 个知识域概括软件工程公认知识，并在第 4 版中增加软件架构、软件工程运维和软件安全等知识域；2025-09-25 公布 v4.0a 小幅修订。",
+          "scope": "支持软件工程覆盖多个知识域而非仅编码；SWEBOK 是知识体系指南，不等同于指定教材定义或某一强制生命周期标准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "url": "https://www.iso.org/standard/90219.html",
+          "sourceAuthority": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "supportedClaim": "ISO/IEC/IEEE 12207:2026 于 2026-04 发布，建立软件生命周期过程框架，覆盖软件获取、供应、开发、运行、维护和处置，并可迭代、并发和递归应用。",
+          "scope": "支持软件生命周期过程的范围和迭代应用；标准明确不要求采用某个特定生命周期模型、开发方法或建模技术。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "指定教材对“软件工程”的原始定义、术语译法及质量/成本/进度/风险之间的具体表述尚需逐页核对。",
+        "教材对软件工程知识域、生命周期活动与项目管理范围的章节结构及考试重点仍需人工对照。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IEEE Computer Society SWEBOK v4.0a、ISO/IEC/IEEE 12207:2026 与相关官方出版页面核对核心命题、标准版本和证据范围。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；指定版本教材逐页核对及独立人工终审仍未完成，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "5.2": {
       "status": "partial",
-      "what": "需求工程围绕需求获取、分析、规格说明、验证和管理，确定系统需要提供的功能及约束。",
-      "why": "理解「需求工程围绕需求获取、分析、规格说明、验证和管理，确定系统需要提供的功能及约束。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "区分功能需求与非功能需求，再关注需求发现、冲突处理、规格化、验证和变更管理。",
-      "confusions": "用户愿望、业务目标、功能需求和质量属性不是同一层次；非功能需求同样约束架构。",
+      "what": "需求工程围绕系统/软件需求的获取、分析、规格说明、验证和管理，确定系统需要提供的功能、质量属性、接口与约束；这些活动可在生命周期内迭代开展。",
+      "why": "需求表达不清、冲突未处理或变更未追踪，会让架构和实现建立在错误假设上；可验证的需求是设计、测试和验收的共同依据。",
+      "how": "识别利益相关方与边界，获取并分析需求，处理优先级和冲突，形成可追踪且可验证的规格说明，再通过评审/验证及变更管理保持需求与设计、测试和交付之间的关联。",
+      "confusions": "用户愿望、业务目标、功能需求、质量需求和设计方案不是同一层次；非功能需求同样可能决定架构。需求验证关注需求本身是否适当、完整、一致、可验证，不等同于系统最终确认。",
       "scenarios": "例如电商系统要求“高峰期主要接口保持稳定响应”，这不是一句模糊愿望，而应进一步明确可验证的质量约束、适用范围和验收方式；需求工程负责把相关目标澄清、记录、验证并管理后续变更。",
       "examples": "例如业务方提出“订单查询要快”，需求分析时应继续追问使用场景、负载条件和可验证指标，并与功能需求区分；若后续目标发生变化，还需要评估对架构、测试和进度的影响。",
-      "examFocus": "重点辨析业务目标、功能需求和非功能需求，并关注需求验证与变更管理；看到性能、可靠性、安全性等质量要求时，不要把它们当成普通功能步骤。",
-      "pitfalls": "把用户一句话直接当成完整需求是常见错误；需求工程还要澄清范围、约束、可验证性和变更影响，非功能需求也会成为架构设计的重要输入。",
+      "examFocus": "掌握需求获取、分析、规格说明、验证和管理之间的关系；能区分功能/非功能需求、业务需求/系统需求，并说明可追踪性、优先级、冲突和变更控制。",
+      "pitfalls": "不要把用户的一句描述直接视为完整需求；需求需有边界、约束、可验证条件和变更记录，也不要把需求验证与产品确认混为一谈。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3409,8 +3440,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "请区分功能需求和非功能需求，并说明非功能需求为什么会直接影响架构。",
-        "如果业务方只说“系统必须快”，你会继续追问哪些信息，才能把它变成可验证的需求？"
+        "把“系统要更快、更安全”改写为可测量、带条件的需求，并说明验证证据。",
+        "需求规格评审通过是否等于系统已经满足用户目的？请区分需求验证与产品确认。"
       ],
       "evidence": [
         {
@@ -3421,19 +3452,60 @@
           "scope": "支持系统工程中需求、设计和验证过程需有结构化管理的核心观点；不替代软件需求工程标准，也不证明任一项目的需求规格已完整或正确。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 29148:2018 — Requirements engineering",
+          "url": "https://www.iso.org/standard/72089.html",
+          "sourceAuthority": "ISO/IEC/IEEE 29148:2018 — Requirements engineering",
+          "supportedClaim": "ISO/IEC/IEEE 29148:2018 规定系统和软件产品生命周期中产生需求的工程过程、信息项及其内容，并为 ISO/IEC/IEEE 15288 与 12207 中的需求相关过程提供应用指南；官方页面称 2024 年复审后仍为当前已发布版本。",
+          "scope": "支持需求工程过程和信息项的标准范围；不表示项目只需按单一线性阶段执行，也不替代教材所用的术语分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE DIS 29148 — Requirements engineering (draft)",
+          "url": "https://www.iso.org/standard/94091.html",
+          "sourceAuthority": "ISO/IEC/IEEE DIS 29148 — Requirements engineering (draft)",
+          "supportedClaim": "ISO/IEC/IEEE DIS 29148 第 3 版在 2026-09 进入 DIS 投票/征求意见阶段，状态为 Under development，未来将替代 2018 版。",
+          "scope": "仅用于提示标准正在修订；草案不是最终国际标准，不应当作已发布规范引用。",
+          "reviewStatus": "background-only-needs-textbook-verification",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "url": "https://www.iso.org/standard/90219.html",
+          "sourceAuthority": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "supportedClaim": "ISO/IEC/IEEE 12207:2026 将需求相关过程纳入软件生命周期过程框架，涵盖获取、供应、开发、运行、维护和处置。",
+          "scope": "支持需求工程应与完整软件生命周期联系；不规定某一唯一需求获取技术或阶段顺序。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "指定教材中需求工程阶段的精确划分、术语译法及获取/分析/规格说明/验证/管理的关系仍需逐项核对。",
+        "教材对功能需求、非功能需求、需求质量属性和需求变更管理的分类、表格与考试用语需人工对照。",
+        "ISO/IEC/IEEE 29148:2018 目前为已发布版本；2026 年 DIS 29148 是修订草案，教材采用的标准版本和考试引用口径仍需确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IEEE Computer Society SWEBOK v4.0a、ISO/IEC/IEEE 12207:2026 与相关官方出版页面核对核心命题、标准版本和证据范围。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；指定版本教材逐页核对及独立人工终审仍未完成，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 3
+      }
     },
     "5.3": {
       "status": "partial",
-      "what": "包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。",
-      "why": "理解「包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "软件开发方法为需求分析、系统建模、设计、构造和数据处理提供不同的表达与组织手段；结构化方法常使用数据流、功能分解和结构图等模型，面向对象方法围绕对象/类、属性、行为及关系组织分析与设计。",
+      "why": "方法和模型影响如何分解问题、表达系统结构及分配职责；选择时应结合需求稳定性、系统复杂度、团队能力和既有工程约束。",
+      "how": "从题目场景识别建模对象与关注点：流程/数据变换可使用结构化分析模型；状态、对象身份、职责和协作较突出时，可采用面向对象模型。将需求模型逐步细化为设计模型与可实现结构，并通过评审和测试反馈修正。",
+      "confusions": "结构化方法与面向对象方法是不同建模与组织思路，不应被说成互斥或固定瀑布阶段；两者可以在一个项目中按子系统和问题特点组合使用。UML 是建模语言，不等于一种完整开发生命周期模型。",
       "scenarios": "情境练习（非教材原例）：围绕“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
-      "examFocus": "复习重点：围绕“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "examFocus": "区分结构化分析/设计与面向对象分析/设计的核心建模对象、典型图形和职责分解方式；涉及瀑布、迭代或敏捷时，应将生命周期模型与分析设计方法区分。",
+      "pitfalls": "不要把“结构化=旧、面向对象=新”作为判断；也不要把 DFD、数据字典、用例图、类图等图形名称混用，需说明图形表示的对象和语义。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3454,8 +3526,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "请不用照抄原文，解释“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”的核心含义，并说明它解决什么问题。",
-        "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“包括结构化方法和面向对象方法；从需求模型建立分析模型、设计架构与模块，并落实到编码和数据持久化。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+        "同一个订单处理系统，分别用结构化功能分解与面向对象的类/职责描述其建模关注点。",
+        "为什么 UML 图可以用于不同生命周期模型，而不代表项目必须采用统一开发流程？"
       ],
       "evidence": [
         {
@@ -3466,19 +3538,50 @@
           "scope": "只支持软件开发活动存在相关知识域；不证明所有项目必须严格采用单一线性顺序。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "supportedClaim": "SWEBOK v4.0a 将需求、软件设计、构造、测试、维护以及软件架构等纳入软件工程知识体系。",
+          "scope": "支持软件开发包含多个相互关联的知识域；不规定结构化或面向对象方法必须按单一路径或单一项目模型使用。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "url": "https://www.iso.org/standard/90219.html",
+          "sourceAuthority": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "supportedClaim": "ISO/IEC/IEEE 12207:2026 提供生命周期过程框架，但明确不规定任何特定生命周期模型、开发方法、建模方法或技术。",
+          "scope": "用于区分过程框架与项目选用的开发方法/模型；不支持教材中特定结构化或面向对象图形符号细节。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对结构化方法与面向对象方法的阶段划分、数据流图/数据字典/结构图与 UML 图示的精确定义和符号约束，仍需逐页核对。",
+        "教材中的典型方法比较表、分析模型到设计模型的转换关系及对应考试题例，需人工确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 SWEBOK v4.0a、ISO/IEC/IEEE 生命周期与测试标准以及 ISTQB 官方术语来源，核对核心概念、活动边界与标准版本。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；教材图表、具体考试分类与独立人工终审仍待完成，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "5.4": {
       "status": "partial",
-      "what": "软件测试通过运行或检查软件，将实际结果与预期结果比较，以发现错误、验证需求并支持质量评价。",
-      "why": "理解「软件测试通过运行或检查软件，将实际结果与预期结果比较，以发现错误、验证需求并支持质量评价。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "确定测试目标和依据，选择测试层次与方法，分析结果并闭环缺陷。",
-      "confusions": "测试、调试、验证和确认关注点不同；测试通过也不等于软件绝对正确。",
+      "what": "软件测试通过执行测试或进行其他检查，依据测试基础确定预期结果，并将实际行为与预期结果比较，从而发现缺陷、评价是否满足指定条件并为质量判断提供证据；测试不能证明软件绝对无缺陷。",
+      "why": "测试把需求、设计约束和风险转化为可观察的验证活动，能够尽早发现问题并为发布决策提供证据；测试范围和结果必须结合风险与覆盖目标解释。",
+      "how": "先确定测试基础、目标和风险，再设计测试条件、用例与预期结果；执行测试或开展静态检查，记录实际结果和偏差，分析缺陷、回归验证并报告覆盖与遗留风险。",
+      "confusions": "测试执行是运行测试并产生实际结果；预期结果是基于测试基础预测的可观察行为。测试、调试、验证和确认的目标不同；静态测试不必执行程序，动态测试需要执行测试对象。",
       "scenarios": "例如订单系统发布前，测试人员依据需求设计正常、边界和异常场景，执行测试并记录实际结果；发现失败后进入缺陷分析与修复闭环，再用测试确认修复结果。",
       "examples": "例如支付接口要求拒绝非法金额：测试可以构造合法金额、边界值和非法值，比较实际行为与预期结果；即使当前用例全部通过，也只能说明在已覆盖范围内获得了证据，不能推出软件绝对无缺陷。",
-      "examFocus": "重点区分测试与调试：测试主要通过执行或检查获得缺陷证据并评价是否满足预期，调试则针对已发现的问题定位原因并修改；题目还常考不同测试层次、方法及其适用条件。",
-      "pitfalls": "“测试通过=没有缺陷”是典型错误；另一个常见混淆是把测试和调试视为同一活动。判断时先看是在发现/评价问题，还是在定位并修复原因。",
+      "examFocus": "区分测试依据、测试条件、测试用例、预期结果、实际结果与测试结果；说明测试层级/类型与测试技术的区别，并解释测试完成标准受风险、覆盖和退出准则影响。",
+      "pitfalls": "“测试通过=没有缺陷”是典型错误；测试执行发现差异后还需分析和定位，修复属于调试/开发活动，修复后需回归测试。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3499,8 +3602,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "测试与调试分别主要解决什么问题？为什么测试通过不能证明软件绝对没有缺陷？",
-        "给出一个边界值测试例子，并说明它的预期结果应如何确定。"
+        "某测试用例预期返回 HTTP 200，实际返回 500；哪些信息属于测试基础、预期结果和实际结果？",
+        "为什么测试执行成功并不等于产品满足全部需求或不存在缺陷？"
       ],
       "evidence": [
         {
@@ -3511,19 +3614,59 @@
           "scope": "支持测试通过对照预期结果与实际行为进行评价的核心思路；不证明任一测试套件覆盖充分、无缺陷或能验证所有需求。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "ISTQB Glossary — Expected Result",
+          "url": "https://glossary.istqb.org/en_US/term/expected-result?exact_matches_first=true&syllabus_id=23",
+          "sourceAuthority": "ISTQB Glossary — Expected Result",
+          "supportedClaim": "ISTQB 将预期结果定义为基于测试基础，在指定条件下预测的测试对象可观察行为。",
+          "scope": "支持预期结果的术语定义；不证明某测试基础本身完整或测试覆盖充分。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISTQB Glossary — Test Execution",
+          "url": "https://istqb-glossary.page/test-execution/",
+          "sourceAuthority": "ISTQB Glossary — Test Execution",
+          "supportedClaim": "ISTQB 术语将测试执行定义为对被测组件或系统运行测试并产生实际结果的过程。",
+          "scope": "支持测试执行与实际结果的关系；该术语页不能单独覆盖教材所有测试流程和测试级别分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 29119-1:2022 — Software testing concepts and definitions",
+          "url": "https://www.iso.org/standard/79429.html",
+          "sourceAuthority": "ISO/IEC/IEEE 29119-1:2022 — Software testing concepts and definitions",
+          "supportedClaim": "ISO/IEC/IEEE 29119-1:2022 为软件测试提供概念与定义基础，属于软件测试系列标准的概念部分。",
+          "scope": "支持软件测试术语和概念需要标准化定义；不证明某一项目的测试充分性或质量结论。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "指定教材对测试级别、测试类型、黑盒/白盒方法、静态/动态测试及覆盖指标的分类表格与例题，仍需逐项核对。",
+        "教材对测试计划、测试分析/设计/实现/执行/完成过程的具体阶段术语和考试口径，仍需独立人工确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 SWEBOK v4.0a、ISO/IEC/IEEE 生命周期与测试标准以及 ISTQB 官方术语来源，核对核心概念、活动边界与标准版本。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；教材图表、具体考试分类与独立人工终审仍待完成，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "5.5": {
       "status": "partial",
-      "what": "应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。",
-      "why": "理解「应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "净室软件工程（Cleanroom Software Engineering，CSE）是一种面向高可靠软件的团队化开发与认证过程，结合数学化规格说明、设计与正确性验证、增量开发，以及按实际使用分布设计的统计测试和可靠性认证；“零失败”是其质量目标，不是对任意输入和运行环境的绝对无缺陷保证。",
+      "why": "对高可靠软件，仅靠交付前发现并修复缺陷可能不足；净室方法强调在开发过程中预防缺陷，并通过独立、基于使用剖面的统计测试评估交付软件的可靠性。",
+      "how": "先建立可分析的规格说明，再进行结构化/盒式设计与正确性检查；按增量开发构造软件，由独立认证活动依据预期使用分布设计统计测试，观察失效并评估可靠性是否达到目标。",
+      "confusions": "净室软件工程是一个完整过程，不能简单等同于形式化方法或统计测试中的任何单项；有限样本测试只能在使用剖面和统计假设下提供可靠性证据，不能证明所有可能执行路径都没有缺陷。",
       "scenarios": "情境练习（非教材原例）：围绕“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
-      "examFocus": "复习重点：围绕“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "examFocus": "识别净室的缺陷预防思想、数学化规格/设计/验证、增量开发、统计使用测试和可靠性认证；区分“目标零失败”与“逻辑上证明所有运行永不失败”。",
+      "pitfalls": "不要将“零缺陷”说成任何软件都能被无条件保证；也不要把统计测试误解为随意随机点测，测试输入应反映预期使用分布并服务于可靠性评估。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3544,8 +3687,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "请不用照抄原文，解释“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”的核心含义，并说明它解决什么问题。",
-        "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“应用数学和统计学，以严格工程过程在测试前建立并验证正确性，追求零缺陷或接近零缺陷，而不是事后大量排错。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+        "净室软件工程为何强调缺陷预防，而不是只在测试后调试？",
+        "若统计测试样本中没有发生失败，为什么仍不能证明软件对所有输入绝对正确？"
       ],
       "evidence": [
         {
@@ -3556,19 +3699,59 @@
           "scope": "只支持开发中系统化预防缺陷/漏洞的价值；不证明形式化方法能在所有软件中保证零缺陷。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "CMU Software Engineering Institute — Cleanroom Software Engineering Reference",
+          "url": "https://www.sei.cmu.edu/library/cleanroom-software-engineering-reference/",
+          "sourceAuthority": "CMU Software Engineering Institute — Cleanroom Software Engineering Reference",
+          "supportedClaim": "SEI 将净室软件工程描述为面向高可靠软件的理论化、团队化过程，结合数学化规格/设计/正确性验证与统计使用测试，以缺陷预防和统计质量控制追求使用中零失败。",
+          "scope": "支持净室过程的主要组成和“零失败”目标；该目标依赖规格、使用剖面与统计测试假设，不构成对所有输入和环境的绝对无缺陷保证。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "CMU Software Engineering Institute — Cleanroom Software Engineering: Technology and Process",
+          "url": "https://www.sei.cmu.edu/library/cleanroom-software-engineering-technology-and-process/",
+          "sourceAuthority": "CMU Software Engineering Institute — Cleanroom Software Engineering: Technology and Process",
+          "supportedClaim": "SEI 对净室过程的说明包括项目管理、增量开发、软件规格与设计、正确性验证和统计质量认证。",
+          "scope": "支持净室是包含开发与认证活动的工程过程；不证明任何项目使用这些术语就自动达到目标可靠性。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "NIST CSRC Glossary — formal methods",
+          "url": "https://csrc.nist.gov/glossary/term/formal_methods",
+          "sourceAuthority": "NIST CSRC Glossary — formal methods",
+          "supportedClaim": "NIST 将形式化方法定义为对软件系统进行规格说明、开发和验证的数学严谨技术。",
+          "scope": "只支持形式化方法的基本定义；不独立覆盖净室全部过程，也不意味着使用形式化方法就能证明系统在模型之外无缺陷。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对净室软件工程的三类团队、盒式结构设计、正确性验证步骤和可靠性模型的精确名称/流程图仍需逐项核对。",
+        "指定教材“零缺陷/零失败”措辞对应的统计假设、置信水平和使用剖面示例尚未定位，不能将其扩写为绝对保证。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 SEI 净室软件工程参考报告、SEI 技术与过程资料及 NIST 形式化方法术语来源，核对过程构成和目标边界。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；教材图表、团队分工和统计可靠性计算仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "5.6": {
       "status": "partial",
-      "what": "以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。",
-      "why": "理解「以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "基于构件的软件工程（CBSE）通过选择、评估、适配和组合可复用软件构件来构建系统；构件可来自内部资产或外部供应商，重点从重复实现转向接口契约、依赖管理、集成和系统级验证。",
+      "why": "复用经过验证的构件有机会减少重复开发，但如果接口不兼容、质量不透明、依赖失控或维护策略不清，集成与治理成本可能抵消复用收益。",
+      "how": "根据需求和质量属性定义构件能力及接口约束；检索候选构件，评估功能适配、质量、许可证、供应链安全、版本兼容和维护承诺；再进行适配、组合、集成测试、系统验证与持续升级管理。",
+      "confusions": "CBSE 是以可复用构件为基础的工程思路；软件产品线工程则围绕一组相关产品管理共同核心资产与可变点，两者相关但不完全等同。购买/复用并非总优于自研，需比较全生命周期成本和风险。",
       "scenarios": "情境练习（非教材原例）：围绕“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
-      "examFocus": "复习重点：围绕“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "examFocus": "掌握构件选择、接口契约、适配与组合、集成验证和维护治理；面对 COTS/第三方构件时，说明许可证、供应链、版本依赖和供应商退出风险。",
+      "pitfalls": "不要把“购买而不是重新构造”理解为无条件采购；构件复用仍需评估质量、接口、依赖、授权、漏洞修复和长期可维护性。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3589,8 +3772,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "请不用照抄原文，解释“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”的核心含义，并说明它解决什么问题。",
-        "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“以可复用构件组装系统，体现“购买而不是重新构造”，将重点从实现转为集成，以降低开发和维护成本。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+        "一个订单系统希望复用外部支付构件，列出集成前需要核对的接口、质量、许可证和供应链问题。",
+        "软件产品线的共同核心资产与单个项目复用一个组件，有什么目标和管理范围上的不同？"
       ],
       "evidence": [
         {
@@ -3601,19 +3784,59 @@
           "scope": "只支持共享资产复用的工程思路；不把构件复用等同于所有场景都应购买而非自研。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "supportedClaim": "SWEBOK v4.0a 将软件设计、构造、软件架构、软件工程运维等列为软件工程知识域，并讨论软件工程实践中的复用与工程活动。",
+          "scope": "支持复用是软件工程知识与实践的一部分；不等同于特定 CBSE 课程流程或“购买优于自研”的普遍结论。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "CMU Software Engineering Institute — Software Product Lines Collection",
+          "url": "https://www.sei.cmu.edu/library/software-product-lines-collection/",
+          "sourceAuthority": "CMU Software Engineering Institute — Software Product Lines Collection",
+          "supportedClaim": "SEI 软件产品线材料描述通过共同核心资产和受管理的可变性来规划和构建相关产品族。",
+          "scope": "只支持产品线的共享核心资产与变异管理思路；不将软件产品线与单个构件复用视为同一工程方法。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "url": "https://www.iso.org/standard/90219.html",
+          "sourceAuthority": "ISO/IEC/IEEE 12207:2026 — Software life cycle processes",
+          "supportedClaim": "ISO/IEC/IEEE 12207:2026 的生命周期过程框架覆盖软件获取、供应、开发、运行和维护等活动。",
+          "scope": "支持软件采购/供应与开发运维都属于生命周期治理范围；不直接给出 CBSE 构件选择或成本收益公式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "指定教材对 CBSE 构件定义、构件模型/接口契约、构件组装过程和体系结构支撑技术的具体术语与图表仍需逐项核对。",
+        "“购买而不是重新构造”原句的教材上下文与成本比较假设仍需定位，不能作为普遍采购原则。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 SWEBOK v4.0a、SEI 软件产品线材料与 ISO/IEC/IEEE 12207:2026 生命周期框架，核对复用、采购、组装与供应治理边界。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；教材中的构件模型和专有术语仍待逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "5.7": {
       "status": "partial",
-      "what": "围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。",
-      "why": "理解「围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "围绕「围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。」学习时，先用一句话界定概念，再把关键术语组织成因果、流程、层次或分类关系；对照本单元例子与易错提示逐项验证，最后构造一个边界情境，说明该知识点何时适用、何时不能直接套用。",
-      "confusions": "辨析「围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。」时，选出最容易混淆的相邻概念，分别比较定义、目的、适用条件和结果；共享关键词不代表含义相同，也不能把概念、实现手段和产品名称混为一谈。具体标准、数值、版本或考试口径应回查对应来源。",
+      "what": "软件项目管理需要协调人员（People）、产品目标与范围（Product）、开发过程（Process）和项目计划/控制（Project）四类相互作用的因素，以管理交付目标、成本、进度、质量、风险和资源；“四个 P”是常见的教学组织框架，不是所有组织必须采用的唯一管理标准。",
+      "why": "软件项目的不确定性来自人员能力、产品范围、过程选择和项目约束的共同作用；只盯进度或只选择开发模型，都无法替代完整的项目治理。",
+      "how": "先明确人员角色与能力、产品范围和约束，再选择适合的生命周期过程；据此制定估算、排期、资源、沟通、风险、质量和变更控制，并依据迭代结果持续调整计划。",
+      "confusions": "People/Product/Process/Project 是帮助梳理项目管理关注点的框架，各因素相互影响而非按固定顺序完成；项目管理不等于单纯排期，也不能保证成本、进度和质量目标必然全部实现。",
       "scenarios": "情境练习（非教材原例）：围绕“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "自拟练习（非教材原例）：设想一个与「围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。」相关的业务或技术场景。请明确目标与已知约束，说明需要采用或判断的核心机制/步骤、预期结果和验证办法；再构造一个前提不成立的反例，说明结论为什么不能直接套用。本练习用于迁移分析方法，不作为事实依据。",
-      "examFocus": "复习重点：围绕“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "本单元易错点：不要只凭术语相似或关键词匹配作答。针对「围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。」，核对定义、成立条件、边界和题干要求，并把结论与可验证的机制或证据对应起来；若涉及标准、数值、版本或教材原例，应回查权威来源，不以记忆或自拟情境替代核验。",
+      "examFocus": "按人员、产品、过程、项目四方面说明管理关注点，并把每一方面联系到可执行决策：角色与技能、范围/质量约束、生命周期与工作方法、资源/估算/进度/风险/沟通。",
+      "pitfalls": "不要把四个 P 当成软件项目所有活动的封闭清单，也不要把“按计划交付”写成方法本身能保证的结果；项目目标之间可能发生冲突，需要权衡与变更治理。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3634,8 +3857,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "请不用照抄原文，解释“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”的核心含义，并说明它解决什么问题。",
-        "请用“把方法放回生命周期：需求→分析→设计→实现→测试→交付→维护，并关注产物、角色、风险和适用条件”分析“围绕 People、Product、Process、Project 管理软件工程项目，使其在预定成本、进度和质量内完成。”：列出关键步骤，并说明怎样识别“开发模型、设计方法、测试类型、过程活动和管理活动属于不同层次”所指出的概念边界。"
+        "某项目进度延期且需求持续增加，分别从 People、Product、Process、Project 识别一个需要重新评估的决策。",
+        "为什么选择敏捷或瀑布模型不能替代人员、范围、风险和资源管理？"
       ],
       "evidence": [
         {
@@ -3646,8 +3869,39 @@
           "scope": "只支持工程项目需要协调技术与管理活动；不定义软件项目必须使用 People/Product/Process/Project 的唯一分类。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "url": "https://www.computer.org/education/bodies-of-knowledge/software-engineering",
+          "sourceAuthority": "IEEE Computer Society — SWEBOK Guide v4.0a",
+          "supportedClaim": "SWEBOK v4.0a 将软件工程管理列为知识领域之一，纳入软件项目管理及相关工程管理活动。",
+          "scope": "支持软件项目管理属于软件工程知识体系；不证明 People/Product/Process/Project 四个 P 是唯一或强制项目管理模型。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "NASA Systems Engineering Handbook",
+          "url": "https://www.nasa.gov/reference/systems-engineering-handbook/",
+          "sourceAuthority": "NASA Systems Engineering Handbook",
+          "supportedClaim": "NASA 系统工程手册覆盖项目生命周期、系统设计、产品实现和跨领域技术管理等活动，体现工程项目目标、技术活动与管理活动的协调。",
+          "scope": "支持工程项目需要生命周期和技术管理协同；不是软件项目“四个 P”模型的直接定义来源，也不替代软件项目管理教材。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材中四个 P 的原始出处、定义和各维度的细分管理活动（尤其产品范围与项目计划的边界）仍需逐页核对。",
+        "指定教材对成本/进度/质量三角、估算方法、风险管理、团队组织和沟通计划的具体图表/模型仍需人工确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 SWEBOK v4.0a 软件工程管理知识域及 NASA 系统工程手册项目生命周期/技术管理章节，核对项目治理维度与来源支持范围。",
+        "outcome": "AI 来源交叉核查与教学表述修订已完成；四个 P 的指定教材原始出处、表格和考试口径仍待人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "6.1.1": {
       "status": "partial",
