@@ -745,20 +745,24 @@ test('all learning evidence records have human-readable source titles',()=>{
 });
 
 test('AI source cross-check records never upgrade whole-unit status and keep human review explicit', () => {
-  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2','5.1','5.2','5.3','5.4','5.5','5.6','5.7'];
+  const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2','5.1','5.2','5.3','5.4','5.5','5.6','5.7','6.1.1','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.2.3','6.2.3.1','6.2.3.2','6.2.3.3','6.3.1','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4','6.5.1','6.5.2'];
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsWithSourceCrossCheck, ids.length);
-  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length);
+  assert.equal(report.unitsWithSourceCrossCheck, ids.length - 1);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length - 1);
   assert.equal(report.unitsMissingEvidence, 0, 'bounded evidence is not missing merely because whole-unit review is pending');
-  assert.ok(report.unitsWithUnresolvedClaims >= ids.length);
-  assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 47);
-  assert.equal(ids.reduce((sum, id) => sum + content.units[id].evidence.length, 0), 96);
+  assert.ok(report.unitsWithUnresolvedClaims >= ids.length - 1);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 70);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].evidence.length, 0), 159);
   for (const id of ids) {
     const unit = content.units[id];
     assert.equal(unit.status, 'partial', id);
     assert.equal(unit.verificationReview.status, 'ai-source-cross-check-complete', id);
     assert.equal(unit.verificationReview.humanReviewRequired, true, id);
     assert.ok(unit.verificationPendingClaims.length > 0, id);
+    if (id === '6.2.3') {
+      assert.ok(report.excludedUnits.legacyCompatibilityMappings.ids.includes(id));
+      continue;
+    }
     const queued = report.queue.find(item => item.id === id);
     assert.ok(queued, id + ' remains in human verification queue');
     assert.ok(queued.reviewReasons.includes('AI source cross-check completed; independent textbook/human review still required'), id);
@@ -774,8 +778,7 @@ test('AI source cross-check records never upgrade whole-unit status and keep hum
 test('chapter 5 software engineering content tracks current standards and bounds Cleanroom/CBSE claims', () => {
   const ids = ['5.1','5.2','5.3','5.4','5.5','5.6','5.7'];
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsWithSourceCrossCheck, 30);
-  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, 30);
+  assert.ok(ids.every(id => report.queue.some(item => item.id === id)));
   assert.equal(ids.reduce((sum,id)=>sum+content.units[id].verificationPendingClaims.length,0),15);
   assert.equal(ids.reduce((sum,id)=>sum+content.units[id].evidence.length,0),25);
   for (const id of ids) {
@@ -798,4 +801,35 @@ test('chapter 5 software engineering content tracks current standards and bounds
   assert.ok(cbse.confusions.includes('软件产品线工程'));
   assert.ok(content.units['5.7'].confusions.includes('相互影响'));
   assert.ok(content.units['5.7'].verificationPendingClaims.some(claim=>claim.includes('四个 P')));
+});
+
+test('chapter 6 database design, relational model, normalization, and NoSQL claims keep current source boundaries', () => {
+  const ids = ['6.1.1','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.2.3','6.2.3.1','6.2.3.2','6.2.3.3','6.3.1','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4','6.5.1','6.5.2'];
+  const report = buildVerificationQueue(content);
+  assert.equal(report.unitsWithSourceCrossCheck, 49);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, 49);
+  assert.equal(ids.reduce((sum,id)=>sum+content.units[id].verificationPendingClaims.length,0),23);
+  assert.equal(ids.reduce((sum,id)=>sum+content.units[id].evidence.length,0),63);
+  for (const id of ids) {
+    assert.equal(content.units[id].status,'partial',id);
+    assert.equal(content.units[id].verificationReview.status,'ai-source-cross-check-complete',id);
+    assert.equal(content.units[id].verificationReview.humanReviewRequired,true,id);
+    if (id === '6.2.3') assert.ok(report.excludedUnits.legacyCompatibilityMappings.ids.includes(id));
+    else assert.ok(report.queue.some(item=>item.id===id),id+' remains in human review queue');
+  }
+  assert.ok(content.units['6.1.4'].what.includes('外模式') && content.units['6.1.4'].what.includes('内模式'));
+  assert.ok(content.units['6.2.1'].confusions.includes('重复行') && content.units['6.2.1'].confusions.includes('NULL'));
+  assert.ok(content.units['6.2.2'].confusions.includes('并相容'));
+  const third = content.units['6.2.3.3'];
+  assert.ok(third.what.includes('超键') && third.what.includes('主属性'));
+  assert.ok(third.confusions.includes('BCNF'));
+  assert.ok(content.units['6.3.5'].what.includes('写入成本'));
+  assert.ok(content.units['6.3.7'].evidence.some(e=>e.url==='https://www.postgresql.org/docs/current/backup.html'));
+  assert.ok(content.units['6.4'].evidence.some(e=>e.url==='https://peps.python.org/pep-0249/'));
+  const nosql = content.units['6.5.1'];
+  for (const url of ['https://www.mongodb.com/docs/manual/data-modeling/','https://cassandra.apache.org/doc/latest/cassandra/architecture/overview.html','https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/','https://neo4j.com/docs/getting-started/graph-database/']) assert.ok(nosql.evidence.some(e=>e.url===url),url);
+  const distributed = content.units['6.5.2'];
+  assert.ok(distributed.confusions.includes('分片') && distributed.confusions.includes('复制'));
+  assert.ok(distributed.evidence.some(e=>e.url==='https://www.mongodb.com/docs/manual/sharding/'));
+  assert.ok(distributed.evidence.some(e=>e.url==='https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/'));
 });

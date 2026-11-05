@@ -3905,14 +3905,14 @@
     },
     "6.1.1": {
       "status": "partial",
-      "what": "数据库设计首先要从需求和数据对象出发，明确数据及其关系，再形成适合实现和维护的数据结构。",
-      "why": "错误的数据模型会把问题扩散到事务、查询、性能和维护层。",
-      "how": "需求分析→概念模型→逻辑模型→物理实现，并持续检查完整性和访问需求。",
-      "confusions": "概念模型描述业务语义，逻辑模型描述数据结构，物理设计关注具体存储与访问实现。",
+      "what": "数据库设计从业务目标与数据需求出发，识别数据对象、属性、联系和约束，再形成概念、逻辑和物理结构，并经过实施、运行和维护持续验证。",
+      "why": "设计质量取决于能否正确表达业务规则并满足访问、容量、安全和维护要求；只画表结构或只做性能优化都不足以完成数据库设计。",
+      "how": "先收集业务流程、数据项、规则和负载约束；建立概念模型，转换为逻辑结构，再结合目标 DBMS 和工作负载进行物理设计；实施后通过数据质量、约束、查询和恢复测试反馈修订。",
+      "confusions": "数据库生命周期阶段名称随方法/组织而异；概念、逻辑、物理设计是不同抽象层次，不意味着每个项目都必须严格一次线性完成。",
       "scenarios": "业务系统数据库建模、数据治理和架构设计。",
       "examples": "以校园选课为例，先梳理学生、课程、选课和成绩等业务对象及规则，再决定实体、联系和标识；设计应从需求出发，而不是先选字段类型或索引。",
-      "examFocus": "关注实体、关系、约束、规范化和设计阶段之间的对应关系。",
-      "pitfalls": "页面字段只呈现部分业务信息，不能替代完整数据模型。还需识别业务规则、数据生命周期、完整性约束和未来变化，否则表结构可能只满足当前页面。",
+      "examFocus": "能按需求分析、概念设计、逻辑设计、物理设计、实施和运行维护识别阶段产物，并解释阶段间为何需要验证和迭代。",
+      "pitfalls": "不要在业务规则尚不清楚时直接决定索引、分库或存储结构；也不要把建表成功等同于设计质量达标。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -3937,8 +3937,8 @@
         "status": "partial"
       },
       "selfChecks": [
-        "为什么数据库设计应先分析业务对象和规则，而不是先建表？",
-        "从需求到物理实现通常经过哪些层次？"
+        "为订单系统列出三项业务数据规则，再说明它们分别影响概念模型、逻辑约束还是物理设计。",
+        "为什么数据库设计阶段不是只能单向推进？举出一个需要回到前序设计的验证结果。"
       ],
       "evidence": [
         {
@@ -3949,22 +3949,52 @@
           "scope": "只支持从数据需求与对象开始建模；不规定所有项目必须采用同一套设计阶段或建模工具。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Designing databases",
+          "url": "https://www.ibm.com/docs/en/db2/12.1.x?topic=databases-designing",
+          "sourceAuthority": "IBM Db2 Documentation — Designing databases",
+          "supportedClaim": "IBM 将数据库设计描述为对真实业务系统建模，识别实体、属性及实体间关系。",
+          "scope": "支持数据库设计从真实业务对象及关系开始；不规定所有组织必须采用相同阶段名称或单向顺序。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Internal Revenue Service — Database Design Techniques and Deliverables",
+          "url": "https://www.irs.gov/irm/part2/irm_02-005-013",
+          "sourceAuthority": "Internal Revenue Service — Database Design Techniques and Deliverables",
+          "supportedClaim": "IRS 数据库生命周期概述从需求分析开始，包含逻辑设计、物理设计、实施以及监控/修改/维护；生命周期在上线后仍持续。",
+          "scope": "支持数据库生命周期覆盖运行维护且持续演进；属于机构工程流程指南，不是所有项目唯一阶段模型。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材所用数据库设计/生命周期阶段的精确名称、阶段图和阶段产物对应关系仍需逐页核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM Db2、IRS 数据库生命周期及数据库设计权威资料核对核心命题与流程边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；指定教材阶段图、术语与考试口径仍待逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.1.2": {
       "status": "partial",
-      "what": "数据模型描述数据、数据联系、语义约束和操作，是数据库设计的基础。",
-      "why": "数据模型把业务数据、数据之间的联系、语义约束和允许的操作组织成明确描述；模型边界不清会把歧义带入后续逻辑结构、约束实现和查询设计。",
-      "how": "选一个业务例子，分别写出需要描述的数据对象、对象间联系、必须成立的约束和典型操作；再检查这些描述在概念模型、逻辑结构与目标实现中如何对应。",
-      "confusions": "数据模型是对数据结构与约束的抽象，不是某个数据库产品；概念模型强调业务语义，逻辑模型落实数据组织，物理设计才决定存储和访问路径。",
+      "what": "数据模型描述数据结构、数据之间的联系、语义约束以及允许的数据操作；模型的抽象层次不同，可用于业务概念表达、逻辑结构定义或具体 DBMS 实现。",
+      "why": "明确数据模型有助于业务人员、设计人员和开发人员一致表达数据含义，并把业务规则转换为可实施约束。",
+      "how": "先识别实体/对象、属性、联系与约束，再选择适合的模型表达；区分概念模型、逻辑模型和物理模型，并记录模型假设及未表达的业务规则。",
+      "confusions": "数据模型不等于具体数据库产品或某张表；概念模型强调业务含义，逻辑模型强调数据结构与键/约束，物理模型进一步考虑目标 DBMS 的实现。",
       "scenarios": "情境练习（非教材原例）：围绕“数据模型描述数据、数据联系、语义约束和操作，是数据库设计的基础。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "以高校选课系统为例，概念模型先表达学生、课程、选课及其基数约束；关系模型再将实体和联系映射为关系、主键与外键；物理模型最后才考虑索引和存储组织。同一个业务需求在三个层次上的表达不同。",
-      "examFocus": "复习重点：围绕“数据模型描述数据、数据联系、语义约束和操作，是数据库设计的基础。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "不要把 ER 图直接当作数据库物理设计，也不要把某个 DBMS 的字段类型、索引语法当成数据模型的定义。概念模型强调业务语义，逻辑模型强调数据组织，物理模型强调目标平台上的存储与访问路径。",
+      "examFocus": "掌握数据、数据联系、语义约束和操作等模型要素；能够区分概念/逻辑/物理模型，说明各自在设计中的用途。",
+      "pitfalls": "不要把 ER 图、关系模式和物理表混成同一层；画出模型也不代表完整性约束已经实施。",
       "selfChecks": [
-        "请用一个业务例子区分概念模型、逻辑模型和物理模型，各层分别会产出什么？",
-        "为什么同一业务需求不能直接从 ER 图跳到索引和存储参数？"
+        "用同一业务场景分别说明概念模型、关系逻辑模型和物理表定义关注什么。",
+        "数据模型只描述字段却没有记录实体间业务约束，可能带来什么问题？"
       ],
       "source": {
         "type": "mindmap",
@@ -3994,22 +4024,52 @@
           "scope": "只支持数据模型承载对象/属性等结构信息；不覆盖所有数据模型形式及其完整语义约束。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Designing databases",
+          "url": "https://www.ibm.com/docs/en/db2/12.1.x?topic=databases-designing",
+          "sourceAuthority": "IBM Db2 Documentation — Designing databases",
+          "supportedClaim": "IBM 数据库设计文档以实体、属性和实体关系描述业务系统需要存储的数据及其联系。",
+          "scope": "支持数据模型表达对象、属性和联系；不能单独证明教材采用的数据模型要素清单或全部模型分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "IBM — What is an Entity Relationship Diagram?",
+          "url": "https://www.ibm.com/think/topics/entity-relationship-diagram",
+          "sourceAuthority": "IBM — What is an Entity Relationship Diagram?",
+          "supportedClaim": "IBM 区分概念、逻辑和物理 ER 模型：概念层关注高层实体和关系，逻辑层进一步定义属性，物理层更接近具体实现。",
+          "scope": "支持不同建模抽象层次差异；不替代教材对逻辑/物理模型的术语和图例。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对数据模型要素清单及各模型类别的具体术语和分类仍需逐项核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM Db2、IRS 数据库生命周期及数据库设计权威资料核对核心命题与流程边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；指定教材阶段图、术语与考试口径仍待逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.1.3": {
       "status": "partial",
-      "what": "位于用户/应用与操作系统之间，负责定义、操纵、控制、维护和保护数据库。",
-      "why": "DBMS 将数据定义、查询执行、事务协调、权限控制和存储维护等职责集中到数据库管理层，应用可以依赖稳定接口而不必自行实现这些底层能力。",
-      "how": "沿一次业务查询追踪流程：应用发起请求，DBMS 解析和执行语句、访问数据、处理并发与权限，再把结果返回应用；逐步标出哪些职责由 DBMS 承担。",
-      "confusions": "数据库是被组织和管理的数据，DBMS 是管理这些数据的软件，SQL 是常见的数据定义/操作语言；三者相关但不能互相替代。",
+      "what": "数据库管理系统（DBMS）是管理数据库的软件系统，负责接受应用或用户请求，提供数据定义、查询与更新、事务和并发控制、完整性、安全、备份恢复等能力，并管理底层数据库存储。",
+      "why": "DBMS 将数据组织、访问和管理能力从单个应用中抽离，使多应用能够共享数据并由统一机制维护一致性、安全与恢复。",
+      "how": "应用通过驱动或连接接口向 DBMS 发送请求；DBMS 解析并执行操作，协调事务、并发访问和持久化，再将结果或错误返回客户端；具体内部模块和部署方式依产品而异。",
+      "confusions": "DBMS 是管理数据库的软件，不等于数据库本身；数据库是被管理的数据及其组织，数据库服务器是运行 DBMS 的进程/主机环境。客户端/服务器是常见架构，不意味着 DBMS 必须与客户端分处不同物理机器。",
       "scenarios": "情境练习（非教材原例）：围绕“位于用户/应用与操作系统之间，负责定义、操纵、控制、维护和保护数据库。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "在图书借阅系统中，应用提交查询或借还请求，数据库管理系统负责解析并执行数据操作、检查约束、协调并发事务、管理存储访问并实施权限控制。应用通过数据库接口使用这些能力，不需要自行实现底层页管理和并发控制。",
-      "examFocus": "复习重点：围绕“位于用户/应用与操作系统之间，负责定义、操纵、控制、维护和保护数据库。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "不要把数据库管理系统与数据库本身混为一谈：数据库是被管理的数据集合及其组织，DBMS 是提供定义、查询、事务、权限和维护等能力的软件。SQL 是常见交互语言，不等于完整的 DBMS。",
+      "examFocus": "区分数据库、DBMS 和数据库应用；说明 DBMS 管理数据定义、操作、事务、完整性、安全与恢复的职责。",
+      "pitfalls": "不要把 DBMS 的全部功能简化为“存储数据”；也不要把某个产品的进程架构当作所有 DBMS 的唯一内部实现。",
       "selfChecks": [
-        "数据库、数据库管理系统和 SQL 分别是什么关系？",
-        "应用执行一次查询时，哪些职责通常由 DBMS 承担，而不是由业务代码自行实现？"
+        "数据库、DBMS 和数据库应用分别是什么？以 PostgreSQL + Web 应用举例说明。",
+        "为什么事务和并发控制属于 DBMS 的职责，而不应完全由每个应用自行实现？"
       ],
       "source": {
         "type": "mindmap",
@@ -4039,19 +4099,49 @@
           "scope": "只支持数据库管理系统提供数据定义与查询等管理能力；不逐项证明本单元列出的全部控制、维护和安全功能。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Architectural Fundamentals",
+          "url": "https://www.postgresql.org/docs/current/tutorial-arch.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Architectural Fundamentals",
+          "supportedClaim": "PostgreSQL 官方教程说明服务器进程管理数据库文件、接受客户端应用连接并代表客户端执行数据库操作；客户端与服务器可位于不同主机。",
+          "scope": "支持 DBMS/服务器为客户端管理数据库请求的架构示例；PostgreSQL 的具体进程模型不代表所有 DBMS 的实现方式。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Tutorial",
+          "url": "https://www.postgresql.org/docs/current/tutorial.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Tutorial",
+          "supportedClaim": "PostgreSQL 教程覆盖数据库创建、访问、表结构、数据装载、查询、连接、更新、事务和外键等数据库管理操作。",
+          "scope": "支持 DBMS 为数据定义、查询、事务和完整性操作提供能力；不单独给出所有 DBMS 的完整功能模块分类。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对 DBMS 功能模块、系统组成及数据库管理员职责的具体分类和图示仍需按指定版次核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 与 IBM Db2 官方数据库体系结构和数据独立性资料核对定义及边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；教材架构图、映像术语和考试口径仍待核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.1.4": {
       "status": "partial",
-      "what": "数据库三级模式包括外模式、概念模式和内模式，通过两级映像实现数据独立性。",
-      "why": "理解「数据库三级模式包括外模式、概念模式和内模式，通过两级映像实现数据独立性。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "从用户视图→概念结构→物理存储建立三层对应关系，再理解两级映像如何提供独立性。",
-      "confusions": "三级模式不是三个数据库；外模式面向用户/应用，概念模式描述整体逻辑结构，内模式描述物理存储。",
+      "what": "数据库三级模式通常包括外模式、概念模式和内模式；外模式面向特定用户/应用的数据视图，概念模式描述全局逻辑结构，内模式描述数据的内部存储组织，两级映像用于支持逻辑和物理数据独立性。",
+      "why": "把用户视图、全局逻辑结构和物理存储分开，有助于在数据组织变化或用户视图变化时减少对其他层的影响。",
+      "how": "先识别不同用户需要的外部视图，再定义全局概念结构，最后映射到具体存储组织；当概念结构或内部存储变化时，检查对应映像和应用是否需要调整。",
+      "confusions": "外模式/概念模式/内模式是抽象层次，不是三个独立数据库；外模式—概念模式映像与概念模式—内模式映像分别支持不同类型的数据独立性。",
       "scenarios": "例如同一数据库需要为订单查询、报表和管理后台提供不同数据视图，同时底层存储结构可能因性能优化而调整；三级模式把用户/应用视图、整体逻辑结构和物理存储分开，两级映像负责维持这些层次之间的对应关系。",
       "examples": "例如应用只依赖外模式中的订单查询视图，数据库管理员调整内模式的索引或存储组织时，不应要求应用重新理解底层物理结构；这体现了物理数据独立性的设计目标。",
-      "examFocus": "一定要按外模式→概念模式→内模式记住职责，并区分两级映像对应的层次关系；三级模式不是三个数据库，也不是简单把表分成三类。",
-      "pitfalls": "不要把“三级模式”误解成三个实际数据库；也不要把外模式直接等同于物理表、把概念模式等同于某个用户页面。题目应先判断所描述的是用户视图、全局逻辑结构还是物理存储。",
+      "examFocus": "记住三级模式名称、各自描述对象，以及两级映像与逻辑/物理数据独立性的对应关系；题目变化发生在哪一层，就分析哪一映像及受影响层次。",
+      "pitfalls": "不要将外模式误认为数据库物理文件，也不要把逻辑数据独立性和物理数据独立性对调。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4072,8 +4162,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "外模式、概念模式、内模式分别面向什么？两级映像如何支持数据独立性？",
-        "如果底层存储结构改变而应用视图和逻辑结构保持不变，你认为主要体现了哪一层数据独立性？"
+        "数据库内部存储从堆文件改成索引组织，对应哪一级变化？哪种数据独立性与之相关？",
+        "新增一个只展示部分字段的用户视图，主要涉及三级模式中的哪一级？"
       ],
       "evidence": [
         {
@@ -4084,22 +4174,43 @@
           "scope": "只支持三级模式和映像的基本概念；不同 DBMS 的实现细节和术语可能不同。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Three-schema architecture",
+          "url": "https://www.ibm.com/docs/en/db2/11.5?topic=architecture-three-schema-architecture",
+          "sourceAuthority": "IBM Db2 Documentation — Three-schema architecture",
+          "supportedClaim": "IBM Db2 文档介绍外部、概念和内部模式以及它们之间的映像，用以说明数据独立性。",
+          "scope": "支持三级模式与两级映像的标准架构概念；具体术语翻译和教材图示仍需按指定版次确认。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材中三级模式和两级映像的标准图、逻辑/物理数据独立性的定义文字及典型例子仍需逐页核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 与 IBM Db2 官方数据库体系结构和数据独立性资料核对定义及边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；教材架构图、映像术语和考试口径仍待核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.2.1": {
       "status": "partial",
-      "what": "关系是一张表，元组是行，属性是列，域是属性取值范围。",
-      "why": "关系、元组、属性和域是关系模型的基本术语；把它们准确区分，才能正确表达键、约束和关系运算。",
-      "how": "拿一张小型关系表逐项标注关系、元组、属性和各属性的取值域，再检查哪些属性组合能唯一标识元组、哪些取值违反业务约束。",
-      "confusions": "关系模型的形式语义不等同于 SQL 表的所有实现行为；关系在理论上不依赖行顺序且不含重复元组，不能把查询结果的默认显示顺序当成模型约束。",
+      "what": "关系模型以关系组织数据；关系中的元组表达记录，属性表达字段，域限定属性可取值的范围。关系模式描述属性结构，键和完整性约束进一步限定允许的数据状态。",
+      "why": "关系模型提供统一的表结构和关系运算基础，使数据关联、约束检查和声明式查询能够以明确规则表达。",
+      "how": "定义关系模式和属性域，识别候选键/主键及外键，声明必要的非空、唯一、检查和参照完整性约束；设计时注意数学关系与具体 SQL 表实现之间的差异。",
+      "confusions": "数学关系是元组集合，不存在重复元组；SQL 表在没有唯一约束时可能包含重复行，且 SQL 的 NULL/多值逻辑也不同于经典关系模型。元组/属性/域分别对应行/列/取值范围，但不能因此把 SQL 完全等同于纯关系模型。",
       "scenarios": "情境练习（非教材原例）：围绕“关系是一张表，元组是行，属性是列，域是属性取值范围。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "考虑关系“选课(学号, 课程号, 成绩)”：每一行表示一个元组，每一列对应一个属性；学号和课程号的取值分别来自其定义域。若同一学生可选多门课，单独用学号不能唯一标识选课行，通常需结合课程号确定候选键。",
-      "examFocus": "复习重点：围绕“关系是一张表，元组是行，属性是列，域是属性取值范围。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "关系模型中的关系在数学定义上不依赖行顺序，也不允许重复元组；不要把 SQL 查询结果默认呈现的排序或某个数据库表的物理存放顺序当成关系模型的语义。属性名相同也不代表属性语义和域必然相同。",
+      "examFocus": "掌握关系、关系模式、元组、属性、域和键等基本术语；能区分关系的数学性质与 SQL 表的实现语义。",
+      "pitfalls": "不要把任何 SQL 表都当成无重复元组的数学关系；没有主键/唯一约束的表可能有重复行，也要注意 NULL 对比较与约束的影响。",
       "selfChecks": [
-        "关系、元组、属性和域分别对应什么？",
-        "选课关系中为什么学号通常不能单独唯一标识一条选课记录？"
+        "解释关系、元组、属性、域和关系模式的区别。",
+        "一个 SQL 表没有主键且存在两行所有列值完全相同，它是否严格符合数学关系的集合语义？"
       ],
       "source": {
         "type": "mindmap",
@@ -4129,22 +4240,52 @@
           "scope": "支持关系表、行、列和列类型的基本对应；“域”作为关系理论中的取值集合仍需结合关系模型教材理解，且 SQL 表不自动保证行唯一或查询返回顺序。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Table Basics",
+          "url": "https://www.postgresql.org/docs/current/ddl-basics.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Table Basics",
+          "supportedClaim": "PostgreSQL 将表定义为由命名列组成的结构，并说明 SQL 表的行列组织和数据类型。",
+          "scope": "支持 SQL 表结构及列/行概念；不能据此抹去数学关系与 SQL 表在重复行、NULL 等语义上的差别。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Constraints",
+          "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Constraints",
+          "supportedClaim": "PostgreSQL 提供主键、唯一、非空、检查和外键约束；主键列必须唯一且非空，外键用于维护相关表间参照完整性。",
+          "scope": "支持关系数据库中的键和完整性约束实现；不替代关系模型中候选键和关系模式的形式化定义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对关系的形式化定义、候选键/主键/超键与完整性约束的符号和术语边界仍需核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 关系表/约束文档及 OpenStax、RPI 数据库课程关系代数材料核对定义和操作条件。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；教材符号、形式化定义与典型题仍需核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.2.2": {
       "status": "partial",
-      "what": "关系代数通过运算组合关系，结果仍为关系。",
-      "why": "关系代数用可组合的关系运算表达查询逻辑，有助于拆解复杂查询并检查中间结果的属性和语义。",
-      "how": "把自然语言查询拆成筛选条件、需要保留的属性和关联关系，依次写出选择、投影与连接，并在每一步检查输入关系、连接条件和输出属性。",
-      "confusions": "选择按条件筛选元组，投影选择属性列；连接需要正确关联条件，否则可能产生无关组合。做题时不要只记运算名称，要核对每步结果的结构。",
+      "what": "关系代数是一种以关系为操作对象的形式化查询语言；选择、投影、并、差、笛卡尔积和重命名等基本运算组合后仍得到关系，连接和交等操作可由基本运算推导或作为扩展运算表达。",
+      "why": "关系代数为关系查询提供可组合的数学基础，帮助分析查询语义、等价变换和关系型 DBMS 的查询优化。",
+      "how": "识别运算对象和输入关系的模式；用选择筛选元组、用投影选取属性、用并/差组合兼容关系、用笛卡尔积生成组合，再通过选择/投影构造连接；集合运算前检查并相容性。",
+      "confusions": "选择作用于元组条件，投影作用于属性集合；并/差要求输入关系并相容；连接不是无条件把两表拼接，必须明确连接条件。关系代数的集合语义与 SQL 默认多重集语义存在差异。",
       "scenarios": "情境练习（非教材原例）：围绕“关系代数通过运算组合关系，结果仍为关系。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "设“学生(学号, 姓名, 班级)”和“选课(学号, 课程号, 成绩)”，要找选修课程的学生姓名，可先对选课关系按学号与学生关系连接，再投影出姓名。题目应逐步写清选择、投影、连接等操作，并检查连接条件是否遗漏。",
-      "examFocus": "复习重点：围绕“关系代数通过运算组合关系，结果仍为关系。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "选择是按条件筛选元组，投影是选取属性列；二者不能互换。连接若缺少正确的关联条件，可能产生无关组合；投影会去掉未选属性，做题时要检查后续运算是否还需要这些属性。关系代数结果仍是关系。",
+      "examFocus": "能识别 σ、π、∪、−、×、ρ 及连接表达式；判断并/差的并相容条件，并区分选择和投影。",
+      "pitfalls": "不要把 WHERE 与 SELECT 列清单的作用混淆；也不要在并/差运算中忽略关系模式兼容条件，或把 SQL JOIN 的所有细节等同于简单笛卡尔积。",
       "selfChecks": [
-        "请用一句话区分关系代数中的选择与投影。",
-        "连接运算缺少正确条件可能造成什么问题？为什么关系代数结果仍然是关系？"
+        "对“只保留年龄大于 18 的用户姓名”写出选择与投影的关系代数运算顺序。",
+        "两个关系属性数相同但对应域不同，能否直接做并运算？说明原因。"
       ],
       "source": {
         "type": "mindmap",
@@ -4174,19 +4315,49 @@
           "scope": "只支持关系代数运算的基本用途；具体运算符记法和扩展需按课程教材确认。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "OpenStax — Relational Database Management Systems",
+          "url": "https://openstax.org/books/introduction-computer-science/pages/8-3-relational-database-management-systems",
+          "sourceAuthority": "OpenStax — Relational Database Management Systems",
+          "supportedClaim": "OpenStax 将选择、投影、并、重命名、差和笛卡尔积列为关系代数一组完整基本运算，并说明并等集合运算需要并相容关系。",
+          "scope": "支持关系代数基本运算及并相容的概念教学；不替代指定教材的符号和扩展运算清单。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Rensselaer Polytechnic Institute — Relational Algebra Course Notes",
+          "url": "https://www.cs.rpi.edu/~sibel/csci4380/fall2026/course_notes/relational_algebra.html",
+          "sourceAuthority": "Rensselaer Polytechnic Institute — Relational Algebra Course Notes",
+          "supportedClaim": "RPI 数据库课程材料说明选择、投影、笛卡尔积、并、差、重命名等运算，且集合运算要求输入关系并相容。",
+          "scope": "支持关系代数核心运算定义和兼容条件；属于课程讲义，不是关系模型唯一规范性定义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对关系代数基本/扩展运算的完整清单、符号约定、运算优先级和典型推导题仍需核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 关系表/约束文档及 OpenStax、RPI 数据库课程关系代数材料核对定义和操作条件。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；教材符号、形式化定义与典型题仍需核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.2.3": {
       "status": "partial",
-      "what": "函数依赖描述关系模式中属性之间的约束关系；规范化通过分解关系模式减少冗余并降低更新异常。",
-      "why": "理解「函数依赖描述关系模式中属性之间的约束关系；规范化通过分解关系模式减少冗余并降低更新异常。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "先识别函数依赖，再分析候选键和范式条件，最后判断分解性质。",
-      "confusions": "规范化不是表越多越好；还要关注无损连接和依赖保持。",
+      "what": "函数依赖描述关系模式中属性集之间的约束；数据库规范化依据函数依赖和候选键，将关系模式分解为较高范式，以减少冗余以及插入、更新、删除异常，同时关注分解后的无损连接与依赖保持。",
+      "why": "未识别函数依赖和候选键时，表结构容易重复保存同一事实，导致更新不一致；分解不当又可能无法无损重构原数据或使约束难以维护。",
+      "how": "先列出业务规则支持的函数依赖和候选键，再逐项判定当前范式；确定违反条件的依赖后分解关系，并检查分解是否无损连接、重要依赖是否保持，最后用业务查询验证结构是否合适。",
+      "confusions": "规范化不等于无限拆表，也不保证每个查询都更快；范式判定依赖真实业务规则、候选键和函数依赖，不能只凭字段是否重复或是否有复合主键判断。",
       "scenarios": "例如一张订单表同时重复保存客户名称、客户地址和订单信息，更新客户地址时可能只改了部分记录；分析函数依赖后，可以识别哪些属性应该由哪些键决定，再据此判断是否需要分解关系模式。",
       "examples": "例如关系模式包含订单号、客户号、客户名称和订单金额，若客户号能够确定客户名称，就存在相应函数依赖；规范化分析会进一步考虑键、范式条件以及分解后能否无损连接、是否保持必要依赖。",
-      "examFocus": "做规范化题不要直接数表的数量；先写清函数依赖，再找候选键并检查范式条件，最后分析分解的无损连接与依赖保持等性质。",
-      "pitfalls": "“拆成更多表就一定更规范”是错误思路；规范化的目标是减少由依赖关系造成的冗余和更新异常，同时还要检查分解性质，不能只追求表越多越好。",
+      "examFocus": "掌握函数依赖、完全/部分/传递依赖、候选键、主属性/非主属性及 1NF/2NF/3NF 条件；分解题还需检查无损连接和依赖保持。",
+      "pitfalls": "不要把所有冗余都视为范式问题，也不要为追求高范式而忽略查询负载、事务边界和分解代价；反规范化需要明确性能证据和一致性维护方案。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4207,8 +4378,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "函数依赖在规范化中起什么作用？为什么判断范式前通常要先分析候选键和依赖？",
-        "如果一个非键属性只由候选键的一部分决定，你会重点怀疑哪类规范化问题？"
+        "说明函数依赖 X→Y 表达什么约束，为什么必须依据业务规则而不能仅看当前样本数据。",
+        "分解一个关系后，为什么还要检查无损连接与依赖保持？"
       ],
       "evidence": [
         {
@@ -4219,19 +4390,49 @@
           "scope": "支持规范化、依赖关系与减少冗余/异常的基本联系；文档针对特定数据库产品，不能据此推断所有工作负载都应无条件追求最高范式，也不替代完整的函数依赖理论。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Normalization",
+          "url": "https://www.ibm.com/docs/en/tpfdf/1.1.3?topic=database-normalization",
+          "sourceAuthority": "IBM Db2 Documentation — Normalization",
+          "supportedClaim": "IBM 文档说明规范化通过识别实体和依赖逐步细化关系结构，介绍 1NF、2NF 和 3NF 以减少重复数据。",
+          "scope": "支持规范化用范式逐步改善关系结构与减少冗余；不替代形式化函数依赖、候选键、无损连接和依赖保持的完整判定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "RPI Database Systems — Normalization",
+          "url": "https://www.cs.rpi.edu/~sibel/csci4380/fall2026/course_notes/normalization.html",
+          "sourceAuthority": "RPI Database Systems — Normalization",
+          "supportedClaim": "RPI 数据库课程资料以函数依赖、候选键、超键和主属性定义第三范式，并区分 3NF 与 BCNF。",
+          "scope": "支持形式化范式条件的教学表述；具体考试用语和教材例题需以指定教材为准。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对函数依赖、完全/部分/传递依赖、候选键、主属性和规范化分解算法的精确定义与符号仍需逐项核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM 数据库规范化文档、Cornell/RPI 数据库课程资料与函数依赖定义核对范式条件。",
+        "outcome": "AI 来源交叉核查完成；教材范式表、分解例题和无损连接证明仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.1": {
       "status": "partial",
-      "what": "数据库设计通常经历需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库实施和运行维护，各阶段需要验证并可迭代。",
-      "why": "理解「数据库设计通常经历需求分析、概念结构设计、逻辑结构设计、物理结构设计、数据库实施和运行维护，各阶段需要验证并可迭代。」的价值，在于能把概念与系统需求、架构选择和实际后果联系起来。学习时应说明它解决的问题、成立的前提，以及它会影响哪些设计决策；具体结论仍以本单元可追溯的教材或权威证据为准。",
-      "how": "按阶段梳理数据库设计：需求分析确定业务规则和数据需求；概念设计形成与具体 DBMS 无关的概念模型；逻辑设计映射为目标数据模型并明确键、约束和规范化；物理设计结合负载确定存储与访问路径；实施和运行阶段再验证性能、完整性与恢复能力。各阶段会根据验证结果迭代。",
-      "confusions": "需求分析是澄清要解决的业务问题和约束，不等同于概念建模；概念模型表达业务实体及关系，逻辑模型落实到数据模型结构，物理设计才考虑特定数据库的存储与访问实现。阶段名称相近不代表每个项目都必须严格一次性顺序执行。",
+      "what": "数据库设计通常从需求分析开始，经过概念结构设计、逻辑结构设计、物理结构设计、实施和运行维护；各阶段会通过评审、约束验证、查询与运行数据反馈而迭代。",
+      "why": "阶段分工可以降低复杂度，但前一阶段的不完整假设会传递到后续结构和实现；迭代验证有助于及早发现业务规则或性能目标偏差。",
+      "how": "识别需求和数据规则，建立概念模型；将其转换为关系/目标数据模型，按目标 DBMS 和访问负载设计物理结构；实施后验证约束、查询、备份恢复与运行指标，再根据问题回改模型。",
+      "confusions": "需求、概念、逻辑、物理和实施是常见设计视角，不代表各组织都采用完全相同的阶段名称或瀑布式顺序；数据库上线后的监控、修改和维护仍属于生命周期。",
       "scenarios": "新建预约系统时，先确认预约冲突规则和数据保留要求，再建模用户、资源、时段和预约关系，随后设计键与完整性约束，最后根据并发预约与查询负载设计索引，并用并发测试和恢复演练验证方案。",
       "examples": "校园选课数据库先根据选课规则建立学生、课程、选课和成绩的概念模型，再确定关系、主外键和完整性约束，最后结合查询负载选择索引；上线后通过并发选课和备份恢复测试验证设计。",
-      "examFocus": "重点记忆数据库设计的主要阶段及其产物：需求说明、概念模型、逻辑数据模型、物理存储/访问设计、实施与运行维护；能判断题目描述属于哪个阶段，并理解阶段间反馈迭代的原因。",
-      "pitfalls": "数据库设计不是一次性瀑布流程；验证发现约束遗漏或性能问题时可能需要回到前序阶段。也不要在业务规则尚未明确时过早优化物理存储。",
+      "examFocus": "能识别各阶段输入与产物，并区分概念设计回答业务对象关系、逻辑设计回答数据结构/约束、物理设计回答存储和访问路径。",
+      "pitfalls": "不要把数据库设计理解为先画 ER 图再一次性建表；真实设计需要在需求、模型、性能、成本和运行反馈间反复校正。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4252,8 +4453,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "数据库设计各阶段的输入、产物和验证重点是什么？",
-        "为什么实施后发现问题时可能需要回退迭代？"
+        "说出概念、逻辑和物理设计分别应输出什么，以及三者如何衔接。",
+        "物理设计压测发现核心查询无法满足响应目标，应如何反馈到前序设计？"
       ],
       "evidence": [
         {
@@ -4264,22 +4465,52 @@
           "scope": "支持数据库设计应从数据需求与对象分析开始、区分逻辑组织和物理实现；不证明所有项目必须采用完全相同的阶段名称、严格线性顺序或一次性完成流程。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Internal Revenue Service — Database Design Techniques and Deliverables",
+          "url": "https://www.irs.gov/irm/part2/irm_02-005-013",
+          "sourceAuthority": "Internal Revenue Service — Database Design Techniques and Deliverables",
+          "supportedClaim": "IRS 数据库生命周期指南列出需求分析、逻辑设计、物理设计、实施、监控/修改/维护等阶段，并强调维护持续发生。",
+          "scope": "支持一种实际数据库生命周期划分；不是所有数据库项目唯一标准阶段模型。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Designing databases",
+          "url": "https://www.ibm.com/docs/en/db2/12.1.x?topic=databases-designing",
+          "sourceAuthority": "IBM Db2 Documentation — Designing databases",
+          "supportedClaim": "IBM 从实体、属性、联系和业务系统表达说明数据库设计起点。",
+          "scope": "支持从业务数据对象与联系展开设计；不单独覆盖教材中的全部阶段图。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材数据库设计阶段的精确名称、图示、阶段输入/输出和典型考试表述仍需逐页核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM 数据库设计文档、IBM ER 建模资料、IRS 数据库生命周期指南及需求工程标准核对设计活动和模型边界。",
+        "outcome": "AI 来源交叉核查完成；教材阶段图、ER 记号、案例与验收细节仍需逐页核对和人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.2": {
       "status": "partial",
-      "what": "收集数据、处理和约束，识别实体、属性、联系、业务规则、数据量、增长率、访问频率和安全需求。",
-      "why": "需求分析决定数据库要表达的业务规则和运行约束；若只收集字段而遗漏基数、并发、增长、访问和保留要求，后续模型可能结构完整却无法满足真实使用。",
-      "how": "按业务规则、实体与联系、数据量及增长、读写模式、并发冲突、安全分级和保留期限建立需求清单；把每项需求标注为模型约束、运行指标或治理要求。",
-      "confusions": "需求分析不等于列字段清单，也不应直接跳到索引或分库方案；物理优化需要数据规模、访问模式和实测负载作为依据。",
+      "what": "需求分析识别数据库需要管理的数据、业务规则、用户视图、访问与事务负载、数据量及增长、安全和可用性约束，并明确哪些事实需要持久化和如何验证。",
+      "why": "如果需求只罗列字段而没有业务规则、访问模式和质量约束，后续模型即使结构正确也可能无法支持真实业务。",
+      "how": "访谈利益相关者并检查现有表单/流程，识别数据对象和关系、约束、查询/更新场景、事务边界、容量增长、合规与恢复目标；将需求写成可追踪、可验证的条目并与业务方确认。",
+      "confusions": "业务需求、数据需求、功能需求和质量约束层次不同；“要存哪些字段”不等于完整需求，访问频率、并发量、保留期限和权限也会影响数据库设计。",
       "scenarios": "情境练习（非教材原例）：围绕“收集数据、处理和约束，识别实体、属性、联系、业务规则、数据量、增长率、访问频率和安全需求。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "设计在线预约数据库时，除了预约号、用户和资源等实体，还要问清预约是否允许重叠、取消后如何留痕、峰值查询集中在哪些时间段、历史记录保留多久，以及哪些字段属于敏感信息。这些回答会影响数据约束、容量估算、索引、安全和备份要求。",
-      "examFocus": "复习重点：围绕“收集数据、处理和约束，识别实体、属性、联系、业务规则、数据量、增长率、访问频率和安全需求。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "需求分析不能只收集字段清单；若忽略业务规则、数据增长、读写比例、并发冲突、保留期限和访问权限，后续即使表结构能创建，也可能无法满足运行要求。不要在缺少 workload 证据时过早断言需要某种索引或分库方案。",
+      "examFocus": "从数据对象、业务规则、用户访问、数据量、增长、并发、安全和恢复要求收集需求；说明需求如何影响概念/逻辑/物理设计。",
+      "pitfalls": "不要仅根据现有表结构反推真实需求；旧表可能固化历史限制或设计缺陷，应先确认业务规则与数据来源。",
       "selfChecks": [
-        "数据库需求分析除字段清单外，还应收集哪些业务、负载和治理约束？",
-        "为什么没有访问负载证据时不应直接断言必须建立某个索引或分库？"
+        "为校园选课数据库列出实体、关键业务规则、典型查询和容量/并发约束。",
+        "两个用户部门对同一字段含义定义不同，应如何在需求阶段发现和解决？"
       ],
       "source": {
         "type": "mindmap",
@@ -4309,22 +4540,52 @@
           "scope": "只支持需求分析中识别实体/属性及组织数据的核心主张；不替代具体项目的数据量、增长率、安全和性能调查。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Designing databases",
+          "url": "https://www.ibm.com/docs/en/db2/12.1.x?topic=databases-designing",
+          "sourceAuthority": "IBM Db2 Documentation — Designing databases",
+          "supportedClaim": "IBM 数据库设计指南从业务系统识别实体、属性及其关系，作为建模依据。",
+          "scope": "支持需求识别要覆盖实体、属性和联系；具体访谈技术和需求模板不由该文档完整规定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "ISO/IEC/IEEE 29148:2018 — Requirements engineering",
+          "url": "https://www.iso.org/standard/72089.html",
+          "sourceAuthority": "ISO/IEC/IEEE 29148:2018 — Requirements engineering",
+          "supportedClaim": "ISO/IEC/IEEE 29148:2018 规定系统与软件生命周期中需求工程过程及需求信息项内容。",
+          "scope": "作为需求工程过程与需求信息质量的参考标准；不是数据库专用需求方法，也不替代教材中数据库需求清单。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材需求分析的检查清单、数据流/数据字典交付物和性能/安全非功能需求分类需对照指定版次确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM 数据库设计文档、IBM ER 建模资料、IRS 数据库生命周期指南及需求工程标准核对设计活动和模型边界。",
+        "outcome": "AI 来源交叉核查完成；教材阶段图、ER 记号、案例与验收细节仍需逐页核对和人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.3": {
       "status": "partial",
-      "what": "用 ER 模型建立独立于 DBMS 的概念模式。",
-      "why": "ER 模型用 DBMS 无关的方式表达业务实体、联系和约束，能在决定具体表结构前暴露业务语义缺口。",
-      "how": "从业务名词识别实体和属性，从业务动词识别联系，再依据真实规则标注基数、参与约束以及带有自身属性的联系；最后用业务场景检查模型是否表达完整。",
-      "confusions": "实体之间存在联系并不能自动决定一对一、一对多或多对多；基数必须来自业务规则。联系若带有成绩、数量等属性，也不能不加分析地塞入某一端实体。",
+      "what": "概念结构设计通过实体—联系（ER）模型表达业务领域中的实体、属性、联系及基数/参与约束，形成相对独立于具体 DBMS 的概念模式。",
+      "why": "先从业务语义确定对象与联系，可以避免过早受某个数据库产品的字段类型或存储特性影响，也便于业务人员参与评审。",
+      "how": "识别实体及其标识属性，区分属性和独立实体，确定实体间联系、基数、参与约束与业务规则；评审是否遗漏、多义或重复表达，再转换为逻辑模型。",
+      "confusions": "实体是需要独立识别的数据对象，属性描述实体或联系的特征，联系表达对象间业务关联；基数描述关联数量范围，不等于表的物理行数。",
       "scenarios": "情境练习（非教材原例）：围绕“用 ER 模型建立独立于 DBMS 的概念模式。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "在校园系统 ER 模型中，可以把学生和课程建模为实体，把选课建模为联系，并为选课联系记录成绩；再根据业务规则标明学生与课程之间的多对多关系及必要的参与/基数约束。该模型表达业务语义，不先绑定到某一数据库产品的表结构。",
-      "examFocus": "复习重点：围绕“用 ER 模型建立独立于 DBMS 的概念模式。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "不要因两个实体之间存在联系就随意假定一对一或一对多；基数必须来自业务规则。联系本身若带有属性（如选课成绩），不能不加分析地丢到某一实体上。ER 模型也不是索引、分区等物理访问路径设计。",
+      "examFocus": "识别实体、属性、联系、联系基数和主键候选；能把一对一、一对多、多对多业务规则映射到概念 ER 图。",
+      "pitfalls": "不要把每个名词都建成实体，也不要把可重复出现的独立业务事实塞成单一属性；建模取舍需基于业务身份、生命周期和查询需求。",
       "selfChecks": [
-        "ER 模型中的实体、联系、属性和基数约束分别表达什么？",
-        "当联系本身带有属性（例如选课成绩）时，建模时要特别注意什么？"
+        "“学生选修课程”包含哪些实体和联系？联系是否需要属性（如成绩、选课时间）？",
+        "某属性需要独立身份、生命周期和多个其他对象引用时，为什么可能应建为实体而非普通字段？"
       ],
       "source": {
         "type": "mindmap",
@@ -4354,19 +4615,49 @@
           "scope": "只支持概念建模中识别对象和属性的核心步骤；不替代 ER 图符号、基数和弱实体等教材细节的核对。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM — What is an Entity Relationship Diagram?",
+          "url": "https://www.ibm.com/think/topics/entity-relationship-diagram",
+          "sourceAuthority": "IBM — What is an Entity Relationship Diagram?",
+          "supportedClaim": "IBM 将 ER 图描述为实体、属性和关系的模型，并区分概念、逻辑和物理 ER 模型的抽象层次。",
+          "scope": "支持 ER 模型的核心元素和抽象层次；不单独规定某一教材采用的唯一符号系统。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Designing databases",
+          "url": "https://www.ibm.com/docs/en/db2/12.1.x?topic=databases-designing",
+          "sourceAuthority": "IBM Db2 Documentation — Designing databases",
+          "supportedClaim": "IBM 数据库设计资料通过实体、属性及实体间联系表达所建模的业务系统。",
+          "scope": "支持实体/属性/关系是数据库概念建模的基础；具体基数符号与参与约束需核对教材。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材 ER 图符号体系（Chen/乌鸦脚等）、弱实体、联系属性、参与约束及基数标注图例需按指定版本核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM 数据库设计文档、IBM ER 建模资料、IRS 数据库生命周期指南及需求工程标准核对设计活动和模型边界。",
+        "outcome": "AI 来源交叉核查完成；教材阶段图、ER 记号、案例与验收细节仍需逐页核对和人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.4": {
       "status": "partial",
-      "what": "将 ER 模型转换为目标 DBMS 支持的逻辑模型，关系模型中实体和联系通常转换为关系及外键。",
-      "why": "逻辑结构设计把概念模型转成目标数据模型中的关系、键和约束；映射不当会造成冗余、关联困难或完整性无法保证。",
-      "how": "逐个映射实体及其标识，再依据联系基数决定外键放置或是否建立关联关系；保留联系自身属性，并检查主键、外键、唯一性和空值规则。",
-      "confusions": "实体映射和联系映射不是同一种操作；一对多、多对多及带属性的联系需要结合基数和语义分别处理，不能把所有联系机械地转换成单个外键。",
+      "what": "逻辑结构设计将概念 ER 模型转换为目标数据模型；在关系模型中，实体通常映射为关系，属性映射为列，标识映射为主键，实体间联系依据基数和参与约束映射为外键或关联关系表。",
+      "why": "映射规则决定实体身份、参照完整性和联系属性如何保存在关系表中；映射错误会造成数据重复、联系丢失或约束无法表达。",
+      "how": "逐个转换实体与属性，确定候选键/主键；一对多通常在多方加入外键，多对多通常建立关联表并保存联系属性，一对一根据参与约束和可空性选择外键位置；最后补充唯一、非空和参照约束。",
+      "confusions": "ER 概念模型到关系模式不是简单地“一个实体一张表”；多对多需要关联关系，一对一是否合表/外键取决于语义、参与约束和访问场景。",
       "scenarios": "情境练习（非教材原例）：围绕“将 ER 模型转换为目标 DBMS 支持的逻辑模型，关系模型中实体和联系通常转换为关系及外键。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "把“学生选修课程”转换为关系模型时，学生和课程各自有关系；多对多选课联系可单独形成关系，用学号、课程号关联两端，成绩等联系属性保留在选课关系中。",
-      "examFocus": "复习重点：围绕“将 ER 模型转换为目标 DBMS 支持的逻辑模型，关系模型中实体和联系通常转换为关系及外键。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "联系映射取决于基数、参与约束和联系属性。不要把所有联系机械地映射成同一种外键形式，也不要漏掉多对多联系的独立表示。",
+      "examFocus": "掌握实体、1:1、1:N、M:N 联系到关系表、外键和关联表的常见转换；说明联系属性放置位置及参照完整性约束。",
+      "pitfalls": "不要把多对多联系直接映射为某一方的一列多值列表；也不要在不检查参与约束时机械决定一对一外键位置。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4387,8 +4678,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "ER 模型转换为关系模型时，实体和多对多联系通常如何表示？",
-        "为什么成绩通常随选课联系保存，而不是随意放到学生或课程实体中？"
+        "将“学生—选课—课程” ER 模型转换为关系表，说明成绩和选课时间应放在哪张表。",
+        "一个可选的一对一联系，若将外键放在可选参与方会带来什么影响？"
       ],
       "evidence": [
         {
@@ -4399,19 +4690,49 @@
           "scope": "只支持 ER 到关系模型的常见映射原则；具体多对多、弱实体和继承映射规则需按设计情形决定。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "IBM Db2 Documentation — Relational database design",
+          "url": "https://www.ibm.com/docs/en/db2/11.5?topic=design-relational-database-design",
+          "sourceAuthority": "IBM Db2 Documentation — Relational database design",
+          "supportedClaim": "IBM Db2 关系数据库设计文档说明将业务对象和联系落实为关系表、列及键等逻辑结构。",
+          "scope": "支持关系模型设计与实体/关系映射方向；具体基数转换规则需结合教材原图和目标 DBMS 约束确认。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Constraints",
+          "url": "https://www.postgresql.org/docs/current/ddl-constraints.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Constraints",
+          "supportedClaim": "PostgreSQL 外键约束要求引用列的值匹配被引用表中的键值，从而维护相关表间参照完整性。",
+          "scope": "支持外键实现参照完整性；不单独决定 ER 中每种基数关系应如何放置外键。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材 ER 联系到关系模型转换规则表、一对一/一对多/多对多图示及联系属性转换细节仍需按指定版次核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM Db2 关系数据库设计文档与 PostgreSQL 表约束/索引官方文档核对逻辑映射和物理访问结构。",
+        "outcome": "AI 来源交叉核查完成；教材映射表、物理设计指标和执行计划例题仍需逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.5": {
       "status": "partial",
-      "what": "确定存储结构和访问路径，使空间、时间、吞吐、并发和安全目标平衡。",
-      "why": "物理设计把逻辑结构与真实访问负载联系起来，决定存储组织、索引和访问路径，并在查询延迟、写入开销、空间与运维复杂度之间权衡。",
-      "how": "先收集代表性查询、数据分布、读写比例和并发特征，再检查执行计划并提出物理候选方案；用可重复的负载测试比较延迟、吞吐、空间和写入成本。",
-      "confusions": "索引只会帮助与其结构及选择性相匹配的访问路径，同时增加空间和写入维护成本；不能因为某列出现在查询中就无条件建索引。",
+      "what": "物理结构设计根据数据规模、访问模式、并发与事务特征、可用性和成本，选择存储组织、索引、分区及相关参数，以平衡查询性能、写入成本、空间和维护复杂度。",
+      "why": "逻辑结构正确并不代表性能达标；物理访问路径会影响查询延迟、吞吐、资源消耗与维护成本。",
+      "how": "从真实查询和执行计划识别瓶颈，评估索引列、组合顺序、选择性、分区键和存储策略；在代表性数据量与负载下测试读写、并发和维护开销，再根据监控结果调整。",
+      "confusions": "索引通常可加快特定查找，但会占用空间并增加插入/更新/删除成本；索引越多不一定越快。分区是逻辑/物理数据组织手段，不能替代合理查询条件和索引设计。",
       "scenarios": "情境练习（非教材原例）：围绕“确定存储结构和访问路径，使空间、时间、吞吐、并发和安全目标平衡。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "预约业务按资源和时间范围查询可能很频繁；物理设计应先观察查询条件、数据规模和并发写入，再评估索引与存储方案，并用代表性负载测试读写延迟和维护成本。",
-      "examFocus": "复习重点：围绕“确定存储结构和访问路径，使空间、时间、吞吐、并发和安全目标平衡。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "索引可改善特定查询，却占空间并增加写入维护成本；不能因为某列出现在查询里就无条件建索引。物理方案要结合 DBMS、数据分布和实际负载验证。",
+      "examFocus": "说明索引、分区、存储结构与查询计划的关系；结合访问模式解释为什么需要索引及其读写/空间权衡。",
+      "pitfalls": "不要将“建立索引”当作普遍性能优化；应通过执行计划、统计信息和代表性负载验证，避免低选择性或过量索引。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4432,8 +4753,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "物理数据库设计需要结合哪些访问与运行信息？",
-        "为什么索引可能改善查询却增加写入成本？"
+        "某列查询频繁但取值只有“男/女”，是否一定适合单列 B-tree 索引？还需考虑哪些条件？",
+        "为什么新增索引可能让读查询更快，却使写入和维护成本增加？"
       ],
       "evidence": [
         {
@@ -4444,19 +4765,49 @@
           "scope": "只支持访问路径设计需要权衡查询收益与索引代价；不直接给出特定业务系统的最佳物理设计。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Indexes",
+          "url": "https://www.postgresql.org/docs/current/indexes.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Indexes",
+          "supportedClaim": "PostgreSQL 文档说明索引可加速特定行的查找，但会对数据库系统整体增加开销，需要合理使用。",
+          "scope": "支持索引的读性能收益及系统开销权衡；不提供对所有 DBMS 和负载都通用的索引配置规则。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — EXPLAIN",
+          "url": "https://www.postgresql.org/docs/current/using-explain.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — EXPLAIN",
+          "supportedClaim": "PostgreSQL EXPLAIN 显示查询规划器选择的执行计划及估算成本，可用于分析查询访问路径。",
+          "scope": "支持通过执行计划理解查询路径；估算成本不等于实际耗时，也不替代生产负载测量。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材物理设计中的文件组织、索引类型、聚簇/非聚簇、分区和参数选择表及考试用语需逐页核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM Db2 关系数据库设计文档与 PostgreSQL 表约束/索引官方文档核对逻辑映射和物理访问结构。",
+        "outcome": "AI 来源交叉核查完成；教材映射表、物理设计指标和执行计划例题仍需逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.6": {
       "status": "partial",
-      "what": "建立数据库、装载数据、编写应用、定义安全策略、测试事务和性能并上线。",
-      "why": "实施阶段要验证模型、约束、应用和运行环境能否协同工作；建表或导入成功本身不能证明业务数据、安全和恢复要求已满足。",
-      "how": "在隔离环境执行结构迁移与数据装载，验证约束、权限、事务、关键查询、备份恢复和应用兼容；发布前明确失败判据、回退路径与上线后观测项。",
-      "confusions": "脚本执行成功不等于上线验收通过；实施还需检查数据正确性、应用兼容、性能、权限边界以及经过演练的恢复流程。",
+      "what": "数据库实施把已评审的逻辑/物理设计转为可运行数据库对象，包括建库建表、约束与索引配置、数据装载/迁移、权限配置、应用连接和事务处理，并通过功能、完整性、性能和恢复测试验证结果。",
+      "why": "实施阶段不仅是执行 CREATE TABLE；数据转换、权限、事务、兼容性和验收不完整，会让正确的设计无法安全运行。",
+      "how": "按版本化脚本创建 schema、表、键/约束和索引；使用受控批次装载/迁移数据，核对行数与关键约束；配置角色和最小权限，连接应用并测试事务、并发、错误处理、备份恢复和性能。",
+      "confusions": "DDL 创建对象、DML 操作数据、DCL 权限管理和事务控制解决不同问题；测试环境执行成功不等于生产迁移安全，数据回滚/恢复和兼容性也需验证。",
       "scenarios": "情境练习（非教材原例）：围绕“建立数据库、装载数据、编写应用、定义安全策略、测试事务和性能并上线。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "数据库上线前，在隔离环境应用结构变更、装载测试数据，验证权限、事务、备份恢复和关键查询；发布时准备数据迁移检查、失败回退和上线后观测。",
-      "examFocus": "复习重点：围绕“建立数据库、装载数据、编写应用、定义安全策略、测试事务和性能并上线。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "脚本执行成功不等于实施完成；还要验证数据正确性、权限边界、应用兼容、性能和恢复流程。生产迁移不能只依赖未经演练的备份。",
+      "examFocus": "区分建库建表、约束/索引、数据装载、权限、应用连接、事务和验收测试；说明实施阶段如何把设计模型转化为可运行系统。",
+      "pitfalls": "不要只检查表是否创建成功；还要验证数据质量、约束是否生效、访问控制、迁移回滚、并发与备份恢复。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4477,8 +4828,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "数据库实施阶段除创建表和装载数据外，还要验证什么？",
-        "为什么上线前要演练迁移失败后的恢复或回退？"
+        "数据库从旧系统迁移到新关系模式，实施前后需要核对哪些数据与完整性指标？",
+        "为什么在测试环境成功执行建表脚本还不足以证明生产迁移可以直接执行？"
       ],
       "evidence": [
         {
@@ -4489,19 +4840,49 @@
           "scope": "只支持数据库实现的若干常见活动；不声称所有项目都按固定线性顺序完成。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Tutorial",
+          "url": "https://www.postgresql.org/docs/current/tutorial.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Tutorial",
+          "supportedClaim": "PostgreSQL 教程依次覆盖创建数据库、访问数据库、创建表、装载数据、查询、连接、更新、删除、事务和外键等操作。",
+          "scope": "支持数据库实施常见的对象创建、数据操作和事务活动；不构成完整生产迁移与验收流程。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — CREATE TABLE",
+          "url": "https://www.postgresql.org/docs/current/sql-createtable.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — CREATE TABLE",
+          "supportedClaim": "PostgreSQL CREATE TABLE 支持声明列类型、默认值、主键、唯一、检查和外键等结构/完整性约束。",
+          "scope": "支持关系结构与约束的实现方式；不证明特定业务设计或迁移脚本已经安全、正确。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材数据库实施的详细步骤、数据装载/转换方法、权限配置和功能/性能/验收测试清单仍需逐项核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 18 官方 SQL、约束及查询教程核对数据库实施活动和验证边界。",
+        "outcome": "AI 来源交叉核查完成；教材实施流程图、事务/索引配置参数和验收例题仍需逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.3.7": {
       "status": "partial",
-      "what": "监控、备份恢复、性能调优、故障处理、权限审计、容量规划和版本升级。",
-      "why": "数据库运行维护持续处理性能退化、故障恢复、容量变化、权限风险和版本演进，决定设计在长期运行中是否仍满足要求。",
-      "how": "建立关键查询与资源指标监控，定期核查备份和权限，演练恢复与升级回滚；出现问题时结合执行计划、锁等待、数据增长和业务影响定位原因，而不是只凭单次耗时扩容。",
-      "confusions": "备份任务成功不代表数据一定可恢复，必须演练并核对恢复点；性能调优也不能只看一次查询耗时，需结合负载、锁等待和执行计划判断。",
+      "what": "数据库运行维护包括监控容量与性能、维护统计信息和索引、管理事务与并发、执行备份恢复演练、处理故障与安全补丁，以及根据业务变化调整结构和权限。",
+      "why": "数据库上线后仍会出现数据增长、统计分布变化、死元组、索引膨胀、故障和安全风险；缺少持续维护会逐步降低可用性和数据可信度。",
+      "how": "建立性能/容量/错误/慢查询监控，定期检查执行计划和统计信息；按 DBMS 要求执行 vacuum/analyze 或相应维护，验证备份可恢复性并定义 RPO/RTO；管理版本、补丁、权限和容量告警。",
+      "confusions": "备份任务成功不等于可以恢复，必须定期做恢复演练；VACUUM、ANALYZE、REINDEX 等维护动作目的不同，且不同 DBMS 的实现细节不能互相照搬。",
       "scenarios": "情境练习（非教材原例）：围绕“监控、备份恢复、性能调优、故障处理、权限审计、容量规划和版本升级。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "订单库出现慢查询时，结合监控、执行计划、数据量和并发定位瓶颈；故障后按恢复目标选择备份与日志恢复方案，并核对恢复点的数据完整性。",
-      "examFocus": "复习重点：围绕“监控、备份恢复、性能调优、故障处理、权限审计、容量规划和版本升级。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "备份任务显示成功不等于可恢复，恢复过程需要定期演练。调优也不应只凭单次耗时或盲目扩容，应检查负载、锁等待、查询计划和业务影响。",
+      "examFocus": "掌握数据库运行、监控、备份与恢复、性能维护、安全维护和结构演进；回答时把备份策略与恢复目标、演练证据联系起来。",
+      "pitfalls": "不要只看备份文件是否生成；要验证一致性、保留策略、恢复时间、恢复点和权限。也不要无差别执行高锁表或高 IO 的维护命令。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4522,8 +4903,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "性能监控、备份和恢复分别解决什么问题？",
-        "为什么必须演练恢复，而不能只检查备份文件存在？"
+        "数据库每天生成备份但从未恢复演练，为什么仍不能确认满足业务恢复目标？",
+        "统计信息过期可能怎样影响查询优化器选择访问路径？"
       ],
       "evidence": [
         {
@@ -4534,19 +4915,58 @@
           "scope": "支持备份与恢复属于数据库运行维护的核心活动；具体备份频率、保留周期、恢复点目标和恢复时间目标必须根据业务风险与实测恢复演练确定。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Backup and Restore",
+          "url": "https://www.postgresql.org/docs/current/backup.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Backup and Restore",
+          "supportedClaim": "PostgreSQL 官方文档区分 SQL dump、文件系统级备份和持续归档等备份方式，并讨论各自假设与恢复过程。",
+          "scope": "支持备份方式与恢复策略存在不同权衡；不能仅凭某种备份类型名称推断满足特定 RPO/RTO。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Routine Database Maintenance",
+          "url": "https://www.postgresql.org/docs/current/maintenance.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Routine Database Maintenance",
+          "supportedClaim": "PostgreSQL 将 vacuuming、reindexing、日志维护和备份列为需要定期执行的数据库运维任务。",
+          "scope": "支持数据库需要周期性维护；具体频率、参数和动作应根据 DBMS 版本、负载和监控结果确定。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "PostgreSQL 18 Documentation — Routine Vacuuming",
+          "url": "https://www.postgresql.org/docs/18/routine-vacuuming.html",
+          "sourceAuthority": "PostgreSQL 18 Documentation — Routine Vacuuming",
+          "supportedClaim": "PostgreSQL 说明 vacuuming 用于常规维护，并可由 autovacuum 机制执行，必要时需根据系统情况调整相关参数。",
+          "scope": "支持 PostgreSQL 的统计/空间维护机制；不应把 VACUUM 命令直接当作所有数据库产品的通用运维命令。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对数据库维护周期、备份类型、恢复策略、性能监控指标和管理员职责的具体分类仍需逐页核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 PostgreSQL 18 官方 SQL、约束及查询教程核对数据库实施活动和验证边界。",
+        "outcome": "AI 来源交叉核查完成；教材实施流程图、事务/索引配置参数和验收例题仍需逐页核对及人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.4": {
       "status": "partial",
-      "what": "应用通过不同层次的接口访问数据库；接口选择影响可移植性、性能、开发效率和维护成本。",
-      "why": "数据库访问接口影响应用与存储实现之间的耦合，也影响事务控制、查询能力、可移植性、调试效率和维护成本。",
-      "how": "用同一类业务操作比较驱动/API、ORM 和服务接口，逐项检查事务边界、生成的查询、连接管理、错误处理、可移植性和远程调用成本，再按实际约束选择。",
-      "confusions": "ORM 不会自动消除 SQL、事务和性能问题，仍需检查实际查询和事务边界；服务接口也会引入网络延迟与故障边界，不是所有数据库访问都适合远程化。",
+      "what": "数据库访问接口为应用提供连接、发送查询/更新语句、接收结果和管理事务等编程抽象；典型例子包括 Python DB-API 2.0 和 Java JDBC。驱动把通用调用映射到具体数据库和协议，但不会自动统一所有 SQL 方言与行为。",
+      "why": "接口封装可以降低应用与某个驱动的耦合，改善连接管理、参数绑定和错误处理；不同语言、驱动和数据库产品仍可能在 SQL、数据类型、事务和性能方面存在差异。",
+      "how": "通过驱动建立连接，创建游标或语句对象，使用参数化语句执行查询/更新，读取结果并按接口约定处理异常、事务提交/回滚和资源关闭；跨 DBMS 时额外验证 SQL 方言、数据类型、隔离级别和批处理行为。",
+      "confusions": "DB-API/JDBC 是应用访问接口规范或 API，不是数据库管理系统，也不是 SQL 语言本身；接口调用一致不等于 SQL 语义、事务能力或执行性能完全可移植。",
       "scenarios": "情境练习（非教材原例）：围绕“应用通过不同层次的接口访问数据库；接口选择影响可移植性、性能、开发效率和维护成本。”设定一个系统需求，说明目标、输入输出、约束和失效后果；未有来源支持的具体事实不自行补写。",
       "examples": "同一业务可通过驱动/API、ORM 或服务接口访问数据库；选择时比较事务控制、查询表达能力、可移植性、连接管理、调试能力和团队维护成本。",
-      "examFocus": "复习重点：围绕“应用通过不同层次的接口访问数据库；接口选择影响可移植性、性能、开发效率和维护成本。”整理定义、关键机制、适用条件和限制，并写出最容易混淆的相邻概念及区别依据；涉及公式、标准、版本或精确参数时回到教材/真题核验。",
-      "pitfalls": "ORM 不会自动消除 SQL、事务和性能问题，隐藏查询可能引入额外往返。服务接口也不意味着所有访问都适合远程化，需结合一致性、延迟和权限决定边界。",
+      "examFocus": "区分应用接口、驱动程序、数据库服务器和 SQL；掌握连接、执行、结果获取、异常与事务控制之间的关系。",
+      "pitfalls": "不要因应用使用统一 API 就声称一次开发可无修改运行于所有 DBMS；仍需核对方言、类型映射、事务语义、驱动实现和连接池行为。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4567,8 +4987,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "数据库访问接口的选择影响哪些质量属性和成本？",
-        "为什么使用 ORM 后仍要检查实际 SQL 和事务边界？"
+        "一个 Python 程序都使用 DB-API 2.0，但从 SQLite 迁移到 PostgreSQL 仍可能需要修改哪些部分？",
+        "JDBC 驱动、JDBC API 和数据库服务器分别承担什么职责？"
       ],
       "evidence": [
         {
@@ -4579,19 +4999,50 @@
           "scope": "只支持接口抽象可改善调用一致性的例子；不能据此保证不同数据库 SQL、事务或性能完全可移植。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Python PEP 249 — Database API Specification v2.0",
+          "url": "https://peps.python.org/pep-0249/",
+          "sourceAuthority": "Python PEP 249 — Database API Specification v2.0",
+          "supportedClaim": "PEP 249 定义 Python 数据库驱动模块的连接、游标、执行、结果获取、事务和异常等统一接口约定。",
+          "scope": "支持 Python DB-API 调用层抽象；不保证不同驱动的 SQL 方言、类型映射、事务语义或性能完全一致。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Oracle Java Tutorials — JDBC Introduction",
+          "url": "https://docs.oracle.com/javase/tutorial/jdbc/overview/",
+          "sourceAuthority": "Oracle Java Tutorials — JDBC Introduction",
+          "supportedClaim": "JDBC API 为 Java 程序提供连接数据源、发送查询/更新语句并处理结果的编程接口。",
+          "scope": "支持 JDBC 访问数据库的接口职责；该教程以 JDK 8 为基础，不能代表所有新版本 JDBC API 的完整变化。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对 CLI、ODBC、JDBC、嵌入式 SQL 和特定语言 API 的分类及层次图需按指定版本教材核对。",
+        "教材涉及的 API 事务、游标、连接池和参数绑定细节仍需结合其指定接口版本确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 Python DB-API 2.0 PEP 与 Oracle JDBC 教程核对接口职责和可移植性边界。",
+        "outcome": "AI 来源交叉核查完成；教材接口分类、层次图及考试术语仍待人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "6.5.1": {
       "status": "partial",
-      "what": "常见非关系型数据模型包括键值、文档、图和宽列/列族等类别；分类方式应结合教材语境辨认。",
-      "why": "不同模型对数据组织、关系表达和查询访问的支持不同，选型会影响查询效率、事务语义、扩展方式和运维复杂度。",
-      "how": "按数据模型与访问模式建立对照：键值模型围绕唯一键读写；文档模型以文档聚合承载字段可变的数据；图模型突出节点、边及关系遍历；宽列模型围绕行键和列族组织数据。再结合查询能力、事务语义、索引、一致性、运维复杂度和迁移成本判断选型。",
-      "confusions": "“列式”可能指分析型数据库的列式存储组织，也可能在 NoSQL 分类语境中指宽列/列族模型，需按题目采用的分类体系辨别；不能将二者不加区分。键值、文档、图和宽列模型的能力也会随具体产品实现而异，不能仅凭类别推断所有事务或一致性保证。",
+      "what": "常见 NoSQL 数据库模型包括键值、文档、宽列/列族和图等类别；这些类别用于概括数据组织与访问方式，不是彼此完全排斥的统一标准，具体产品可能融合多种数据结构或查询能力。",
+      "why": "当数据结构灵活、访问模式、扩展需求或关系遍历需求与传统关系表不完全匹配时，评估不同数据模型有助于选择合适的存储方式；NoSQL 不是默认优于关系数据库。",
+      "how": "从主要访问模式、数据关系、事务与一致性需求、查询能力、扩展方式、运维成熟度和团队技能出发比较候选模型；例如键值模型关注按键读写，文档模型评估嵌入/引用，宽列模型评估分区键与查询路径，图模型评估节点/关系遍历。",
+      "confusions": "NoSQL 并不等于“没有查询语言”或“完全不支持 SQL”；MongoDB 可使用查询 API，Cassandra 提供 CQL，Redis 有命令接口。键值、文档、宽列和图是常见模型概括，实际产品能力与事务/一致性保证需逐项核对。 列式（columnar）与宽列/列族（wide-column）不是完全相同的概念；前者常描述分析型存储布局，后者描述按分区键组织行/列族的数据模型，需看具体产品语义。",
       "scenarios": "会话令牌按精确键查询可优先评估键值模型；产品属性差异较大且常按商品整体读取可评估文档模型；社交关系路径查询可评估图模型；按行键定位并在列族中读取部分字段的场景可评估宽列模型。最终仍需验证查询、更新、事务和运维要求。",
       "examples": "会话缓存按用户 ID 读取可评估键值模型；产品目录含多种可选属性时可评估文档模型；好友推荐的多跳关系查询可评估图模型；按设备 ID 与时间窗口查询稀疏测量字段时可评估宽列模型，并以真实查询验证。",
-      "examFocus": "题目若描述按 key 取值、灵活文档、关系路径遍历或宽列族，应能识别对应数据模型及典型访问模式；同时注意模型分类与产品实现并非一一对应，选型要由 workload、事务/一致性要求和运维能力共同决定。",
-      "pitfalls": "不能只凭数据量大就认定必须用 NoSQL，也不能把键值、文档、图和宽列存储视为同类替代品。需评估查询形态、关系约束、事务、一致性、运维能力和迁移成本。",
+      "examFocus": "掌握键值、文档、宽列和图模型的基本组织方式、适用访问模式与典型产品；从数据结构和查询路径说明选型依据，不只记产品名称。",
+      "pitfalls": "不要把 NoSQL 统称为无模式、最终一致或天然水平扩展；不同产品可以有 schema 约束、事务、一致性级别和不同扩展方式。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4612,8 +5063,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "键值、文档、图和列式组织分别适合什么访问模式？",
-        "为什么 NoSQL 选型不能只看数据量或 schema 灵活性？"
+        "缓存按唯一键读写与社交关系多跳遍历，分别更接近哪种数据模型？说明查询路径。",
+        "MongoDB 文档模型和 Cassandra 宽列模型为什么不能都简单称为“无结构数据库”？"
       ],
       "evidence": [
         {
@@ -4624,19 +5075,68 @@
           "scope": "只支持常见 NoSQL 模型示例；分类名称与边界在不同资料中可能有差异，需结合教材语境。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "MongoDB Manual — Data Modeling",
+          "url": "https://www.mongodb.com/docs/manual/data-modeling/",
+          "sourceAuthority": "MongoDB Manual — Data Modeling",
+          "supportedClaim": "MongoDB 将数据建模定义为组织数据库内数据及相关实体之间的链接；其灵活文档模型可使用嵌入文档或引用表示一对一、一对多和多对多关系。",
+          "scope": "支持文档模型及嵌入/引用两类关系表达；MongoDB 文档模型不代表所有 NoSQL 产品具有相同 schema 或事务能力。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Apache Cassandra Documentation — Architecture Overview",
+          "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/overview.html",
+          "sourceAuthority": "Apache Cassandra Documentation — Architecture Overview",
+          "supportedClaim": "Apache Cassandra 是分区宽列 NoSQL 数据库，采用分布式多主复制和可调一致性设计。",
+          "scope": "支持 Cassandra 的宽列/分区模型和复制特征；不能外推为所有宽列数据库或所有 NoSQL 系统一致性语义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Redis Documentation — Scale with Redis Cluster",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/management/scaling/",
+          "sourceAuthority": "Redis Documentation — Scale with Redis Cluster",
+          "supportedClaim": "Redis Cluster 将数据自动分片到多个 Redis 节点，并提供在部分节点故障时有限度的可用性。",
+          "scope": "支持 Redis Cluster 的键空间分片特征；高可用受主节点多数可达和具体故障状态约束。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Neo4j Getting Started — What is a Graph Database",
+          "url": "https://neo4j.com/docs/getting-started/graph-database/",
+          "sourceAuthority": "Neo4j Getting Started — What is a Graph Database",
+          "supportedClaim": "Neo4j 图数据库以节点、关系和属性表达领域数据，关系有方向和类型，节点与关系均可带属性。",
+          "scope": "支持属性图模型的基本结构；Neo4j 的具体遍历性能与产品实现不能泛化到所有图数据库。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对 NoSQL 四类模型的完整分类、列族/宽列术语及产品示例仍需按指定版本原文核对。",
+        "教材对 NoSQL 与关系数据库的适用边界、事务和一致性比较表仍需结合题目语境人工复核。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 MongoDB、Apache Cassandra、Redis 和 Neo4j 官方数据模型文档，比较模型结构、查询和产品边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；各产品版本、事务/一致性能力及教材分类仍需逐页核对和独立人工终审，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "6.5.2": {
       "status": "partial",
-      "what": "应用通过统一 API 访问 NoSQL 集群，底层负责分片、复制、路由、故障转移和持久化。",
-      "why": "分布式 NoSQL 集群通过分片、复制、路由、故障处理和持久化协同支撑数据规模与可用性需求，但也引入一致性和运维权衡。",
-      "how": "把分布式 NoSQL 集群拆成请求路径理解：客户端/API 接入、路由定位目标分片、分片执行读写、复制协议传播数据、故障检测与切换处理节点异常，持久化机制保证重启后的数据恢复；再分别分析每层的失败模式和一致性边界。",
-      "confusions": "分片解决数据分布和容量/吞吐扩展问题，复制主要服务于冗余、可用性或读扩展；路由负责把请求送到目标节点，故障转移负责异常时切换服务。副本不天然等于强一致，也不等于独立备份，具体行为取决于系统协议与配置。",
+      "what": "分布式 NoSQL 系统可通过分片/分区把数据与负载分布到多个节点，通过复制在多个节点保留数据副本，并由路由、协调和一致性机制处理读写与故障；具体组合因产品而异，分片和复制不是同一概念。",
+      "why": "数据量、吞吐和可用性需求可能超过单节点能力，但分布式设计会引入分区键选择、路由开销、数据重平衡、复制延迟、冲突和故障恢复等复杂度。",
+      "how": "先根据访问模式选择分区/分片键，再定义复制因子或副本拓扑、一致性级别、读写路由、故障检测和恢复策略；通过节点故障、网络分区、热点键和重平衡测试验证数据可用性和性能边界。",
+      "confusions": "分片把不同数据子集放在不同节点以分担存储/负载；复制在多个节点保存同一数据的副本以改善容错或读扩展。MongoDB 的每个 shard 是 replica set，Cassandra 采用分区和多主复制，Redis Cluster 用 hash slot 分配键并配置 replicas；不能把它们混成相同架构。",
       "scenarios": "商品服务使用分片集群保存商品与库存数据时，需验证分片键是否造成热点、跨分片查询如何执行、复制延迟对读请求有何影响、节点故障后客户端是否重试，以及重平衡期间的延迟和可用性。",
       "examples": "商品目录以商品 ID 分片并维护多个副本时，客户端或代理先定位分片，节点写入后按系统复制协议同步/异步传播；应分别测试节点失效、复制延迟、重复请求和数据恢复。",
-      "examFocus": "能区分分片、复制、路由、持久化和故障转移的职责；遇到分布式数据库场景题，进一步检查分片键、热点、跨分片操作、复制一致性、故障恢复和重平衡代价，而不是只看到“集群”就判断可线性扩展。",
-      "pitfalls": "分片不自动带来线性扩展；热点分片、跨分片事务、数据迁移和运维复杂度都可能成为瓶颈。副本也不等于备份，误删除可能同步到副本。",
+      "examFocus": "区分分片、复制、路由、协调、一致性和故障转移；结合产品说明 shard/partition key、数据副本和读写路径，并指出热点分区、散射查询、复制延迟或多数派不可达等限制。",
+      "pitfalls": "不要承诺分布式集群自动线性扩展或永不丢数据；分片键、复制策略、确认级别、网络分区和故障规模都会影响可用性、一致性及性能。",
       "source": {
         "type": "mindmap",
         "path": "architect.mm",
@@ -4657,8 +5157,8 @@
         "场景判断"
       ],
       "selfChecks": [
-        "分片、复制、路由和故障转移分别解决什么问题？",
-        "为什么副本不能替代独立备份，分片也不保证线性扩展？"
+        "MongoDB sharded cluster 中 shard、replica set、mongos 和 config server 分别承担什么职责？",
+        "Redis Cluster 的 hash slot 分片与 replica 复制分别解决什么问题？为什么主节点多数不可达会影响集群？"
       ],
       "evidence": [
         {
@@ -4669,8 +5169,48 @@
           "scope": "只支持分布式系统常见责任的概览；不是所有 NoSQL 产品都采用相同集群架构或自动处理全部责任。",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "MongoDB Manual — Sharding Introduction and Architecture",
+          "url": "https://www.mongodb.com/docs/manual/sharding/",
+          "sourceAuthority": "MongoDB Manual — Sharding Introduction and Architecture",
+          "supportedClaim": "MongoDB sharded cluster 由 shards、mongos 查询路由器和 config servers 组成；每个 shard 与 config server 均部署为 replica set，shard key 决定文档分布。",
+          "scope": "支持 MongoDB 特定分片集群结构；不能泛化为所有 NoSQL 集群都使用 mongos、config server 或 replica set。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Apache Cassandra Documentation — Architecture Overview",
+          "url": "https://cassandra.apache.org/doc/latest/cassandra/architecture/overview.html",
+          "sourceAuthority": "Apache Cassandra Documentation — Architecture Overview",
+          "supportedClaim": "Cassandra 采用分区宽列存储、多主复制和可调一致性；keyspace 配置数据跨节点/数据中心的复制策略。",
+          "scope": "支持 Cassandra 自身的分区与复制设计；一致性结果取决于读写一致性级别、复制因子和故障条件。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Redis Documentation — Cluster Specification",
+          "url": "https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/",
+          "sourceAuthority": "Redis Documentation — Cluster Specification",
+          "supportedClaim": "Redis Cluster 将键空间划分为 16384 个 hash slots，由主节点负责子集，并可配置副本用于故障接替和在特定条件下读扩展；系统可用性依赖多数主节点可达等条件。",
+          "scope": "支持 Redis Cluster 的 hash slot、主副本和可用性约束；该机制是 Redis 专有实现，不是分布式 NoSQL 的通用协议。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材中 NoSQL 集群的通用组件图、分片/复制/路由/协调的术语映射和一致性模型分类需逐项按指定版本核对。",
+        "教材涉及的 CAP、最终一致性、Quorum/NWR 或产品默认确认级别等内容需结合具体产品版本和课堂口径人工复核。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 MongoDB 分片集群、Apache Cassandra 架构和 Redis Cluster 官方文档，比较分区、复制、路由和故障边界。",
+        "outcome": "AI 来源交叉核查和教学表述修订已完成；产品版本、读写一致性级别和教材中的 CAP/Quorum 论述仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 2
+      }
     },
     "7.1.1": {
       "status": "partial",
@@ -15957,14 +16497,14 @@
     },
     "6.2.3.1": {
       "status": "partial",
-      "what": "第一范式关注关系属性值的原子性，避免把需独立操作的重复组或多值集合塞入一个属性。",
-      "why": "学习“1NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
-      "how": "逐字段检查数据语义；若一个字段承担多个需独立检索、约束或更新的值，评估拆分关系。",
-      "confusions": "字段含分隔符不必然违反1NF；关键是属性在数据模型中的语义。",
+      "what": "第一范式（1NF）要求关系中每个属性在相应数据域下取单一、不可再按该模型要求拆分的值，并避免重复组；“原子性”相对于所采用的数据模型和业务语义，不能简单等同于字符串里绝不允许出现分隔符。",
+      "why": "把一个字段塞入多项需要独立查询、约束或更新的数据，会使筛选、去重和维护困难，也容易出现重复组和更新异常。",
+      "how": "检查每个属性的业务含义和可独立操作需求；若单元格包含多个独立实体值或重复组，评估拆成独立属性/关系，并建立合适标识与联系。",
+      "confusions": "1NF 的原子性取决于数据域和模型语义；地址字符串包含逗号不必然违反 1NF，但将多个独立电话号码放在同一列通常会破坏单值属性设计。",
       "scenarios": "情境练习（非教材原例）：联系人表把多个电话号码放在一个字段，导致单号查询和唯一约束困难。",
       "examples": "自拟练习（非教材原例）：联系人表把多个电话号码放在一个字段，导致单号查询和唯一约束困难。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
-      "examFocus": "识别多值属性并解释拆分后的键关系。",
-      "pitfalls": "本单元（6.2.3.1）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "examFocus": "识别多值字段、重复组和属性原子性；说明拆分后如何表达原有联系，不要只根据文本中是否有逗号判断。",
+      "pitfalls": "不要把“字段中有 JSON/分隔符”机械判为非 1NF；需要判断这些值在当前关系模型下是否是一个属性值，还是多个需独立维护的事实。",
       "source": {
         "type": "external-reference-screening",
         "path": "https://www.ibm.com/think/topics/database-normalization",
@@ -15983,8 +16523,8 @@
         "证据定位"
       ],
       "selfChecks": [
-        "请解释“1NF”的核心概念，并指出至少一个适用前提。",
-        "针对“1NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+        "某列存储“电话A;电话B;电话C”且每个号码需单独检索和更新，是否适合当前 1NF 设计？",
+        "一个完整邮寄地址作为单一业务属性，为什么不能只凭它包含多个词就判定违反 1NF？"
       ],
       "evidence": [
         {
@@ -15995,19 +16535,49 @@
           "scope": "Supports the single-value and no-repeating-group criterion for 1NF; formal interpretation should follow the course text and attribute semantics.",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Cornell Virtual Workshop — First Normal Form",
+          "url": "https://cvw.cac.cornell.edu/RelationalDBs/design-create/first_normal_form",
+          "sourceAuthority": "Cornell Virtual Workshop — First Normal Form",
+          "supportedClaim": "Cornell 教学材料将 1NF 的主要要求概括为原子值、避免重复组和避免重复行，并以多值字段作为反例。",
+          "scope": "支持原子值和重复组教学；不同教材对主键是否作为 1NF 定义条件可能有细节差异，原子性还需结合数据域和语义判断。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "Microsoft Support — Database Design Basics",
+          "url": "https://support.microsoft.com/en-us/access/database-design-basics",
+          "sourceAuthority": "Microsoft Support — Database Design Basics",
+          "supportedClaim": "Microsoft 数据库设计指南以每个行列交叉单元只保存一个值、不把列表塞入单元格说明 1NF 的常见规则。",
+          "scope": "支持单元格单值原则；不意味着任何包含复合业务含义的字符串都必须拆分。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材关于属性原子性、域和值的不可分性定义，以及是否把主键/无重复行列为 1NF 条件，需按指定版本教材原文确认。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 IBM 数据库规范化文档、Cornell/RPI 数据库课程资料与函数依赖定义核对范式条件。",
+        "outcome": "AI 来源交叉核查完成；教材范式表、分解例题和无损连接证明仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.2.3.2": {
       "status": "partial",
-      "what": "第二范式要求满足1NF，且非主属性完全函数依赖于每个候选键，不只依赖复合键的一部分。",
-      "why": "学习“2NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
-      "how": "列出候选键和函数依赖，检查非主属性是否只依赖复合键部分。",
-      "confusions": "部分依赖通常针对复合候选键；不能凭字段数量判断。",
+      "what": "第二范式（2NF）要求关系先满足 1NF，并且每个非主属性完全函数依赖于每个候选键；即不存在某个候选键的真子集决定非主属性的部分依赖。",
+      "why": "复合键的一部分若已决定某个非主属性，该属性会随键的一部分重复存储，容易造成更新和删除异常。",
+      "how": "先列出全部候选键和函数依赖，再检查每个非主属性是否依赖候选键的全部属性；若只依赖某个真子集，则将该事实分解到以该子集为键的关系，并保留原关系中的关联键。",
+      "confusions": "2NF 判定应考虑所有候选键和非主属性，不只是随意选定的一个主键；候选键为单属性的关系在满足 1NF 后不会发生复合键部分依赖。",
       "scenarios": "情境练习（非教材原例）：选课表以学生号和课程号为键，但课程名只依赖课程号。",
       "examples": "自拟练习（非教材原例）：选课表以学生号和课程号为键，但课程名只依赖课程号。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
-      "examFocus": "依据函数依赖识别部分依赖并解释分解。",
-      "pitfalls": "本单元（6.2.3.2）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "examFocus": "判断复合候选键的真子集是否决定非主属性；能够解释部分依赖及其引发的冗余，而不是只背“完全依赖主键”。",
+      "pitfalls": "不要因为某表的主键是单列就忽略其他候选键；也不要把“某列和主键相关”当作完全函数依赖的证明。",
       "source": {
         "type": "external-reference-screening",
         "path": "https://www.ibm.com/think/topics/database-normalization",
@@ -16026,8 +16596,8 @@
         "证据定位"
       ],
       "selfChecks": [
-        "请解释“2NF”的核心概念，并指出至少一个适用前提。",
-        "针对“2NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+        "订单明细以（订单号,商品号）为候选键，商品名称只由商品号决定，违反哪一范式？如何分解？",
+        "为什么 2NF 需要检查所有候选键，而不只是当前指定的主键？"
       ],
       "evidence": [
         {
@@ -16038,19 +16608,49 @@
           "scope": "Supports the distinction from partial dependency; formal determination requires identifying candidate keys and functional dependencies.",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "Microsoft Support — Database Design Basics",
+          "url": "https://support.microsoft.com/en-us/access/database-design-basics",
+          "sourceAuthority": "Microsoft Support — Database Design Basics",
+          "supportedClaim": "Microsoft 以复合主键的订单/商品示例说明 2NF 要求非键属性依赖整个键，而非仅依赖复合键的一部分。",
+          "scope": "支持消除复合键部分依赖的教学规则；形式化判定仍需结合全部候选键和主属性定义。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "RPI Database Systems — Normalization",
+          "url": "https://www.cs.rpi.edu/~sibel/csci4380/fall2026/course_notes/normalization.html",
+          "sourceAuthority": "RPI Database Systems — Normalization",
+          "supportedClaim": "RPI 课程材料给出基于候选键、函数依赖和属性键成员关系的规范化定义。",
+          "scope": "支持使用候选键和函数依赖作正式判断；不替代教材特定算法步骤和考试题目。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材对候选键、主属性/非主属性、完全函数依赖和 2NF 分解的精确判据与表格仍需逐项核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照数据库范式课程讲义与关系规范化定义，按候选键和函数依赖核对 2NF 正式判据。",
+        "outcome": "AI 来源交叉核查完成；教材中的候选键、主属性和分解示例仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "6.2.3.3": {
       "status": "partial",
-      "what": "第三范式限制非主属性对候选键的传递依赖；正式判定需依据候选键、主属性和函数依赖。",
-      "why": "学习“3NF”有助于把该知识点与实际设计或维护决策联系起来；结论须结合前提、适用范围与可核验依据。",
-      "how": "写出候选键和依赖，检查经非主属性形成的传递决定，并核验分解性质。",
-      "confusions": "3NF与BCNF相关但不等价；“直接依赖主键”不能替代正式判据。",
+      "what": "第三范式（3NF）的正式判据是：对关系中每个非平凡函数依赖 X→A，X 是超键，或 A 是主属性（属于某个候选键）；在常见单主键教学场景中，这通常被简化为避免非主属性对键的传递依赖。",
+      "why": "即使消除了部分依赖，非主属性仍可能通过另一个非主属性依赖候选键，造成事实重复与更新异常。",
+      "how": "列出候选键、主属性/非主属性和函数依赖；逐项检查非平凡依赖的决定因素是否为超键，若不是则看右侧属性是否为主属性；违反时分解并检查无损连接和依赖保持。",
+      "confusions": "“非主属性直接依赖主键”是常见记忆口诀，但正式 3NF 允许决定因素不是超键的依赖，只要右侧属性为主属性；3NF 与 BCNF 不等价，BCNF 的条件更严格。",
       "scenarios": "情境练习（非教材原例）：员工号决定部门号、部门号决定部门名称，可考虑拆出部门关系。",
       "examples": "自拟练习（非教材原例）：员工号决定部门号、部门号决定部门名称，可考虑拆出部门关系。 请写明已知条件、判断依据、方案代价和验证方法；此练习不作为事实证据。",
-      "examFocus": "区分2NF部分依赖、3NF传递依赖和BCNF。",
-      "pitfalls": "本单元（6.2.3.3）：不要把工程化解释当作教材原文。涉及精确公式、标准版本、数值或考试答案时回查指定教材或权威来源；本记录只覆盖证据中明确支持的核心主张。",
+      "examFocus": "能用 X→A、超键和主属性的正式定义判定 3NF；理解传递依赖是常见违规来源，同时知道存在 3NF 但不满足 BCNF 的情况。",
+      "pitfalls": "不要把 3NF 绝对化为“所有依赖左侧都必须是超键”；也不要把 3NF 与 BCNF 混为一谈。",
       "source": {
         "type": "external-reference-screening",
         "path": "https://www.ibm.com/think/topics/database-normalization",
@@ -16069,8 +16669,8 @@
         "证据定位"
       ],
       "selfChecks": [
-        "请解释“3NF”的核心概念，并指出至少一个适用前提。",
-        "针对“3NF”，构造具体情境，列出判断依据、适用边界和仍需查阅教材/标准的内容。"
+        "给出函数依赖 X→A，若 X 不是超键但 A 是主属性，是否一定违反 3NF？",
+        "为什么所有 BCNF 关系都满足 3NF，而反向不成立？"
       ],
       "evidence": [
         {
@@ -16081,8 +16681,38 @@
           "scope": "Supports the common 3NF teaching formulation; formal testing must account for candidate keys and functional dependencies.",
           "reviewStatus": "source-supports-bounded-claim",
           "reviewedOn": "2026-10-10"
+        },
+        {
+          "sourceTitle": "RPI Database Systems — Normalization",
+          "url": "https://www.cs.rpi.edu/~sibel/csci4380/fall2026/course_notes/normalization.html",
+          "sourceAuthority": "RPI Database Systems — Normalization",
+          "supportedClaim": "RPI 课程材料定义 3NF：对函数依赖，决定因素为超键、依赖为平凡依赖，或右侧属性均为主属性。",
+          "scope": "支持 3NF 正式判据以及 3NF 与 BCNF 的区别；指定教材可能使用简化口诀，需同时保留其考试语境。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
+        },
+        {
+          "sourceTitle": "University of Winnipeg — Third Normal Form",
+          "url": "https://newion.uwinnipeg.ca/~ychen2/databaseNotes/third-norm-form.pdf",
+          "sourceAuthority": "University of Winnipeg — Third Normal Form",
+          "supportedClaim": "课程讲义给出 3NF 正式定义：对 X→A，X 为超键或 A 为主属性，并讨论其与无传递依赖简化定义的关系。",
+          "scope": "支持正式定义与常见简化定义之间的关系；讲义作为教学材料，不替代指定教材图例。",
+          "reviewStatus": "source-supports-bounded-claim",
+          "reviewedOn": "2026-11-05"
         }
-      ]
+      ],
+      "verificationPendingClaims": [
+        "教材使用的 3NF 简化口诀、正式定义、主属性例外及与 BCNF 的区分示例，仍需按指定版本教材核对。"
+      ],
+      "verificationReview": {
+        "status": "ai-source-cross-check-complete",
+        "reviewedOn": "2026-11-05",
+        "reviewer": "AI source review (not human approval)",
+        "method": "对照 RPI 和 University of Winnipeg 数据库课程材料，核验第三范式正式函数依赖判据和 BCNF 边界。",
+        "outcome": "AI 来源交叉核查完成；教材图表、简化口诀适用条件和考试例题仍需人工核对，继续保持 partial。",
+        "humanReviewRequired": true,
+        "pendingClaimCount": 1
+      }
     },
     "9.2.3.1": {
       "status": "partial",
