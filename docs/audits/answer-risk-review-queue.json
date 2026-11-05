@@ -1,43 +1,29 @@
 {
-  "reportVersion": 3,
+  "reportVersion": 4,
   "readOnly": true,
   "counts": {
     "choices": 1947,
     "cases": 132,
     "essays": 104,
     "scannedTextFields": 2399,
-    "findings": 157
+    "findings": 155,
+    "uniqueFindingRecords": 149,
+    "uniqueParentItems": 107,
+    "repeatedParentItems": 24,
+    "exactDuplicateFindings": 1
   },
   "ruleCounts": {
-    "unsupported-quantified-claim": 149,
+    "unsupported-quantified-claim": 147,
     "absolute-or-exam-trend-claim": 8
   },
-  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。已过滤明确的年份区间和常见否定语境，仍可能存在误报与漏报；脚本不修改题库。",
+  "note": "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。扫描已过滤年份区间和明确的量词否定语境，仍可能存在误报与漏报；脚本不修改题库。案例按父题 ID 分组展示，同一上下文在报告中只显示一次；原始 findings 保留全部命中。",
   "findings": [
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
-        "id": "mock-2026年5月-模拟卷1-070",
-        "kind": "choice",
-        "term": "2026年5月 模拟卷1",
-        "paper": "模拟卷1",
-        "questionNo": 70,
-        "field": "analysis"
-      },
-      "matchedText": "2倍",
-      "context": "量子比特（qubit）的本质特征是量子叠加态——可以同时处于0和1的叠加状态，直到被测量时才坍缩为确定的0或1。经典比特只能是0或1。此外，量子比特之间可以产生量子纠缠（关联），运算加速不是简单的2倍关系。",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
-    },
-    {
-      "rule": "unsupported-quantified-claim",
-      "label": "需要核对来源的量化断言",
-      "item": {
         "id": "mock-2026年5月-模拟卷2-029",
+        "parentId": "mock-2026年5月-模拟卷2-029",
         "kind": "choice",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -57,6 +43,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "mock-2026年5月-模拟卷2-055",
+        "parentId": "mock-2026年5月-模拟卷2-055",
         "kind": "choice",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -76,6 +63,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷3-006",
+        "parentId": "mock-2026年5月-模拟卷3-006",
         "kind": "choice",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -95,6 +83,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷3-068",
+        "parentId": "mock-2026年5月-模拟卷3-068",
         "kind": "choice",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -114,6 +103,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷4-008",
+        "parentId": "mock-2026年5月-模拟卷4-008",
         "kind": "choice",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -133,6 +123,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷4-035",
+        "parentId": "mock-2026年5月-模拟卷4-035",
         "kind": "choice",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -152,6 +143,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷5-002",
+        "parentId": "mock-2026年5月-模拟卷5-002",
         "kind": "choice",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -171,6 +163,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "mock-2026年5月-模拟卷5-002",
+        "parentId": "mock-2026年5月-模拟卷5-002",
         "kind": "choice",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -190,6 +183,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷5-065",
+        "parentId": "mock-2026年5月-模拟卷5-065",
         "kind": "choice",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -209,6 +203,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷6-001",
+        "parentId": "mock-2026年5月-模拟卷6-001",
         "kind": "choice",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -228,6 +223,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷6-007",
+        "parentId": "mock-2026年5月-模拟卷6-007",
         "kind": "choice",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -247,6 +243,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷6-055",
+        "parentId": "mock-2026年5月-模拟卷6-055",
         "kind": "choice",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -266,6 +263,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷6-056",
+        "parentId": "mock-2026年5月-模拟卷6-056",
         "kind": "choice",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -285,6 +283,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷7-007",
+        "parentId": "mock-2026年5月-模拟卷7-007",
         "kind": "choice",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -297,13 +296,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷7-055",
+        "parentId": "mock-2026年5月-模拟卷7-055",
         "kind": "choice",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -323,6 +323,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷7-056",
+        "parentId": "mock-2026年5月-模拟卷7-056",
         "kind": "choice",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -335,13 +336,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷7-057",
+        "parentId": "mock-2026年5月-模拟卷7-057",
         "kind": "choice",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -361,6 +363,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "mock-2026年5月-模拟卷7-058",
+        "parentId": "mock-2026年5月-模拟卷7-058",
         "kind": "choice",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -380,6 +383,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2020年下半年-003",
+        "parentId": "real-2020年下半年-003",
         "kind": "choice",
         "term": "2020年下半年",
         "paper": "2020年下半年",
@@ -399,6 +403,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2020年下半年-070",
+        "parentId": "real-2020年下半年-070",
         "kind": "choice",
         "term": "2020年下半年",
         "paper": "2020年下半年",
@@ -418,6 +423,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "real-2021年下半年-031",
+        "parentId": "real-2021年下半年-031",
         "kind": "choice",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -437,6 +443,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2021年下半年-055",
+        "parentId": "real-2021年下半年-055",
         "kind": "choice",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -456,6 +463,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2024年下半年-013",
+        "parentId": "real-2024年下半年-013",
         "kind": "choice",
         "term": "2024年下半年",
         "paper": "2024年下半年",
@@ -475,6 +483,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-012",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -487,13 +496,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-013",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -506,13 +516,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-014",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -525,13 +536,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-015",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -544,13 +556,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-016",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -563,13 +576,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2019年下半年-017",
+        "parentId": "shared-stem-34b0af4f8e83",
         "kind": "choice",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -582,13 +596,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "real-2022年下半年-015",
+        "parentId": "real-2022年下半年-015",
         "kind": "choice",
         "term": "2022年下半年",
         "paper": "2022年下半年",
@@ -608,6 +623,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-1",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -627,6 +643,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-1",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -646,6 +663,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-1",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -658,13 +676,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "absolute-or-exam-trend-claim",
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-1",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -684,6 +703,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-2:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-2",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -703,6 +723,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-2:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-2",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -715,13 +736,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-3:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-3",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -734,13 +756,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-3:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-3",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -753,13 +776,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-3:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷1-3",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -772,13 +796,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-5:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-5",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -798,6 +823,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-5:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷1-5",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -817,6 +843,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-5:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-5",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -836,6 +863,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-5:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷1-5",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -855,6 +883,7 @@
       "label": "绝对化或考试趋势断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷1-5:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷1-5",
         "kind": "case",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -874,6 +903,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷2-1",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -893,6 +923,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷2-1",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -912,6 +943,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-2:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷2-2",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -924,13 +956,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-2:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷2-2",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -943,13 +976,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-2:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷2-2",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -962,13 +996,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-3:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷2-3",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -988,6 +1023,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-3:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷2-3",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1007,6 +1043,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-4:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷2-4",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1026,6 +1063,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-4:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷2-4",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1045,6 +1083,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-4:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷2-4",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1057,13 +1096,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "technical-number-or-calculation-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-5:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷2-5",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1083,6 +1123,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-5:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷2-5",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1102,6 +1143,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷2-5:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷2-5",
         "kind": "case",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -1121,6 +1163,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷3-1",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1140,6 +1183,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷3-1",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1159,6 +1203,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-2:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷3-2",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1171,13 +1216,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-2:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷3-2",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1190,13 +1236,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-2:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷3-2",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1216,6 +1263,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-3:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷3-3",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1235,6 +1283,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-3:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷3-3",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1254,6 +1303,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-3:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷3-3",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1273,6 +1323,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-4:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷3-4",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1292,6 +1343,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-4:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷3-4",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1311,6 +1363,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-4:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷3-4",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1330,6 +1383,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-5:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷3-5",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1342,13 +1396,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-5:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷3-5",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1368,6 +1423,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷3-5:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷3-5",
         "kind": "case",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -1387,6 +1443,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷4-1",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1406,6 +1463,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-2:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷4-2",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1418,13 +1476,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-2:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷4-2",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1437,13 +1496,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-2:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷4-2",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1456,13 +1516,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-3:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷4-3",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1475,13 +1536,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "outcome-metric-needs-evidence"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-4:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷4-4",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1501,6 +1563,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷4-4:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷4-4",
         "kind": "case",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -1520,6 +1583,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷5-1",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1539,6 +1603,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷5-1",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1558,6 +1623,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-2:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷5-2",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1577,6 +1643,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-2:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷5-2",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1596,6 +1663,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-2:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷5-2",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1615,6 +1683,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-3:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷5-3",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1634,6 +1703,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-3:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷5-3",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1653,6 +1723,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-3:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷5-3",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1672,6 +1743,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-4:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷5-4",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1691,6 +1763,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-5:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷5-5",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1710,6 +1783,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-5:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷5-5",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1722,13 +1796,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷5-5:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷5-5",
         "kind": "case",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -1748,6 +1823,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷6-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷6-1",
         "kind": "case",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -1767,6 +1843,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷6-1:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷6-1",
         "kind": "case",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -1786,6 +1863,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷7-1:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷7-1",
         "kind": "case",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -1805,6 +1883,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷7-4:问题1",
+        "parentId": "case-mock-2026年5月-模拟卷7-4",
         "kind": "case",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -1824,6 +1903,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷7-4:问题2",
+        "parentId": "case-mock-2026年5月-模拟卷7-4",
         "kind": "case",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -1843,6 +1923,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-mock-2026年5月-模拟卷7-4:问题3",
+        "parentId": "case-mock-2026年5月-模拟卷7-4",
         "kind": "case",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -1862,6 +1943,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2021年下半年-1:问题1",
+        "parentId": "case-real-2021年下半年-1",
         "kind": "case",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -1881,6 +1963,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2021年下半年-1:问题1",
+        "parentId": "case-real-2021年下半年-1",
         "kind": "case",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -1900,6 +1983,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2023年下半年-3:问题1",
+        "parentId": "case-real-2023年下半年-3",
         "kind": "case",
         "term": "2023年下半年",
         "paper": "2023年下半年",
@@ -1912,32 +1996,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
-    },
-    {
-      "rule": "unsupported-quantified-claim",
-      "label": "需要核对来源的量化断言",
-      "item": {
-        "id": "case-real-2024年上半年-5:问题3",
-        "kind": "case",
-        "term": "2024年上半年",
-        "paper": "2024年上半年",
-        "questionNo": "问题3",
-        "field": "reference_answer"
-      },
-      "matchedText": "90%",
-      "context": "案及详解 | | CSDN - rzleilei | https://blog.csdn.net/rzleilei/article/details/139214710 | 2024上半年真题-复原程度90% | | CSDN - m0_61635017 | https://blog.csdn.net/m0_61635017/article/details/139476803 | 2024年5月案例真题完整版 | | CSDN - Nanki_",
-      "hasSourceLocator": false,
-      "sourceLocatorAssessment": "missing",
-      "answerSource": null,
-      "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2025年上半年-1:问题1",
+        "parentId": "case-real-2025年上半年-1",
         "kind": "case",
         "term": "2025年上半年",
         "paper": "2025年上半年",
@@ -1957,6 +2023,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2025年上半年-3:问题3",
+        "parentId": "case-real-2025年上半年-3",
         "kind": "case",
         "term": "2025年上半年",
         "paper": "2025年上半年",
@@ -1976,6 +2043,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2025年下半年-4:问题2",
+        "parentId": "case-real-2025年下半年-4",
         "kind": "case",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -1988,13 +2056,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2025年下半年-6:问题1",
+        "parentId": "case-real-2025年下半年-6",
         "kind": "case",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -2014,6 +2083,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2025年下半年-6:问题2",
+        "parentId": "case-real-2025年下半年-6",
         "kind": "case",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -2033,6 +2103,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2016年下半年-1:问题",
+        "parentId": "case-real-2016年下半年-1",
         "kind": "case",
         "term": "2016年下半年",
         "paper": "2016年下半年",
@@ -2052,6 +2123,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2017年下半年-1:问题",
+        "parentId": "case-real-2017年下半年-1",
         "kind": "case",
         "term": "2017年下半年",
         "paper": "2017年下半年",
@@ -2064,13 +2136,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2018年下半年-1:问题",
+        "parentId": "case-real-2018年下半年-1",
         "kind": "case",
         "term": "2018年下半年",
         "paper": "2018年下半年",
@@ -2083,13 +2156,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2019年下半年-1:问题",
+        "parentId": "case-real-2019年下半年-1",
         "kind": "case",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -2102,13 +2176,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "case-real-2019年下半年-5:问题",
+        "parentId": "case-real-2019年下半年-5",
         "kind": "case",
         "term": "2019年下半年",
         "paper": "2019年下半年",
@@ -2128,6 +2203,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷1-1",
+        "parentId": "essay-mock-2026年5月-模拟卷1-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -2147,6 +2223,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷1-3",
+        "parentId": "essay-mock-2026年5月-模拟卷1-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -2166,6 +2243,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷1-4",
+        "parentId": "essay-mock-2026年5月-模拟卷1-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷1",
         "paper": "模拟卷1",
@@ -2178,13 +2256,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷2-1",
+        "parentId": "essay-mock-2026年5月-模拟卷2-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -2204,6 +2283,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷2-2",
+        "parentId": "essay-mock-2026年5月-模拟卷2-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -2223,6 +2303,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷2-3",
+        "parentId": "essay-mock-2026年5月-模拟卷2-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷2",
         "paper": "模拟卷2",
@@ -2242,6 +2323,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷3-1",
+        "parentId": "essay-mock-2026年5月-模拟卷3-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -2261,6 +2343,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷3-2",
+        "parentId": "essay-mock-2026年5月-模拟卷3-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -2280,6 +2363,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷3-3",
+        "parentId": "essay-mock-2026年5月-模拟卷3-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -2299,6 +2383,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷3-4",
+        "parentId": "essay-mock-2026年5月-模拟卷3-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷3",
         "paper": "模拟卷3",
@@ -2311,13 +2396,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "outcome-metric-needs-evidence"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷4-1",
+        "parentId": "essay-mock-2026年5月-模拟卷4-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -2337,6 +2423,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷4-2",
+        "parentId": "essay-mock-2026年5月-模拟卷4-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -2356,6 +2443,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷4-3",
+        "parentId": "essay-mock-2026年5月-模拟卷4-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -2375,6 +2463,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷4-4",
+        "parentId": "essay-mock-2026年5月-模拟卷4-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷4",
         "paper": "模拟卷4",
@@ -2394,6 +2483,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷5-1",
+        "parentId": "essay-mock-2026年5月-模拟卷5-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -2413,6 +2503,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷5-2",
+        "parentId": "essay-mock-2026年5月-模拟卷5-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -2432,6 +2523,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷5-3",
+        "parentId": "essay-mock-2026年5月-模拟卷5-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -2451,6 +2543,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷5-4",
+        "parentId": "essay-mock-2026年5月-模拟卷5-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷5",
         "paper": "模拟卷5",
@@ -2470,6 +2563,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷6-1",
+        "parentId": "essay-mock-2026年5月-模拟卷6-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -2489,6 +2583,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷6-2",
+        "parentId": "essay-mock-2026年5月-模拟卷6-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -2508,6 +2603,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷6-3",
+        "parentId": "essay-mock-2026年5月-模拟卷6-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -2527,6 +2623,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷6-4",
+        "parentId": "essay-mock-2026年5月-模拟卷6-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷6",
         "paper": "模拟卷6",
@@ -2546,6 +2643,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷7-1",
+        "parentId": "essay-mock-2026年5月-模拟卷7-1",
         "kind": "essay",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -2565,6 +2663,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷7-2",
+        "parentId": "essay-mock-2026年5月-模拟卷7-2",
         "kind": "essay",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -2584,6 +2683,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷7-3",
+        "parentId": "essay-mock-2026年5月-模拟卷7-3",
         "kind": "essay",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -2603,6 +2703,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-mock-2026年5月-模拟卷7-4",
+        "parentId": "essay-mock-2026年5月-模拟卷7-4",
         "kind": "essay",
         "term": "2026年5月 模拟卷7",
         "paper": "模拟卷7",
@@ -2622,6 +2723,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2020年下半年-2",
+        "parentId": "essay-real-2020年下半年-2",
         "kind": "essay",
         "term": "2020年下半年",
         "paper": "2020年下半年",
@@ -2641,6 +2743,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2020年下半年-3",
+        "parentId": "essay-real-2020年下半年-3",
         "kind": "essay",
         "term": "2020年下半年",
         "paper": "2020年下半年",
@@ -2660,6 +2763,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2020年下半年-4",
+        "parentId": "essay-real-2020年下半年-4",
         "kind": "essay",
         "term": "2020年下半年",
         "paper": "2020年下半年",
@@ -2679,6 +2783,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2021年下半年-1",
+        "parentId": "essay-real-2021年下半年-1",
         "kind": "essay",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -2691,13 +2796,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "technical-number-or-calculation-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2021年下半年-3",
+        "parentId": "essay-real-2021年下半年-3",
         "kind": "essay",
         "term": "2021年下半年",
         "paper": "2021年下半年",
@@ -2717,6 +2823,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2022年下半年-1",
+        "parentId": "essay-real-2022年下半年-1",
         "kind": "essay",
         "term": "2022年下半年",
         "paper": "2022年下半年",
@@ -2729,13 +2836,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "quantified-claim-context-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2022年下半年-2",
+        "parentId": "essay-real-2022年下半年-2",
         "kind": "essay",
         "term": "2022年下半年",
         "paper": "2022年下半年",
@@ -2748,13 +2856,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "outcome-metric-needs-evidence"
+      "triageCategory": "technical-number-or-calculation-review"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2022年下半年-4",
+        "parentId": "essay-real-2022年下半年-4",
         "kind": "essay",
         "term": "2022年下半年",
         "paper": "2022年下半年",
@@ -2774,6 +2883,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2023年下半年-2",
+        "parentId": "essay-real-2023年下半年-2",
         "kind": "essay",
         "term": "2023年下半年",
         "paper": "2023年下半年",
@@ -2786,13 +2896,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2023年下半年-4",
+        "parentId": "essay-real-2023年下半年-4",
         "kind": "essay",
         "term": "2023年下半年",
         "paper": "2023年下半年",
@@ -2812,6 +2923,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2024年上半年-2",
+        "parentId": "essay-real-2024年上半年-2",
         "kind": "essay",
         "term": "2024年上半年",
         "paper": "2024年上半年",
@@ -2831,6 +2943,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2024年上半年-3",
+        "parentId": "essay-real-2024年上半年-3",
         "kind": "essay",
         "term": "2024年上半年",
         "paper": "2024年上半年",
@@ -2843,13 +2956,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": null,
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "quantified-claim-context-review"
+      "triageCategory": "scenario-requirement-or-design-parameter"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2024年上半年-4",
+        "parentId": "essay-real-2024年上半年-4",
         "kind": "essay",
         "term": "2024年上半年",
         "paper": "2024年上半年",
@@ -2869,6 +2983,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2024年下半年-4",
+        "parentId": "essay-real-2024年下半年-4",
         "kind": "essay",
         "term": "2024年下半年",
         "paper": "2024年下半年",
@@ -2881,13 +2996,14 @@
       "sourceLocatorAssessment": "missing",
       "answerSource": "glm-5.2-reviewed",
       "guidance": "核对数字的可追溯依据、测量条件和适用范围；无依据时删除或标明是假设。",
-      "triageCategory": "technical-number-or-calculation-review"
+      "triageCategory": "outcome-metric-needs-evidence"
     },
     {
       "rule": "unsupported-quantified-claim",
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年上半年-2",
+        "parentId": "essay-real-2025年上半年-2",
         "kind": "essay",
         "term": "2025年上半年",
         "paper": "2025年上半年",
@@ -2907,6 +3023,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年上半年-3",
+        "parentId": "essay-real-2025年上半年-3",
         "kind": "essay",
         "term": "2025年上半年",
         "paper": "2025年上半年",
@@ -2926,6 +3043,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年下半年-1",
+        "parentId": "essay-real-2025年下半年-1",
         "kind": "essay",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -2945,6 +3063,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年下半年-2",
+        "parentId": "essay-real-2025年下半年-2",
         "kind": "essay",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -2964,6 +3083,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年下半年-3",
+        "parentId": "essay-real-2025年下半年-3",
         "kind": "essay",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -2983,6 +3103,7 @@
       "label": "需要核对来源的量化断言",
       "item": {
         "id": "essay-real-2025年下半年-4",
+        "parentId": "essay-real-2025年下半年-4",
         "kind": "essay",
         "term": "2025年下半年",
         "paper": "2025年下半年",
@@ -3000,10 +3121,19 @@
   ],
   "sourcePath": "../architect-exam-bank/data/bank.json",
   "triageCounts": {
-    "quantified-claim-context-review": 26,
-    "technical-number-or-calculation-review": 56,
+    "technical-number-or-calculation-review": 41,
     "absolute-language-needs-context": 4,
     "exam-prediction-needs-source": 4,
-    "outcome-metric-needs-evidence": 67
+    "quantified-claim-context-review": 31,
+    "outcome-metric-needs-evidence": 55,
+    "scenario-requirement-or-design-parameter": 19
+  },
+  "findingReviewGrouping": {
+    "uniqueFindingsDisplayed": 154,
+    "uniqueFindingRecords": 149,
+    "uniqueParentItems": 107,
+    "repeatedParentItems": 24,
+    "exactDuplicateFindingsSuppressed": 1,
+    "contextGroupsDisplayed": 137
   }
 }

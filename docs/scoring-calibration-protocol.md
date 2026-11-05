@@ -6,9 +6,9 @@
 
 ## 样本采集
 
-案例题与论文题分开统计。每份答卷须保留题型、匿名样本 ID、评分细则版本、提示词版本、评分器版本和模型版本。每份答卷必须由两位不同阅卷人独立盲评，记录各自总分和满分；分歧经讨论或第三方裁决后记录 adjudicated 分数。AI 对同一份答卷可运行一次或多次，记录每次原始结构化结果。
+案例题与论文题分开统计。每批样本的 metadata 必须记录模型标识、模型版本和采集日期；每份答卷须保留题型、匿名样本 ID、评分细则版本、提示词版本、评分器版本。每份答卷必须由两位不同阅卷人独立盲评，记录各自总分和满分；分歧经讨论或第三方裁决后记录 adjudicated 分数。AI 对同一份答卷可运行一次或多次，记录每次原始结构化结果。
 
-不得用 AI 自评分数充当人工标签。不要把同一份答卷拆成多个独立样本来凑数量。避免保存考生姓名、单位、联系方式等身份信息；答卷使用前应确认授权与内部数据处理要求。
+不得用 AI 自评分数充当人工标签。不要把同一份答卷拆成多个独立样本来凑数量。同一题型混入不同的 rubric、prompt 或 grader 版本时，程序会阻止合并分析；每个版本组合应单独采样。避免保存考生姓名、单位、联系方式等身份信息；答卷使用前应确认授权与内部数据处理要求。
 
 ## 最小探索性样本
 
@@ -18,7 +18,8 @@
 
 - 总分误差：将分数按各题满分归一化为百分比，计算 MAE（百分点）、有符号偏差、完全一致数、误差在 5/10 个百分点内的数量，以及最大误差和最差样本。
 - 人工一致性：双人评分计算 ICC(A,1)（双向随机、绝对一致、单次测量）及平均绝对评分差。ICC 不应脱离样本量、评分范围和分歧分布单独解释。
-- 分项误差：案例题的 results、论文题的 dimensions 若包含分项 score/max_score，且人工裁决对象同时提供同名 `adjudicated.components` 分项分数，则按相同分项计算 MAE；不会拿 AI 分项分数与人工总分比较。需先确认不同题目的同名分项具有可比性。
+- 分项误差：论文题使用生产评分器的 `dimensions` 对象（固定六个维度，字段为 `score/max`），人工裁决也需提供同名维度；案例题生产返回 `results[]`（`id/score/max`），`id` 只是当前案例的小问编号，不会被跨案例误当作统一评分维度。案例分项只有在人工与 AI 结果都另行提供可比的 `name/dimension/criterion` 时才会计算。
+- 版本隔离：同一题型的样本若混入不同 rubric、prompt 或 grader 版本，程序会标记该题型 blocked 并列出版本分组，不会把不同评分口径下的结果合并计算。请每个版本组合单独采样和运行。
 - 通过/不通过：只有样本明确提供 passThresholdPct 时才计算 AI 与人工裁决的判定分歧；不擅自推定论文及案例的统一合格线。
 - 重复运行波动：同一答卷多次 AI 运行的分数极差用于观察非确定性，不可与人工评分误差混为一谈。
 
@@ -30,7 +31,7 @@
 cp docs/scoring-calibration-intake-template.json ~/.local/share/architect-exam-practice/scoring-calibration-intake.json
 ```
 
-填写结构示例：
+填写结构示例（字段形状与本项目评分器一致；案例子问以 `id/score/max` 表示，论文六维度以对象键表示）：
 
 ```json
 {
@@ -50,8 +51,44 @@ cp docs/scoring-calibration-intake-template.json ~/.local/share/architect-exam-p
       { "raterId": "rater-a", "score": 52, "maxScore": 75 },
       { "raterId": "rater-b", "score": 50, "maxScore": 75 }
     ],
-    "adjudicated": { "score": 51, "maxScore": 75 },
-    "aiRuns": [{ "total_score": 51, "max_score": 75, "results": [] }]
+    "adjudicated": {
+      "total_score": 51,
+      "max_score": 75,
+      "results": [{ "id": "1", "score": 17, "max": 25 }, { "id": "2", "score": 34, "max": 50 }]
+    },
+    "aiRuns": [{
+      "total_score": 51,
+      "max_score": 75,
+      "results": [{ "id": "1", "score": 17, "max": 25 }, { "id": "2", "score": 34, "max": 50 }]
+    }]
+  }, {
+    "id": "essay-anon-001",
+    "type": "essay",
+    "version": { "rubric": "rubric-v1", "prompt": "essay-prompt-v1", "grader": "grader-v1" },
+    "humanRatings": [
+      { "raterId": "rater-a", "score": 68, "maxScore": 100 },
+      { "raterId": "rater-b", "score": 70, "maxScore": 100 }
+    ],
+    "adjudicated": {
+      "total_score": 69,
+      "max_score": 100,
+      "dimensions": {
+        "切合题意": { "score": 14, "max": 20, "comment": "" },
+        "观点正确": { "score": 14, "max": 20, "comment": "" },
+        "逻辑清晰": { "score": 10, "max": 15, "comment": "" },
+        "论据充分": { "score": 14, "max": 20, "comment": "" },
+        "语言流畅": { "score": 7, "max": 10, "comment": "" },
+        "格式规范": { "score": 10, "max": 15, "comment": "" }
+      }
+    },
+    "aiRuns": [{ "total_score": 69, "max_score": 100, "dimensions": {
+      "切合题意": { "score": 14, "max": 20, "comment": "" },
+      "观点正确": { "score": 14, "max": 20, "comment": "" },
+      "逻辑清晰": { "score": 10, "max": 15, "comment": "" },
+      "论据充分": { "score": 14, "max": 20, "comment": "" },
+      "语言流畅": { "score": 7, "max": 10, "comment": "" },
+      "格式规范": { "score": 10, "max": 15, "comment": "" }
+    } }]
   }]
 }
 ```

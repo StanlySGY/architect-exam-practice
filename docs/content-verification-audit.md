@@ -1091,3 +1091,9 @@
 - 核验队列旧指标 `unitsWithCompleteClaimEvidence` 更名为 `unitsPassingDeclaredWholeUnitVerificationGate`。该指标只说明数据中已有 `status=verified` 的单元通过证据字段、待核主张和已知来源真实性警告等元数据门槛；它不独立证明整单元每一条事实均已核对，也不证明人工审阅实际发生。
 - 两份自动审计报告新增 `wholeUnitCoverageStatus=not-established-by-automated-audit`，避免将结构化来源记录、已声明的 verified 状态或 AI 来源交叉复核误读为自动化整单元事实覆盖结论。
 - 本次变更只调整审计口径、报告元数据、回归测试和维护文档；不修改课程正文、题库内容、审批状态、SQLite 学习记录或答题历史。CI 已执行的课程审计步骤无需重复添加。
+
+## 2026-11-05 更新：322 个 partial 单元分批核验清单
+
+- 新增 `docs/audits/learning-verification-batches-2026-11-05.md`，根据当前只读核验队列列出全部 322 个 `partial` 单元及互斥处理批次：64 个含 97 条显式待核主张、11 个因共同本地 PDF 来源真实性未独立认证而阻塞、247 个已有命题级证据但仍缺整单元人工覆盖。
+- 批次清单列出单元 ID、待核主张、PDF 印刷/物理页映射、人工记录字段和 verified 关闭标准。它是人工执行清单，不代表已完成人工终审，也不自动更新课程状态。
+- 当前 11 个 PDF 警告共享 SHA-256 `552a5841ca75b94adbac9b5e00bcbbbf4b372bb8edbb4e085d60717568c03005`；哈希只标识被检查的同一份文件，不证明出版社来源真实性。没有正版正文/可信馆藏原件时继续保持 partial。

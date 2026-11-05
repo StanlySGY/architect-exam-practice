@@ -26,12 +26,16 @@ function componentScores(run) {
       ? result.results
       : Array.isArray(result?.dimensions)
         ? result.dimensions
-        : [];
+        : result?.dimensions && typeof result.dimensions === 'object'
+          ? Object.entries(result.dimensions).map(([name, value]) => ({ name, ...value }))
+          : [];
   const output = [];
   for (const row of rows) {
-    const name = String(row?.name ?? row?.dimension ?? row?.criterion ?? row?.id ?? '').trim();
+    // Case grader result IDs are question identifiers, not a shared rubric
+    // dimension. Only explicit names/dimensions are comparable across samples.
+    const name = String(row?.name ?? row?.dimension ?? row?.criterion ?? '').trim();
     const score = row?.score ?? row?.total_score;
-    const maxScore = row?.maxScore ?? row?.max_score;
+    const maxScore = row?.maxScore ?? row?.max_score ?? row?.max;
     if (name && finite(score) && finite(maxScore) && maxScore > 0 && score >= 0 && score <= maxScore) {
       output.push({ name, percent: score / maxScore * 100 });
     }
@@ -92,6 +96,15 @@ function validateSample(sample, index) {
 
 export function evaluateCalibration(input) {
   const samples = Array.isArray(input?.samples) ? input.samples : [];
+  const metadataErrors = [];
+  if (!String(input?.metadata?.model ?? '').trim()) metadataErrors.push('metadata.model is required');
+  if (!String(input?.metadata?.modelVersion ?? '').trim()) metadataErrors.push('metadata.modelVersion is required');
+  const collectedAt = String(input?.metadata?.collectedAt ?? '');
+  if (!/^\d{4}-\d{2}-\d{2}$/u.test(collectedAt)
+    || Number.isNaN(Date.parse(`${collectedAt}T00:00:00Z`))
+    || new Date(`${collectedAt}T00:00:00Z`).toISOString().slice(0, 10) !== collectedAt) {
+    metadataErrors.push('metadata.collectedAt must be a valid YYYY-MM-DD date');
+  }
   const rejected = [];
   const validByType = { case: [], essay: [] };
 
@@ -108,6 +121,26 @@ export function evaluateCalibration(input) {
   const byType = {};
   for (const type of ['case', 'essay']) {
     const rows = validByType[type];
+    const versions = new Map();
+    for (const sample of rows) {
+      const key = JSON.stringify({ rubric: sample.version.rubric, prompt: sample.version.prompt, grader: sample.version.grader });
+      versions.set(key, (versions.get(key) ?? 0) + 1);
+    }
+    if (versions.size > 1) {
+      byType[type] = {
+        sampleCount: rows.length,
+        minimumExploratorySampleCount: MIN_SAMPLES_PER_TYPE,
+        sufficientForExploratoryAnalysis: false,
+        analysisBlockedReason: 'mixed rubric/prompt/grader versions must be evaluated in separate runs; scores are not pooled across versions',
+        versionCohorts: [...versions.entries()].map(([version, sampleCount]) => ({ ...JSON.parse(version), sampleCount })),
+        pointAgreement: null,
+        humanAgreement: null,
+        componentMeanAbsoluteErrorPp: null,
+        passFail: null,
+        repeatedAiRunVariability: null,
+      };
+      continue;
+    }
     const humanPairs = [];
     const aiErrors = [];
     const perComponent = new Map();
@@ -128,7 +161,7 @@ export function evaluateCalibration(input) {
 
       for (const run of sample.aiRuns) {
         for (const component of componentScores(run)) {
-          const humanComponent = new Map(componentScores({ components: sample.adjudicated.components }).map(item => [item.name, item.percent])).get(component.name);
+          const humanComponent = new Map(componentScores(sample.adjudicated).map(item => [item.name, item.percent])).get(component.name);
           if (humanComponent === undefined) continue;
           if (!perComponent.has(component.name)) perComponent.set(component.name, []);
           perComponent.get(component.name).push(component.percent - humanComponent);
@@ -181,10 +214,13 @@ export function evaluateCalibration(input) {
   const insufficient = Object.entries(byType)
     .filter(([, result]) => !result.sufficientForExploratoryAnalysis)
     .map(([type, result]) => ({ type, validSampleCount: result.sampleCount, required: MIN_SAMPLES_PER_TYPE }));
-  const status = insufficient.length ? 'blocked-or-insufficient-anchor-samples' : 'exploratory-analysis-ready';
+  const status = insufficient.length || metadataErrors.length
+    ? 'blocked-or-insufficient-anchor-samples'
+    : 'exploratory-analysis-ready';
   return {
     reportVersion: 1,
     status,
+    metadataErrors,
     limitations: [
       'Ten samples per answer type is an exploratory minimum, not certification or proof of exam-score predictiveness.',
       'Two independent human ratings and an adjudicated score are required for every sample; AI self-scores are not ground truth.',

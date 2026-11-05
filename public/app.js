@@ -997,9 +997,9 @@ function switchView(view) {
     .forEach((item) =>
       item.classList.toggle("active", item.dataset.view === view),
     );
-  // 视图同步到 URL：#wiki 这类链接可直达、刷新后停留在原视图。
+  // 视图同步到 URL：支持直达/刷新，也保留模块导航历史以便浏览器后退/前进。
   if (window.location.hash !== `#${view}`) {
-    history.replaceState(null, "", `#${view}`);
+    history.pushState({ view }, "", `#${view}`);
   }
   window.scrollTo({ top: 0, behavior: "smooth" });
   if (view === "home") {

@@ -5,10 +5,8 @@
 - 仓库：`StanlySGY/architect-exam-practice`
 - WSL 路径：`/home/sgy/workspace/architect-exam-practice`
 - 工作分支：`audit/whole-unit-coverage-and-scoring-calibration`
-- 核心实现提交：`29166e56fd9a94a7a02e0b36c150b7de59007234`（`audit: clarify learning coverage and scoring calibration`）
-- 分支基线：`89814db35a55e6de95e48633acd7b9dc8184b830`；分支已推送并跟踪 `origin/audit/whole-unit-coverage-and-scoring-calibration`。
-- 已创建 Draft PR #1：`https://github.com/StanlySGY/architect-exam-practice/pull/1`，目标分支 `main`；当前保持 Draft、未合并。
-- PR 触发的 GitHub Actions run `41968679511` 已通过，Node 22 与 Node 24 两个 job 均成功。
+- 分支基线：`89814db35a55e6de95e48633acd7b9dc8184b830`；此前已推送的审计提交为 `29166e5`、`1a96841`、`2268126`。当前继续在同一分支追加本轮扫描、路由和 CI 改进。
+- 已创建 Draft PR #1：`https://github.com/StanlySGY/architect-exam-practice/pull/1`，目标分支 `main`；保持 Draft、未合并。当前这一轮新改动仍需提交并推送，之后会触发新一轮 CI。
 - 用户原有未提交修改：`data/learning-content.json`（约 404 insertions / 130 deletions）。该文件包含真实课程修订，本轮全程保留，未 stash、覆盖、回退或纳入本轮审计补丁。
 - 项目指令文件：Runner 本轮未发现 AGENTS.md 等仓库指令文件。
 - 服务和 SQLite 未操作；未重启应用。
@@ -20,8 +18,13 @@
 3. `scripts/audit-learning-verification-queue.mjs` 将旧指标 `unitsWithCompleteClaimEvidence` 改为 `unitsPassingDeclaredWholeUnitVerificationGate`，避免把已声明状态/元数据门槛说成自动化整单元事实证明。
 4. 两组回归测试补充排除范围、报告边界与元数据门槛断言；并修复既有测试将全库来源交叉复核数量写死为 49 的脆弱断言，改为从实际纳入单元动态统计。该修复适配用户未提交课程数据变更，不修改课程数据。
 5. 新增只读评分校准器 `scripts/evaluate-scoring-calibration.mjs`；新增 `test/scoring-calibration.test.mjs`、人工双评采集模板和校准协议。
-6. 新增代表性答案风险候选初审 `docs/audits/answer-risk-triage-2026-11-05.md`；它不是 157 条候选的全部裁决。
-7. 更新本交接文档，记录实际 WSL 分支、未提交数据保护与当前验证状态。
+6. 新增代表性答案风险候选初审 `docs/audits/answer-risk-triage-2026-11-05.md`；它不是静态 157 条快照的全部裁决。
+7. 将案例/论文评分器校准解析适配到生产 JSON 结构，混合 rubric/prompt/grader 版本会被阻止合并计算；补充模型身份/版本/采集日期校验。
+8. 将答案风险扫描升级为按案例父题、共享长题干综合题聚合；过滤明确否定数字和题目复原度元数据误报；报告保留原始命中、独立记录、父级记录和重复上下文统计。
+9. 新增选择题逐项初审、案例父级复核、论文数字语义复核三份文档，并刷新当前只读答案风险队列。
+10. 新增 322 个 `partial` 学习单元分批清单，拆为 64 个显式待核主张单元（97 条主张）、11 个本地 PDF 来源真实性问题、247 个整单元人工覆盖缺口。
+11. 真实 Chrome 对桌面/移动导航完成验收；发现并修复 `switchView()` 使用 `replaceState` 导致浏览器后退无法恢复上个模块的问题，改为只在视图改变时 `pushState`。
+12. CI 工作流升级到 `checkout@v7.0.1`、`setup-node@v7.1.0` 和 `ubuntu-26.04`，并显式设置只读 `contents: read` 权限。
 
 ## 实际基线与审计结果
 
@@ -30,6 +33,16 @@
 - 3 个单元原状态为 `verified`，322 个为 `partial`。
 - 325 个叶子单元有至少一条结构有效的命题级证据；11 个单元仍有本地 PDF 来源真实性警告。
 - 两个审计报告现在都输出 `wholeUnitCoverageStatus=not-established-by-automated-audit`。自动化不会宣称它证明了整单元事实完整覆盖。
+- 当前外置题库风险扫描：155 条原始规则命中、149 条不同题目/子问题记录、107 个父级题目；24 个父题包含多个命中记录，1 条完全重复命中在展示层抑制。分类包括 41 条技术/计算/产品边界、4 条绝对化措辞、55 条结果指标需证据、4 条考试趋势、31 条上下文待复核、19 条场景/设计参数。
+- 选择题：30 条原始命中/29 条不同记录；案例题：79 条命中/74 条不同子问题记录/37 个父级案例；论文：46 条记录。六个 2019 年下半年共享长题干选择题归为同一综合题父级。
+
+## 本轮新增交付文档
+
+- [选择题逐项初审](./audits/answer-risk-choice-adjudication-2026-11-05.md)
+- [案例题父级初审](./audits/answer-risk-case-adjudication-2026-11-05.md)
+- [论文指标初审](./audits/answer-risk-essay-adjudication-2026-11-05.md)
+- [322 单元人工核验批次清单](./audits/learning-verification-batches-2026-11-05.md)
+- [Chrome 浏览器实际验收记录](./audits/browser-acceptance-2026-11-05.md)
 
 ## 已执行验证
 
@@ -39,21 +52,26 @@
 - CLI 实际运行 `node scripts/audit-learning-content.mjs` 与 `node scripts/audit-learning-verification-queue.mjs`：两者成功；统计与上述基线一致。
 - 全量 `npm test`：381/381 通过（2026-11-05，包含评分校准器新增测试）。
 
-评分校准器语法检查和单测通过（4/4）；空模板 CLI 已由原生进程接口确认以退出码 2 返回 `blocked-or-insufficient-anchor-samples`。包含新增 4 个校准用例的全量 `npm test` 为 381/381 通过。最终 lint/差异检查已在本轮追加复核。核心提交 `29166e5` 及交接同步提交均已推送；Draft PR #1 的远端 CI run `41968679511` 中 Node 22、Node 24 两个 job 均 success。Actions 附带 Node.js 20 runtime deprecation 与 ubuntu-latest 迁移提醒，不影响本轮通过结果。
+本轮新增风险扫描、评分校准和前端路由定向测试：35/35 通过（9 条风险扫描、6 条评分校准、20 条前端契约测试）。`node scripts/audit-learning-content.mjs` 与 `node scripts/audit-learning-verification-queue.mjs` 重新执行成功；322 单元互斥批次断言 64+11+247=322 且 97 条待核主张通过。空评分模板由原生进程接口确认退出码 2，状态为 `blocked-or-insufficient-anchor-samples`。
+
+最终全量 `npm test`：390/390 通过；`git diff --check` 与 `npm run lint` 通过。空校准模板的 CLI 阻断码为 2；风险报告最终分类为技术/计算/产品边界 41、结果指标需证据 55、场景/设计参数 19、普通量化上下文 31、绝对化措辞 4、考试趋势 4。
+
+浏览器实际验收见 `docs/audits/browser-acceptance-2026-11-05.md`：Chrome 对 12 个导航页在 1920×1080、390×844、320×740、768×1024 四种视口完成点击验证；所有文档级横向溢出为 0，Console/Runtime 异常均为 0。路由返回/前进已真实验证 `#home → #mock → back #home → forward #mock`。
 
 ## 未完成与限制
 
 - 评分校准器必须用真实双人独立阅卷和裁决样本后才能得出有意义的校准结果；空模板预期是 blocked，不得用 AI 自评分数填充人工标签。
 - 至少准备 10 份案例、10 份论文样本作为探索性起点；每份两位不同阅卷人盲评、裁决分数、AI 评分及 model/prompt/grader/rubric 版本齐备。
-- 157 条答案风险候选仍未全部逐项裁决；当前只初审代表性候选。
+- 当前 155 条答案风险命中已按选择题、案例父题、论文三类形成逐项/逐父级初审文档，但“扫描命中分类”仍不是所有原题与正式答案的教材级终审；特别是 MTBF/MTTF 定义冲突、响应曲线信息不足等问题，需要与原卷/指定教材核对后才能修正式答案。
 - 322 个 partial 单元仍需逐单元核对指定教材/权威一手资料和人工终审；不能因 URL 可达、AI 交叉复核或存在一条 bounded evidence 就升级。
-- 没有运行本机浏览器 UI 验收；不得声称本轮覆盖 12 个主导航、桌面/移动端或真实考试链路。不要启动 240 分钟考试，也不要触发真实模型调用作为验收。
+- 浏览器验收覆盖导航、视口、横向溢出、路由返回/前进和前端运行时错误；没有运行会写入答题/学习数据或触发评分/生成模型的动作。不要启动 240 分钟考试作为回归测试。
 - 没有修改相邻 `architect-exam-bank`、题目审批状态、生产 SQLite、用户学习记录/答题历史。
-- 本轮本地 WSL Git 已成功推送分支；PR #1 的远端 Node 22/24 CI 已通过，仍需留意 Actions runtime/runner image 提醒。
+- 本轮本地 WSL Git 的既有分支已成功推送；当前工作区仍含新改动待提交，本轮 CI 工作流已升级至 checkout@v7.0.1 / setup-node@v7.1.0 / ubuntu-26.04，待本轮最新 HEAD 推送后重新核对 PR #1 的 Node 22/24 CI。
 
-## 下一步执行顺序
+## 仍需真实人工完成的闭环
 
-1. Draft PR #1 已触发远端 CI，Node 22/24 均成功；由维护者审阅后再决定是否转为 Ready for review 或合并，不要自动合并。
-2. 若需要 UI 验收，另行连接 WSL 本地 Browser Use MCP，执行只读导航/状态恢复/响应式检查；不要重启服务或启动长时考试。
-3. 继续对答案风险候选按父级题目去重分批复核，先处理 MTBF/MTTF 公式定义候选。
-4. 322 个 partial 单元仍需依据指定教材/权威一手资料逐项人工终审。
+1. 为校准器提供真实案例题/论文题人工双评与裁决样本；目前没有真实锚点数据，因此校准结论仍 blocked。10+10 只是探索性样本起点，不是认证。
+2. 322 个 `partial` 学习单元需要指定教材/权威一手资料逐项人工终审；11 个 PDF 单元需出版社或可信馆藏来源证实文件身份。
+3. 选择题 MTBF/MTTF 公式定义冲突及响应曲线信息不足等问题，需要拿原卷/指定教材作最终裁决；本轮没有修改外置正式题库。
+4. 本轮 CI 工作流升级后，需在 Draft PR 更新后核对 Node 22/24 全新远端工作流结果；不得把旧 run 的通过误算为新 HEAD 已通过。
+5. 维护者审阅 PR #1 后再决定是否转为 Ready for review/合并；不自动合并，不在此分支部署。

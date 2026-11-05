@@ -1,4 +1,5 @@
 import { readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -9,7 +10,20 @@ const RULES = [
 
 function textFields(bank) {
   const rows = [];
-  for (const item of bank?.choices ?? []) rows.push({ id: String(item.id ?? ""), kind: "choice", term: item.term ?? null, paper: item.paper ?? null, questionNo: item.questionNo ?? null, field: "analysis", text: String(item.analysis ?? ""), answerSource: item.answerSource ?? null, sources: [item.sourceUrl, item.sourcePage, item.sourceReference, item.sourceCitation, item.sourceLocation] });
+  const choices = bank?.choices ?? [];
+  const normalizedStems = choices.map(item => String(item.stem ?? item.question ?? "").replace(/\s+/gu, " ").trim());
+  const stemCounts = new Map();
+  for (const stem of normalizedStems) {
+    if (stem.length >= 120) stemCounts.set(stem, (stemCounts.get(stem) ?? 0) + 1);
+  }
+  for (const [index, item] of choices.entries()) {
+    const stem = normalizedStems[index];
+    const repeatedLongStem = stem.length >= 120 && stemCounts.get(stem) > 1;
+    const parentId = repeatedLongStem
+      ? `shared-stem-${createHash("sha256").update(stem).digest("hex").slice(0, 12)}`
+      : String(item.id ?? "");
+    rows.push({ id: String(item.id ?? ""), parentId, kind: "choice", term: item.term ?? null, paper: item.paper ?? null, questionNo: item.questionNo ?? null, field: "analysis", text: String(item.analysis ?? ""), answerSource: item.answerSource ?? null, sources: [item.sourceUrl, item.sourcePage, item.sourceReference, item.sourceCitation, item.sourceLocation] });
+  }
   for (const item of bank?.cases ?? []) for (const sub of item.subQuestions ?? []) rows.push({ id: String(item.id ?? "") + ":" + String(sub.question_label ?? "?"), kind: "case", term: item.term ?? null, paper: item.paper ?? null, questionNo: sub.question_label ?? null, field: "reference_answer", text: String(sub.reference_answer ?? sub.referenceAnswer ?? ""), answerSource: item.answerSource ?? null, sources: [item.sourceUrl, item.sourcePage, item.sourceReference, item.sourceCitation, item.sourceLocation] });
   for (const item of bank?.essays ?? []) rows.push({ id: String(item.id ?? ""), kind: "essay", term: item.term ?? null, paper: item.paper ?? null, questionNo: null, field: "writingPoints", text: String(item.writingPoints ?? item.writing_points ?? ""), answerSource: item.answerSource ?? null, sources: [item.sourceUrl, item.sourcePage, item.sourceReference, item.sourceCitation, item.sourceLocation] });
   return rows;
@@ -31,6 +45,15 @@ function firstRelevantMatch(text, rule) {
     const index = match.index ?? 0;
     // A year-to-year date range is context, not a performance/quantity claim.
     if (rule.code === "unsupported-quantified-claim" && /^(?:19|20)\d{2}\s*(?:-|–|至|到)\s*(?:19|20)\d{2}\s*年$/u.test(value)) continue;
+    if (rule.code === "unsupported-quantified-claim") {
+      const prefix = text.slice(Math.max(0, index - 18), index);
+      // Source reconstruction/confidence percentages describe the provenance
+      // of a recalled exam paper, not a technical claim in its answer.
+      if (/(?:真题|试题|题目|答案).{0,8}(?:复原程度|还原程度|复原率|还原率)\s*[:：]?\s*$/u.test(prefix)) continue;
+      // A quantity explicitly negated in the same phrase is not a positive
+      // numeric assertion (for example: "不是简单的 2 倍关系").
+      if (/(?:不是|并非|并不|不应|不能|不可以|不可能|不代表|不一定|未必|并未|无需|没有|无须).{0,12}$/u.test(prefix)) continue;
+    }
     if (rule.code === "absolute-or-exam-trend-claim") {
       const prefix = text.slice(Math.max(0, index - 16), index);
       // Do not flag a claim that explicitly warns against treating the phrase as guaranteed.
@@ -51,9 +74,35 @@ export function auditAnswerRisk(bank) {
     ruleCounts[rule.code] += 1;
     const { match, index } = result;
     const sourceLocator = assessSourceLocator(row.sources);
-    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match, context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match.length + 120)).replace(/\s+/g, " ").trim(), ...sourceLocator, answerSource: row.answerSource, guidance: rule.guidance });
+    const parentId = row.parentId ?? (row.kind === "case" ? row.id.split(":问题")[0] : row.id);
+    findings.push({ rule: rule.code, label: rule.label, item: { id: row.id, parentId, kind: row.kind, term: row.term, paper: row.paper, questionNo: row.questionNo, field: row.field }, matchedText: match, context: row.text.slice(Math.max(0, index - 100), Math.min(row.text.length, index + match.length + 120)).replace(/\s+/g, " ").trim(), ...sourceLocator, answerSource: row.answerSource, guidance: rule.guidance });
   }
-  return { reportVersion: 3, readOnly: true, counts: { choices: (bank?.choices ?? []).length, cases: (bank?.cases ?? []).length, essays: (bank?.essays ?? []).length, scannedTextFields: rows.length, findings: findings.length }, ruleCounts, note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。已过滤明确的年份区间和常见否定语境，仍可能存在误报与漏报；脚本不修改题库。", findings };
+  const uniqueRecords = new Set(findings.map(item => `${item.item.kind}|${item.item.id}`));
+  const uniqueParents = new Set(findings.map(item => `${item.item.kind}|${item.item.parentId}`));
+  const parentRecordCounts = new Map();
+  for (const item of findings) {
+    const key = `${item.item.kind}|${item.item.parentId}`;
+    parentRecordCounts.set(key, (parentRecordCounts.get(key) ?? new Set()).add(item.item.id));
+  }
+  const exactFindingKeys = new Set(findings.map(item => [item.item.kind, item.item.id, item.rule, item.matchedText, item.context].join("|")));
+  return {
+    reportVersion: 4,
+    readOnly: true,
+    counts: {
+      choices: (bank?.choices ?? []).length,
+      cases: (bank?.cases ?? []).length,
+      essays: (bank?.essays ?? []).length,
+      scannedTextFields: rows.length,
+      findings: findings.length,
+      uniqueFindingRecords: uniqueRecords.size,
+      uniqueParentItems: uniqueParents.size,
+      repeatedParentItems: [...parentRecordCounts.values()].filter(records => records.size > 1).length,
+      exactDuplicateFindings: findings.length - exactFindingKeys.size,
+    },
+    ruleCounts,
+    note: "关键词审计仅生成需要人工复核的候选，不代表答案错误；未命中也不代表答案正确。来源字段状态只反映字段是否缺失/占位或存在 URL/文本，不证明来源可访问、权威、精确或支持该命题。扫描已过滤年份区间和明确的量词否定语境，仍可能存在误报与漏报；脚本不修改题库。案例按父题 ID 分组展示，同一上下文在报告中只显示一次；原始 findings 保留全部命中。",
+    findings,
+  };
 }
 
 async function main() {

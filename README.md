@@ -53,7 +53,13 @@
 - [WSL 本地长任务复核流程](./docs/local-long-running-review-job.md)：后台来源检查、断点续跑、真题来源映射、人工复核包和评分校准边界。
 - [2026 年 10 月考后复盘](./docs/2026-exam-review.md)：当次机考节奏、综合知识/案例/论文回忆线索及下一轮训练重点；首页也可打开独立复盘页。
 - [案例/论文 AI 评分校准协议](./docs/scoring-calibration-protocol.md)：人工双评、裁决样本、误差指标与校准边界；评分数据模板和报告应放在本地私有目录。
-- [答案风险候选代表性初审（2026-11-05）](./docs/audits/answer-risk-triage-2026-11-05.md)：说明自动规则命中的去重口径和代表性技术判断，不代表全部候选已终审。
+- [答案风险扫描队列](./docs/audits/answer-risk-review-queue.md)：从当前题库只读生成，按父题和上下文聚合展示命中，保留原始命中数与去重统计。
+- [选择题逐项初审](./docs/audits/answer-risk-choice-adjudication-2026-11-05.md)：29 条不同选择题候选的计算、公式、产品边界和场景条件复核。
+- [案例题父级复核](./docs/audits/answer-risk-case-adjudication-2026-11-05.md)：按父级案例聚合 37 个父题、74 条子问题记录，区分需求目标、设计参数和实测结果。
+- [论文题指标复核](./docs/audits/answer-risk-essay-adjudication-2026-11-05.md)：46 条论文量化命中，区分项目假设、产品限制、质量阈值与需要证据的项目成果。
+- [学习内容人工核验批次](./docs/audits/learning-verification-batches-2026-11-05.md)：完整列出 322 个待人工核验单元、97 条显式待核主张和 11 个 PDF 来源真实性问题。
+- [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
+- [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
 
 首页路线按约 144 小时（零基础）或 112 小时（有开发基础）估算学习投入，可配置每周 4/6/8/10/12 小时。该时间仅用于安排学习，不是官方课时或通过保证。路线进度存储在当前浏览器 localStorage，不自动进入 SQLite 备份。
 
