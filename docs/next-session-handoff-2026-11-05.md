@@ -7,7 +7,8 @@
 - 工作分支：`audit/whole-unit-coverage-and-scoring-calibration`
 - 核心实现提交：`29166e56fd9a94a7a02e0b36c150b7de59007234`（`audit: clarify learning coverage and scoring calibration`）
 - 分支基线：`89814db35a55e6de95e48633acd7b9dc8184b830`；分支已推送并跟踪 `origin/audit/whole-unit-coverage-and-scoring-calibration`。
-- 当前 GitHub Actions API 对该分支返回 0 条 workflow runs；不能把此前 `main` 分支的成功 CI 说成本分支 CI 已通过。本轮尚未创建 PR。
+- 已创建 Draft PR #1：`https://github.com/StanlySGY/architect-exam-practice/pull/1`，目标分支 `main`；当前保持 Draft、未合并。
+- PR 触发的 GitHub Actions run `41968679511` 已通过，Node 22 与 Node 24 两个 job 均成功。
 - 用户原有未提交修改：`data/learning-content.json`（约 404 insertions / 130 deletions）。该文件包含真实课程修订，本轮全程保留，未 stash、覆盖、回退或纳入本轮审计补丁。
 - 项目指令文件：Runner 本轮未发现 AGENTS.md 等仓库指令文件。
 - 服务和 SQLite 未操作；未重启应用。
@@ -38,7 +39,7 @@
 - CLI 实际运行 `node scripts/audit-learning-content.mjs` 与 `node scripts/audit-learning-verification-queue.mjs`：两者成功；统计与上述基线一致。
 - 全量 `npm test`：381/381 通过（2026-11-05，包含评分校准器新增测试）。
 
-评分校准器语法检查和单测通过（4/4）；空模板 CLI 已由原生进程接口确认以退出码 2 返回 `blocked-or-insufficient-anchor-samples`。包含新增 4 个校准用例的全量 `npm test` 为 381/381 通过。最终 lint/差异检查已在本轮追加复核。提交 `29166e5` 已通过本地 WSL Git 推送；GitHub Actions 对分支尚无运行记录，需在 PR 或适用触发事件后继续核对。
+评分校准器语法检查和单测通过（4/4）；空模板 CLI 已由原生进程接口确认以退出码 2 返回 `blocked-or-insufficient-anchor-samples`。包含新增 4 个校准用例的全量 `npm test` 为 381/381 通过。最终 lint/差异检查已在本轮追加复核。核心提交 `29166e5` 及交接同步提交均已推送；Draft PR #1 的远端 CI run `41968679511` 中 Node 22、Node 24 两个 job 均 success。Actions 附带 Node.js 20 runtime deprecation 与 ubuntu-latest 迁移提醒，不影响本轮通过结果。
 
 ## 未完成与限制
 
@@ -48,11 +49,11 @@
 - 322 个 partial 单元仍需逐单元核对指定教材/权威一手资料和人工终审；不能因 URL 可达、AI 交叉复核或存在一条 bounded evidence 就升级。
 - 没有运行本机浏览器 UI 验收；不得声称本轮覆盖 12 个主导航、桌面/移动端或真实考试链路。不要启动 240 分钟考试，也不要触发真实模型调用作为验收。
 - 没有修改相邻 `architect-exam-bank`、题目审批状态、生产 SQLite、用户学习记录/答题历史。
-- 本轮本地 WSL Git 已成功推送分支；GitHub Actions 查询当前返回 0 条该分支运行记录，尚无本分支远端 CI 结论。
+- 本轮本地 WSL Git 已成功推送分支；PR #1 的远端 Node 22/24 CI 已通过，仍需留意 Actions runtime/runner image 提醒。
 
 ## 下一步执行顺序
 
-1. 通过适用的 PR/Actions 触发方式让远端 CI 执行，并核对两个 Node 版本结果；当前没有创建 PR。
+1. Draft PR #1 已触发远端 CI，Node 22/24 均成功；由维护者审阅后再决定是否转为 Ready for review 或合并，不要自动合并。
 2. 若需要 UI 验收，另行连接 WSL 本地 Browser Use MCP，执行只读导航/状态恢复/响应式检查；不要重启服务或启动长时考试。
 3. 继续对答案风险候选按父级题目去重分批复核，先处理 MTBF/MTTF 公式定义候选。
 4. 322 个 partial 单元仍需依据指定教材/权威一手资料逐项人工终审。
