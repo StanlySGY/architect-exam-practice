@@ -19,7 +19,8 @@
     "audit:answer-risk-report:save": "node scripts/render-bank-answer-risk-report.mjs ../architect-exam-bank/data/bank.json docs/audits/answer-risk-review-queue.json docs/audits/answer-risk-review-queue.md",
     "audit:claim-evidence": "node scripts/audit-bank-claim-evidence-register.mjs",
     "research:local": "NODE_USE_ENV_PROXY=1 node scripts/run-local-review-job.mjs",
-    "research:local:dry-run": "NODE_USE_ENV_PROXY=1 node scripts/run-local-review-job.mjs --dry-run"
+    "research:local:dry-run": "NODE_USE_ENV_PROXY=1 node scripts/run-local-review-job.mjs --dry-run",
+    "audit:learning-review-worklist": "node scripts/build-learning-review-worklist.mjs"
   },
   "engines": {
     "node": ">=22.15"

@@ -13,7 +13,7 @@ function hasValidLocalPdfProvenanceWarning(unit) {
     && /尚未获得出版社独立认证/u.test(String(unit.textbookCrossCheck.provenanceCaveat ?? ''));
 }
 
-function validEvidenceRecords(unit) {
+export function validEvidenceRecords(unit) {
   return (Array.isArray(unit?.evidence) ? unit.evidence : []).filter(item => {
     const reviewedOn = String(item?.reviewedOn ?? '');
     const validDate = /^\d{4}-\d{2}-\d{2}$/u.test(reviewedOn)

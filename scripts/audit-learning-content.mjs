@@ -19,6 +19,12 @@ const templateLikePatterns = {
   scenarios: /^情境练习（非教材原例）：围绕“[^”]+”设定一个系统需求/u,
 };
 
+export function detectTemplateLikeFields(unit) {
+  return Object.entries(templateLikePatterns)
+    .filter(([field, pattern]) => pattern.test(String(unit?.[field] ?? "").trim()))
+    .map(([field]) => field);
+}
+
 export function auditLearningContent(content) {
   const { units, sourceUnitCount, unitCount, excludedUnitCount, excludedUnits } = buildLearningUnitScope(content);
   const duplicateFields = {};
@@ -62,15 +68,18 @@ export function auditLearningContent(content) {
   }
   const templateLikeTeachingFields = {};
   const templateLikeFieldsByUnit = new Map();
-  for (const [field, pattern] of Object.entries(templateLikePatterns)) {
-    const unitIds = [];
-    for (const [id, unit] of units) {
-      if (!pattern.test(String(unit?.[field] ?? "").trim())) continue;
-      unitIds.push(id);
-      if (!templateLikeFieldsByUnit.has(id)) templateLikeFieldsByUnit.set(id, []);
-      templateLikeFieldsByUnit.get(id).push(field);
-    }
-    templateLikeTeachingFields[field] = { count: unitIds.length, unitIds: unitIds.slice(0, 50) };
+  const templateFieldCounts = Object.fromEntries(Object.keys(templateLikePatterns).map(field => [field, 0]));
+  for (const [id, unit] of units) {
+    const matchedFields = detectTemplateLikeFields(unit);
+    if (!matchedFields.length) continue;
+    templateLikeFieldsByUnit.set(id, matchedFields);
+    for (const field of matchedFields) templateFieldCounts[field] += 1;
+  }
+  for (const [field, count] of Object.entries(templateFieldCounts)) {
+    const unitIds = [...templateLikeFieldsByUnit.entries()]
+      .filter(([, matchedFields]) => matchedFields.includes(field))
+      .map(([id]) => id);
+    templateLikeTeachingFields[field] = { count, unitIds: unitIds.slice(0, 50) };
   }
   const unitsWithFourOrMoreTemplateFields = [...templateLikeFieldsByUnit.entries()]
     .filter(([, matchedFields]) => matchedFields.length >= 4)
