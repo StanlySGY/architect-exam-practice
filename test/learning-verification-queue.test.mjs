@@ -751,6 +751,8 @@ test('AI source cross-check records never upgrade whole-unit status and keep hum
   assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length);
   assert.equal(report.unitsMissingEvidence, 0, 'bounded evidence is not missing merely because whole-unit review is pending');
   assert.ok(report.unitsWithUnresolvedClaims >= ids.length);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 32);
+  assert.equal(ids.reduce((sum, id) => sum + content.units[id].evidence.length, 0), 71);
   for (const id of ids) {
     const unit = content.units[id];
     assert.equal(unit.status, 'partial', id);
