@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildLearningUnitScope } from "./learning-unit-scope.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fields = ["why", "how", "confusions", "scenarios", "examFocus", "pitfalls"];
@@ -19,7 +20,7 @@ const templateLikePatterns = {
 };
 
 export function auditLearningContent(content) {
-  const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
+  const { units, sourceUnitCount, unitCount, excludedUnitCount, excludedUnits } = buildLearningUnitScope(content);
   const duplicateFields = {};
   for (const field of fields) {
     const groups = new Map();
@@ -78,9 +79,13 @@ export function auditLearningContent(content) {
   const statuses = {};
   for (const [, unit] of units) statuses[unit.status ?? "(missing)"] = (statuses[unit.status ?? "(missing)"] ?? 0) + 1;
   return {
-    reportVersion: 1,
+    reportVersion: 2,
     readOnly: true,
-    unitCount: units.length,
+    sourceUnitCount,
+    unitCount,
+    excludedUnitCount,
+    excludedUnits,
+    wholeUnitCoverageStatus: "not-established-by-automated-audit",
     statusDistribution: statuses,
     duplicateFields,
     knownTemplateTailOccurrences: Object.fromEntries(Object.entries(templateTailOccurrences).map(([field, ids]) => [field, { count: ids.length, unitIds: ids.slice(0, 30) }])),

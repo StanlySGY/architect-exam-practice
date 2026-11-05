@@ -1,0 +1,12 @@
+{
+  "note": "模板不包含任何真实人工评分。请复制到私有路径后填写；不要把考生身份信息或未经授权的答卷内容放入公共仓库。",
+  "metadata": {
+    "model": "",
+    "modelVersion": "",
+    "promptVersion": "",
+    "graderVersion": "",
+    "rubricVersion": "",
+    "collectedAt": ""
+  },
+  "samples": []
+}

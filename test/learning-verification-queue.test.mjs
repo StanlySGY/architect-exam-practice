@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { buildVerificationQueue } from '../scripts/audit-learning-verification-queue.mjs';
+import { buildLearningUnitScope } from '../scripts/learning-unit-scope.mjs';
 const content=JSON.parse(fs.readFileSync(new URL('../data/learning-content.json',import.meta.url),'utf8'));
 const audit=fs.readFileSync(new URL('../docs/content-verification-audit.md',import.meta.url),'utf8');
 
@@ -13,7 +14,7 @@ test('verification queue keeps claim-level evidence separate from whole-unit sta
 test('valid evidence for one subclaim does not close a unit with unresolved material claims',()=>{
  const evidence={url:'https://example.org/direct-source',supportedClaim:'one directly supported definition',scope:'one claim only',reviewedOn:'2026-10-10',reviewStatus:'source-supports-bounded-claim'};
  const report=buildVerificationQueue({units:{partialCoverage:{status:'partial',evidence:[evidence],verificationPendingClaims:['textbook taxonomy and formula remain unresolved']}}});
- assert.equal(report.unitsWithClaimLevelEvidence,1);assert.equal(report.unitsWithCompleteClaimEvidence,0);assert.equal(report.unitsMissingEvidence,0);assert.equal(report.unitsWithUnresolvedClaims,1);
+ assert.equal(report.unitsWithClaimLevelEvidence,1);assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate,0);assert.equal(report.unitsMissingEvidence,0);assert.equal(report.unitsWithUnresolvedClaims,1);
  assert.deepEqual(report.queue[0].missing,[]);
  assert.deepEqual(report.queue[0].unresolvedClaims,['unresolved material claim: textbook taxonomy and formula remain unresolved']);
 });
@@ -22,7 +23,7 @@ test('unverified local PDF provenance blocks completion even when a unit is mark
  const evidence={url:'https://publisher.example/catalog',supportedClaim:'bounded textbook page location',scope:'catalog metadata only',reviewedOn:'2026-10-13',reviewStatus:'source-supports-bounded-claim'};
  const report=buildVerificationQueue({units:{localPdfUnit:{status:'verified',evidence:[evidence],verificationPendingClaims:[],textbookCrossCheck:{sourceKind:'local-pdf-page-cross-check',localPdfSha256:'a'.repeat(64),pdfPhysicalPages:[314],printedPages:[299],provenanceCaveat:'尚未获得出版社独立认证'}}}});
  assert.equal(report.unitsWithClaimLevelEvidence,1);
- assert.equal(report.unitsWithCompleteClaimEvidence,0);
+ assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate,0);
  assert.equal(report.unitsAwaitingVerification,1);
  assert.equal(report.queue[0].provenanceWarning,true);
  assert.ok(report.queue[0].reviewReasons.includes('local PDF publisher provenance has not been independently authenticated'));
@@ -34,10 +35,11 @@ test('verification queue rejects malformed or impossible evidence review dates',
  assert.deepEqual(report.queue.map(unit=>unit.id),['impossible','malformed']);
 });
 test('current learning course keeps claim evidence separate from full-unit verification status',()=>{
- const report=buildVerificationQueue(content); assert.equal(report.sourceUnitCount,348); assert.equal(report.unitCount,325); assert.equal(report.excludedUnitCount,23); assert.equal(report.excludedUnits.chapterOverview.count,18); assert.equal(report.excludedUnits.legacyCompatibilityMappings.count,5); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,322); assert.equal(report.unitsWithClaimLevelEvidence,325); assert.equal(report.unitsWithCompleteClaimEvidence,3); assert.equal(report.unitsAwaitingVerification,322); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
+ const report=buildVerificationQueue(content); assert.equal(report.sourceUnitCount,348); assert.equal(report.unitCount,325); assert.equal(report.excludedUnitCount,23); assert.equal(report.excludedUnits.chapterOverview.count,18); assert.equal(report.excludedUnits.legacyCompatibilityMappings.count,5); assert.equal(report.statusDistribution.verified,3); assert.equal(report.statusDistribution.partial,322); assert.equal(report.unitsWithClaimLevelEvidence,325); assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate,3); assert.equal(report.unitsAwaitingVerification,322); assert.equal(report.unitsMissingEvidence,0); assert.deepEqual(report.verifiedWithoutEvidence,[]);
  assert.equal(report.queue.length,322);
  assert.ok(report.queue.every(unit=>unit.status==='partial' && unit.reviewReasons.includes('whole-unit status is partial')));
- assert.ok(report.note.includes('does not certify every factual statement'));
+  assert.equal(report.wholeUnitCoverageStatus, 'not-established-by-automated-audit');
+  assert.ok(report.note.includes('does not independently prove that every factual statement was checked'));
 });
 
 test('normal-form evidence makes distinct claims and reliability-model background is not misclassified as claim proof',()=>{
@@ -72,7 +74,7 @@ test('reliability model claims use direct technical sources with explicit local 
  }
  assert.ok(!content.units['9.1.5'].what.includes('狭义测试按运行剖面随机抽样'));
  const report=buildVerificationQueue(content);
-  assert.equal(report.unitsWithClaimLevelEvidence,325);assert.equal(report.unitsWithCompleteClaimEvidence,3);assert.equal(report.unitsAwaitingVerification,322);assert.equal(report.unitsMissingEvidence,0);
+  assert.equal(report.unitsWithClaimLevelEvidence,325);assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate,3);assert.equal(report.unitsAwaitingVerification,322);assert.equal(report.unitsMissingEvidence,0);
   assert.equal(report.queue.length,322);
 });
 
@@ -110,7 +112,7 @@ test('supplemental reliability sources remain bounded alongside local textbook p
   const report = buildVerificationQueue(content);
   assert.equal(report.unitCount, 325);
   assert.equal(report.unitsWithClaimLevelEvidence, 325);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 3);
+  assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate, 3);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.equal(report.queue.length, 322);
 });
@@ -732,7 +734,7 @@ test('local PDF page cross-check resolves taxonomy claims while source provenanc
   assert.ok(audit.includes('尚未获得出版社独立认证'));
   const report = buildVerificationQueue(content);
   assert.equal(report.unitCount, 325);
-  assert.equal(report.unitsWithCompleteClaimEvidence, 3);
+  assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate, 3);
   assert.equal(report.unitsMissingEvidence, 0);
   assert.equal(report.unitsWithLocalPdfCrossCheck, 11);
   assert.deepEqual([...report.unitsWithUnverifiedLocalPdfProvenance].sort(), cases.map(([id]) => id).sort());
@@ -747,8 +749,10 @@ test('all learning evidence records have human-readable source titles',()=>{
 test('AI source cross-check records never upgrade whole-unit status and keep human review explicit', () => {
   const ids = ['4.1.1','4.1.2','4.1.3','4.2','4.3.1','4.3.2','4.3.3','4.4.1','4.4.2.3','4.4.3','4.5.1','4.5.2','4.5.3','4.6.1','4.6.2','4.7.1','4.7.2','4.7.3','4.7.4','4.7.5','4.7.6','4.8.1','4.8.2','5.1','5.2','5.3','5.4','5.5','5.6','5.7','6.1.1','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.2.3','6.2.3.1','6.2.3.2','6.2.3.3','6.3.1','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4','6.5.1','6.5.2'];
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsWithSourceCrossCheck, ids.length - 1);
-  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, ids.length - 1);
+  const { units: includedUnits } = buildLearningUnitScope(content);
+  const allCrossCheckedUnits = includedUnits.filter(([, unit]) => unit?.verificationReview?.status === 'ai-source-cross-check-complete');
+  assert.equal(report.unitsWithSourceCrossCheck, allCrossCheckedUnits.length);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, allCrossCheckedUnits.filter(([, unit]) => unit.verificationReview.humanReviewRequired === true).length);
   assert.equal(report.unitsMissingEvidence, 0, 'bounded evidence is not missing merely because whole-unit review is pending');
   assert.ok(report.unitsWithUnresolvedClaims >= ids.length - 1);
   assert.equal(ids.reduce((sum, id) => sum + content.units[id].verificationPendingClaims.length, 0), 70);
@@ -806,8 +810,10 @@ test('chapter 5 software engineering content tracks current standards and bounds
 test('chapter 6 database design, relational model, normalization, and NoSQL claims keep current source boundaries', () => {
   const ids = ['6.1.1','6.1.2','6.1.3','6.1.4','6.2.1','6.2.2','6.2.3','6.2.3.1','6.2.3.2','6.2.3.3','6.3.1','6.3.2','6.3.3','6.3.4','6.3.5','6.3.6','6.3.7','6.4','6.5.1','6.5.2'];
   const report = buildVerificationQueue(content);
-  assert.equal(report.unitsWithSourceCrossCheck, 49);
-  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, 49);
+  const { units: includedUnits } = buildLearningUnitScope(content);
+  const allCrossCheckedUnits = includedUnits.filter(([, unit]) => unit?.verificationReview?.status === 'ai-source-cross-check-complete');
+  assert.equal(report.unitsWithSourceCrossCheck, allCrossCheckedUnits.length);
+  assert.equal(report.unitsWithSourceCrossCheckAwaitingHumanReview, allCrossCheckedUnits.filter(([, unit]) => unit.verificationReview.humanReviewRequired === true).length);
   assert.equal(ids.reduce((sum,id)=>sum+content.units[id].verificationPendingClaims.length,0),23);
   assert.equal(ids.reduce((sum,id)=>sum+content.units[id].evidence.length,0),63);
   for (const id of ids) {
@@ -832,4 +838,21 @@ test('chapter 6 database design, relational model, normalization, and NoSQL clai
   assert.ok(distributed.confusions.includes('分片') && distributed.confusions.includes('复制'));
   assert.ok(distributed.evidence.some(e=>e.url==='https://www.mongodb.com/docs/manual/sharding/'));
   assert.ok(distributed.evidence.some(e=>e.url==='https://redis.io/docs/latest/operate/oss_and_stack/reference/cluster-spec/'));
+});
+
+
+test('automated audit does not claim to establish factual coverage for a declared verified unit', () => {
+  const evidence = {
+    url: 'https://example.com/source',
+    supportedClaim: 'one bounded definition claim',
+    scope: 'definition only',
+    reviewedOn: '2026-11-05',
+    reviewStatus: 'source-supports-bounded-claim',
+  };
+  const report = buildVerificationQueue({ units: {
+    declaredVerified: { status: 'verified', evidence: [evidence], verificationPendingClaims: [] },
+  } });
+  assert.equal(report.unitsPassingDeclaredWholeUnitVerificationGate, 1);
+  assert.equal(report.wholeUnitCoverageStatus, 'not-established-by-automated-audit');
+  assert.equal(report.queue.length, 0);
 });

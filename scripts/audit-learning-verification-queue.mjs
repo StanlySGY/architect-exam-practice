@@ -1,9 +1,9 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { buildLearningUnitScope } from './learning-unit-scope.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const legacyCompatibilityIds = ['4.4.2', '6.2.3', '17.2.3', '19.3.5', '19.4.4'];
 
 function hasValidLocalPdfProvenanceWarning(unit) {
   return unit?.textbookCrossCheck?.sourceKind === 'local-pdf-page-cross-check'
@@ -30,14 +30,7 @@ function validEvidenceRecords(unit) {
 }
 
 export function buildVerificationQueue(content) {
-  const allUnits = Object.entries(content?.units ?? {});
-  const chapterOverviewUnits = allUnits.filter(([, unit]) => unit?.source?.path === 'data/chapters.json');
-  const legacyCompatibilityUnits = allUnits.filter(([id]) => legacyCompatibilityIds.includes(id));
-  const excludedIds = new Set([
-    ...chapterOverviewUnits.map(([id]) => id),
-    ...legacyCompatibilityUnits.map(([id]) => id),
-  ]);
-  const units = allUnits.filter(([id]) => !excludedIds.has(id));
+  const { allUnits, chapterOverviewUnits, legacyCompatibilityUnits, excludedIds, units } = buildLearningUnitScope(content);
 
   const records = units.map(([id, unit]) => {
     const evidence = validEvidenceRecords(unit);
@@ -53,7 +46,9 @@ export function buildVerificationQueue(content) {
     }
 
     // Claim-scoped evidence cannot certify every factual statement in a unit.
-    const complete = unit?.status === 'verified'
+    // This is a metadata gate based on the declared status, not an independent
+    // proof that every factual statement in the unit has been checked.
+    const passesDeclaredWholeUnitVerificationGate = unit?.status === 'verified'
       && evidence.length > 0
       && pendingClaims.length === 0
       && !provenanceWarning;
@@ -75,7 +70,7 @@ export function buildVerificationQueue(content) {
       nextAction = 'resolve each listed material claim against a direct source; keep the unit partial';
     } else if (provenanceWarning) {
       nextAction = 'authenticate the local PDF copy provenance independently; keep the unit partial until then';
-    } else if (!complete) {
+    } else if (!passesDeclaredWholeUnitVerificationGate) {
       nextAction = 'human-review the unit claim by claim, confirm full factual coverage and source scope, then record the reviewer decision; keep partial meanwhile';
     } else {
       nextAction = 'no further verification action is currently queued';
@@ -92,7 +87,7 @@ export function buildVerificationQueue(content) {
       missing,
       unresolvedClaims,
       provenanceWarning,
-      complete,
+      passesDeclaredWholeUnitVerificationGate,
       reviewReasons,
       nextAction,
     };
@@ -107,7 +102,7 @@ export function buildVerificationQueue(content) {
     .filter(([, unit]) => hasValidLocalPdfProvenanceWarning(unit))
     .map(([id]) => id);
   const queue = records
-    .filter(record => !record.complete)
+    .filter(record => !record.passesDeclaredWholeUnitVerificationGate)
     .sort((a, b) => a.chapter.localeCompare(b.chapter, undefined, { numeric: true })
       || a.id.localeCompare(b.id, undefined, { numeric: true }));
   const statusDistribution = units.reduce((counts, [, unit]) => {
@@ -117,8 +112,9 @@ export function buildVerificationQueue(content) {
   }, {});
 
   return {
-    reportVersion: 3,
+    reportVersion: 4,
     readOnly: true,
+    wholeUnitCoverageStatus: 'not-established-by-automated-audit',
     sourceUnitCount: allUnits.length,
     unitCount: units.length,
     excludedUnitCount: excludedIds.size,
@@ -136,7 +132,7 @@ export function buildVerificationQueue(content) {
     },
     statusDistribution,
     unitsWithClaimLevelEvidence: records.filter(record => record.evidenceCount > 0).length,
-    unitsWithCompleteClaimEvidence: records.filter(record => record.complete).length,
+    unitsPassingDeclaredWholeUnitVerificationGate: records.filter(record => record.passesDeclaredWholeUnitVerificationGate).length,
     unitsAwaitingVerification: queue.length,
     // Missing source evidence and unresolved claims are different review reasons.
     // A unit can have several valid bounded sources while still needing textbook/human review.
@@ -148,7 +144,7 @@ export function buildVerificationQueue(content) {
     unitsWithLocalPdfCrossCheck: localPdfCrossChecks.length,
     unitsWithUnverifiedLocalPdfProvenance: localPdfProvenanceUnverified,
     queue,
-    note: 'A claim-level evidence record supports only its stated claim and scope. The presence of at least one record does not certify every factual statement in a unit. Only units explicitly marked verified, with valid evidence, no unresolved claims, and no known provenance warning are counted complete. Partial units remain in the human verification queue. A URL or local PDF page reference alone is not proof of source authenticity or whole-unit correctness.',
+    note: 'A claim-level evidence record supports only its stated claim and scope. unitsPassingDeclaredWholeUnitVerificationGate counts records whose existing status is verified and whose declared evidence/pending-claim/provenance metadata passes this script; it does not independently prove that every factual statement was checked or that the underlying human review occurred. wholeUnitCoverageStatus is therefore not-established-by-automated-audit. Partial units remain in the human verification queue. A URL or local PDF page reference alone is not proof of source authenticity or whole-unit correctness.',
   };
 }
 

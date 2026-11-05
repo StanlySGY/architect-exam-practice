@@ -1,0 +1,71 @@
+# 案例/论文 AI 评分校准协议
+
+## 目的与边界
+
+校准要回答的是：**在固定模型、提示词、评分器和评分细则版本下，AI 评分与独立人工裁决分数的差距有多大，误差集中在哪些评分维度。** 它不能证明 AI 分数等同于真实考试成绩，也不能把一个批次的结果外推到未来版本。
+
+## 样本采集
+
+案例题与论文题分开统计。每份答卷须保留题型、匿名样本 ID、评分细则版本、提示词版本、评分器版本和模型版本。每份答卷必须由两位不同阅卷人独立盲评，记录各自总分和满分；分歧经讨论或第三方裁决后记录 adjudicated 分数。AI 对同一份答卷可运行一次或多次，记录每次原始结构化结果。
+
+不得用 AI 自评分数充当人工标签。不要把同一份答卷拆成多个独立样本来凑数量。避免保存考生姓名、单位、联系方式等身份信息；答卷使用前应确认授权与内部数据处理要求。
+
+## 最小探索性样本
+
+每种题型至少 10 份完整样本（双人独立评分、裁决分数、AI 评分、版本信息齐备）才允许输出探索性汇总。10 份只是启动分析的最低门槛，不代表统计功效充分、模型通过认证或可以用于正式成绩判定。样本不足时程序应退出码 2，并明确标记 blocked。
+
+## 指标解释
+
+- 总分误差：将分数按各题满分归一化为百分比，计算 MAE（百分点）、有符号偏差、完全一致数、误差在 5/10 个百分点内的数量，以及最大误差和最差样本。
+- 人工一致性：双人评分计算 ICC(A,1)（双向随机、绝对一致、单次测量）及平均绝对评分差。ICC 不应脱离样本量、评分范围和分歧分布单独解释。
+- 分项误差：案例题的 results、论文题的 dimensions 若包含分项 score/max_score，且人工裁决对象同时提供同名 `adjudicated.components` 分项分数，则按相同分项计算 MAE；不会拿 AI 分项分数与人工总分比较。需先确认不同题目的同名分项具有可比性。
+- 通过/不通过：只有样本明确提供 passThresholdPct 时才计算 AI 与人工裁决的判定分歧；不擅自推定论文及案例的统一合格线。
+- 重复运行波动：同一答卷多次 AI 运行的分数极差用于观察非确定性，不可与人工评分误差混为一谈。
+
+## 运行
+
+先复制模板到私有目录（不要把个人答卷或人工评分直接提交 Git）：
+
+```bash
+cp docs/scoring-calibration-intake-template.json ~/.local/share/architect-exam-practice/scoring-calibration-intake.json
+```
+
+填写结构示例：
+
+```json
+{
+  "metadata": {
+    "model": "model-id",
+    "modelVersion": "provider-model-revision",
+    "promptVersion": "case-essay-prompt-2026-11",
+    "graderVersion": "grader-commit-or-release",
+    "rubricVersion": "rubric-v1",
+    "collectedAt": "2026-11-05"
+  },
+  "samples": [{
+    "id": "case-anon-001",
+    "type": "case",
+    "version": { "rubric": "rubric-v1", "prompt": "case-prompt-v1", "grader": "grader-v1" },
+    "humanRatings": [
+      { "raterId": "rater-a", "score": 52, "maxScore": 75 },
+      { "raterId": "rater-b", "score": 50, "maxScore": 75 }
+    ],
+    "adjudicated": { "score": 51, "maxScore": 75 },
+    "aiRuns": [{ "total_score": 51, "max_score": 75, "results": [] }]
+  }]
+}
+```
+
+运行：
+
+```bash
+node scripts/evaluate-scoring-calibration.mjs \
+  ~/.local/share/architect-exam-practice/scoring-calibration-intake.json \
+  ~/.local/share/architect-exam-practice/scoring-calibration-report.json
+```
+
+输出文件采用“仅新建”模式，若路径已存在会拒绝覆盖。样本不足返回退出码 2；修正/补充样本后使用新的输出路径再次运行。
+
+## 决策规则
+
+先看人工双评一致性，再看 AI 与 adjudicated 的差距。如果人工阅卷本身分歧很大，应先澄清 rubric 和样例锚点，而不是直接调模型提示词。若 AI 偏差集中在特定维度，应补充对应评分细则和边界案例，再用全新留出样本复测。任何权重、阈值或 prompt 修改后，都必须记录新版本并重新采集留出样本；不能在同一批数据上反复调参再把结果当作独立验证。
