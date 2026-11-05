@@ -58,6 +58,7 @@
 - [选择题逐项初审](./docs/audits/answer-risk-choice-adjudication-2026-11-05.md)：29 条不同选择题候选的计算、公式、产品边界和场景条件复核。
 - [案例题父级复核](./docs/audits/answer-risk-case-adjudication-2026-11-05.md)：按父级案例聚合 37 个父题、74 条子问题记录，区分需求目标、设计参数和实测结果。
 - [论文题指标复核](./docs/audits/answer-risk-essay-adjudication-2026-11-05.md)：46 条论文量化命中，区分项目假设、产品限制、质量阈值与需要证据的项目成果。
+- [教材 PDF 来源与页码交叉复核](./docs/audits/textbook-pdf-provenance-crosscheck-2026-11-05.md)：核对第 9 章 11 个学习单元的出版社书目、印次、印刷页/物理页映射与本地副本来源边界。
 - [学习内容人工核验批次](./docs/audits/learning-verification-batches-2026-11-05.md)：完整列出 322 个待人工核验单元、97 条显式待核主张和 11 个 PDF 来源真实性问题。
 - [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
 - [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
