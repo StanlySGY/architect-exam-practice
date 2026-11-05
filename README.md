@@ -53,6 +53,7 @@
 - [WSL 本地长任务复核流程](./docs/local-long-running-review-job.md)：后台来源检查、断点续跑、真题来源映射、人工复核包和评分校准边界。
 - [2026 年 10 月考后复盘](./docs/2026-exam-review.md)：当次机考节奏、综合知识/案例/论文回忆线索及下一轮训练重点；首页也可打开独立复盘页。
 - [案例/论文 AI 评分校准协议](./docs/scoring-calibration-protocol.md)：人工双评、裁决样本、误差指标与校准边界；评分数据模板和报告应放在本地私有目录。
+- [评分校准器统计审计](./docs/audits/scoring-calibration-statistical-audit-2026-11-05.md)：ICC(A,1)、双评组合、重复运行权重与评分结构边界测试的审计记录。
 - [答案风险扫描队列](./docs/audits/answer-risk-review-queue.md)：从当前题库只读生成，按父题和上下文聚合展示命中，保留原始命中数与去重统计。
 - [选择题逐项初审](./docs/audits/answer-risk-choice-adjudication-2026-11-05.md)：29 条不同选择题候选的计算、公式、产品边界和场景条件复核。
 - [案例题父级复核](./docs/audits/answer-risk-case-adjudication-2026-11-05.md)：按父级案例聚合 37 个父题、74 条子问题记录，区分需求目标、设计参数和实测结果。
