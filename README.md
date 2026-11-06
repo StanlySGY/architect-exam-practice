@@ -64,6 +64,8 @@
 - [批次 C 第 1 批 20 个单元初审](./docs/audits/learning-review-batch-01-2026-11-05.md)：逐项标注现有证据范围、概念边界、待教材核验内容与教学修订方向；不自动升级课程状态。
 - [批次 C 第 2 批 20 个单元初审](./docs/audits/learning-review-batch-02-2026-11-05.md)：复核运行剖面、可靠性模型、UML 交互和架构演化主题，标注来源边界与教学修订方向；不自动升级课程状态。
 - [批次 C 第 3 批 20 个单元初审](./docs/audits/learning-review-batch-03-2026-11-06.md)：复核 SoS、CPS、AI、机器人、边缘、数字孪生与云计算，区分定义、分类和部署权衡。
+- [批次 C 第 4 批 20 个单元初审](./docs/audits/learning-review-batch-04-2026-11-06.md)：复核大数据、企业架构、架构风格、layer/tier、MVC/MVP/MVVM、XML、UIP、动态组件、DDD 与 BPMN。
+
 - [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
 - [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
 
