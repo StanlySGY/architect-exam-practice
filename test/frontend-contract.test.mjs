@@ -114,6 +114,12 @@ test("命令面板支持 Escape 关闭，避免模态层阻断页面导航", () 
   assert.match(html, /id="command-palette"[^>]*aria-label="命令面板"/);
 });
 
+test("主视图导航写入浏览器历史，支持后退/前进恢复视图", () => {
+  assert.match(app, /function switchView\(view\)[\s\S]*?history\.pushState\(\{ view \}, "", `#\$\{view\}`\)/);
+  assert.match(app, /window\.addEventListener\("hashchange", \(\) => \{[\s\S]*?switchView\(view\)/);
+  assert.doesNotMatch(app, /history\.replaceState\(null, "", `#\$\{view\}`\)/);
+});
+
 test("首页学习队列和内容质量概览使用只读 API，并禁用零到期复习入口", () => {
   assert.match(app, /api\("\/api\/study-queue\?limit=5"\)/);
   assert.match(app, /api\("\/api\/content-health"\)/);

@@ -34,6 +34,11 @@ test("学习内容审计能报告全文重复而不把重复误判为事实错�
 test("325个课程单元的当前审计报告确认六类字段无全文重复且无已知模板尾句残留", () => {
   const report = auditLearningContent(content);
   assert.equal(report.unitCount, 325);
+  assert.equal(report.sourceUnitCount, 348);
+  assert.equal(report.excludedUnitCount, 23);
+  assert.equal(report.excludedUnits.chapterOverview.count, 18);
+  assert.equal(report.excludedUnits.legacyCompatibilityMappings.count, 5);
+  assert.equal(report.wholeUnitCoverageStatus, "not-established-by-automated-audit");
   assert.equal(report.duplicateFields.how.groups, 0);
   assert.equal(report.duplicateFields.confusions.groups, 0);
   assert.equal(report.knownTemplateTailOccurrences.how.count, 0);
@@ -41,4 +46,17 @@ test("325个课程单元的当前审计报告确认六类字段无全文重复�
   assert.ok(report.unitsWithFourOrMoreTemplateFields.count > 0, "heuristic scan should reveal template-like teaching scaffolds that exact-duplicate checks miss");
   for (const field of ["why", "how", "confusions", "scenarios", "examFocus", "pitfalls"]) assert.equal(report.duplicateFields[field].groups, 0, field + " should have no full-text duplicates");
   for (const marker of Object.values(report.knownGenericTemplateMarkers)) assert.equal(marker.count, 0, "known generic template marker should be absent");
+});
+
+test("内容审计显式报告章节导读和历史兼容映射排除项", () => {
+  const report = auditLearningContent({ units: {
+    overview: { source: { path: "data/chapters.json" } },
+    "4.4.2": { status: "partial" },
+    "4.4.2.1": { status: "partial" },
+  } });
+  assert.equal(report.sourceUnitCount, 3);
+  assert.equal(report.unitCount, 1);
+  assert.equal(report.excludedUnitCount, 2);
+  assert.deepEqual(report.excludedUnits.chapterOverview.ids, ["overview"]);
+  assert.deepEqual(report.excludedUnits.legacyCompatibilityMappings.ids, ["4.4.2"]);
 });

@@ -1,6 +1,7 @@
 import { readFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { buildLearningUnitScope } from "./learning-unit-scope.mjs";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const fields = ["why", "how", "confusions", "scenarios", "examFocus", "pitfalls"];
@@ -18,8 +19,14 @@ const templateLikePatterns = {
   scenarios: /^情境练习（非教材原例）：围绕“[^”]+”设定一个系统需求/u,
 };
 
+export function detectTemplateLikeFields(unit) {
+  return Object.entries(templateLikePatterns)
+    .filter(([field, pattern]) => pattern.test(String(unit?.[field] ?? "").trim()))
+    .map(([field]) => field);
+}
+
 export function auditLearningContent(content) {
-  const units = Object.entries(content?.units ?? {}).filter(([id, unit]) => unit?.source?.path !== "data/chapters.json" && !["4.4.2", "6.2.3", "17.2.3", "19.3.5", "19.4.4"].includes(id));
+  const { units, sourceUnitCount, unitCount, excludedUnitCount, excludedUnits } = buildLearningUnitScope(content);
   const duplicateFields = {};
   for (const field of fields) {
     const groups = new Map();
@@ -61,15 +68,18 @@ export function auditLearningContent(content) {
   }
   const templateLikeTeachingFields = {};
   const templateLikeFieldsByUnit = new Map();
-  for (const [field, pattern] of Object.entries(templateLikePatterns)) {
-    const unitIds = [];
-    for (const [id, unit] of units) {
-      if (!pattern.test(String(unit?.[field] ?? "").trim())) continue;
-      unitIds.push(id);
-      if (!templateLikeFieldsByUnit.has(id)) templateLikeFieldsByUnit.set(id, []);
-      templateLikeFieldsByUnit.get(id).push(field);
-    }
-    templateLikeTeachingFields[field] = { count: unitIds.length, unitIds: unitIds.slice(0, 50) };
+  const templateFieldCounts = Object.fromEntries(Object.keys(templateLikePatterns).map(field => [field, 0]));
+  for (const [id, unit] of units) {
+    const matchedFields = detectTemplateLikeFields(unit);
+    if (!matchedFields.length) continue;
+    templateLikeFieldsByUnit.set(id, matchedFields);
+    for (const field of matchedFields) templateFieldCounts[field] += 1;
+  }
+  for (const [field, count] of Object.entries(templateFieldCounts)) {
+    const unitIds = [...templateLikeFieldsByUnit.entries()]
+      .filter(([, matchedFields]) => matchedFields.includes(field))
+      .map(([id]) => id);
+    templateLikeTeachingFields[field] = { count, unitIds: unitIds.slice(0, 50) };
   }
   const unitsWithFourOrMoreTemplateFields = [...templateLikeFieldsByUnit.entries()]
     .filter(([, matchedFields]) => matchedFields.length >= 4)
@@ -78,9 +88,13 @@ export function auditLearningContent(content) {
   const statuses = {};
   for (const [, unit] of units) statuses[unit.status ?? "(missing)"] = (statuses[unit.status ?? "(missing)"] ?? 0) + 1;
   return {
-    reportVersion: 1,
+    reportVersion: 2,
     readOnly: true,
-    unitCount: units.length,
+    sourceUnitCount,
+    unitCount,
+    excludedUnitCount,
+    excludedUnits,
+    wholeUnitCoverageStatus: "not-established-by-automated-audit",
     statusDistribution: statuses,
     duplicateFields,
     knownTemplateTailOccurrences: Object.fromEntries(Object.entries(templateTailOccurrences).map(([field, ids]) => [field, { count: ids.length, unitIds: ids.slice(0, 30) }])),

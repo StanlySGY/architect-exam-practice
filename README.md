@@ -52,6 +52,29 @@
 - [2026-11-04 学习资料来源 URL 复核](./docs/audits/source-url-verification-2026-11-04.md)：链接状态复核方法、来源映射基线、NIST/Fuzhou 证据更新和未核验边界。
 - [WSL 本地长任务复核流程](./docs/local-long-running-review-job.md)：后台来源检查、断点续跑、真题来源映射、人工复核包和评分校准边界。
 - [2026 年 10 月考后复盘](./docs/2026-exam-review.md)：当次机考节奏、综合知识/案例/论文回忆线索及下一轮训练重点；首页也可打开独立复盘页。
+- [案例/论文 AI 评分校准协议](./docs/scoring-calibration-protocol.md)：人工双评、裁决样本、误差指标与校准边界；评分数据模板和报告应放在本地私有目录。
+- [评分校准器统计审计](./docs/audits/scoring-calibration-statistical-audit-2026-11-05.md)：ICC(A,1)、双评组合、重复运行权重与评分结构边界测试的审计记录。
+- [答案风险扫描队列](./docs/audits/answer-risk-review-queue.md)：从当前题库只读生成，按父题和上下文聚合展示命中，保留原始命中数与去重统计。
+- [选择题逐项初审](./docs/audits/answer-risk-choice-adjudication-2026-11-05.md)：29 条不同选择题候选的计算、公式、产品边界和场景条件复核。
+- [案例题父级复核](./docs/audits/answer-risk-case-adjudication-2026-11-05.md)：按父级案例聚合 37 个父题、74 条子问题记录，区分需求目标、设计参数和实测结果。
+- [论文题指标复核](./docs/audits/answer-risk-essay-adjudication-2026-11-05.md)：46 条论文量化命中，区分项目假设、产品限制、质量阈值与需要证据的项目成果。
+- [教材 PDF 来源与页码交叉复核](./docs/audits/textbook-pdf-provenance-crosscheck-2026-11-05.md)：核对第 9 章 11 个学习单元的出版社书目、印次、印刷页/物理页映射与本地副本来源边界。
+- [学习内容人工核验批次](./docs/audits/learning-verification-batches-2026-11-05.md)：完整列出 322 个待人工核验单元、97 条显式待核主张和 11 个 PDF 来源真实性问题。
+- [学习单元整单元复核工作队列](./docs/audits/learning-review-worklist-method-2026-11-05.md)：为批次 C 按模板化信号、有效证据记录量和复核日期生成可重复审阅批次，不自动修改学习状态。
+- [批次 C 第 1 批 20 个单元初审](./docs/audits/learning-review-batch-01-2026-11-05.md)：逐项标注现有证据范围、概念边界、待教材核验内容与教学修订方向；不自动升级课程状态。
+- [批次 C 第 2 批 20 个单元初审](./docs/audits/learning-review-batch-02-2026-11-05.md)：复核运行剖面、可靠性模型、UML 交互和架构演化主题，标注来源边界与教学修订方向；不自动升级课程状态。
+- [批次 C 第 3 批 20 个单元初审](./docs/audits/learning-review-batch-03-2026-11-06.md)：复核 SoS、CPS、AI、机器人、边缘、数字孪生与云计算，区分定义、分类和部署权衡。
+- [批次 C 第 4 批 20 个单元初审](./docs/audits/learning-review-batch-04-2026-11-06.md)：复核大数据、企业架构、架构风格、layer/tier、MVC/MVP/MVVM、XML、UIP、动态组件、DDD 与 BPMN。
+- [批次 C 第 5 批 20 个单元初审](./docs/audits/learning-review-batch-05-2026-11-06.md)：复核 DAO/ORM、连接池、ITU 物联网参考模型、云原生、容器、微服务、Serverless、服务网格及 SOA/ESB 分类边界。
+- [批次 C 第 6 批 20 个单元初审](./docs/audits/learning-review-batch-06-2026-11-06.md)：复核 SOA 无状态边界、嵌入式/实时系统、RTOS、中间件、DARTS、GENESYS、IoT、网络/存储、SDN 与质量需求。
+- [批次 C 第 7 批 20 个单元初审](./docs/audits/learning-review-batch-07-2026-11-06.md)：复核网络安全/能效/冗余/双栈/5G、商业数据完整性、Chinese Wall、不可否认性、流批一体、金融零售数据及软考论文写作。
+- [批次 C 第 8 批 20 个单元初审](./docs/audits/learning-review-batch-08-2026-11-06.md)：复核边缘/IoT安全、IPv6过渡、嵌入式/CPS、架构描述、TOGAF、ACID、云原生、SOA、ATAM/ADD、可靠性、ADR、SDN、韧性与安全规划。
+- [批次 C 第 9 批 20 个单元初审](./docs/audits/learning-review-batch-09-2026-11-06.md)：复核安全运营/事件响应、CIA、身份认证与ABAC、保密/完整性、评估、数据库完整性、OWASP Web/API风险、OT安全及Lambda/Kappa/流处理。
+- [批次 C 第 10 批 20 个单元初审](./docs/audits/learning-review-batch-10-2026-11-06.md)：复核行业实时热点/广告事件流、架构生命周期与价值、迭代设计/原型/演化、经典架构风格、软件复用和领域参考架构/工程。
+- [批次 C 第 11 批 20 个单元初审](./docs/audits/learning-review-batch-11-2026-11-06.md)：复核领域工程、架构描述/设计/评审、质量属性、可靠性、计算机基础、架构风格及演化维护成本/进度/风险。
+
+- [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
+- [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
 
 首页路线按约 144 小时（零基础）或 112 小时（有开发基础）估算学习投入，可配置每周 4/6/8/10/12 小时。该时间仅用于安排学习，不是官方课时或通过保证。路线进度存储在当前浏览器 localStorage，不自动进入 SQLite 备份。
 
