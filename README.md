@@ -66,6 +66,7 @@
 - [批次 C 第 3 批 20 个单元初审](./docs/audits/learning-review-batch-03-2026-11-06.md)：复核 SoS、CPS、AI、机器人、边缘、数字孪生与云计算，区分定义、分类和部署权衡。
 - [批次 C 第 4 批 20 个单元初审](./docs/audits/learning-review-batch-04-2026-11-06.md)：复核大数据、企业架构、架构风格、layer/tier、MVC/MVP/MVVM、XML、UIP、动态组件、DDD 与 BPMN。
 - [批次 C 第 5 批 20 个单元初审](./docs/audits/learning-review-batch-05-2026-11-06.md)：复核 DAO/ORM、连接池、ITU 物联网参考模型、云原生、容器、微服务、Serverless、服务网格及 SOA/ESB 分类边界。
+- [批次 C 第 6 批 20 个单元初审](./docs/audits/learning-review-batch-06-2026-11-06.md)：复核 SOA 无状态边界、嵌入式/实时系统、RTOS、中间件、DARTS、GENESYS、IoT、网络/存储、SDN 与质量需求。
 
 - [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
 - [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
