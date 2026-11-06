@@ -71,6 +71,7 @@
 - [批次 C 第 8 批 20 个单元初审](./docs/audits/learning-review-batch-08-2026-11-06.md)：复核边缘/IoT安全、IPv6过渡、嵌入式/CPS、架构描述、TOGAF、ACID、云原生、SOA、ATAM/ADD、可靠性、ADR、SDN、韧性与安全规划。
 - [批次 C 第 9 批 20 个单元初审](./docs/audits/learning-review-batch-09-2026-11-06.md)：复核安全运营/事件响应、CIA、身份认证与ABAC、保密/完整性、评估、数据库完整性、OWASP Web/API风险、OT安全及Lambda/Kappa/流处理。
 - [批次 C 第 10 批 20 个单元初审](./docs/audits/learning-review-batch-10-2026-11-06.md)：复核行业实时热点/广告事件流、架构生命周期与价值、迭代设计/原型/演化、经典架构风格、软件复用和领域参考架构/工程。
+- [批次 C 第 11 批 20 个单元初审](./docs/audits/learning-review-batch-11-2026-11-06.md)：复核领域工程、架构描述/设计/评审、质量属性、可靠性、计算机基础、架构风格及演化维护成本/进度/风险。
 
 - [答案风险初审摘要](./docs/audits/answer-risk-triage-2026-11-05.md)：说明旧批次代表性复核和当前扫描版本边界，不代表题库答案全部终审。
 - [浏览器实际验收记录](./docs/audits/browser-acceptance-2026-11-05.md)：Chrome 对 12 个导航页、1920/768/390/320px 视口和浏览器返回/前进的只读验收。
